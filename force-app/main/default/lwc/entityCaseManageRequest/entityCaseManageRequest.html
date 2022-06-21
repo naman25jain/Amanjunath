@@ -1,0 +1,47 @@
+<template>
+    <div class="formMargin">
+        <div class="secContainer">
+            <p>As a MyIntealth service Coordinator, you have permission to request new MyIntealth Users for your entity, request access to other services, and more. Each time you or another User at your entity makes a request, a case is created.</p>
+            <p>Requests requiring a response are listed under <strong>Active Request(s)</strong>. Once a response has been submitted, the request will move to <strong>Completed Request(s)</strong>.</p>
+            <div class="headeralign" >
+                <span class="headertxt">Active Requests({data.length})
+                </span>
+            </div>
+            <p>&nbsp;</p>
+            <template if:true={isActiveReqFound}>
+                <c-paginator class="paginatorAR" records={activeRequests} total-records={activeRequests.length}
+                    show-search-box="true" onpaginatorchange={handleARPaginatorChange}>
+                </c-paginator>
+
+                <lightning-datatable key-field="id" columns={columns} data={recordsToDisplay} hide-checkbox-column
+                default-sort-direction={defaultSortDirection} sorted-direction={sortDirection} sorted-by={sortedBy}
+                onsort={onHandleSort} onrowaction={handleRowActions}>
+                </lightning-datatable>
+            </template>
+
+            <template if:false={isActiveReqFound}>
+                <div class="noRecordsSection">--No Records Found--</div>
+            </template>
+        </div>
+        <div class="secContainer">
+            <div class="headeralign">
+                <span class="headertxt">Completed Requests({dataCom.length})
+                </span>
+            </div>
+            <template if:true={isCompletedReqFound}>
+                <c-paginator class="paginatorCR" records={completedRequests} total-records={completedRequests.length}
+                show-search-box="true" onpaginatorchange={handleCRPaginatorChange}>
+                </c-paginator>
+
+                <lightning-datatable key-field="id" columns={columnsCom} data={recordsToDisplayCom} hide-checkbox-column
+                default-sort-direction={defaultSortDirectionCom} sorted-direction={sortDirectionCom} sorted-by={sortedByCom}
+                onsort={onHandleSortCompleted} onrowaction={handleRowActions}>
+                </lightning-datatable>
+            </template>
+
+            <template if:false={isCompletedReqFound}>
+                <div class="noRecordsSection">--No Records Found--</div>
+            </template>
+        </div>
+    </div>
+</template>

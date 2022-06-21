@@ -1,0 +1,11 @@
+<template>
+    <div class="padding">
+        <template if:true={appForCertSummaryURL}>
+            <div class="slds-col">
+                <a href="javascript:void(0)" data-key={appForCertSummaryURL} onclick={refactorViewReport}>
+                    <lightning-icon icon-name="action:download" alternative-text="Download" title="Download" size="small"></lightning-icon>
+                </a>
+            </div>
+        </template>
+    </div>           
+</template>

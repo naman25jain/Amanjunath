@@ -1,0 +1,15 @@
+/**
+ * Created by mikemeadows on 12/6/18.
+ */
+.THIS .dupebox{
+    border: 1px solid black;
+}
+
+.THIS .dupeInfo{
+    margin-top: -15px;
+    margin-bottom: -5px;
+}
+
+.THIS .moveLeft{
+    padding-right: 15px;
+}

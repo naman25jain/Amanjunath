@@ -1,0 +1,9 @@
+<!--
+ - Created by Matthew on 11/28/18.
+ -->
+
+<design:component>
+    <design:attribute name="readOnlyMode" label="Is Read Only?" />
+    <design:attribute name="myProfileMode" label="Is in My Profile?" />
+    <design:attribute name="layout" datasource="Stacked,Horizontal" label="Form Layout" description="Used to determine how to form will layout." />
+</design:component>

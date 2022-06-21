@@ -1,0 +1,124 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,forceCommunity:availableForAllPageTypes" access="global" controller="CommunityIdentityVerificationController">
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+	<aura:attribute name="headingLabel" type="String"/>
+	<aura:attribute name="caseRecordType" type="String"/>
+	<aura:attribute name="currentStep" type="String"/>
+	<aura:attribute name="steps" type="Object[]" />
+	<aura:attribute name="cases" type="Object[]" />
+	<aura:attribute name="service" type="String"/>
+	<aura:attribute name="caseService" type="String"/>
+	<aura:attribute name="status" type="String"/>
+	<aura:attribute name="externalStatus" type="String"/>
+	<aura:attribute name="hasCase" type="Boolean" default="false"/>
+	<aura:attribute name="actionRequired" type="Boolean" default="false"/>
+	<aura:attribute name="caseId" type="String"/>
+	<aura:attribute name="epicStatus" type="String" default=""/>
+	<aura:attribute name="certStatus" type="String" default=""/>
+	<aura:attribute name="gemxStatus" type="String" default=""/>
+	<aura:attribute name="j1Status" type="String" default=""/>
+	<aura:attribute name="epicPayment" type="Boolean" default="false"/>
+	<aura:attribute name="certPayment" type="Boolean" default="false"/>
+	<aura:attribute name="gemxPayment" type="Boolean" default="false"/>
+	<aura:attribute name="j1Payment" type="Boolean" default="false"/>
+	<aura:attribute name="disableButtons" type="Boolean" default="false"/>
+	<aura:attribute name="accountEstablished" type="Boolean" default="false"/>
+	<aura:attribute name="privacyAgreementAccepted" type="Boolean" default="false" />
+	<aura:attribute name="restrictionOnContact" type="Boolean" default="false"/>
+	<aura:if isTrue="{!and(v.hasCase, v.privacyAgreementAccepted)}">
+
+
+<!--		<h1>Service: {!v.service}</h1>
+		<h1>Progress Bar j1Status Status: {!v.j1Status}</h1>
+		<h1>Progress Bar certStatus Status: {!v.certStatus}</h1>
+		<h1>Progress Bar epicStatus Status: {!v.epicStatus}</h1>
+		<h1>Progress Bar gemxStatus Status: {!v.gemxStatus}</h1>
+
+		Current Step: {!v.currentStep}-->
+
+
+		<aura:if isTrue="{!and(v.service == 'EPIC', v.epicStatus != 'New')}">
+			<div class="wrap">
+				<div class="left"><p><b><c:gDisplayContent uniqueContentValue="progressContent1"></c:gDisplayContent></b></p></div>
+				<div class="right"></div>
+				<div class="center">&nbsp;&nbsp;&nbsp;&nbsp;<lightning:button variant="neutral" onclick="{!c.handleDetails}" label="See Case Details" title="See Case Details"  /></div>
+			</div>
+			<br/>
+			<lightning:progressIndicator currentStep="{!v.currentStep}" type="path" hasError="true" variant="base">
+				<aura:iteration items="{!v.steps}" var="step">
+					<lightning:progressStep label="{!step.External_Display_Label__c}" value="{!step.Step_Number__c}"/>
+				</aura:iteration>
+			</lightning:progressIndicator>
+		</aura:if>
+
+		<aura:if isTrue="{!and(v.service == 'ECFMG Certification', v.certStatus != 'New')}">
+			<div class="wrap">
+				<div class="left"><p><b><c:gDisplayContent uniqueContentValue="progressContent1"></c:gDisplayContent></b></p></div>
+				<div class="right"></div>
+				<div class="center">&nbsp;&nbsp;&nbsp;&nbsp;<lightning:button variant="neutral" onclick="{!c.handleDetails}" label="See Case Details" title="See Case Details"  /></div>
+			</div>
+			<br/>
+			<lightning:progressIndicator currentStep="{!v.currentStep}" type="path" hasError="true" variant="base">
+				<aura:iteration items="{!v.steps}" var="step">
+					<lightning:progressStep label="{!step.External_Display_Label__c}" value="{!step.Step_Number__c}"/>
+				</aura:iteration>
+			</lightning:progressIndicator>
+		</aura:if>
+
+		<aura:if isTrue="{!and(v.service == 'GEMx', v.gemxStatus != 'New')}">
+			<div class="wrap">
+				<div class="left"><p><b><c:gDisplayContent uniqueContentValue="progressContent1"></c:gDisplayContent></b></p></div>
+				<div class="right"></div>
+				<div class="center">&nbsp;&nbsp;&nbsp;&nbsp;<lightning:button variant="neutral" onclick="{!c.handleDetails}" label="See Case Details" title="See Case Details"  /></div>
+			</div>
+			<br/>
+			<lightning:progressIndicator currentStep="{!v.currentStep}" type="path" hasError="true" variant="base">
+				<aura:iteration items="{!v.steps}" var="step">
+					<lightning:progressStep label="{!step.External_Display_Label__c}" value="{!step.Step_Number__c}"/>
+				</aura:iteration>
+			</lightning:progressIndicator>
+		</aura:if>
+
+		<aura:if isTrue="{!and(v.service == 'J1', v.j1Status != 'New')}">
+			<div class="wrap">
+				<div class="left"><p><b><c:gDisplayContent uniqueContentValue="progressContent1"></c:gDisplayContent></b></p></div>
+				<div class="right"></div>
+				<div class="center">&nbsp;&nbsp;&nbsp;&nbsp;<lightning:button variant="neutral" onclick="{!c.handleDetails}" label="See Case Details" title="See Case Details"  /></div>
+			</div>
+			<br/>
+			<lightning:progressIndicator currentStep="{!v.currentStep}" type="path" hasError="true" variant="base">
+				<aura:iteration items="{!v.steps}" var="step">
+					<lightning:progressStep label="{!step.External_Display_Label__c}" value="{!step.Step_Number__c}"/>
+				</aura:iteration>
+			</lightning:progressIndicator>
+		</aura:if>
+
+		<div class="left"><p><b>Current Status:</b>&nbsp;{!v.externalStatus} &nbsp;&nbsp;&nbsp;&nbsp;
+			<aura:if isTrue="{!or(v.status == 'Provide Personal Information', v.status == 'New')}">
+				<!--<lightning:button class="{!and(or(or(or(v.epicPayment, v.gemxPayment), v.certPayment), v.j1Payment), v.service != 'J1') ? 'widebuttondisabled' : 'widebuttongreen'}" variant="brand" label="{!or(or(or(or(v.epicPayment, v.gemxPayment), v.certPayment), v.j1Payment), v.j1Status.length > 0) ? 'Cannot Begin Application Pending Account Establishment' : 'Complete Application'}" title="{!or(or(or(or(v.epicPayment, v.gemxPayment), v.certPayment), v.j1Payment), v.j1Status.length > 0) ? 'Cannot Begin Application Pending Account Establishment' : 'Complete Application'}" disabled="{!or(or(or(or(v.epicPayment, v.gemxPayment), v.certPayment), v.j1Payment), v.j1Status.length > 0)}" onclick="{! c.handleCompleteInfo }" />-->
+				<lightning:button class="{!and(or(or(or(v.epicPayment, v.gemxPayment), v.certPayment), v.j1Payment), v.service != 'J1') ? 'widebuttondisabled' : 'widebuttongreen'}" variant="brand" label="{!or(or(or(v.epicPayment, v.gemxPayment), v.certPayment), v.j1Payment) ? 'Cannot Begin Application Pending Account Establishment' : 'Continue'}" title="{!or(or(or(v.epicPayment, v.gemxPayment), v.certPayment), v.j1Payment) ? 'Cannot Begin Application Pending Account Establishment' : 'Continue'}" disabled="{!or(or(or(v.epicPayment, v.gemxPayment), v.certPayment), v.j1Payment)}" onclick="{! c.handleCompleteInfo }" />
+			</aura:if>
+			<aura:if isTrue="{!v.status == 'Accepted'}">
+				<lightning:button class="widebuttongreen" variant="brand" label="{!'Continue with ' + v.service}" title="{!'Continue with ' + v.service}" onclick="" />
+			</aura:if>
+			<aura:if isTrue="{!v.status == 'Pending Applicant Action-Notarize ID Form'}">
+                <lightning:button class="widebuttonred" variant="brand" label="Continue" title="Provide Notarized Identification Document" onclick="{! c.handleNotaryInfo }" />
+			</aura:if>
+			<aura:if isTrue="{!v.status == 'Pending Applicant Action-Resubmit ID Documents'}">
+				<lightning:button class="widebuttonred" variant="brand" label="Continue" title="Resubmit ID Documents" onclick="{! c.handleIDResubmit }"/>
+			</aura:if>
+			<aura:if isTrue="{!v.status == 'Pending Applicant Action-Resubmit Notarized ID Form'}">
+				<lightning:button class="widebuttonred" variant="brand" label="Continue" title="Resubmit Notarized Identification Document" onclick="{! c.handleNotaryResubmit }"/>
+			</aura:if>
+
+			<aura:if isTrue="{!and(and(and(and(and(and(and(and(v.actionRequired, v.status != 'Pending Applicant Action-Notarize ID Form'), v.status != 'Pending Applicant Action-Resubmit ID Documents'), v.status != 'Pending Applicant Action-Resubmit Identification Verification Form'), v.status != 'Accepted'), !v.epicPayment), !v.gemxPayment), !v.certPayment), !v.j1Payment)}">
+				<lightning:button class="widebuttonred" variant="brand" label="Continue" title="Action is Required" onclick="{! c.handleIDResubmit }" />
+			</aura:if></p>
+
+			<aura:if isTrue="{!v.status == 'Online Notary Session Created'}">
+				<lightning:button class="widebuttonred" variant="brand" label="Continue" title="View Online Notary Session Links" onclick="{! c.handleNotarySessionLinks }"/>
+			</aura:if>
+
+		</div>
+
+	</aura:if>
+</aura:component>

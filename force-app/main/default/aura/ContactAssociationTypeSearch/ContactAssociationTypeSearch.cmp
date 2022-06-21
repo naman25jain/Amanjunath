@@ -1,0 +1,335 @@
+<!--
+ - Created by Matthew on 11/1/18.
+ -->
+
+<aura:component controller="ApplicantCommunityController" description="Contact Association Type Search"
+    implements="lightning:availableForFlowScreens,forceCommunity:availableForAllPageTypes">
+
+    <aura:attribute name="selectedSearchRecord" type="sObject" default="{}" />
+    <aura:attribute name="showAddDialog" type="Boolean" default="false" />
+    <aura:attribute name="showSubmitDialog" type="Boolean" default="false" />
+    <aura:attribute name="account" type="Object" default="{}" />
+
+    <aura:attribute name="monthOptions" type="List" default="[]" />
+    <aura:attribute name="endMonthOptions" type="List" default="[]" />
+
+    <aura:attribute name="accountId" type="String" />
+    <aura:attribute name="contactId" type="String" />
+
+    <aura:attribute name="newAssociationTypeRecord" type="Object" />
+    <aura:attribute name="newAssociationTypeFields" type="Object" />
+    <aura:attribute name="newAssociationTypeError" type="String" />
+
+    <aura:attribute name="newAccountRecord" type="Object" />
+    <aura:attribute name="newAccountFields" type="Object" />
+    <aura:attribute name="newAccountError" type="String" />
+
+    <aura:attribute name="recordNameSingularLower" type="String" />
+    <aura:attribute name="recordNamePluralLower" type="String" />
+
+    <aura:attribute name="visible" type="Boolean" default="true"
+        description="Indicates if the search control is visible." />
+    <aura:attribute name="disabled" type="Boolean" default="true"
+        description="Indicates if the search control is disabled." />
+
+    <aura:attribute name="currentAssociationTypeCount" type="Integer" default="1" />
+
+    <!-- Design Attributes -->
+    <aura:attribute name="recordNameSingular" type="String" default="School" />
+    <aura:attribute name="recordNamePlural" type="String" default="Schools" />
+    <aura:attribute name="searchRecordType" type="String" default="Medical School" />
+    <aura:attribute name="searchRecordTypeId" type="String" />
+    <aura:attribute name="submittedAccountRecordTypeId" type="String" />
+    <aura:attribute name="associationRecordType" type="String" default="Degree Medical School" />
+    <aura:attribute name="associationRecordTypeId" type="String" />
+    <aura:attribute name="maximumAssociationTypes" type="Integer" default="10" />
+    <aura:attribute name="minimumAssociationTypes" type="Integer" default="0" />
+    <aura:attribute name="searchFilter" type="String" default="Id = Id" />
+
+    <aura:attribute name="selectedAssociationRecordType" type="String"
+        description="Comes from the passthroughData from the LigthtningSearchSelectAE event." />
+
+    <aura:registerEvent name="applicantMedicalSchoolAddedAE" type="c:ApplicantMedicalSchoolAddedAE" />
+    <aura:registerEvent name="genericValidationError" type="c:GenericValidationErrorAE" />
+
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}" />
+
+    <aura:handler event="c:LightningSearchSelectAE" action="{!c.handleAccountSelectedEvent}" />
+    <aura:handler event="c:LightningSearchNew" action="{!c.handleAccountNewEvent}" />
+    <aura:handler event="c:ContactAssociationTypeDeletedAE" action="{!c.handleAssociationTypeDeletedEvent}" />
+    <aura:handler event="c:ContactAssociationTypeStateAE" action="{!c.handleAssociationTypeStateEvent}" />
+
+
+    <aura:if isTrue="{!v.visible}">
+        <div class="slds-p-around_x-small">
+            <p>Start typing to search for your {!v.recordNameSingularLower}. Click your {!v.recordNameSingularLower} to
+                select it from the search results. If you cannot find your {!v.recordNameSingularLower} in the search
+                results, click <strong class="capitalizeWord">Submit New {!v.recordNameSingularLower}</strong> to enter
+                information for your {!v.recordNameSingularLower}.</p>
+            <c:LightningSearch aura:id="accountSearch" disabled="{!v.disabled}" showNewButton="true"
+                newButtonLabel="{!'Submit New '+ v.recordNameSingular}" targetObject="Account"
+                IconName="standard:account" label="" selectedRecord="{!v.selectedSearchRecord}"
+                primaryDisplayField="Name" targetFields="BillingCity,BillingState,BillingCountry"
+                targetFieldsDetail="BillingCity,BillingState,BillingCountry"
+                SOQL_Filter="{! ' RecordType.Name = '+ '\'' + v.searchRecordType + '\' and ' + v.searchFilter}"
+                SOQL_Limit="5" selectedRecordType="{!v.searchRecordType}"
+                passthroughData="{!v.associationRecordType}" />
+        </div>
+    </aura:if>
+
+    <force:recordData aura:id="associationTypeRecordCreator" layoutType="FULL"
+        targetRecord="{!v.newAssociationTypeRecord}" targetFields="{!v.newAssociationTypeFields}"
+        targetError="{!v.newAssociationTypeError}" />
+
+    <force:recordData aura:id="accountRecordCreator" layoutType="FULL" targetRecord="{!v.newAccountRecord}"
+        targetFields="{!v.newAccountFields}" targetError="{!v.newAccountError}" />
+
+    <aura:if isTrue="{!v.showAddDialog}">
+        <div class="demo-only" style="height: 640px;">
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+                aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                            title="Close">
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Add 
+                            {!v.recordNameSingular}</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <div class="slds-grid slds-gutters">
+                            <aura:if isTrue="{!v.associationRecordType != 'Regulatory Organization'}">
+                                <aura:if isTrue="{!v.associationRecordType != 'Medical Authority'}">
+                                    <div class="slds-col slds-size_1-of-2" aura:id="formFields">
+                                        <aura:if isTrue="{!v.associationRecordType == 'Degree Medical School'}">
+                                            <lightning:input aura:id="fieldToValidate" name="degreeTitleField"
+                                                label="Title of Medical Degree"
+                                                value="{!v.newAssociationTypeFields.Degree_Title__c}" required="true"
+                                                onblur="{!c.handleInputOnBlur}" />
+                                        </aura:if>
+                                        <lightning:input aura:id="fieldToValidate" name="studentId" label="Student ID"
+                                            value="{!v.newAssociationTypeFields.Student_ID__c}"
+                                            onblur="{!c.handleInputOnBlur}" />
+                                        <!--<lightning:input aura:id="fieldToValidate" name="startDate" type="date" label="Start Date" value="{!v.newAssociationTypeFields.Start_Date__c}" required="true"/>-->
+                                        <div class="slds-grid slds-gutters">
+                                            <div class="slds-col slds-size_1-of-2">
+                                                <lightning:combobox aura:id="fieldToValidate" name="startMonth"
+                                                    label="Start Month" placeholder="Select"
+                                                    value="{!v.newAssociationTypeFields.Start_Month__c}" required="true"
+                                                    options="{!v.monthOptions}"
+                                                    onchange="{!c.handleChangeStartMonth}" />
+                                            </div>
+                                            <div class="slds-col slds-size_1-of-2">
+                                                <lightning:input aura:id="fieldToValidate" name="startYear"
+                                                    pattern="[1-9][0-9]{3}"
+                                                    messageWhenPatternMismatch="Please enter valid year as 1234"
+                                                    maxlength="4" label="Start Year"
+                                                    value="{!v.newAssociationTypeFields.Start_Year__c}" required="true"
+                                                    onblur="{!c.handleInputOnBlur}" />
+                                            </div>
+                                        </div>
+                                        <div class="slds-grid slds-gutters">
+                                            <div class="slds-col slds-size_1-of-2">
+                                                <lightning:combobox aura:id="fieldToValidate" name="endMonth"
+                                                    label="End Month" placeholder="Select"
+                                                    value="{!v.newAssociationTypeFields.End_Month__c}" required="true"
+                                                    options="{!v.monthOptions}" onchange="{!c.handleChangeEndMonth}" />
+                                            </div>
+                                            <div class="slds-col slds-size_1-of-2">
+                                                <lightning:input aura:id="fieldToValidate" name="endYear"
+                                                    pattern="[1-9][0-9]{3}"
+                                                    messageWhenPatternMismatch="Please enter valid year as 1234"
+                                                    maxlength="4" label="End Year"
+                                                    value="{!v.newAssociationTypeFields.End_Year__c}" required="true"
+                                                    onblur="{!c.handleInputOnBlur}" />
+                                            </div>
+                                        </div>
+                                        <!--<lightning:input aura:id="fieldToValidate" name="endDate" type="date" label="End Date" value="{!v.newAssociationTypeFields.End_Date__c}" required="true"/>-->
+
+                                        <aura:if isTrue="{!v.associationRecordType == 'Degree Medical School'}">
+                                            <!--<lightning:input aura:id="fieldToValidate" name="degreeDate" type="date" label="Date Degree Issued (or expected to be issued)" value="{!v.newAssociationTypeFields.Degree_Issue_Date__c}" required="true"/>-->
+                                            <div class="slds-grid slds-gutters">
+                                                <div class="slds-col slds-size_1-of-2">
+                                                    <lightning:combobox aura:id="fieldToValidate" name="degreeMonth"
+                                                        label="Degree Issue Month" placeholder="Select"
+                                                        value="{!v.newAssociationTypeFields.Degree_Issue_Month__c}"
+                                                        required="true" options="{!v.monthOptions}"
+                                                        onchange="{!c.handleChangeDegreeMonth}" />
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2">
+                                                    <lightning:input aura:id="fieldToValidate" name="degreeYear"
+                                                        pattern="[1-9][0-9]{3}"
+                                                        messageWhenPatternMismatch="Please enter valid year as 1234"
+                                                        maxlength="4" label="Degree Issue Year"
+                                                        value="{!v.newAssociationTypeFields.Degree_Issue_Year__c}"
+                                                        required="true" onblur="{!c.handleInputOnBlur}" />
+                                                </div>
+                                            </div>
+                                        </aura:if>
+                                    </div>
+                                </aura:if>
+                            </aura:if>
+                            <div class="slds-col slds-size_2-of-2">
+                                <p class="slds-p-top_small slds-p-bottom_small">
+                                    Verify that the {!v.recordNameSingularLower} listed below is the authority you want to add.
+                                </p>
+                                <p class="slds-p-top_small slds-p-bottom_small">
+                                    <b>{!v.account.Name}</b><br />
+                                    <!--                                    {!v.account.BillingCity}<br/>
+                                    {!v.account.BillingState}<br/>
+                                    {!v.account.BillingCountry}-->
+
+                                    <lightning:formattedAddress street="{!v.account.BillingStreet}"
+                                        city="{!v.account.BillingCity}" province="{!v.account.BillingState}"
+                                        country="{!v.account.BillingCountry}"
+                                        postalCode="{!v.account.BillingPostalCode}" disabled="true" />
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <lightning:button aura:id="addButton" class="slds-button slds-button_brand"
+                            onclick="{!c.handleAddOnClick}">Add</lightning:button>
+                        <!--<button aura:id="addButton" class="slds-button slds-button_brand" onclick="{!c.handleAddOnClick}">Add</button>-->
+                        <button class="slds-button slds-button_neutral"
+                            onclick="{!c.handleCancelOnClick}">Cancel</button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+    </aura:if>
+
+    <aura:if isTrue="{!v.showSubmitDialog}">
+        <div>
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+                aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open slds-p-bottom_xx-large">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                            title="Close">
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Submit New
+                            {!v.recordNameSingular}</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <div class="slds-grid slds-gutters">
+                            <div class="slds-col slds-size_1-of-2">
+                                <aura:if isTrue="{!v.associationRecordType != 'Regulatory Organization'}">
+                                    <aura:if isTrue="{!v.associationRecordType != 'Medical Authority'}">
+                                        <lightning:input aura:id="fieldToValidate" name="newSchoolName"
+                                            label="Official Name of Medical School" value="{!v.newAccountFields.Name}"
+                                            required="true" onblur="{!c.handleInputOnBlur}" />
+                                        <lightning:input aura:id="fieldToValidate" name="universityName"
+                                            label="University Name" value="{!v.newAccountFields.University_Name__c}"
+                                            onblur="{!c.handleInputOnBlur}" />
+                                    </aura:if>
+                                </aura:if>
+                                <aura:if isTrue="{!v.associationRecordType == 'Regulatory Organization'}">
+                                    <lightning:input aura:id="fieldToValidate" name="newOrganizationName"
+                                        label="Name of Organization" value="{!v.newAccountFields.Name}" required="true"
+                                        onblur="{!c.handleInputOnBlur}" />
+                                </aura:if>
+                                <aura:if isTrue="{!v.associationRecordType == 'Medical Authority'}">
+                                    <lightning:input aura:id="fieldToValidate" name="newAuthorityName"
+                                        label="Name of Regulatory Authority" value="{!v.newAccountFields.Name}"
+                                        required="true" onblur="{!c.handleInputOnBlur}" />
+                                </aura:if>
+
+                                <aura:if isTrue="{!v.associationRecordType != 'Regulatory Organization'}">
+                                    <aura:if isTrue="{!v.associationRecordType != 'Medical Authority'}">
+                                        <aura:if isTrue="{!v.associationRecordType == 'Degree Medical School'}">
+                                            <lightning:input aura:id="fieldToValidate" name="degreeTitleField"
+                                                label="Title of Medical Degree"
+                                                value="{!v.newAssociationTypeFields.Degree_Title__c}" required="true"
+                                                onblur="{!c.handleInputOnBlur}" />
+                                        </aura:if>
+                                        <lightning:input aura:id="fieldToValidate" name="studentId" label="Student ID"
+                                            value="{!v.newAssociationTypeFields.Student_ID__c}"
+                                            onblur="{!c.handleInputOnBlur}" />
+                                        <!--<lightning:input aura:id="fieldToValidate" name="startDate" type="date" label="Start Date" value="{!v.newAssociationTypeFields.Start_Date__c}" required="true"/>-->
+                                        <div class="slds-grid slds-gutters">
+                                            <div class="slds-col slds-size_1-of-2">
+                                                <lightning:combobox aura:id="fieldToValidate" name="startMonth"
+                                                    label="Start Month" placeholder="Select"
+                                                    value="{!v.newAssociationTypeFields.Start_Month__c}" required="true"
+                                                    options="{!v.monthOptions}"
+                                                    onchange="{!c.handleChangeStartMonth}" />
+                                            </div>
+                                            <div class="slds-col slds-size_1-of-2">
+                                                <lightning:input aura:id="fieldToValidate" name="startYear"
+                                                    pattern="[1-9][0-9]{3}"
+                                                    messageWhenPatternMismatch="Please enter valid year as 1234"
+                                                    maxlength="4" label="Start Year"
+                                                    value="{!v.newAssociationTypeFields.Start_Year__c}" required="true"
+                                                    onblur="{!c.handleInputOnBlur}" />
+                                            </div>
+                                        </div>
+                                        <!--<lightning:input aura:id="fieldToValidate" name="endDate" type="date" label="End Date" value="{!v.newAssociationTypeFields.End_Date__c}" required="true"/>-->
+                                        <div class="slds-grid slds-gutters">
+                                            <div class="slds-col slds-size_1-of-2">
+                                                <lightning:combobox aura:id="fieldToValidate" name="endMonth"
+                                                    label="End Month" placeholder="Select"
+                                                    value="{!v.newAssociationTypeFields.End_Month__c}" required="true"
+                                                    options="{!v.monthOptions}" onchange="{!c.handleChangeEndMonth}" />
+                                            </div>
+                                            <div class="slds-col slds-size_1-of-2">
+                                                <lightning:input aura:id="fieldToValidate" name="endYear"
+                                                    pattern="[1-9][0-9]{3}"
+                                                    messageWhenPatternMismatch="Please enter valid year as 1234"
+                                                    maxlength="4" label="End Year"
+                                                    value="{!v.newAssociationTypeFields.End_Year__c}" required="true"
+                                                    onblur="{!c.handleInputOnBlur}" />
+                                            </div>
+                                        </div>
+
+                                        <aura:if isTrue="{!v.associationRecordType == 'Degree Medical School'}">
+                                            <!--<lightning:input aura:id="fieldToValidate" name="degreeDate" type="date" label="Date Degree Issued (or expected to be issued)" value="{!v.newAssociationTypeFields.Degree_Issue_Date__c}" required="true"/>-->
+                                            <div class="slds-grid slds-gutters">
+                                                <div class="slds-col slds-size_1-of-2">
+                                                    <lightning:combobox aura:id="fieldToValidate" name="degreeMonth"
+                                                        label="Degree Issue Month" placeholder="Select"
+                                                        value="{!v.newAssociationTypeFields.Degree_Issue_Month__c}"
+                                                        required="true" options="{!v.monthOptions}"
+                                                        onchange="{!c.handleChangeDegreeMonth}" />
+                                                </div>
+                                                <div class="slds-col slds-size_1-of-2">
+                                                    <lightning:input aura:id="fieldToValidate" name="degreeYear"
+                                                        pattern="[1-9][0-9]{3}"
+                                                        messageWhenPatternMismatch="Please enter valid year as 1234"
+                                                        maxlength="4" label="Degree Issue Year"
+                                                        value="{!v.newAssociationTypeFields.Degree_Issue_Year__c}"
+                                                        required="true" onblur="{!c.handleInputOnBlur}" />
+                                                </div>
+                                            </div>
+                                        </aura:if>
+                                    </aura:if>
+                                </aura:if>
+                            </div>
+                            <div class="slds-col slds-size_1-of-2">
+                                <c:DynamicAddress aura:id="submitAddress" street="{!v.newAccountFields.BillingStreet}"
+                                    city="{!v.newAccountFields.BillingCity}"
+                                    state="{!v.newAccountFields.BillingStateCode}"
+                                    postalCode="{!v.newAccountFields.BillingPostalCode}"
+                                    country="{!v.newAccountFields.BillingCountryCode}" />
+
+                            </div>
+                        </div>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <!--<button aura:id="submitButton" class="slds-button slds-button_brand" onclick="{!c.handleSubmitOnClick}">Submit</button>-->
+
+                        <lightning:button aura:id="submitButton" class="slds-button slds-button_brand"
+                            onclick="{!c.handleSubmitOnClick}">Submit</lightning:button>
+                        <button class="slds-button slds-button_neutral"
+                            onclick="{!c.handleCancelOnClick}">Cancel</button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+    </aura:if>
+
+</aura:component>

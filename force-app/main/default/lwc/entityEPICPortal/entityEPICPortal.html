@@ -1,0 +1,33 @@
+<template>
+    <template if:false={restrictedAccess}>
+        <div class="formMargin">    
+            <template if:true={record}>
+                <lightning-tabset> 
+                    <lightning-tab label="Home" value="Home" onactive={tabselectCoordinator}> 
+                        <div> 
+                            <c-entity-E-P-I-C-Portal-Home></c-entity-E-P-I-C-Portal-Home>
+                        </div> 
+                    </lightning-tab> 
+                    <lightning-tab label="Reports" value="Reports" onactive={tabselectCoordinator}>
+                        <div>
+                            <c-entity-E-P-I-C-Reports parent-entity={currentEntity}></c-entity-E-P-I-C-Reports>
+                        </div> 
+                    </lightning-tab>
+                    <template if:true={showNotificationsTab}> 
+                        <lightning-tab label="Notifications" value="Notifications" onactive={tabselectCoordinator}>
+                            <div>
+                                <c-entity-E-P-I-C-Portal-Notification parent-entity={currentEntity}></c-entity-E-P-I-C-Portal-Notification>
+                            </div> 
+                        </lightning-tab>
+                    </template>
+                </lightning-tabset> 
+            </template>
+        </div>   
+    </template>
+    <template if:true={restrictedAccess}>
+        <div class="padding">
+            <lightning-formatted-rich-text class='errormsg' value={errorMessages}> 
+            </lightning-formatted-rich-text>
+        </div>
+    </template>
+</template>

@@ -1,0 +1,5 @@
+<design:component>
+	<design:attribute name="caseRecordType" label="Case Record Type Name" />
+	<design:attribute name="headingLabel" label="Heading Label" />
+	<design:attribute name="caseService" label="Case Service" />
+</design:component>

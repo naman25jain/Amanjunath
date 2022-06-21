@@ -1,0 +1,33 @@
+<template>
+    <template if:true={showDisclosureScreen}>
+    <div class="padding">
+        <c-g-display-content unique-content-value="ERAS_Token_Req_Disclosure"></c-g-display-content>
+        <div class="checkboxText">
+            <lightning-input type="checkbox" class="checkbox-float" value={acceptDisclosure} onchange={handleCheckBoxChange}></lightning-input>
+            <c-g-display-content unique-content-value="ERAS_Accept_Disclosure"></c-g-display-content>
+        </div>
+    </div>
+        <template if:true={showError}>
+            <div class="padding">
+                <lightning-formatted-rich-text class='errormsg' value={errorMessagesText}></lightning-formatted-rich-text>
+            </div>
+        </template>
+        <lightning-button variant="brand" label="Back" title="Back" onclick={handleBackClick} class="slds-m-left_x-small"></lightning-button>   
+        <lightning-button variant="brand" label="Next" title="Next" onclick={handleNextClick} class="slds-m-left_x-small"></lightning-button>       
+        </template>
+        <template if:true={showNextScreen}>
+            <c-eras-token-request-contact-info get-id-from-parent={contactId} onprevevent={handleBackscreen} onnextevent={handleNextscreen}>
+            </c-eras-token-request-contact-info>
+        </template> 
+        <template if:true={showBackScreen}>
+            <c-eras-Token-Request></c-eras-Token-Request>
+        </template>      
+        <template if:true={degreeSchoolScreen}>
+            <c-eras-degree-medical-school-confirmation object-id={objectId} object-type={objectType} onprevevent={showContactInfoScreen} onnextevent={showSummaryScreen}>
+            </c-eras-degree-medical-school-confirmation>
+        </template> 
+        <template if:true={showdegSummaryScreen}>
+            <c-eras-summary-screen onprevevent={handleNextscreen}>
+            </c-eras-summary-screen>
+        </template>   
+</template>

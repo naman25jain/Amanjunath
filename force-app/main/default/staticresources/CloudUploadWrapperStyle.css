@@ -1,0 +1,43 @@
+.documentViewerModal .image {
+    border: none;
+    pointer-events: none;
+}
+
+.documentViewerModal .full-screen {
+    border: none;
+    height: 60vh;
+}
+
+.documentViewerModal .iframeWrapper {
+    z-index: 2;
+    height: 225px;
+    width: 300px;
+    margin: 0 auto;
+    cursor: pointer;
+}
+
+.documentViewerModal .iframeWrapper .image {
+    height: 100%!important;
+}
+
+.documentViewerModal .contentWrapper,
+.documentViewerModal .contentImageWrapper {
+    text-align: center;
+    width: 100%;
+    height: 100%;
+}
+
+.documentViewerModal .contentImageWrapper {
+    overflow: hidden;
+}
+
+.documentViewerModal .contentImageWrapper img {
+    height: 100%;
+}
+
+.documentViewerModal .slds-modal__container,
+.thumbnailModal .slds-modal__container{
+    max-width: 90rem!important;
+    width: 90%!important;
+    margin: 0 auto;
+}

@@ -1,0 +1,30 @@
+<template>
+    <div>
+        <template if:false={displaySpinner}>
+            <lightning-card title="Generate Authorized Signature List">    
+                <div class="slds-p-around--large">
+                    <lightning-combobox
+                        name="languageSelection"
+                        label="Please select a language"
+                        value={selectedLanguage}
+                        options={languageOptions}
+                        onchange={handleLanguageChange} 
+                        variant="standard"></lightning-combobox>
+                        <br/>
+                        <lightning-button 
+                            variant="brand" 
+                            label="Submit" 
+                            title="Submit" 
+                            onclick={confirmDocumentGeneration}></lightning-button>
+                    </div>
+            </lightning-card>  
+        </template>
+
+        <template if:true={displaySpinner}>
+            <lightning-spinner
+                alternative-text="Loading..." variant="brand">
+            </lightning-spinner>
+        </template>
+    </div>
+    
+</template>

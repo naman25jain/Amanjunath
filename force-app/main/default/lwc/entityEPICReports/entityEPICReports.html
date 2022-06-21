@@ -1,0 +1,64 @@
+<template>
+    <!--Spinner-->
+    <template if:true={spinner}>
+        <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+    </template>
+    <div class="formMargin">
+        <div class="secContainer">
+            <!-- The export button -->
+            <div class="blocContainer" style="float:right">
+                <template if:true={isExptDataAvailable}>
+                    <a target="_self" class="slds-button slds-button_brand" download="EPICPortalReportsData.csv" href={hrefdata}
+                onclick={exportToCSV}>Export EPIC Reports</a><br /><br />
+                </template>
+            </div>                      
+            
+            <div class="blocContainer">
+                <div class="bloc1"><h1>{reportStatus} Reports</h1></div>
+                <!-- Combobox to toggle New & Archived Reports -->
+                <div class="bloc2 slds-p-bottom_small">                      
+                    <lightning-combobox
+                        name="reportTypeSelection"
+                        label="reportStatus"
+                        value={reportStatus}
+                        options={options}
+                        onchange={handleReportStatusChange} 
+                        variant="label-hidden" class="comboBoxClass"></lightning-combobox>
+                </div>       
+            </div>
+
+            
+                <template if:true={isActiveReqFound}>
+                    <!-- Pagination & search components -->
+                    <c-paginator class="paginatorAR" records={epicReports} total-records={epicReports.length}
+                                 show-search-box="true" onpaginatorchange={handleARPaginatorChange} 
+                                 attributes-to-avoid={attributesList}>
+                    </c-paginator> <br> </br>
+                    <!--Datatable for EPIC Cases with New Status-->
+                    <template if:true={isListOfUnArchivedRecords}>
+                        <lightning-datatable key-field="id" columns={col} data={recordsToDisplay} 
+                                            hide-checkbox-column sorted-direction={sortDirection} sorted-by={sortedBy}
+                                            onsort={onHandleSort}  onrowaction={handleRowActions}>
+                        </lightning-datatable> 
+                    </template>
+                    <!--Datatable for EPIC Cases with Archived Status-->
+                    <template if:false={isListOfUnArchivedRecords}>
+                        <lightning-datatable key-field="id" columns={archivedReportCols} data={recordsToDisplay} 
+                                            hide-checkbox-column sorted-direction={sortDirection} sorted-by={sortedBy}
+                                            onsort={onHandleSort}  onrowaction={handleRowActions}>
+                        </lightning-datatable> 
+                    </template>     
+                </template>
+                <!-- Message when no EPIC Cases found -->
+                <template if:false={isActiveReqFound}>
+                    <div class="noRecordsSection">--No Records Found--</div>
+                </template>
+        
+        </div> 
+    </div>
+    <c-modal header={header} onclosedialog={handleCloseModal}>
+        <span slot="content">
+            <c-document-viewer ondocviewer_ready={handleShowDocument}  enable-redaction="false" enable-annotation="false" enable-saving="false"></c-document-viewer>
+        </span>
+    </c-modal>
+</template>

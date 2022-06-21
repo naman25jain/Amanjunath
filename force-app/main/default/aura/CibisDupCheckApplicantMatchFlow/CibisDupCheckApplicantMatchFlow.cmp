@@ -1,0 +1,116 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,lightning:availableForFlowScreens"
+ controller="ApplicantCommunityController" extends="c:CommunityBase" description="Cibis Duplicate Candidate Flow" access="global">
+<aura:attribute name="disabled" type="Boolean" default="false"/>
+<aura:attribute name="pageReady" type="Boolean" default="false"/>
+<aura:attribute name="contactId" type="String" description="The final contact id to pass back to the flow via design attribute."/>
+<aura:attribute name="caseId" type="String" />
+<aura:attribute name="case" type="Case" />
+<aura:attribute name="existingContact" type="Contact"/>
+<aura:attribute name="chosenContact" type="Contact" />
+<aura:attribute name="showExistingContact" type="Boolean" default="true" />
+<aura:attribute name="showChosenContact" type="Boolean" default="false" />
+<aura:attribute name="hasDuplicates" type="Boolean" default="false" />
+<aura:attribute name="flowHeaderText" type="String" default="Checking For Cibis Duplicates…"/>
+<aura:attribute name="dupesFoundHeaderText" type="String" default="Potential Cibis Duplicate Candidate Record(s) Found"/>
+<aura:attribute name="dupesNotFoundHeaderText" type="String" default="No Potential Cibis Candidate Duplicates Found"/>
+<aura:handler name="init" value="{! this }" action="{! c.init }"/>
+<aura:handler event="force:refreshView" action="{!c.init}"/>
+<!-- handler for when a potential duplicate match is chosen -->
+<aura:handler event="c:ApplicantMatchAE" action="{!c.handleCandidateChosenEvent}"/>
+<aura:if isTrue="{!!v.pageReady}"><lightning:spinner variant="brand" alternativeText="Loading" size="large"/></aura:if>
+<c:FlowScreenHeader title="{!v.flowHeaderText}"/>
+<div class="slds-p-bottom_small">
+ <aura:if isTrue="{!v.hasDuplicates}">
+     One or more potential Cibis duplicate Candidate records have been found. 
+     Review the list of potential Cibis duplicate Candidate to determine if there is a match.
+     <aura:set attribute="else">
+         There were no potential Cibis Candidate duplicates found. Click Next to continue.
+     </aura:set>
+ </aura:if>
+</div>
+<aura:if isTrue="{!v.showChosenContact}">
+ <div class="slds-box">
+     <lightning:card  title="{!v.chosenContact.Cibis_First_Name__c + ' ' + v.chosenContact.Cibis_Last_Name__c}" iconName="standard:contact" footer="Click Next to proceed with the selected Cibis Duplicate match. This will close the case and notify the Candidate that they already possess an account with ECFMG. If you wish to reevaluate the list of potential duplicates, or cancel your match selection, click the 'X' on the selected match displayed above.">
+         <aura:set attribute="actions">
+             <lightning:buttonIcon iconName="utility:close" variant="border-filled" alternativeText="Reset" onclick="{!c.resetOnClick}"/>
+         </aura:set>
+         <div class="slds-grid slds-gutters slds-wrap slds-p-around_medium">
+             <div class="slds-col slds-size_1-of-2">
+                 Last Name:
+             </div>
+             <div class="slds-col slds-size_1-of-2">
+                 {!v.chosenContact.Cibis_Last_Name__c}
+             </div>
+             <div class="slds-col slds-size_1-of-2">
+                 Rest of Name:
+             </div>
+             <div class="slds-col slds-size_1-of-2">
+                 {!v.chosenContact.Cibis_First_Name__c}
+             </div>
+             <div class="slds-col slds-size_1-of-2">
+                 Birth Date:
+             </div>
+             <div class="slds-col slds-size_1-of-2">
+                 {!v.chosenContact.CibisBirthDate__c}
+             </div>
+             <div class="slds-col slds-size_1-of-2">
+                 Gender:
+             </div>
+             <div class="slds-col slds-size_1-of-2">
+                 {!v.chosenContact.CIBIS_GENDER_CODE__c}
+             </div>
+             <div class="slds-col slds-size_1-of-2">
+                 Medschool Code:
+             </div>
+             <div class="slds-col slds-size_1-of-2">
+                 {!v.chosenContact.CibisMedicalSchoolCode__c}
+             </div>             
+             <div class="slds-col slds-size_1-of-2">
+                Usmle Id:
+            </div>
+            <div class="slds-col slds-size_1-of-2">
+                {!v.chosenContact.CIBIS_USMLE_ID__c}
+            </div>
+         </div>
+     </lightning:card>
+ </div>
+</aura:if>
+<aura:if isTrue="{!v.showExistingContact}">
+ <div class="slds-box">
+     <lightning:card  title="{!v.existingContact.FirstName + ' ' + v.existingContact.LastName}" iconName="standard:contact" footer="Click Next to proceed without selecting a match. This will accept the identity documentation and progress the case to the next stage.">
+         <div class="slds-grid slds-gutters slds-wrap slds-p-around_medium">
+             <div class="slds-col slds-size_1-of-2">
+                 Last Name:
+             </div>
+             <div class="slds-col slds-size_1-of-2">
+                 {!v.existingContact.LastName}
+             </div>
+                 <div class="slds-col slds-size_1-of-2">
+                 Rest of Name:
+             </div>
+             <div class="slds-col slds-size_1-of-2">
+                 {!v.existingContact.FirstName}
+             </div>
+             <div class="slds-col slds-size_1-of-2">
+                 Birth Date:
+             </div>
+             <div class="slds-col slds-size_1-of-2">
+                 {!v.existingContact.Birthdate}
+             </div>
+             <div class="slds-col slds-size_1-of-2">
+                 Gender:
+             </div>
+             <div class="slds-col slds-size_1-of-2">
+                 {!v.existingContact.Gender__c}
+             </div>
+             <div class="slds-col slds-size_1-of-2">
+                 Medschool Code:
+             </div>
+             <div class="slds-col slds-size_1-of-2">
+                 {!v.existingContact.Medschool_Code__c}
+             </div>
+         </div>
+     </lightning:card>
+ </div>
+</aura:if>
+</aura:component>

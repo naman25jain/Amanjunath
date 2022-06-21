@@ -1,0 +1,13 @@
+<!--
+ - Created by Matthew on 11/8/18.
+ -->
+<design:component label="Applicant Medical Schools Search">
+
+    <design:attribute name="searchRecordType" label="Account Record Type Name" description="The name of the school (account) record type to filter searches on, e.g. Medical School."/>
+    <design:attribute name="searchRecordTypeId" label="Account Record Type ID" description="The ID of the school (account) record type to filter searches on, e.g. Medical School."/>
+    <design:attribute name="associationRecordType" label="Association Type Record Type Name" description="The name of the association type record type for which we are adding a school, e.g. Degree Medical School or Medical School." />
+    <design:attribute name="associationRecordTypeId" label="Association Type Record Type ID" description="The ID of the association type record type for which we are adding a school, e.g. Degree Medical School or Medical School." />
+    <design:attribute name="maximumSchools" label="Maximum Schools" description="The maximum number of schools allowed to be added to the list." />
+    <design:attribute name="minimumSchools" label="Minimum Schools" description="The minimum number of schools requested to be added to the list." />
+
+</design:component>

@@ -1,0 +1,96 @@
+<aura:component
+        implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,forceCommunity:availableForAllPageTypes"
+        access="global"
+        controller="ApplicantMyProfileController"
+        extends="c:CommunityBase">
+<!-- 
+attributes: 
+1)	
+
+Notes:
+Page starts in edit mode.
+Fields semi-transparent in Lucidchart are read-only.
+Save button saves all updates.
+Copy functionality from Biographics - all same validations should apply.
+-->
+    <aura:attribute name="pageReady" type="Boolean" default="false" />
+    <!--<aura:attribute name="readOnlyMode" type="Boolean" default="false" />-->
+    <aura:attribute name="contact" type="Object" default="{}" />
+
+    <aura:attribute name="passportCountries" type="List" />
+    <aura:attribute name="birthCountries" type="List" />
+    <aura:attribute name="citizenshipAtBirthCountries" type="List" />
+    <aura:attribute name="currentCitizenshipCountries" type="List" />
+    <aura:attribute name="currentCitizenshipSelectedCountries" type="List" />
+    <aura:attribute name="citizenshipUponEnteringMedicalSchoolCountries" type="List" />
+
+    <aura:attribute name="showSaveSpinner" type="Boolean" default="false" />
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+    <aura:if isTrue="{!!v.pageReady}">
+        <div style="min-height: 250px;">
+            <lightning:spinner alternativeText="Loading" size="medium"/>
+        </div>
+    </aura:if>
+
+    <aura:if isTrue="{!v.pageReady}">
+
+        <div class="slds-is-relative">
+
+            <aura:if isTrue="{!v.showSaveSpinner}">
+                <lightning:spinner alternativeText="Saving" size="medium" />
+            </aura:if>
+
+            <form class="slds-form">
+
+                <c:CommunitySummarySectionHeader hideEditButton="true" title="Citizenship" />
+
+                <div class="slds-form-element slds-form-element_horizontal">
+                    <lightning:combobox aura:id="fieldToValidate" name="birthCountry" label="Birth Country" options="{! v.birthCountries }" value="{!v.contact.Birth_Country__c}" required="true" />
+                </div>
+                <div class="slds-form-element slds-form-element_horizontal">
+                    <lightning:input type="text" name="birthCity" label="Birth City"  value="{!v.contact.Birth_City__c}"/>
+                </div>
+                <div class="slds-form-element slds-form-element_horizontal">
+                    <lightning:input type="text" name="birthState" label="Birth State"  value="{!v.contact.Birth_State_Province__c}"/>
+                </div>
+                <div class="slds-form-element slds-form-element_horizontal">
+                    <lightning:combobox aura:id="fieldToValidate" name="citizenshipAtBirth" label="Citizenship At Birth" options="{! v.citizenshipAtBirthCountries }" value="{!v.contact.Citizenship_at_Birth__c}" required="true" />
+                </div>
+                <div class="slds-form-element slds-form-element_horizontal">
+                    <lightning:combobox name="citizenshipUponEnteringMedicalSchool" label="Citizenship Upon Entering Medical School" options="{! v.citizenshipUponEnteringMedicalSchoolCountries }" value="{!v.contact.Citizenship_Upon_Entering_Medical_School__c}"/>
+                </div>
+                <div class="slds-form-element slds-form-element_horizontal">
+                    <lightning:dualListbox aura:id="fieldToValidate" name="currentCitizenship" label="Current Citizenship" sourceLabel="Available Countries" selectedLabel="Selected Countries" options="{! v.currentCitizenshipCountries }" value="{!v.currentCitizenshipSelectedCountries}" required="true" fieldLevelHelp="Select all that apply." />
+                </div>
+
+                <c:CommunitySummarySectionHeader hideEditButton="true" title="Passport" />
+
+                <div class="slds-form-element slds-form-element_horizontal">
+                    <lightning:combobox name="passportCountry" label="Passport Country"  options="{! v.passportCountries }" value="{!v.contact.Passport_Country__c}" disabled="true" />
+                </div>
+                <div class="slds-form-element slds-form-element_horizontal">
+                    <lightning:input type="text" name="passportNumber" label="Passport Number" value="{!v.contact.Passport_Number__c}" disabled="true" />
+                </div>
+                <div class="slds-form-element slds-form-element_horizontal">
+                    <lightning:input type="date" name="passportIssueDate" label="Passport Issue Date" value="{!v.contact.Passport_Issue_Date__c}" disabled="true" />
+                </div>
+                <div class="slds-form-element slds-form-element_horizontal">
+                    <lightning:input type="date" name="passportExpirationDate" label="Passport Expiration Date" value="{!v.contact.Passport_Expiration__c}" disabled="true" />
+                </div>
+
+                <div class="slds-form-element slds-form-element_horizontal actions">
+                    <label class="slds-form-element__label" for="form-element-01">&nbsp;</label>
+                    <div class="slds-form-element__control">
+                        <lightning:button aura:id="cancelButton" variant="brand" name="cancel" label="Cancel" onclick="{!c.handleCancelOnClick}" />&nbsp;&nbsp;
+                        <lightning:button aura:id="saveButton" label="Save" variant="brand" onclick="{!c.handleSaveOnClick}" />
+                    </div>
+                </div>
+            </form>
+
+        </div>
+
+    </aura:if>
+
+</aura:component>

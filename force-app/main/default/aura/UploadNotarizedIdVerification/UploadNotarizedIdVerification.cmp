@@ -1,0 +1,64 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,forceCommunity:availableForAllPageTypes" access="global" controller="CommunityIdentityVerificationController" extends="c:CommunityBase">
+
+	<aura:attribute name="contactId" type="String" />
+    <aura:attribute name="notarizedFormId" type="String" />
+    <aura:attribute name="service" type="String" />
+	<aura:attribute name="showCompleteModal" type="Boolean" default="false" />
+	<aura:attribute name="caseNumber" type="String" />
+	<aura:attribute name="caseId" type="String" />
+	<aura:attribute name="docBaseURL" type="String" />
+
+	<aura:attribute name="payloadNotarizedId" type="String" />
+	<aura:attribute name="notarizedIdDone" type="String" default="No" />
+	<aura:attribute name="maxsize" type="Integer" default="10" />
+		
+
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+	<div class="slds-grid slds-gutters">
+		<div class="slds-col slds-size_1-of-1"><span>
+			<h2>Provide Notarized Identification Form</h2>
+			<p>Your personalized Intealth Identification Form has been created. Please <a href="javascript:void(0)" target="_blank" onclick="{!c.handleFileViewer}">view your identification form</a> and ensure all information is correct. If you are unable to view the document or it contains incorrect information, please contact us.</p>
+			<c:gDisplayContent uniqueContentValue="UploadNotarizedIdVerification_Content" />
+			<c:cloudDocumentUploadWrapper aura:id="notarized"
+								payLoad="{!v.payloadNotarizedId}" maxAllowedFileSize="{!v.maxsize}"
+								acceptedFileFormats=".jpeg,.pdf,.tiff" enableAnnotation="false"
+								enableRedaction="false"
+								onuploadcompleted="{!c.handleUploadFinishedNotarizedId}" />		
+			<c:gDisplayContent uniqueContentValue="upload_msg_jpeg_tiff_pdf"></c:gDisplayContent>
+			<lightning:button disabled="{!v.notarizedIdDone == 'No'}" variant="brand" name="save" label="Submit Document" onclick="{!c.handleSave}" />
+			&nbsp;
+			<lightning:button variant="brand" name="next" label="Cancel" onclick="{!c.cancelAsset}" />
+		
+		</span></div>
+	</div>
+	
+	<aura:if isTrue="{!v.showCompleteModal}">
+		<div class="demo-only" style="height: 640px;">
+			<section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+				<div class="slds-modal__container">
+					<header class="slds-modal__header">
+						<h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Notarized Identification Form Submitted!</h2>
+					</header>
+					<div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+						<p class="slds-p-bottom_small">
+							<aura:if isTrue="{!v.caseNumber == null}">
+								You have successfully submitted your identification documentation. ECFMG will update the status of your case as soon as your request has been processed.
+							</aura:if>
+							<aura:if isTrue="{!v.caseNumber != null}">
+								You have successfully submitted your notarized identification form for review. For reference, your case number for this request is {!v.caseNumber}. ECFMG will update the status of your case as soon as your request has been processed.
+							</aura:if>
+						</p>
+						<p class="slds-p-bottom_small">
+							 Please contact us if you have any questions.
+						</p>
+					</div>
+					<footer class="slds-modal__footer">
+						<lightning:button aura:id="okButton" class="slds-button slds-button_brand" onclick="{!c.redirectHome}">Ok</lightning:button>
+					</footer>
+				</div>
+			</section>
+			<div class="slds-backdrop slds-backdrop_open"></div>
+		</div>
+	</aura:if>
+</aura:component>

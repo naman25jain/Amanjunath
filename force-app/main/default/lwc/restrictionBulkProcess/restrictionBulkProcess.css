@@ -1,0 +1,14 @@
+.dummy{
+   display: block; 
+}
+
+.scrollable {
+   overflow-y:auto;
+}
+
+.fixed_header{
+   position: absolute;
+   z-index: 1000;
+   font-size: 1rem;
+   width: 100%;
+}

@@ -1,0 +1,8 @@
+<!--
+ - Created by Matthew on 11/9/18.
+ -->
+<aura:event type="APPLICATION" description="Used to notify subscribing component(s) not in the component hierarchy that a record was selected.">
+    <aura:attribute name="LightningSearchRecord" type="sObject"/>
+    <aura:attribute name="LightningSearchRecordLabel" type="String"/>
+    <aura:attribute name="Data" type="Object" description="Use this to pass any data needed by subscriber(s)."/>
+</aura:event>

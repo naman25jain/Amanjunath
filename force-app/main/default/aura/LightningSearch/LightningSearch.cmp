@@ -1,0 +1,116 @@
+<aura:component controller="LightningSearchController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global">
+	<aura:attribute name="selectedRecordLabel" type="String" default="" />
+    <aura:attribute name="selectedRecord" type="sObject" default="{}" />
+    <aura:attribute name="primaryDisplayField" type="String" default="" />
+    <aura:attribute name="SOQL_Filter" type="String" default="" />
+    <aura:attribute name="SOQL_Limit" type="String" default="5" />
+    <aura:attribute name="targetFields" type="String" default=""/>
+    <aura:attribute name="targetFieldsDetail" type="String" default=""/>
+    <aura:attribute name="overLimit" type="Boolean" default="false" />
+    <aura:attribute name="searchResults" type="List" />
+    <aura:attribute name="searchInput" type="String"/>
+    <aura:attribute name="targetObject" type="String" default=""/>
+    <aura:attribute name="IconName" type="String" default=""/>
+    <aura:attribute name="label" type="String" default=""/>
+    <aura:attribute name="Message" type="String" default=""/>
+    <aura:attribute name="selectedRecordType" type="String" default=""/>
+    
+
+    <aura:attribute name="passthroughData" type="Object" default="" description="Use this as a data passthrough to be published via the app event."/>
+    <aura:attribute name="disabled" type="Boolean" default="false"/>
+
+    <aura:attribute name="showNewButton" type="Boolean" default="true"/>
+    <aura:attribute name="newButtonLabel" type="String" default="Submit New School"/>
+
+    <aura:attribute name="showFullModal" type="Boolean" default="false" />
+    <!--<aura:handler name="LightningSearchResultsSelect" event="c:LightningSearchSelect" action="{!c.handleRecordSelect}"/>-->
+
+    <aura:method  name="clear" action="{!c.clear}" access="public" description="Clears out the search field of text and pill."/>
+
+    <aura:handler name="lightningSearchSelectCE" event="c:LightningSearchSelectCE" action="{!c.handleRecordSelect}"/>
+
+    <aura:registerEvent name="lightningSearchNew" type="c.LightningSearchNew"/>
+
+
+    <div onmouseleave="{!c.onblur}" aura:id="searchRes" class="slds-form-element slds-lookup slds-is-close" data-select="single">
+        <label class="slds-form-element__label" for="lookup-348">{!v.label}</label>
+        <div class="slds-form-element__control">
+            
+            <div class="slds-input-has-icon slds-input-has-icon--right">
+              <lightning:icon aura:id="searchIcon" class="slds-input__icon slds-show" iconName="utility:search" size="x-small" alternativeText="search"/> 
+                <!-- Show pill for the record that is selected -->
+                <div aura:id="lookup-pill" class="slds-pill-container slds-hide">
+                    <span class="slds-listbox__option-text slds-listbox__option-text_entity"></span>
+                     <lightning:pill class="pillSize" label="{!v.selectedRecordLabel}" name="{!v.selectedRecord.Id}" onremove="{!c.clear}">
+                          <aura:set attribute="media">
+                             <lightning:icon iconName="{!v.IconName}" size="x-small" alternativeText="{!v.IconName}"/>
+                          </aura:set>
+                      </lightning:pill>
+                </div>
+                <!-- Show pill for the record that is selected -->
+                <!-- Perform search on key press -->
+                <div aura:id="lookupField" class="slds-show">
+                    <span class="slds-icon_container  slds-combobox__input-entity-icon" title="record">
+                        <lightning:icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" iconName="{!v.IconName}" size="x-small" alternativeText="icon"/>
+                        <span class="slds-assistive-text"></span>
+                    </span>
+                    <ui:inputText disabled="{!v.disabled}" click="{!c.onfocus}" updateOn="keyup" keyup="{!c.keyPressController}" class="slds-lookup__search-input slds-input leftPaddingClass" value="{!v.searchInput}" placeholder="search by name, city, state, or country..."/>
+                </div>  
+                <!-- Perform search on key press --> 
+            </div>
+        </div>
+        <!-- Display results using LightningSearchResults -->  
+        <ul style="min-height:40px;margin-top:0px !important" class="slds-listbox slds-listbox_vertical slds-dropdown slds-dropdown_fluid slds-lookup__menu slds" role="listbox">
+            <lightning:spinner class="slds-hide" variant="brand" size="small" aura:id="mySpinner"/>
+            <center> {!v.Message}</center>
+            
+            <aura:iteration items="{!v.searchResults}" var="rec">
+                <c:LightningSearchResults record="{!rec}" IconName="{!v.IconName}" displayFieldAPIName="{!v.primaryDisplayField}" targetFields="{!v.targetFields}" passthroughData="{!v.passthroughData}" />
+            </aura:iteration>
+        
+       <!-- <aura:if isTrue="{!v.organisation}">
+            <aura:iteration items="{!v.searchResults}" var="rec">
+                <c:LightningSearchResults record="{!rec}" IconName="{!v.IconName}" displayFieldAPIName="{!v.primaryDisplayField}" targetFields="{!v.targetFields}" passthroughData="{!v.passthroughData}" />
+            </aura:iteration>
+        </aura:if>
+        <aura:if isTrue="{!v.medicalRegistration}">
+            <aura:iteration items="{!v.searchResults}" var="rec">
+                <c:LightningSearchResults record="{!rec}" IconName="{!v.IconName}" displayFieldAPIName="{!v.primaryDisplayField}" targetFields="{!v.targetFields}" passthroughData="{!v.passthroughData}" />
+            </aura:iteration>
+        </aura:if> -->
+            <div align="center">
+                <aura:if isTrue="{!v.showNewButton}">
+                    <lightning:button variant="brand" label="{!v.newButtonLabel}" title="Base action" onclick="{!c.handleNewButtonOnClick}"/>
+                    <!--<lightning:button variant="brand" label="{!v.newButtonLabel}" title="Base action" iconName="utility:add" iconPosition="right"/>-->
+                </aura:if>
+                <aura:if isTrue="{!v.overLimit}">
+                    <!--<div align="center" onclick="{!c.openFullModal}" style="cursor: pointer; font-weight: bold; font-style: italic;">View All Results</div>-->
+                    <lightning:button variant="brand" label="View More" title="Base action" onclick="{!c.openFullModal}" />
+                    <!--<lightning:button variant="brand" label="View More" title="Base action" onclick="{!c.openFullModal}" iconName="action:more" iconPosition="right" />-->
+                </aura:if>
+            </div>
+        </ul>
+        <!-- Display results using LightningSearchResults --> 
+    </div>
+    
+	<aura:if isTrue="{!v.showFullModal}">
+		<div>
+			<section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open slds-modal_large">
+				<div class="slds-modal__container ">
+					<header class="slds-modal__header">
+						<h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">{!v.label} Search</h2>
+					</header>
+					<div class="slds-modal__content slds-p-around_medium slds-table--header-fixed_container" id="modal-content-id-1" style="height: 350px;">
+                        <div class="slds-scrollable_y" style="height: 100%;">
+						    <c:LightningSearchDetailed IconName="{!v.IconName}" primaryDisplayField="{!v.primaryDisplayField}" SOQL_Filter="{!v.SOQL_Filter}" SOQL_Limit="50000" targetFields="{!v.targetFields}" targetFieldsDetail="{!v.targetFieldsDetail}" searchInput="{!v.searchInput}" targetObject="{!v.targetObject}" label="{!v.label}" passthroughData="{!v.passthroughData}" />
+                        </div>
+					</div>
+					<footer class="slds-modal__footer">
+						<lightning:button variant="brand" label="Cancel" onclick="{!c.closeFullModal}" />
+					</footer>
+				</div>
+			</section>
+			<div class="slds-backdrop slds-backdrop_open"></div>
+		</div>
+	</aura:if>
+</aura:component>

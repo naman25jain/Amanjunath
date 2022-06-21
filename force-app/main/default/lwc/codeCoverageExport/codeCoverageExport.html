@@ -1,0 +1,186 @@
+<template>
+    <lightning-card title="Code Coverage Utility" icon-name="standard:apex"><br />
+        <div align="center" if:true={isSpinner}>
+            <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
+        </div>
+
+        <div slot="actions">    
+            <lightning-button-group slot="actions">
+                <lightning-button label="Check See All Data Classes" icon-name="utility:search" class="slds-float_right"
+                    onclick={handleSeeAllDataClasses}></lightning-button>
+                <lightning-button label="Run All Test Classes" icon-name="utility:bundle_policy" class="slds-float_right"
+                    onclick={runTestClasses}></lightning-button>
+                <lightning-button label="Apex Test Results" icon-name="utility:contract_doc" class="slds-float_right"
+                    onclick={handleTestResult}></lightning-button>
+                <lightning-button label="Compare" icon-name="utility:calculated_insights" class="slds-float_right"
+                    onclick={compareTestData}></lightning-button>
+                <lightning-button label="Export as CSV" icon-name="utility:download" title="Code Coverage"
+                    class="slds-float_right" onclick={exportCsvFile}></lightning-button>
+            </lightning-button-group>
+        </div>
+
+        <!-- Code Coverage Modal -->
+        <div class="slds-grid slds-gutters" style="margin-left: 3%;margin-right: 2%;">
+            <div class="slds-col">
+                <span class="slds-badge"><b>Total Apex Lines In Org: <b
+                            style="color: steelblue">{orgTotalApexLines}</b></b></span>
+            </div>
+            <div class="slds-col">
+                <span class="slds-badge"><b>Total Apex Lines Covered In Org: <b
+                            style="color: steelblue">{OrgTotalCoveredLines}</b></b></span>
+            </div>
+            <div class="slds-col">
+                <span class="slds-badge"><b>Total Code Coverage In Org: <b
+                            style="color: steelblue">{OrgTotalCodeCoverage}%</b></b></span>
+            </div>
+            <div class="slds-col">
+                <lightning-input type="search" variant="label-hidden" placeholder="Enter Apex Class/Trigger Name"
+                    onchange={handleSearch}>
+                </lightning-input>
+            </div>
+        </div><br />
+        
+        <template if:true={data}>
+            <div style="height: 600px;">
+                <lightning-datatable columns={columns} data={data} key-field="ApexClassOrTriggerId"
+                    hide-checkbox-column="true" onsort={handleSortdata} show-row-number-column="true" sorted-by={sortBy}
+                    sorted-direction={sortDirection} onrowaction={handleRowAction} onloadmore={handleLoadMore}
+                    enable-infinite-loading={enableInfiniteLoad} load-more-offset={offSetValue}>
+                </lightning-datatable><br />
+            </div>
+        </template>
+
+        <template if:false={data}>
+             <div class="slds-align_absolute-center">
+                 No data found to display, mostly all classes have 75% Code Coverage.
+             </div>
+        </template>
+
+        <div if:true={isModalSpinner}>
+            <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
+        </div>
+
+         <!-- Compare Modal -->
+        <c-reusable-modal data-id="model2" showclosebtn={showclosebtn}
+            is-modal-open={isModalOpen} title={modalTitle} model-size="small">
+            <div slot="spinner">
+                <div if:true={isModalSpinner}>
+                    <lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
+                </div>
+            </div>
+            <div slot="body" class="modalbody">
+                <div align="center" if:true={modalMessage}>{modalMessage}</div>
+            </div>
+        </c-reusable-modal>
+
+        <c-reusable-modal data-id="model2" is-modal-open={isCompareModal} showclosebtn={showclosebtn} title={modalTitle}
+            model-size="large">
+            <div slot="body" class="modalbody">
+                <template if:true={csvdata}>
+                    <lightning-datatable columns={csvcolumns} data={csvdata} key-field="Id"
+                        onrowselection={selectedCompareRecords}>
+                    </lightning-datatable><br />
+                    <c-reusable-modal data-id="model2" is-modal-open={isEmailModalOpen} title={modalEmailTitle}
+                        model-size="small">
+                        <div slot="body" class="modalbody">
+                            <div align="center">
+                                Please add emails with (,) separated.
+                                <lightning-textarea name="input1" onchange={handleEmailsChange}></lightning-textarea>
+                            </div>
+                        </div>
+                        <div slot="footer" style="display: inline;">
+                            <button name="model2" class="slds-button slds-button_brand" onclick={handleEmailClose}
+                                title="Accept">Close</button>
+                            <button name="model2" class="slds-button slds-button_brand" onclick={emailsAdded}
+                                title="">Sent Email</button>
+                        </div>
+                    </c-reusable-modal>
+                </template>
+            </div>
+            <div slot="footer" style="display: inline;">
+                <lightning-button onclick={handleClose} label="Close" title="Accept"></lightning-button> &nbsp;&nbsp;
+                <lightning-button label="Export as CSV" variant="brand" icon-name="utility:download" title="CompareBtn"
+                    onclick={exportCsvFile}></lightning-button> &nbsp;&nbsp;
+                <lightning-button name="model2" variant="brand" label="Sent Email" onclick={handleCancelModal}
+                    title="CompareBtn">
+                </lightning-button>
+            </div>
+        </c-reusable-modal>
+
+         <!-- Test Result Modal -->
+        <c-reusable-modal data-id="model2" is-modal-open={isTestResModal} showclosebtn={showclosebtn} title={modalTitle}
+            model-size="large">
+            <div slot="spinner">
+                <div align="center" if:true={isModalSpinner}>
+                    <div class="loader"></div>
+                    Please wait...
+                </div>
+            </div>
+            <div slot="body" class="modalbody">
+                <template if:true={testResdata}>
+                    <lightning-datatable columns={testrescolumns} data={testResdata} key-field="Id"
+                        onrowselection={selectedTesrResRecords}>
+                    </lightning-datatable><br />
+                    <c-reusable-modal data-id="model2" is-modal-open={isEmailModalOpen} title={modalEmailTitle}
+                        model-size="small">
+                        <div slot="body" class="modalbody">
+                            <div align="center">
+                                Please add emails with (,) separated.
+                                <lightning-textarea name="input1" onchange={handleEmailsChange}></lightning-textarea>
+                            </div>
+                        </div>
+                        <div slot="footer" style="display: inline;">
+                            <button name="model2" class="slds-button slds-button_brand" onclick={handleEmailClose}
+                                title="Accept">Close</button>
+                            <button name="model2" class="slds-button slds-button_brand" onclick={emailsAdded}
+                                title="">Sent Email</button>
+                        </div>
+                    </c-reusable-modal>
+                </template>
+            </div>
+            <div slot="footer" style="display: inline;">
+                <lightning-button onclick={handleClose} label="Close" title="Accept"></lightning-button> &nbsp;&nbsp;
+                <lightning-button label="Export as CSV" variant="brand" icon-name="utility:download" title="Test Res"
+                    onclick={exportCsvFile}></lightning-button> &nbsp;&nbsp;
+                <lightning-button name="model2" variant="brand" label="Sent Email" onclick={handleCancelModal}
+                    title="TestResBtn">
+                </lightning-button>
+            </div>
+        </c-reusable-modal>
+
+         <!-- See All Data Modal -->
+         <c-reusable-modal data-id="model2" is-modal-open={isSeeAllModal} showclosebtn={showclosebtn} title={modalTitle}
+            model-size="large">
+            <div slot="body" class="modalbody">
+                <template if:true={seeAllDataTestClasses}>
+                    <lightning-datatable columns={allDatacolumns} data={seeAllDataTestClasses} key-field="Id"
+                        onrowselection={selectedSeeAllCls}>
+                    </lightning-datatable><br />
+                    <c-reusable-modal data-id="model2" is-modal-open={isEmailModalOpen} title={modalEmailTitle}
+                        model-size="small">
+                        <div slot="body" class="modalbody">
+                            <div align="center">
+                                Please add emails with (,) separated.
+                                <lightning-textarea name="input1" onchange={handleEmailsChange}></lightning-textarea>
+                            </div>
+                        </div>
+                        <div slot="footer" style="display: inline;">
+                            <button name="model2" class="slds-button slds-button_brand" onclick={handleEmailClose}
+                                title="Accept">Close</button>
+                            <button name="model2" class="slds-button slds-button_brand" onclick={emailsAdded}
+                                title="">Sent Email</button>
+                        </div>
+                    </c-reusable-modal>
+                </template>
+            </div>
+            <div slot="footer" style="display: inline;">
+                <lightning-button onclick={handleClose} label="Close" title="Accept"></lightning-button> &nbsp;&nbsp;
+                <lightning-button label="Export as CSV" variant="brand" icon-name="utility:download" title="seealldata"
+                    onclick={exportCsvFile}></lightning-button> &nbsp;&nbsp;
+                <lightning-button name="model2" variant="brand" label="Sent Email" onclick={handleCancelModal}
+                    title="seealldata">
+                </lightning-button>
+            </div>
+        </c-reusable-modal>
+    </lightning-card>
+</template>

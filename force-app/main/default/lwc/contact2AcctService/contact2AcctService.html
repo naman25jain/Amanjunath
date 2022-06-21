@@ -1,0 +1,276 @@
+<template>
+    <template if:true={spinner}>
+        <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+    </template>
+    <div class="formMargin">
+        <div class="slds-grid slds-wrap gridMargin">
+            <div class="slds-col slds-p-left_medium slds-size_2-of-2"> 
+                <template if:true={errCatch}>						
+                    <span class="error errorCatch"></span>
+                </template>  
+            </div>
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2 leftpanel"> 
+                <span>Contact Service</span>
+            </div>
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">
+                <template if:false={selectedRecord}>                    
+                    <lightning-input class="entityContactService" type="search" name="contactService" onchange={handleChangeForContactService} variant="label-hidden" value={contactService} ></lightning-input>        
+                </template>        
+                <div>
+                    <template if:false={selectedRecord}>
+                        <template if:true={records}>
+                            <template for:each={records} for:item="record">
+                                <c-contact2-acct-service-record-list key={record.Id} record={record} 
+                                    onselect={handleSelect} iconname={iconname}
+                                    fieldname={searchfield}>
+                                </c-contact2-acct-service-record-list>
+                            </template>
+                        </template>
+                    </template>
+                    <template if:false={selectedRecord}>
+                    </template> 
+                </div>
+                <div class="slds-p-around_x-small contactservicesec">
+                    <template if:true={selectedRecord}>
+                        <div class="slds-combobox__form-element slds-input-has-icon 
+                                        slds-input-has-icon_left-right" role="none">
+                                <span class="slds-icon_container
+                                            slds-icon-standard-contact 
+                                            slds-combobox__input-entity-icon" title="Contact">
+                                    <lightning-icon icon-name={iconname} ></lightning-icon>
+                                </span>
+                                <input class="slds-input slds-combobox__input
+                                       slds-combobox__input-value" 
+                                       id="combobox-id-5" aria-controls="listbox-id-5" 
+                                       autocomplete="off" role="textbox" type="text" 
+                                       placeholder="Select an Option" readonly=""
+                                       value={selectedRecord.Name}
+                                       disabled/>
+                                <button class="sicon_container slds-button slds-button_icon 
+                                               slds-input__icon slds-input__icon_right" 
+                                        title="Remove selected option"
+                                        onclick={handleRemove}>
+                                    <lightning-icon icon-name="utility:close" size="x-small">            
+                                    </lightning-icon>
+                                    <span class="slds-assistive-text">Remove selected option</span>
+                                </button>
+                            </div>
+                    </template>
+                </div>
+            </div>
+             <!--Start of Error message-->
+             <div class="slds-col slds-p-left_medium slds-size_1-of-2 leftpanel">
+            </div>             
+            <div class="slds-col slds-p-left_medium slds-size_1-of-2"> 
+                <template if:true={errContactService}>
+                    <span class="error">Contact Service should be selected.</span>
+                </template>  
+            </div>
+            <!--End of Error message-->
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2 leftpanel"> 
+                 <span>Role</span>
+            </div> 
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">
+                <lightning-combobox
+                class="entityRoleName"
+                name="roleName"
+                label=""
+                variant="label-hidden" 
+                placeholder="--None--"
+                options={roleOptions}
+                value={roleName}
+                >
+                </lightning-combobox> 
+            </div>
+            <!--Start of Error message-->
+            <div class="slds-col slds-p-left_medium slds-size_1-of-2 leftpanel">
+            </div>             
+            <div class="slds-col slds-p-left_medium slds-size_1-of-2"> 
+                <template if:true={errRoleName}>
+                    <span class="error">Role should be selected.</span>
+                </template>  
+            </div>
+            <!--End of Error message-->
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2 leftpanel"> 
+                <span>Preferred mode of communication</span>
+            </div> 
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">
+                <lightning-combobox
+                class="entityPreferrredModeOfCommunication"
+                name="preferrredModeOfCommunication"
+                label=""
+                variant="label-hidden" 
+                placeholder="--None--"
+                options={preferrredModeOfComOptions}
+                value={preferrredModeOfCommunication}
+                >
+                </lightning-combobox> 
+            </div>
+            <!--Start of Error message-->
+            <div class="slds-col slds-p-left_medium slds-size_1-of-2 leftpanel">
+            </div>             
+            <div class="slds-col slds-p-left_medium slds-size_1-of-2"> 
+                <template if:true={errPreferrredModeOfCommunication}>						
+                    <span class="error">Preferred mode of communication should be selected.</span>
+                </template>  
+            </div>
+            <!--End of Error message-->
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2 leftpanel"> 
+                <span>Physical Address</span>
+            </div> 
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2 rightpanel">
+                <lightning-textarea name="physicalAddress" class="entityPhysicalAddress" value={physicalAddress} placeholder="Enter the physical address"></lightning-textarea>
+            </div>
+             <!--Start of Error message-->
+             <div class="slds-col slds-p-left_medium slds-size_1-of-2 leftpanel">
+            </div>             
+            <div class="slds-col slds-p-left_medium slds-size_1-of-2"> 
+                <template if:true={errPhysicalAddress}>						
+                    <span class="error">Physical address should be provided.</span>
+                </template>  
+            </div>
+            <!--End of Error message-->
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2 leftpanel"> 
+                <span>Street</span>
+            </div> 
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2 rightpanel">
+                <lightning-textarea placeholder="Enter the street" value={streetName} class="streetName"></lightning-textarea>
+            </div>
+            <!--Start of Error message-->
+            <div class="slds-col slds-p-left_medium slds-size_1-of-2 leftpanel"></div>
+            <div class="slds-col slds-p-left_medium slds-size_1-of-2"> 
+                <template if:true={errStreet}>						
+                    <span class="error">Street should be provided.</span>
+                </template>
+            </div>
+            <!--End of Error message-->
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2 leftpanel"> 
+                <span>City</span>
+            </div> 
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2 rightpanel">
+                <lightning-input type="text" value={cityName} class="cityName"></lightning-input>
+            </div>
+            <!--Start of Error message-->
+            <div class="slds-col slds-p-left_medium slds-size_1-of-2 leftpanel"></div>
+            <div class="slds-col slds-p-left_medium slds-size_1-of-2"> 
+                <template if:true={errCity}>						
+                    <span class="error">City should be provided.</span>
+                </template>
+            </div>
+            <!--End of Error message-->
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2 leftpanel"> 
+                <span>Country</span>
+            </div>
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2 rightpanel">
+                <lightning-combobox options={countryOptions} value={countryName} class="countryName"></lightning-combobox>
+            </div>
+            <!--Start of Error message-->
+            <div class="slds-col slds-p-left_medium slds-size_1-of-2 leftpanel"></div>
+            <div class="slds-col slds-p-left_medium slds-size_1-of-2"> 
+                <template if:true={errCountry}>
+                    <span class="error">Country should be selected.</span>
+                </template>
+            </div>
+            <!--End of Error message-->
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2 leftpanel"> 
+                <span>State/Province</span>
+            </div> 
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2 rightpanel">
+                <lightning-combobox options={stateOptions} value={stateName} class="stateName"></lightning-combobox>
+            </div>
+            <!--Start of Error message-->
+            <div class="slds-col slds-p-left_medium slds-size_1-of-2 leftpanel"></div>
+            <div class="slds-col slds-p-left_medium slds-size_1-of-2"> 
+                <template if:true={errState}>						
+                    <span class="error">State/Province should be provided.</span>
+                </template>
+                <template if:true={errStateClear}>						
+                    <span class="error">State/Province should NOT be provided.</span>
+                </template>
+            </div>
+            <!--End of Error message-->
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2 leftpanel"> 
+                <span>Postal Code</span>
+            </div> 
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2 rightpanel">
+                <lightning-input type="text" value={postalCode} class="postalCode"></lightning-input>
+            </div>
+            <!--Start of Error message-->
+            <div class="slds-col slds-p-left_medium slds-size_1-of-2 leftpanel"></div>
+            <div class="slds-col slds-p-left_medium slds-size_1-of-2"> 
+                <template if:true={errPostalCode}>						
+                    <span class="error">Postal Code should be provided.</span>
+                </template>
+                <template if:true={errPostalCodeClear}>						
+                    <span class="error">Postal Code should NOT be provided.</span>
+                </template>
+            </div>
+            <!--End of Error message-->
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2 leftpanel">
+                <span>List of emails</span>
+            </div> 
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2 rightpanel">
+                <lightning-textarea name="listOfEmails" class="entityListOfEmails" value={listOfEmails} placeholder="Semi colon separated list of email address"></lightning-textarea>
+            </div> 
+             <!--Start of Error message-->
+             <div class="slds-col slds-p-left_medium slds-size_1-of-2 leftpanel">
+            </div>             
+            <div class="slds-col slds-p-left_medium slds-size_1-of-2"> 
+                <template if:true={errListOfEmails}>						
+                    <span class="error">List of email should be provided. (Semi colon separated list of email address)</span>
+                </template>  
+            </div>
+            <!--End of Error message-->
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2 leftpanel">
+                <span>Verification Website URL</span>
+            </div> 
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2 rightpanel">
+                <lightning-input type="url" name="verificationWebsiteURL" value={verificationWebsiteURL} class="entityVerificationWebsiteURL" placeholder="Enter a valid URL"></lightning-input>
+            </div> 
+            <!--Start of Error message-->
+            <div class="slds-col slds-p-left_medium slds-size_1-of-2 leftpanel">
+            </div>             
+            <div class="slds-col slds-p-left_medium slds-size_1-of-2"> 
+                <template if:true={errVerificationWebsiteURL}>						
+                    <span class="error">Verification Website URL should be provided.</span>
+                </template>  
+            </div>
+            <!--End of Error message-->
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2 leftpanel">
+                <span>Credential Type</span>
+            </div> 
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">
+                <lightning-dual-listbox class="entityCredentialType" name="credentialType"
+                            label=""
+                            source-label="Available"
+                            selected-label="Selected"
+                            field-level-help=""
+                            options={credentialtypeOptions}
+                            value={credentialtypeDefaultOptions}></lightning-dual-listbox>
+            </div> 
+            <!--Start of Error message-->
+            <div class="slds-col slds-p-left_medium slds-size_1-of-2 leftpanel">
+            </div>             
+            <div class="slds-col slds-p-left_medium slds-size_1-of-2"> 
+                <template if:true={errCredentialType}>						
+                    <span class="error">Credential type should be provided.</span>
+                </template>
+                <template if:true={errorCredentialTypeValue}>						
+                    <span class="error">Credential Type already exists for the Account Service.</span>
+                </template>
+                <span class="error credentialTypeValueError"></span>
+            </div>
+            <!--End of Error message-->
+            <div class="buttonAlignment"><br/>
+                <template if:true={enableSubmitutton}>
+                    <lightning-button variant="brand" label="Submit" onclick={handleSubmit} title="Submit"
+                    class="slds-m-left_x-small"></lightning-button>
+                </template>
+                <template if:false={enableSubmitutton}>
+                    <lightning-button variant="brand" label="Submit" onclick={handleSubmit} title="Submit" 
+                    class="slds-m-left_x-small" disabled></lightning-button>
+                </template>  
+            </div>            
+        </div>
+    </div>
+</template>

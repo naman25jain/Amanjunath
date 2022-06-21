@@ -1,0 +1,46 @@
+<template>
+    <div class="slds-card slds-card_boundary">
+        <div class="slds-page-header slds-page-header_record-home">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__figure">
+                    <span class="slds-icon_container slds-icon-standard-drafts" title="Documents">
+                        <lightning-icon size="small" icon-name="standard:drafts"></lightning-icon>
+                    </span>
+                </div>
+                <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                        <span><strong>Build Your Document</strong></span>
+                    </h2>
+                </div>
+            </header>
+        </div>
+        <div class="row">
+            <div class="column left" style="background-color:rgb(235, 235, 235);">
+                <c-document-upload onfileuploaded={handleFileUploaded} accepted-file-formats={acceptedFileFormats}
+                    max-allowed-file-size={maxAllowedFileSize}></c-document-upload>
+            </div>
+            <div class="column middle" style="background-color:rgb(235, 235, 235);">
+                <c-document-viewer 
+                    ondocviewer_ready={handleDocViewerReady}
+                    ondocviewer_save_document={handleSaveDocument}
+                    ondocviewer_redaction_applied={handleRedactionApplied}
+                    asset-type={assetType} 
+                    enable-redaction={enableRedaction}
+                    enable-annotation={enableAnnotation}
+                    enable-saving="false">
+                </c-document-viewer>
+            </div>
+            <div class="column right" style="background-color:rgb(235, 235, 235);">
+                <c-document-builder
+                    ondocbuilder_ready={handleDocBuilderReady}
+                    ondocbuilder_save_document={handleSaveDocument}
+                    ondocbuilder_redaction_applied={handleRedactionApplied}
+                    asset-type={assetType} 
+                    enable-redaction={enableRedaction}
+                    enable-annotation={enableAnnotation}
+                    enable-saving={enableSaving}>
+                </c-document-builder>
+            </div>
+        </div>
+    </div>
+</template>

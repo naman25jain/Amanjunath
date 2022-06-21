@@ -1,0 +1,6 @@
+<!--
+ - Created by Matthew on 11/6/18.
+ -->
+
+<aura:event type="APPLICATION" description="ApplicantMedicalSchoolAddedEvent">
+</aura:event>

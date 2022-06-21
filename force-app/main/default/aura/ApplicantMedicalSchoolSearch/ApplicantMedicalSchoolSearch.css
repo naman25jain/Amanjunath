@@ -1,0 +1,10 @@
+/**
+ * Created by Shailaja on 9/10/2020.
+ */
+.THIS .slds-modal__content {
+    overflow: visible;
+}
+.THIS .slds-dropdown-trigger .slds-dropdown {
+    height: 180px;
+    overflow: auto;
+}

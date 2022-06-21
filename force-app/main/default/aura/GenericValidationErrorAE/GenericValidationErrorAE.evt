@@ -1,0 +1,7 @@
+<!--
+ - Created by Matthew on 11/12/18.
+ -->
+<aura:event type="APPLICATION" description="GenericValidationErrorAE" access="global">
+    <aura:attribute name="isValid" type="Boolean" default="false" required="true" description="Indicates component has validation error." />
+    <aura:attribute name="source" type="String" default="default" required="false" description="The source of the validation status. Use unique component name." />
+</aura:event>

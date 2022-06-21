@@ -1,0 +1,105 @@
+<!--
+ - Created by Matthew on 11/1/18.
+ -->
+
+<aura:component controller="ApplicantCommunityController" description="Contact Association Type Card">
+
+    <!--<aura:attribute name="disabled" type="Boolean" default="false" />-->
+    <aura:attribute name="readOnly" type="Boolean" default="true" />
+    <aura:attribute name="associationType" type="ContactAssociationTypeViewModel" />
+    <aura:attribute name="showConfirmDelete" type="Boolean" default="false" />
+    <aura:attribute name="associationRecordType" type="String" default="Degree Medical School" />
+
+    <aura:attribute name="recordNameSingular" type="String" />
+    <aura:attribute name="recordNamePlural" type="String" />
+    <aura:attribute name="recordNameSingularLower" type="String" />
+    <aura:attribute name="recordNamePluralLower" type="String" />
+
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}" />
+
+    <aura:registerEvent name="associationTypeDeletedEvent" type="c:ContactAssociationTypeDeletedAE" />
+
+    <lightning:card footer="{!v.associationType.Type == 'Regulatory Organization'?'Entity':v.associationType.Type}"
+        title="{!v.associationType.Name}" class="card">
+        <aura:set attribute="actions">
+            <aura:if isTrue="{!v.readOnly == false}">
+                <lightning:buttonIcon iconName="utility:delete" variant="border" onclick="{!c.handleDeleteOnClick}"
+                    alternativeText="Remove" />
+            </aura:if>
+        </aura:set>
+        <div class="slds-grid slds-gutters slds-wrap">
+            <div class="slds-col">
+                <p class="slds-p-horizontal_small slds-p-bottom_small">
+
+                    <lightning:formattedAddress street="{!v.associationType.Address1}"
+                        city="{!v.associationType.Address2}" province="{!v.associationType.Address3}"
+                        country="{!v.associationType.Country}" postalCode="{!v.associationType.Address4}"
+                        disabled="true" />
+                </p>
+            </div>
+            <aura:if isTrue="{!v.associationType.Type != 'Regulatory Organization'}">
+                <aura:if isTrue="{!v.associationType.Type != 'Medical Authority'}">
+                    <div class="slds-col">
+                        <aura:if isTrue="{!v.associationType.Type == 'Degree Medical School'}">
+                            <p class="slds-p-horizontal_small slds-p-bottom_small">
+                                <strong>Degree Title</strong>: {!v.associationType.DegreeTitle}<br />
+                                <!--<strong>Degree Issued Date</strong>: {!v.associationType.DegreeDate}-->
+                                <strong>Degree Issue Month</strong>: {!v.associationType.DegreeMonth}<br />
+                                <strong>Degree Issue Year</strong>: {!v.associationType.DegreeYear}<br />
+                            </p>
+                        </aura:if>
+                        <p class="slds-p-horizontal_small slds-p-bottom_small">
+                            <strong>University Name</strong>:{!v.associationType.UniversityName}<br />
+                            <strong>Student ID</strong>: {!v.associationType.StudentId}<br />
+                            <!--<strong>Start Date</strong>: {!v.associationType.StartDate}<br/>-->
+                            <strong>Start Month</strong>: {!v.associationType.StartMonth}<br />
+                            <strong>Start Year</strong>: {!v.associationType.StartYear}<br />
+                            <!--<strong>End Date</strong>: {!v.associationType.EndDate}<br/>-->
+                            <strong>End Month</strong>: {!v.associationType.EndMonth}<br />
+                            <strong>End Year</strong>: {!v.associationType.EndYear}<br />
+                        </p>
+                    </div>
+                </aura:if>
+            </aura:if>
+        </div>
+    </lightning:card>
+
+
+    <aura:if isTrue="{!v.showConfirmDelete}">
+        <div class="demo-only" style="height: 640px;">
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+                aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                            title="Close">
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Remove this
+                            {!v.recordNameSingularLower}?</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <p class="slds-p-horizontal_small slds-p-bottom_small">
+                            Are you sure you want to remove this {!v.recordNameSingularLower}?
+                        </p>
+                        <p class="slds-p-horizontal_small slds-p-bottom_small">
+                            <b>{!v.associationType.Name}</b><br />
+                            <lightning:formattedAddress street="{!v.associationType.Address1}"
+                                city="{!v.associationType.Address2}" province="{!v.associationType.Address3}"
+                                country="{!v.associationType.Country}" postalCode="{!v.associationType.Address4}"
+                                disabled="true" />
+                        </p>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <button class="slds-button slds-button_brand"
+                            onclick="{!c.handleConfirmYesOnClick}">Yes</button>
+                        <button class="slds-button slds-button_neutral"
+                            onclick="{!c.handleConfirmCancelOnClick}">Cancel</button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+    </aura:if>
+
+</aura:component>

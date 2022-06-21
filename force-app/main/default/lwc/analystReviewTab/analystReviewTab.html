@@ -1,0 +1,80 @@
+<template>
+    <lightning-card title="Analyst Review" >
+        <div class=marginSection>
+            <div class="slds-section slds-is-open">
+                <h3 class="slds-section__title slds-theme_shade">
+                  <span class="slds-truncate slds-p-horizontal_small" title="Section Title">Entity Section</span>
+                </h3>
+                <template if:true={NotifyAnalyst}>
+                    <span class="errormsg">{label.Analyst_review_Tab_Unapproved_Entity_Message}</span>
+                </template>                    
+                <div aria-hidden="false" class="slds-section__content">
+                    <div class=formMargin>
+                    <div class="slds-col slds-form-element slds-size_2-of-2">
+                        <span><span class="required">*</span><label class="slds-form-element__label">Entity Name</label></span>
+                    </div>
+                    <div class="slds-col slds-size_2-of-2 slds-form-element">
+                        <input id="Entity" name="Entities" list="valueList"  placeholder="Select an Entity"  value={entityName} onchange={handleEntityChange}  type="text" class="slds-input entityRecord" />
+                        <datalist id="valueList" class="EntityList">
+                        <template for:each={EntityRecordValues.data} for:item='item'>
+                            <option key={item.Id} data-entityid={item.Id} value={item.Name}>
+                                {item.Name} 
+                            </option>
+                        </template>
+                        </datalist>
+                    </div>
+                    <template if:true={showErrorMsg}>
+                        <span class="errormsg">Please add an entity to proceed</span>
+                    </template>
+                    <lightning-textarea class="slds-var-p-top_small" label='Entity Internal Instruction' value={entInt} readonly></lightning-textarea>
+                    <lightning-textarea class="slds-var-p-top_small" label='Entity External Instruction' value={entExt} readonly></lightning-textarea>
+                    <lightning-input class="slds-var-p-top_small" type="Text" label='Parent Entity' value={parentEnt} readonly></lightning-input>
+                    <lightning-textarea class="slds-var-p-top_small" type="Text" label='Alternative Names of Entity' value={akaNameList} readonly></lightning-textarea>
+                    <lightning-textarea class="slds-var-p-top_small" label='Country Instruction' value={countryInst} readonly></lightning-textarea>
+                    <div class="slds-col slds-form-element slds-size_1-of-2 slds-var-p-top_small">
+                        <span><label class="slds-form-element__label">Alternate Entity Name</label></span>
+                    </div>
+                    <div class="slds-col slds-size_2-of-2 slds-form-element">
+                        <input id="AlternateEntity" name="Entities" list="altvalueList"  placeholder="Select an Alternate Entity"  value={alternEntity} onchange={handleAltEntityChange}  type="text" class="slds-input altentityRecord" />
+                        <datalist id="altvalueList" class="AlternateEntityList">
+                        <template for:each={EntityRecordValues.data} for:item='item'>
+                            <option key={item.Id} data-entityid={item.Id} value={item.Name}>
+                                {item.Name} 
+                            </option>
+                        </template>
+                        </datalist>
+                    </div>
+                    <lightning-textarea class="slds-var-p-top_small" label='Alternate Entity Internal Instruction' value={alternEntInt} readonly></lightning-textarea>
+                    <lightning-textarea class="slds-var-p-top_small" label='Alternate Entity External Instruction' value={alternEntExt} readonly></lightning-textarea>
+                    <lightning-input class="slds-var-p-top_small" type="Text" label='Send Method' value={sendMethod} readonly></lightning-input>
+                    </div>
+                    <div class="slds-section slds-is-open">
+                        <h3 class="slds-section__title slds-theme_shade">
+                          <span class="slds-truncate slds-p-horizontal_small" title="Section Title">Document Section</span>
+                        </h3>
+                        <div aria-hidden="false" class="slds-section__content">
+                            <div class=formMargin>
+                                <lightning-input type="Text" label="Name on Record" value={contactName} readonly></lightning-input>
+                                <lightning-record-view-form
+                                record-id={recordId}
+                                object-api-name="Case">
+                                    <lightning-output-field field-name="Contact_DOB__c"></lightning-output-field> 
+                                    <lightning-output-field field-name="Service__c"></lightning-output-field>   
+                                </lightning-record-view-form>
+                                <lightning-input type="Text" label='Name on Document' value={nameOnDocument} onchange={handleNODChange} ></lightning-input>
+                                <lightning-input type="Text" label='Authority' value={authority} readonly></lightning-input>
+                                <lightning-textarea label='Client Special Instructions' value={clientSpecInstr} readonly></lightning-textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <template if:true={showSaveButton}>
+                        <div class="buttonAlignment"> 
+                            <lightning-button variant="brand" label="Save" title="Save" onclick={handleSave} type="submit" class="slds-m-left_x-small"></lightning-button>
+                            <lightning-button variant="brand" label="Cancel" title="Cancel" onclick={handleCancel} class="slds-m-left_x-small"></lightning-button>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+    </lightning-card>
+</template>

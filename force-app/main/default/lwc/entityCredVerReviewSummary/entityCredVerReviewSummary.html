@@ -1,0 +1,263 @@
+<template>
+    <template if:true={spinner}>
+        <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+    </template>
+    <div class="formMargin">
+        <div class="padding">
+            <h1 class="stepHeader">Summary</h1>
+        </div>
+        <lightning-accordion allow-multiple-sections-open="true" active-section-name="applicantInformationSection">
+            <template if:true={payLoadList}>
+                <lightning-accordion-section name="applicantInformationSection"
+                    class="slds-col slds-size--1-of-1 gridColPadding" title="Applicant Information"
+                    label="Applicant Information">
+                    <div class="slds-col slds-var-p-top_small slds-size_1-of-2 buttonAlignment">
+                        <lightning-button variant="brand" label="Go to Applicant Information screen"
+                            title="Go to Applicant Information" onclick={showApplicantInfoScreen}
+                            class="slds-m-left_x-small">
+                        </lightning-button>
+                    </div>
+                    <br/>
+                    <template for:each={payLoadList} for:item="payLoad">
+                        <dl class="slds-list_horizontal slds-wrap" key={payLoad.assetId}>
+                            <dt class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                                <div title="View" class="label">
+                                    <span>{payLoad.assetName}</span>
+                                </div>
+                            </dt>
+                            <dt class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                                <div title="View">
+                                    <c-cloud-document-upload-wrapper class="cloudDocumentUpload" pay-load={payLoad.payLoad}
+                                        max-allowed-file-size=10 accepted-file-formats=".jpeg,.jpg,.tiff,.pdf"
+                                        enable-annotation="false" enable-redaction="false" hide-upload="true">
+                                    </c-cloud-document-upload-wrapper>
+                                </div>
+                            </dt>
+                        </dl>
+                    </template>
+                </lightning-accordion-section>
+            </template>
+            <template if:true={showVerForm}>
+                <br/>
+                <lightning-accordion-section name="verificationForm"
+                    class="slds-col slds-size--1-of-1 gridColPadding" title="ECFMG Verification Form"
+                    label="ECFMG Verification Form">
+                    <div class="slds-grid slds-wrap">
+                        <div class="slds-col slds-var-p-top_small slds-size_1-of-2 buttonAlignment">
+                            <lightning-button variant="brand" label="Go to Verification Form Screen"
+                                    title="Go to Verification Form" onclick={showVerFormScreen}
+                                    class="slds-m-left_x-small">
+                            </lightning-button>
+                        </div>
+                        <br/><br/><br/>
+                        <div class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                            <span class="label">ECFMG Verification Form</span>
+                        </div>
+                        <div class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                            <div>                              
+                                <c-cloud-document-upload-wrapper class="cloudDocumentUpload"
+                                    pay-load={finalPayloadVerForm}
+                                    max-allowed-file-size=10
+                                    accepted-file-formats=".jpeg,.jpg,.tiff,.pdf"
+                                    enable-annotation="false" enable-redaction="false"
+                                    hide-upload="true" 
+                                    azure-doc-url={azureDocUrlVerForm}>                                
+                                </c-cloud-document-upload-wrapper>
+                            </div>
+                        </div>
+                    </div>
+                </lightning-accordion-section>
+            </template>
+            <template if:true={showMainCredUploaded}> 
+                <br/>
+                <lightning-accordion-section name="documentsUploaded"
+                    class="slds-col slds-size--1-of-1 gridColPadding" title="Documents Uploaded"
+                    label="Documents Uploaded">
+                    <div class="slds-grid slds-wrap">
+                        <div class="slds-col slds-var-p-top_small slds-size_1-of-2 buttonAlignment">
+                            <lightning-button variant="brand" label="Change Uploaded Documents"
+                                    title="Go to Documents Upload screen" onclick={showCredUploadScreen}
+                                    class="slds-m-left_x-small">
+                            </lightning-button>
+                        </div>
+                        <br/><br/><br/>
+                        <div class="slds-grid slds-var-p-top_small slds-size_1-of-2">
+                            <span class="label">ECFMG has requested the {credType}. <c-g-display-content unique-content-value="entity_credential_add_doc_entity_question"></c-g-display-content>
+                            </span>
+                        </div>
+                        <div class="slds-grid slds-var-p-top_small slds-size_1-of-2">
+                            <div>
+                                <span>{selectedValue}</span>                               
+                            </div>
+                        </div>
+                    </div>
+                    <template if:true={showUploadSection}>
+                        <br/><br/>
+                        <div class="slds-grid slds-wrap">
+                            <div class="slds-col slds-var-p-top_small">
+                                <span class="label">Uploaded Credential</span>
+                            </div>
+                            <div class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                                <div>
+                                    <c-cloud-document-upload-wrapper label="Upload Credential" pay-load={payloadCredential}
+                                                max-allowed-file-size= "10" accepted-file-formats=".jpeg,.jpg,.pdf,.tiff"
+                                                enable-annotation="false" enable-redaction="false" azure-doc-url={credUrl} ongeneratedurl={handleOnCredentialUpload} hide-upload="true">
+                                            </c-cloud-document-upload-wrapper>
+                                </div>
+                            </div>
+                        </div>
+                        <br/>
+                        <template if:true={showSupportUploadSection1}>
+                            <br/>
+                            <div class="slds-grid slds-wrap">
+                                <div class="slds-col slds-var-p-top_small">
+                                    <span class="label">Supporting Document: 1</span>
+                                </div>
+                                <div class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                                    <div>      
+                                        <c-cloud-document-upload-wrapper class="cloudDocumentUploadSupport"
+                                            pay-load={supportPayload} max-allowed-file-size= "10"
+                                            accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" enable-annotation="false"
+                                            enable-redaction="false" asset-type="Supporting Document"
+                                            azure-doc-url={supportUrl1} ongeneratedurl={handleOnSupportUpload1} hide-upload="true">
+                                        </c-cloud-document-upload-wrapper>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                        <template if:true={showSupportUploadSection2}>
+                            <br/><br/>
+                            <div class="slds-grid slds-wrap">
+                                <div class="slds-col slds-var-p-top_small">
+                                    <span class="label">Supporting Document: 2</span>
+                                </div>
+                                <div class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                                    <div>      
+                                        <c-cloud-document-upload-wrapper class="cloudDocumentUploadSupport"
+                                            pay-load={supportPayload} max-allowed-file-size= "10"
+                                            accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" enable-annotation="false"
+                                            enable-redaction="false" asset-type="Supporting Document"
+                                            azure-doc-url={supportUrl2} ongeneratedurl={handleOnSupportUpload2} hide-upload="true">
+                                        </c-cloud-document-upload-wrapper>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                        <template if:true={showSupportUploadSection3}>
+                            <br/><br/>
+                            <div class="slds-grid slds-wrap">
+                                <div class="slds-col slds-var-p-top_small">
+                                    <span class="label">Supporting Document: 3</span>
+                                </div>
+                                <div class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                                    <div>      
+                                        <c-cloud-document-upload-wrapper class="cloudDocumentUploadSupport"
+                                            pay-load={supportPayload} max-allowed-file-size= "10"
+                                            accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" enable-annotation="false"
+                                            enable-redaction="false" asset-type="Supporting Document"
+                                            azure-doc-url={supportUrl3} ongeneratedurl={handleOnSupportUpload3} hide-upload="true">
+                                        </c-cloud-document-upload-wrapper>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </template>
+                    <template if:true={showReasonPicklist}>
+                        <br/>
+                        <div class="slds-grid slds-wrap">
+                            <div class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                                <span class="label">
+                                    <c-g-display-content unique-content-value="entity_cred_add_doc_reason"></c-g-display-content>
+                                </span>
+                            </div>
+                            <template if:true={havePicklistValues}>
+                                <div class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                                    <span>{reason}</span>
+                                </div>
+                            </template>
+                        </div>
+                        <br/>
+                        <template if:true={showReasonComment}>
+                            <div class="slds-grid slds-wrap">
+                                <div class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                                    <span class="label">Reason comment</span>
+                                </div>
+                                <div class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                                    <span>{reasonComment}</span>
+                                </div>
+                            </div>
+                        </template>
+                    </template>
+                </lightning-accordion-section>
+            </template>
+            <template if:false={showMainCredUploaded}>
+                <lightning-accordion-section name="reviewOfCredential"
+                    class="slds-col slds-size--1-of-1 gridColPadding" title="Review of Credential"
+                    label="Review of Credential">
+                    <div class="slds-grid slds-wrap">
+                        <div class="slds-col slds-var-p-top_small slds-size_1-of-2 buttonAlignment">
+                            <lightning-button variant="brand" label="Change Reviewed Credential"
+                                title="Change Reviewed Credential" onclick={showCredentialReviewScreen}
+                                class="slds-m-left_x-small">
+                            </lightning-button>
+                        </div>
+                        <br/><br/><br/>
+                        <div class="slds-grid slds-var-p-top_small slds-size_1-of-2">
+                            <span class="label">Certify Document</span>
+                        </div>
+                        <div class="slds-grid slds-var-p-top_small slds-size_1-of-2">
+                            <div>
+                                <span>{credCertified}</span>                               
+                            </div>
+                        </div>
+                        <template if:false={credReviewCertified}>
+                            <div class="slds-grid slds-var-p-top_small slds-size_1-of-2">
+                                <span class="label">Reason for not Certifying</span>
+                            </div>
+                            <div class="slds-grid slds-var-p-top_small slds-size_1-of-2">
+                                <div>
+                                    <span>{credRevReasonNotCert}</span>                               
+                                </div>
+                            </div>
+                            <template if:true={showOtherComCredRev}> 
+                                <div class="slds-grid slds-var-p-top_small slds-size_1-of-2">
+                                    <span class="label">Comments for not Certifying</span>
+                                </div>
+                                <div class="slds-grid slds-var-p-top_small slds-size_1-of-2">
+                                    <div>
+                                        <span>{credRevComNotCert}</span>                               
+                                    </div>
+                                </div>                  
+                            </template>               
+                        </template>
+                        <br/><br/>
+                        <template if:true={credReviewCertified}>
+                            <div class="slds-grid slds-var-p-top_small slds-size_1-of-2">
+                                <span class="label">Certified Credential</span>
+                            </div>
+                            <div class="slds-grid slds-var-p-top_small slds-size_1-of-2">
+                                <c-cloud-document-upload-wrapper label="Verified Credential" pay-load={payloadCredential}
+                                    max-allowed-file-size=10 accepted-file-formats=".jpeg,.jpg,.pdf,.tiff"
+                                    enable-annotation="false" enable-redaction="false" azure-doc-url={verCredUrl} hide-upload="true">
+                                </c-cloud-document-upload-wrapper>
+                            </div>                                
+                        </template>
+                    </div>
+                </lightning-accordion-section>
+            </template>
+        </lightning-accordion>
+        <div class="padding">
+            <c-g-display-content unique-content-value="entity_cred_review_summary"></c-g-display-content>
+        </div>
+        <div class="slds-var-p-top_large pad btnAlign">
+            <lightning-button variant="brand" label="Return to Credential Review List" title="Return to Credential Review List" class="slds-var-m-left_x-small" onclick={showCredRevLandPage}>
+            </lightning-button>
+            <lightning-button variant="brand" label="Back" title="Back" class="slds-var-m-left_x-small" onclick={showVerFormScreen}>
+            </lightning-button>
+            <lightning-button variant="brand" label="Submit to ECFMG" title="Submit to ECFMG" class="slds-var-m-left_x-small" onclick={showConfirmation}>
+            </lightning-button>
+        </div>
+        <br/><br/><br/>
+    </div>
+    <c-modal-component data-id = 'confirmationWindow' title='Confirm' message="Are you sure you want to submit?"  show-secondary-button='true' secondary-button-text='No' onclosedialog={cancelSubmit} show-primary-button='true' primary-button-text='Yes' onprimarybuttonclick={proceedSubmit}></c-modal-component>
+</template>

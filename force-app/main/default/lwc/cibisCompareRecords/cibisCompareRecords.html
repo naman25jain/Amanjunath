@@ -1,0 +1,38 @@
+<template>
+    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered"
+        aria-label="Example table of Opportunities with vertical borders">
+        <thead>
+            <tr>
+                <template for:each={columnNames} for:item="eachColumnName">
+                    <th data-label="Opportunity Name" scope="row" key={eachColumnName}>
+                        <div class="slds-truncate" title={eachColumnName}>{eachColumnName}</div>
+                    </th>
+                </template>
+            </tr>
+        </thead>
+        <tbody>
+            <template for:each={tableData} for:item="eachRowData">
+                <tr class="slds-hint-parent" key={eachRowData.LastName}>
+                    <td>
+                        <div>{eachRowData.source}</div>
+                    </td>
+                    <td>
+                        <div>{eachRowData.LastName}</div>
+                    </td>
+                    <td key={eachRowData.USMLEId}>
+                        <div>{eachRowData.USMLEId}</div>
+                    </td>
+                    <td key={eachRowData.BirthDate}>
+                        <div>{eachRowData.BirthDate}</div>
+                    </td>
+                    <td key={eachRowData.Gender}>
+                        <div>{eachRowData.Gender}</div>
+                    </td>
+                    <td key={eachRowData.MedSchoolCode}>
+                        <div>{eachRowData.MedSchoolCode}</div>
+                    </td>
+                </tr>
+            </template>
+        </tbody>
+    </table>
+</template>

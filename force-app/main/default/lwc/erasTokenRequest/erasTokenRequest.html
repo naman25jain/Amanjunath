@@ -1,0 +1,97 @@
+<template>
+    <template if:true={restrictedCountry}>
+        <strong>
+            <span class="errormsg">
+                {countryError}
+            </span>    
+        </strong>
+    </template>
+    <template if:false={restrictedCountry}>
+        <template if:true={showErasReqButtonScreen}>
+            <template if:true={spinner}>
+                <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+            </template>
+            <template if:false={erasTokenReqExists}>
+                <template if:true={hasRestriction}>
+                    <div class="slds-m-top_medium">
+                    <b>
+                        <span class="errormsg">
+                            You cannot request an ERAS Token at this time. Please contact ERAS Support Services at ECFMG for more information.
+                        </span>    
+                    </b>
+                </div>
+                </template>
+                <template if:false={isActiveSeason}>
+                    <template if:false={hasRestriction}>
+                    <div class="slds-m-top_medium">
+                    <b>
+                        <span class="errormsg">
+                            ERAS Tokens are not available for request at this time. Once the next ERAS season begins, Tokens will be available for request.
+                        </span>    
+                    </b>
+                </div>
+                </template>
+                </template>
+                <template if:true={isApplicantBio}>
+                    
+                    <div class="slds-m-top_medium">
+                    <b>
+                        <span class="errormsg">
+                            Your applicant biographic change request case must be accepted before you can proceed with this request. You can monitor the status of your biographic change request in the My Cases section.
+                        </span>    
+                    </b>
+                </div>
+                
+                </template>
+                    
+                <div class="padding">
+                    <lightning-button variant="Success" label="Request ERAS Token" title="Request ERAS Token" onclick={showERASDisclosure} disabled={disableRequestERASTokenButton}></lightning-button>
+                </div>
+            </template>
+            <template if:true={erasTokenReqExists}>
+                <template if:true={isSubmittedOrInReview}>
+                    <div class="slds-m-top_medium">
+                    <b>
+                        <span class="errormsg">
+                            Your Token request is being processed. Please check back in 24 hours. If you still see this message after 24 hours, please or contact ERAS Support Services at ECFMG for assistance.
+                        </span>    
+                    </b>
+                </div>
+                </template>
+                <lightning-record-view-form record-id={erasReqCaseId} mode="readonly" object-api-name="Case">
+                    <div class="slds-col slds-size--1-of-1 gridColPadding slds-p-top_large">
+                        <h2 class="gridHeader">ERAS® Token Request Information</h2>
+                    </div>
+                    <lightning-layout multiple-rows="true">
+                        <lightning-layout-item padding="around-small" size="2">
+                            <div class="">ERAS® {seasonYear} Token: </div>
+                        </lightning-layout-item>
+                        <lightning-layout-item padding="around-small" size="10">
+                            <lightning-output-field field-name="Token__c" variant="label-hidden">
+                            </lightning-output-field>
+                        </lightning-layout-item>
+                        <lightning-layout-item padding="around-small" size="2">
+                            <div class="">Request Date:</div>
+                        </lightning-layout-item>
+                        <lightning-layout-item padding="around-small" size="10">
+                            <lightning-output-field field-name="Token_Request_date__c" variant="label-hidden">
+                            </lightning-output-field>
+                        </lightning-layout-item>
+                            <lightning-layout-item padding="around-small" size="2">
+                            <div class="">Issue Date:</div>
+                        </lightning-layout-item>
+                        <lightning-layout-item padding="around-small" size="10">
+                            <lightning-output-field field-name="Date_Token_Issued__c" variant="label-hidden">
+                            </lightning-output-field>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </lightning-record-view-form>
+            </template>
+        </template>
+
+        <!--Disclosure screen component-->
+        <template if:true={showDisclosureScreen}>        
+            <c-eras-Token-Request-Disclosure onbackbuttonclick={showErasTokenReqButton}></c-eras-Token-Request-Disclosure >
+        </template>
+    </template>
+</template>

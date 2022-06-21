@@ -1,0 +1,29 @@
+<template>
+
+    <template if:true={assetSignatureForm}>
+        <lightning-file-upload label={labelval} name="fileUploader" accept={acceptedFormats} record-id={contactId}
+            onuploadfinished={handleUploadFinished} class="fileUploadClass" disabled>
+        </lightning-file-upload>
+    </template>
+    <template if:false={assetSignatureForm}>
+        <lightning-file-upload label={labelval} name="fileUploader" accept={acceptedFormats} record-id={contactId}
+            onuploadfinished={handleUploadFinished} class="fileUploadClass">
+        </lightning-file-upload>
+    </template>
+
+    <template if:true={isUploaded}>
+        <div>
+            <div>
+                <Span class="label">File Name :</Span>
+                <lightning-formatted-text name="fileName" value={fileName} class="value"></lightning-formatted-text>
+            </div>
+            <div>
+                <Span class="label">File Type :</Span>
+                <lightning-formatted-text name="fileType" value={fileType} class="value"></lightning-formatted-text>
+            </div>
+            <div>
+                <a href={fileURL}>Download</a>
+            </div>
+        </div>
+    </template>
+</template>

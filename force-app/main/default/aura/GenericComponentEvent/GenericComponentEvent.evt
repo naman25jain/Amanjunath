@@ -1,0 +1,6 @@
+<!--
+ - Created by Matthew on 11/1/18.
+ -->
+<aura:event type="COMPONENT" description="GenericComponentEvent">
+    <aura:attribute name="data" type="Object" />
+</aura:event>

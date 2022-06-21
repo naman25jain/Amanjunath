@@ -1,0 +1,100 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,forceCommunity:availableForAllPageTypes" access="global" controller="CommunityIdentityVerificationController" extends="c:CommunityBase">
+    <aura:attribute name="contactId" type="String" />
+    <aura:attribute name="notarizedFormId" type="String" />
+    <aura:attribute name="notarizedFormIdOld" type="String" />
+    <aura:attribute name="service" type="String" />
+
+    <aura:attribute name="showCompleteModal" type="Boolean" default="false" />	
+    <aura:attribute name="showPhotoError" type="Boolean" default="false" />
+    <aura:attribute name="showPassportError" type="Boolean" default="false" />
+    <aura:attribute name="showNotaryError" type="Boolean" default="false" />
+	<aura:attribute name="photoErrors" type="String[]"/>
+	<aura:attribute name="passportErrors" type="String[]"/>
+	<aura:attribute name="notaryErrors" type="String[]"/>
+
+	<aura:attribute name="caseNumber" type="String" />
+	<aura:attribute name="caseId" type="String" />
+
+	<aura:attribute name="notaryUploadedPrevious" type="String" default="No" />
+<aura:attribute name="payloadNotaryPrevious" type="String" />
+
+
+<aura:attribute name="upload" type="Boolean" default="true" />
+<aura:attribute name="maxsize" type="Integer" default="10" />
+<aura:attribute name="notaryUploadedNew" type="String" default="No" />
+<aura:attribute name="payloadNotaryNew" type="String" />
+
+	
+
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+	<div class="slds-grid slds-gutters">
+		<div class="slds-col slds-size_1-of-1"><span>
+		<h2>Resubmit Notarized Identification Form</h2><br/>
+		The notarized identification form you submitted was unacceptable for the reason(s) provided below. Please download your <a href="javascript:void(0)" target="_blank" onclick="{!c.handleFileViewer}">identification form</a> again and have it notarized in person by a Notary Public, Consular Official, First Class Magistrate, or Commissioner of Oaths (each, an “Authorized Official”). The authorized official must then sign the form and affix their seal in the location designated on the form. The seal must cover a portion of your photo and a portion of your passport, per the instructions on the form. You must sign the form in the presence of the authorized official. You must then scan and upload the notarized identification form using the button below.<br/><br/>
+
+			<ul>
+				<aura:iteration items="{!v.notaryErrors}" var="notaryErr">
+				<li>• {!notaryErr}</li>		    	
+				</aura:iteration>
+			</ul><br/>
+		<strong>Upload New Notarized Identification Form</strong><br/>
+		<c:cloudDocumentUploadWrapper aura:id="notary" payLoad="{!v.payloadNotaryNew}"
+			maxAllowedFileSize="{!v.maxsize}" acceptedFileFormats=".jpg,.jpeg,.pdf,.tiff" enableAnnotation="false"
+			enableRedaction="false" onuploadcompleted="{!c.handleUploadFinishedNotary}" /><br /><br />
+		<c:gDisplayContent uniqueContentValue="upload_msg_jpeg_tiff_pdf">
+						</c:gDisplayContent>
+		<aura:if isTrue="{!v.notaryUploadedNew != 'Yes'}">
+			<div class="errorText">You must upload a new notarized identification form to proceed.</div>
+		</aura:if>
+
+
+		
+	<aura:if isTrue="{!v.notaryUploadedPrevious == 'Yes'}"> 
+		<br/><strong>Previously Uploaded Notarized Identification Form</strong><br/><br/>
+		 <c:cloudDocumentUploadWrapper aura:id="preNotary" payLoad="{!v.payloadNotaryPrevious}"
+						maxAllowedFileSize="{!v.maxsize}" acceptedFileFormats=".jpg,.jpeg,.pdf,.tiff" 
+						hideUpload="{!v.upload}" enableAnnotation="false" enableRedaction="false" />
+	</aura:if>
+
+	<aura:if isTrue="{!v.notaryUploadedNew != 'Yes'}">
+		<lightning:button disabled="true" variant="brand" name="save" label="Submit Document" onclick="{!c.handleSave}" />
+	</aura:if>
+	<aura:if isTrue="{!v.notaryUploadedNew != 'No'}">
+			<lightning:button variant="brand" name="save" label="Submit Document" onclick="{!c.handleSave}" />
+		</aura:if>
+			&nbsp;
+			<lightning:button variant="brand" name="next" label="Cancel" onclick="{!c.cancelAsset}" />
+		
+		</span></div>
+	</div>
+	
+	<aura:if isTrue="{!v.showCompleteModal}">
+		<div class="demo-only" style="height: 640px;">
+			<section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+				<div class="slds-modal__container">
+					<header class="slds-modal__header">
+						<h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Notarized Identification Form Submitted!</h2>
+					</header>
+					<div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+						<p class="slds-p-bottom_small">
+							<aura:if isTrue="{!v.caseNumber == null}">
+								You have successfully submitted your identification documentation. ECFMG will update the status of your case as soon as your request has been processed.
+							</aura:if>
+							<aura:if isTrue="{!v.caseNumber != null}">
+								You have successfully submitted your notarized identification form for review. For reference, your case number for this request is {!v.caseNumber}. ECFMG will update the status of your case as soon as your request has been processed.
+							</aura:if>
+						</p>
+						<p class="slds-p-bottom_small">
+							 Please contact us if you have any questions.
+						</p> 
+					</div>
+					<footer class="slds-modal__footer">
+						<lightning:button aura:id="okButton" class="slds-button slds-button_brand" onclick="{!c.redirectHome}">Ok</lightning:button>
+					</footer>
+				</div>
+			</section>
+			<div class="slds-backdrop slds-backdrop_open"></div>
+		</div>
+	</aura:if>
+</aura:component>

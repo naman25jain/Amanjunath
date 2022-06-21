@@ -1,0 +1,98 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes"
+                access="global"
+                controller="Entity_360_Base_Controller" extends="c:CommunityBase">
+
+    <aura:attribute name="contact" type="Object" default="{!v.contactInitialFieldsCreated}" />
+    <aura:attribute name="birthCountryList" type="List" />
+    <aura:attribute name="contactInitialFieldsCreated" type="Object"/>
+    <aura:attribute name="contactCompleted" type="Boolean"/>
+    <aura:attribute name="gender" type="String[]" default=",Female,Male,X"/>
+    <aura:attribute name="genderOptionsCB" type="List" default="[{'label': 'Female', 'value': 'Female'},{'label': 'Male', 'value': 'Male'},{'label': 'X', 'value': 'X'},]"/>
+    <aura:attribute name="generationalSuffixCB" type="List" default="[{'label': 'Jr', 'value': 'Jr'},{'label': 'Sr', 'value': 'Sr'},{'label': 'II', 'value': 'II'},{'label': 'III', 'value': 'III'},{'label': 'IV', 'value': 'IV'},{'label': 'V', 'value': 'V'},]"/>
+    <aura:attribute name="pageReady" type="Boolean" default="false" />
+
+    <aura:attribute name="initialEmail" type="String" />
+    <aura:attribute name="newEmail" type="String" />
+    <aura:attribute name="confirmEmail" type="String" />
+    <aura:attribute name="showConfirmEmail" type="Boolean" default="false" />
+    <aura:attribute name="validConfirmEmail" type="Boolean" default="false" />
+    <aura:attribute name="emailFormatValid" type="Boolean" default="true" />
+    <aura:attribute name="duplicate" type="Boolean" default="false" />
+    <aura:attribute name="confirmChange" type="Boolean" default="false" />
+    <aura:attribute name="hasChanges" type="Boolean" default="false" />
+
+	<aura:attribute name="disableSaveButton" type="Boolean" default="true" />
+
+	<aura:attribute name="serializedContactData" type="String" description="Used to track when the object fields are changed. JSON serialized." />
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+	<aura:handler name="change" value="{!v.contact}" action="{!c.contactOnChange}" />
+
+
+    <aura:if isTrue="{!!v.pageReady}"><lightning:spinner variant="brand" alternativeText="Loading" size="large" /></aura:if>
+	<c:CommunitySummarySectionHeader hideEditButton="true" title="My Intealth Profile" />
+	<h3>Contact Information</h3>
+	<p>You must ensure that the information in your Intealth profile is correct and current. If you need to update your information, please enter the changes and click <strong>Save</strong>.</p><p>&nbsp;</p>
+    <form class="slds-form">
+	    <div class="slds-form-element slds-form-element_horizontal">
+	        <lightning:input name="lastName" value="{!v.contact.LastName}" placeholder="" label="Last Name/Surname"  aura:id="fieldToValidate" required="true" onchange="{!c.handleChange}"/>
+	    </div>
+	    <aura:if isTrue="{!!v.contact.legal_name_consists_of_one_name_only__c}">
+	        <div class="slds-form-element slds-form-element_horizontal">
+	            <lightning:input name="firstName" value="{!v.contact.FirstName}" placeholder="" label="Rest of Name"  aura:id="fieldToValidate" required="{!!v.contact.legal_name_consists_of_one_name_only__c}"  onchange="{!c.handleChange}"/>
+	        </div>
+	    </aura:if>
+	    <div class="slds-form-element slds-form-element_horizontal">
+	        <lightning:input type="checkbox" label="My legal name consists of one name only" aura:id="lastOnly" name="lastOnly" checked="{!v.contact.legal_name_consists_of_one_name_only__c}"  onchange="{!c.handleOneNameChange}"/>
+	    </div>
+	    <div class="slds-form-element slds-form-element_horizontal">
+	        <lightning:combobox name="generationalSuffix" label="Generational Suffix" options="{!v.generationalSuffixCB}" value="{!v.contact.Generational_Suffix__c}"  onchange="{!c.handleChange}"/>
+	    </div>
+	    <div class="slds-form-element slds-form-element_horizontal">
+	        <lightning:input name="dateOfBirth" type="date" value="{!v.contact.Birthdate}" placeholder="" label="Date of Birth" aura:id="fieldToValidate" required="true"  onchange="{!c.handleChange}"/>
+	    </div>
+	    <div class="slds-form-element slds-form-element_horizontal">
+	        <lightning:combobox name="birthCountry" label="Birth Country" value="{!v.contact.Birth_Country__c}" placeholder="Select Birth Country" options="{! v.birthCountryList }" aura:id="fieldToValidate" required="true" onchange="{!c.handleChange}"/>
+	    </div>
+	    <div class="slds-form-element slds-form-element_horizontal">
+	        <lightning:input name="phone" value="{!v.contact.Phone}" placeholder="" label="Phone Number" aura:id="fieldToValidate"  onchange="{!c.handleChange}"/>
+	    </div>
+	    <div class="slds-form-element slds-form-element_horizontal">
+	        <lightning:input name="email" value="{!v.contact.Department}" placeholder="" label="Department" aura:id="fieldToValidate"  onchange="{!c.handleChange}"/>
+	    </div>
+	    <div class="slds-form-element slds-form-element_horizontal">
+	        <lightning:input name="email" value="{!v.contact.Title}" placeholder="" label="Job Title" aura:id="fieldToValidate"  onchange="{!c.handleChange}"/>
+	    </div>
+		<div class="slds-form-element slds-form-element_horizontal">
+			<lightning:input name="email" type="email" value="{!v.newEmail}" placeholder="" label="Email Address" aura:id="email" required="true"  onchange="{!c.emailChange}" />
+		</div>
+		<div class="slds-form-element slds-form-element_horizontal">
+            <lightning:input name="lastName" value="{!v.contact.ECFMG_ID__c}" placeholder="" label="Intealth ID"  aura:id="fieldToValidate"/>
+        </div>
+		<aura:if isTrue="{!v.duplicate}">
+			<center><div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_warning" role="alert">This email address is already in use.</div></center>
+		</aura:if>
+		<aura:if isTrue="{!v.showConfirmEmail}">
+			<div class="slds-form-element slds-form-element_horizontal">
+				<lightning:input name="emailConfirm" type="email" value="{!v.confirmEmail}" placeholder="" label="Confirm Email Address" aura:id="confirmEmail" disabled="{!v.readOnlyMode}" onchange="{!c.confirmEmailChange}" oncontextmenu="{! c.handleContext }" onpaste="{! c.handlePaste }" required="true" />
+			</div>
+			<aura:if isTrue="{!v.validConfirmEmail}">
+				<div class="slds-form-element slds-form-element_horizontal actions">
+					<lightning:input type="checkbox" label="Please note that updating your email address will also update your login username. Check the box here to confirm you understand the impacts of this change." aura:id="agreement" name="agreement" checked="{!v.confirmChange}" onchange="{!c.confirmChanges}" />
+				</div>
+			</aura:if>
+			<aura:if isTrue="{!!v.validConfirmEmail}">
+				<center><div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_warning" role="alert">Your email confirmation does not match the new email address entered.</div></center>
+			</aura:if>
+		</aura:if>
+		<div class="slds-form-element slds-form-element_horizontal actions">
+			<label class="slds-form-element__label" for="form-element-01">&nbsp;</label>
+			<div class="slds-form-element__control">
+			    <lightning:button variant="brand" label="Cancel" onclick="{! c.handleCancel }" /> &nbsp;&nbsp;&nbsp;&nbsp;
+<!--			    <lightning:button class="slds-button slds-button_brand" label="Save" onclick="{! c.handleSave }" disabled="{!or(or(or( or( or( or(v.disableSave, !v.emailFormatValid), v.duplicate) , !v.pageReady), and(and(v.showConfirmEmail, v.validConfirmEmail),!v.confirmChange)), and(v.showConfirmEmail, !v.validConfirmEmail)), and(!v.hasChanges, !v.showConfirmEmail))}" />-->
+				<lightning:button class="slds-button slds-button_brand" label="Save" onclick="{! c.handleSave }" disabled="{!v.disableSaveButton}" />
+			</div>
+		</div>
+	</form>
+</aura:component>

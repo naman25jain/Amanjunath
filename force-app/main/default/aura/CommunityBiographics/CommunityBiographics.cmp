@@ -1,0 +1,392 @@
+<aura:component
+	implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,forceCommunity:availableForAllPageTypes"
+	access="global" controller="CommunityIdentityVerificationController" extends="c:CommunityBase">
+	<!-- private attributes -->
+	<aura:attribute name="pageReady" type="Boolean" default="false" access="private"
+		description="Indicates that the server calls are complete" />
+	<aura:attribute name="disableButtons" type="Boolean" default="false" access="private"
+		description="If true, action buttons will be disabled." />
+	<aura:attribute name="showExistingAccount" type="Boolean" default="false" access="private"
+		description="Set to true to show the already registered modal window." />
+	<!-- design attributes -->
+	<aura:attribute name="readOnlyMode" type="Boolean" default="false" />
+	<aura:attribute name="service" type="String" />
+	<aura:attribute name="caseId" type="String" />
+	<aura:attribute name="contactId" type="String" />
+	<aura:attribute name="fileId" type="String" />
+	<aura:attribute name="photoId" type="String" />
+	<aura:attribute name="passportId" type="String" />
+	<aura:attribute name="passportExpirationId" type="String" />
+	<aura:attribute name="passportTranslationId" type="String" />
+	<aura:attribute name="showPhotoError" type="Boolean" default="false" />
+	<aura:attribute name="showPassportError" type="Boolean" default="false" />
+	<aura:attribute name="maxsize" type="Integer" default="10" />
+	<aura:attribute name="fileList" type="String[]" />
+	<aura:attribute name="contact" type="Object" default="{}" />
+	<aura:attribute name="case" type="Object" default="{}" />
+	<aura:attribute name="lastOnly" type="Boolean" default="false" />
+	<aura:attribute name="passportCountryIsNull" type="Boolean" default="false" />
+	<aura:attribute name="birthCountyisNull" type="Boolean" default="false" />
+	<aura:attribute name="citizenshipAtBirthIsNull" type="Boolean" default="false" />
+	<aura:attribute name="citizenshipAtMedSchoolIsNull" type="Boolean" default="false" />
+	<aura:attribute name="validationError" type="Boolean" default="false" />
+	<aura:attribute name="passportUploaded" type="String" default="No" />
+	<aura:attribute name="passportExpirationDone" type="String" default="No" />
+	<aura:attribute name="passportTranslationDone" type="String" default="No" />
+	<aura:attribute name="photoUploaded" type="String" default="No" />
+	<aura:attribute name="payloadPhoto" type="String" />
+	<aura:attribute name="passportCountryOptions" type="List"
+		default="[{label : 'Select..', value : 'Select..'},{label : 'Afghanistan', value : 'Afghanistan'},{label : 'Aland Islands', value : 'Aland Islands'},{label : 'Albania', value : 'Albania'},{label : 'Algeria', value : 'Algeria'},{label : 'Andorra', value : 'Andorra'},{label : 'Angola', value : 'Angola'},{label : 'Anguilla', value : 'Anguilla'},{label : 'Antarctica', value : 'Antarctica'},{label : 'Antigua and Barbuda', value : 'Antigua and Barbuda'},{label : 'Argentina', value : 'Argentina'},{label : 'Armenia', value : 'Armenia'},{label : 'Aruba', value : 'Aruba'},{label : 'Australia', value : 'Australia'},{label : 'Austria', value : 'Austria'},{label : 'Azerbaijan', value : 'Azerbaijan'},{label : 'Bahamas', value : 'Bahamas'},{label : 'Bahrain', value : 'Bahrain'},{label : 'Bangladesh', value : 'Bangladesh'},{label : 'Barbados', value : 'Barbados'},{label : 'Belarus', value : 'Belarus'},{label : 'Belgium', value : 'Belgium'},{label : 'Belize', value : 'Belize'},{label : 'Benin', value : 'Benin'},{label : 'Bermuda', value : 'Bermuda'},{label : 'Bhutan', value : 'Bhutan'},{label : 'Bonaire, Sint Eustatius and Saba', value : 'Bonaire, Sint Eustatius and Saba'},{label : 'Bosnia and Herzegovina', value : 'Bosnia and Herzegovina'},{label : 'Botswana', value : 'Botswana'},{label : 'Bouvet Island', value : 'Bouvet Island'},{label : 'Brazil', value : 'Brazil'},{label : 'British Indian Ocean Territory', value : 'British Indian Ocean Territory'},{label : 'Brunei Darussalam', value : 'Brunei Darussalam'},{label : 'Bulgaria', value : 'Bulgaria'},{label : 'Burkina Faso', value : 'Burkina Faso'},{label : 'Burundi', value : 'Burundi'},{label : 'Cambodia', value : 'Cambodia'},{label : 'Cameroon', value : 'Cameroon'},{label : 'Canada', value : 'Canada'},{label : 'Cape Verde', value : 'Cape Verde'},{label : 'Cayman Islands', value : 'Cayman Islands'},{label : 'Central African Republic', value : 'Central African Republic'},{label : 'Chad', value : 'Chad'},{label : 'Chile', value : 'Chile'},{label : 'China', value : 'China'},{label : 'Christmas Island', value : 'Christmas Island'},{label : 'Cocos (Keeling) Islands', value : 'Cocos (Keeling) Islands'},{label : 'Colombia', value : 'Colombia'},{label : 'Comoros', value : 'Comoros'},{label : 'Congo', value : 'Congo'},{label : 'Congo, the Democratic Republic of the', value : 'Congo, the Democratic Republic of the'},{label : 'Cook Islands', value : 'Cook Islands'},{label : 'Costa Rica', value : 'Costa Rica'},{label : 'Cote d\'Ivoire', value : 'Cote d\'Ivoire'},{label : 'Croatia', value : 'Croatia'},{label : 'Cuba', value : 'Cuba'},{label : 'Curaçao', value : 'Curaçao'},{label : 'Cyprus', value : 'Cyprus'},{label : 'Czech Republic', value : 'Czech Republic'},{label : 'Denmark', value : 'Denmark'},{label : 'Djibouti', value : 'Djibouti'},{label : 'Dominica', value : 'Dominica'},{label : 'Dominican Republic', value : 'Dominican Republic'},{label : 'Ecuador', value : 'Ecuador'},{label : 'Egypt', value : 'Egypt'},{label : 'El Salvador', value : 'El Salvador'},{label : 'Equatorial Guinea', value : 'Equatorial Guinea'},{label : 'Eritrea', value : 'Eritrea'},{label : 'Estonia', value : 'Estonia'},{label : 'Ethiopia', value : 'Ethiopia'},{label : 'Falkland Islands (Malvinas)', value : 'Falkland Islands (Malvinas)'},{label : 'Faroe Islands', value : 'Faroe Islands'},{label : 'Fiji', value : 'Fiji'},{label : 'Finland', value : 'Finland'},{label : 'France', value : 'France'},{label : 'French Guiana', value : 'French Guiana'},{label : 'French Polynesia', value : 'French Polynesia'},{label : 'French Southern Territories', value : 'French Southern Territories'},{label : 'Gabon', value : 'Gabon'},{label : 'Gambia', value : 'Gambia'},{label : 'Georgia', value : 'Georgia'},{label : 'Germany', value : 'Germany'},{label : 'Ghana', value : 'Ghana'},{label : 'Gibraltar', value : 'Gibraltar'},{label : 'Greece', value : 'Greece'},{label : 'Greenland', value : 'Greenland'},{label : 'Grenada', value : 'Grenada'},{label : 'Guadeloupe', value : 'Guadeloupe'},{label : 'Guatemala', value : 'Guatemala'},{label : 'Guernsey', value : 'Guernsey'},{label : 'Guinea', value : 'Guinea'},{label : 'Guinea-Bissau', value : 'Guinea-Bissau'},{label : 'Guyana', value : 'Guyana'},{label : 'Haiti', value : 'Haiti'},{label : 'Heard Island and McDonald Islands', value : 'Heard Island and McDonald Islands'},{label : 'Holy See (Vatican City State)', value : 'Holy See (Vatican City State)'},{label : 'Honduras', value : 'Honduras'},{label : 'Hungary', value : 'Hungary'},{label : 'Iceland', value : 'Iceland'},{label : 'India', value : 'India'},{label : 'Indonesia', value : 'Indonesia'},{label : 'Iran, Islamic Republic of', value : 'Iran, Islamic Republic of'},{label : 'Iraq', value : 'Iraq'},{label : 'Ireland', value : 'Ireland'},{label : 'Isle of Man', value : 'Isle of Man'},{label : 'Israel', value : 'Israel'},{label : 'Italy', value : 'Italy'},{label : 'Jamaica', value : 'Jamaica'},{label : 'Japan', value : 'Japan'},{label : 'Jersey', value : 'Jersey'},{label : 'Jordan', value : 'Jordan'},{label : 'Kazakhstan', value : 'Kazakhstan'},{label : 'Kenya', value : 'Kenya'},{label : 'Kiribati', value : 'Kiribati'},{label : 'Korea, Republic of', value : 'Korea, Republic of'},{label : 'Kuwait', value : 'Kuwait'},{label : 'Kyrgyzstan', value : 'Kyrgyzstan'},{label : 'Lao', value : 'Lao'},{label : 'Latvia', value : 'Latvia'},{label : 'Lebanon', value : 'Lebanon'},{label : 'Lesotho', value : 'Lesotho'},{label : 'Liberia', value : 'Liberia'},{label : 'Libya', value : 'Libya'},{label : 'Liechtenstein', value : 'Liechtenstein'},{label : 'Lithuania', value : 'Lithuania'},{label : 'Luxembourg', value : 'Luxembourg'},{label : 'Macao', value : 'Macao'},{label : 'Macedonia, the former Yugoslav Republic of', value : 'Macedonia, the former Yugoslav Republic of'},{label : 'Madagascar', value : 'Madagascar'},{label : 'Malawi', value : 'Malawi'},{label : 'Malaysia', value : 'Malaysia'},{label : 'Maldives', value : 'Maldives'},{label : 'Mali', value : 'Mali'},{label : 'Malta', value : 'Malta'},{label : 'Martinique', value : 'Martinique'},{label : 'Mauritania', value : 'Mauritania'},{label : 'Mauritius', value : 'Mauritius'},{label : 'Mayotte', value : 'Mayotte'},{label : 'Mexico', value : 'Mexico'},{label : 'Moldova, Republic of', value : 'Moldova, Republic of'},{label : 'Monaco', value : 'Monaco'},{label : 'Mongolia', value : 'Mongolia'},{label : 'Montenegro', value : 'Montenegro'},{label : 'Montserrat', value : 'Montserrat'},{label : 'Morocco', value : 'Morocco'},{label : 'Mozambique', value : 'Mozambique'},{label : 'Myanmar', value : 'Myanmar'},{label : 'Namibia', value : 'Namibia'},{label : 'Nauru', value : 'Nauru'},{label : 'Nepal', value : 'Nepal'},{label : 'Netherlands', value : 'Netherlands'},{label : 'New Caledonia', value : 'New Caledonia'},{label : 'New Zealand', value : 'New Zealand'},{label : 'Nicaragua', value : 'Nicaragua'},{label : 'Niger', value : 'Niger'},{label : 'Nigeria', value : 'Nigeria'},{label : 'Niue', value : 'Niue'},{label : 'Norfolk Island', value : 'Norfolk Island'},{label : 'North Korea', value : 'North Korea'},{label : 'Norway', value : 'Norway'},{label : 'Oman', value : 'Oman'},{label : 'Pakistan', value : 'Pakistan'},{label : 'Palestine', value : 'Palestine'},{label : 'Panama', value : 'Panama'},{label : 'Papua New Guinea', value : 'Papua New Guinea'},{label : 'Paraguay', value : 'Paraguay'},{label : 'Peru', value : 'Peru'},{label : 'Philippines', value : 'Philippines'},{label : 'Pitcairn', value : 'Pitcairn'},{label : 'Plurinational State of Bolivia', value : 'Plurinational State of Bolivia'},{label : 'Poland', value : 'Poland'},{label : 'Portugal', value : 'Portugal'},{label : 'Qatar', value : 'Qatar'},{label : 'Reunion', value : 'Reunion'},{label : 'Romania', value : 'Romania'},{label : 'Russian Federation', value : 'Russian Federation'},{label : 'Rwanda', value : 'Rwanda'},{label : 'Saint Barthélemy', value : 'Saint Barthélemy'},{label : 'Saint Helena, Ascension and Tristan da Cunha', value : 'Saint Helena, Ascension and Tristan da Cunha'},{label : 'Saint Kitts and Nevis', value : 'Saint Kitts and Nevis'},{label : 'Saint Lucia', value : 'Saint Lucia'},{label : 'Saint Martin (French part)', value : 'Saint Martin (French part)'},{label : 'Saint Pierre and Miquelon', value : 'Saint Pierre and Miquelon'},{label : 'Saint Vincent and the Grenadines', value : 'Saint Vincent and the Grenadines'},{label : 'Samoa', value : 'Samoa'},{label : 'San Marino', value : 'San Marino'},{label : 'Sao Tome and Principe', value : 'Sao Tome and Principe'},{label : 'Saudi Arabia', value : 'Saudi Arabia'},{label : 'Senegal', value : 'Senegal'},{label : 'Serbia', value : 'Serbia'},{label : 'Seychelles', value : 'Seychelles'},{label : 'Sierra Leone', value : 'Sierra Leone'},{label : 'Singapore', value : 'Singapore'},{label : 'Sint Maarten (Dutch part)', value : 'Sint Maarten (Dutch part)'},{label : 'Slovakia', value : 'Slovakia'},{label : 'Slovenia', value : 'Slovenia'},{label : 'Solomon Islands', value : 'Solomon Islands'},{label : 'Somalia', value : 'Somalia'},{label : 'South Africa', value : 'South Africa'},{label : 'South Georgia and the South Sandwich Islands', value : 'South Georgia and the South Sandwich Islands'},{label : 'South Sudan', value : 'South Sudan'},{label : 'Spain', value : 'Spain'},{label : 'Sri Lanka', value : 'Sri Lanka'},{label : 'Sudan', value : 'Sudan'},{label : 'Suriname', value : 'Suriname'},{label : 'Svalbard and Jan Mayen', value : 'Svalbard and Jan Mayen'},{label : 'Swaziland', value : 'Swaziland'},{label : 'Sweden', value : 'Sweden'},{label : 'Switzerland', value : 'Switzerland'},{label : 'Syrian Arab Republic', value : 'Syrian Arab Republic'},{label : 'Taiwan', value : 'Taiwan'},{label : 'Tajikistan', value : 'Tajikistan'},{label : 'Thailand', value : 'Thailand'},{label : 'Timor-Leste', value : 'Timor-Leste'},{label : 'Togo', value : 'Togo'},{label : 'Tokelau', value : 'Tokelau'},{label : 'Tonga', value : 'Tonga'},{label : 'Trinidad and Tobago', value : 'Trinidad and Tobago'},{label : 'Tunisia', value : 'Tunisia'},{label : 'Turkey', value : 'Turkey'},{label : 'Turkmenistan', value : 'Turkmenistan'},{label : 'Turks and Caicos Islands', value : 'Turks and Caicos Islands'},{label : 'Tuvalu', value : 'Tuvalu'},{label : 'Uganda', value : 'Uganda'},{label : 'Ukraine', value : 'Ukraine'},{label : 'United Arab Emirates', value : 'United Arab Emirates'},{label : 'United Kingdom', value : 'United Kingdom'},{label : 'United Republic of Tanzania', value : 'United Republic of Tanzania'},{label : 'United States', value : 'United States'},{label : 'Uruguay', value : 'Uruguay'},{label : 'Uzbekistan', value : 'Uzbekistan'},{label : 'Vanuatu', value : 'Vanuatu'},{label : 'Venezuela, Bolivarian Republic of', value : 'Venezuela, Bolivarian Republic of'},{label : 'Vietnam', value : 'Vietnam'},{label : 'Virgin Islands, British', value : 'Virgin Islands, British'},{label : 'Wallis and Futuna', value : 'Wallis and Futuna'},{label : 'Western Sahara', value : 'Western Sahara'},{label : 'Yemen', value : 'Yemen'},{label : 'Zambia', value : 'Zambia'},{label : 'Zimbabwe', value : 'Zimbabwe'}]" />
+	<aura:attribute name="birthCountryOptions" type="List"
+		default="[{label : 'Select..', value : 'Select..'},{label : 'Afghanistan', value : 'Afghanistan'},{label : 'Aland Islands', value : 'Aland Islands'},{label : 'Albania', value : 'Albania'},{label : 'Algeria', value : 'Algeria'},{label : 'Andorra', value : 'Andorra'},{label : 'Angola', value : 'Angola'},{label : 'Anguilla', value : 'Anguilla'},{label : 'Antarctica', value : 'Antarctica'},{label : 'Antigua and Barbuda', value : 'Antigua and Barbuda'},{label : 'Argentina', value : 'Argentina'},{label : 'Armenia', value : 'Armenia'},{label : 'Aruba', value : 'Aruba'},{label : 'Australia', value : 'Australia'},{label : 'Austria', value : 'Austria'},{label : 'Azerbaijan', value : 'Azerbaijan'},{label : 'Bahamas', value : 'Bahamas'},{label : 'Bahrain', value : 'Bahrain'},{label : 'Bangladesh', value : 'Bangladesh'},{label : 'Barbados', value : 'Barbados'},{label : 'Belarus', value : 'Belarus'},{label : 'Belgium', value : 'Belgium'},{label : 'Belize', value : 'Belize'},{label : 'Benin', value : 'Benin'},{label : 'Bermuda', value : 'Bermuda'},{label : 'Bhutan', value : 'Bhutan'},{label : 'Bonaire, Sint Eustatius and Saba', value : 'Bonaire, Sint Eustatius and Saba'},{label : 'Bosnia and Herzegovina', value : 'Bosnia and Herzegovina'},{label : 'Botswana', value : 'Botswana'},{label : 'Bouvet Island', value : 'Bouvet Island'},{label : 'Brazil', value : 'Brazil'},{label : 'British Indian Ocean Territory', value : 'British Indian Ocean Territory'},{label : 'Brunei Darussalam', value : 'Brunei Darussalam'},{label : 'Bulgaria', value : 'Bulgaria'},{label : 'Burkina Faso', value : 'Burkina Faso'},{label : 'Burundi', value : 'Burundi'},{label : 'Cambodia', value : 'Cambodia'},{label : 'Cameroon', value : 'Cameroon'},{label : 'Canada', value : 'Canada'},{label : 'Cape Verde', value : 'Cape Verde'},{label : 'Cayman Islands', value : 'Cayman Islands'},{label : 'Central African Republic', value : 'Central African Republic'},{label : 'Chad', value : 'Chad'},{label : 'Chile', value : 'Chile'},{label : 'China', value : 'China'},{label : 'Christmas Island', value : 'Christmas Island'},{label : 'Cocos (Keeling) Islands', value : 'Cocos (Keeling) Islands'},{label : 'Colombia', value : 'Colombia'},{label : 'Comoros', value : 'Comoros'},{label : 'Congo', value : 'Congo'},{label : 'Congo, the Democratic Republic of the', value : 'Congo, the Democratic Republic of the'},{label : 'Cook Islands', value : 'Cook Islands'},{label : 'Costa Rica', value : 'Costa Rica'},{label : 'Cote d\'Ivoire', value : 'Cote d\'Ivoire'},{label : 'Croatia', value : 'Croatia'},{label : 'Cuba', value : 'Cuba'},{label : 'Curaçao', value : 'Curaçao'},{label : 'Cyprus', value : 'Cyprus'},{label : 'Czech Republic', value : 'Czech Republic'},{label : 'Denmark', value : 'Denmark'},{label : 'Djibouti', value : 'Djibouti'},{label : 'Dominica', value : 'Dominica'},{label : 'Dominican Republic', value : 'Dominican Republic'},{label : 'Ecuador', value : 'Ecuador'},{label : 'Egypt', value : 'Egypt'},{label : 'El Salvador', value : 'El Salvador'},{label : 'Equatorial Guinea', value : 'Equatorial Guinea'},{label : 'Eritrea', value : 'Eritrea'},{label : 'Estonia', value : 'Estonia'},{label : 'Ethiopia', value : 'Ethiopia'},{label : 'Falkland Islands (Malvinas)', value : 'Falkland Islands (Malvinas)'},{label : 'Faroe Islands', value : 'Faroe Islands'},{label : 'Fiji', value : 'Fiji'},{label : 'Finland', value : 'Finland'},{label : 'France', value : 'France'},{label : 'French Guiana', value : 'French Guiana'},{label : 'French Polynesia', value : 'French Polynesia'},{label : 'French Southern Territories', value : 'French Southern Territories'},{label : 'Gabon', value : 'Gabon'},{label : 'Gambia', value : 'Gambia'},{label : 'Georgia', value : 'Georgia'},{label : 'Germany', value : 'Germany'},{label : 'Ghana', value : 'Ghana'},{label : 'Gibraltar', value : 'Gibraltar'},{label : 'Greece', value : 'Greece'},{label : 'Greenland', value : 'Greenland'},{label : 'Grenada', value : 'Grenada'},{label : 'Guadeloupe', value : 'Guadeloupe'},{label : 'Guatemala', value : 'Guatemala'},{label : 'Guernsey', value : 'Guernsey'},{label : 'Guinea', value : 'Guinea'},{label : 'Guinea-Bissau', value : 'Guinea-Bissau'},{label : 'Guyana', value : 'Guyana'},{label : 'Haiti', value : 'Haiti'},{label : 'Heard Island and McDonald Islands', value : 'Heard Island and McDonald Islands'},{label : 'Holy See (Vatican City State)', value : 'Holy See (Vatican City State)'},{label : 'Honduras', value : 'Honduras'},{label : 'Hungary', value : 'Hungary'},{label : 'Iceland', value : 'Iceland'},{label : 'India', value : 'India'},{label : 'Indonesia', value : 'Indonesia'},{label : 'Iran, Islamic Republic of', value : 'Iran, Islamic Republic of'},{label : 'Iraq', value : 'Iraq'},{label : 'Ireland', value : 'Ireland'},{label : 'Isle of Man', value : 'Isle of Man'},{label : 'Israel', value : 'Israel'},{label : 'Italy', value : 'Italy'},{label : 'Jamaica', value : 'Jamaica'},{label : 'Japan', value : 'Japan'},{label : 'Jersey', value : 'Jersey'},{label : 'Jordan', value : 'Jordan'},{label : 'Kazakhstan', value : 'Kazakhstan'},{label : 'Kenya', value : 'Kenya'},{label : 'Kiribati', value : 'Kiribati'},{label : 'Korea, Republic of', value : 'Korea, Republic of'},{label : 'Kuwait', value : 'Kuwait'},{label : 'Kyrgyzstan', value : 'Kyrgyzstan'},{label : 'Lao', value : 'Lao'},{label : 'Latvia', value : 'Latvia'},{label : 'Lebanon', value : 'Lebanon'},{label : 'Lesotho', value : 'Lesotho'},{label : 'Liberia', value : 'Liberia'},{label : 'Libya', value : 'Libya'},{label : 'Liechtenstein', value : 'Liechtenstein'},{label : 'Lithuania', value : 'Lithuania'},{label : 'Luxembourg', value : 'Luxembourg'},{label : 'Macao', value : 'Macao'},{label : 'Macedonia, the former Yugoslav Republic of', value : 'Macedonia, the former Yugoslav Republic of'},{label : 'Madagascar', value : 'Madagascar'},{label : 'Malawi', value : 'Malawi'},{label : 'Malaysia', value : 'Malaysia'},{label : 'Maldives', value : 'Maldives'},{label : 'Mali', value : 'Mali'},{label : 'Malta', value : 'Malta'},{label : 'Martinique', value : 'Martinique'},{label : 'Mauritania', value : 'Mauritania'},{label : 'Mauritius', value : 'Mauritius'},{label : 'Mayotte', value : 'Mayotte'},{label : 'Mexico', value : 'Mexico'},{label : 'Moldova, Republic of', value : 'Moldova, Republic of'},{label : 'Monaco', value : 'Monaco'},{label : 'Mongolia', value : 'Mongolia'},{label : 'Montenegro', value : 'Montenegro'},{label : 'Montserrat', value : 'Montserrat'},{label : 'Morocco', value : 'Morocco'},{label : 'Mozambique', value : 'Mozambique'},{label : 'Myanmar', value : 'Myanmar'},{label : 'Namibia', value : 'Namibia'},{label : 'Nauru', value : 'Nauru'},{label : 'Nepal', value : 'Nepal'},{label : 'Netherlands', value : 'Netherlands'},{label : 'New Caledonia', value : 'New Caledonia'},{label : 'New Zealand', value : 'New Zealand'},{label : 'Nicaragua', value : 'Nicaragua'},{label : 'Niger', value : 'Niger'},{label : 'Nigeria', value : 'Nigeria'},{label : 'Niue', value : 'Niue'},{label : 'Norfolk Island', value : 'Norfolk Island'},{label : 'North Korea', value : 'North Korea'},{label : 'Norway', value : 'Norway'},{label : 'Oman', value : 'Oman'},{label : 'Pakistan', value : 'Pakistan'},{label : 'Palestine', value : 'Palestine'},{label : 'Panama', value : 'Panama'},{label : 'Papua New Guinea', value : 'Papua New Guinea'},{label : 'Paraguay', value : 'Paraguay'},{label : 'Peru', value : 'Peru'},{label : 'Philippines', value : 'Philippines'},{label : 'Pitcairn', value : 'Pitcairn'},{label : 'Plurinational State of Bolivia', value : 'Plurinational State of Bolivia'},{label : 'Poland', value : 'Poland'},{label : 'Portugal', value : 'Portugal'},{label : 'Qatar', value : 'Qatar'},{label : 'Reunion', value : 'Reunion'},{label : 'Romania', value : 'Romania'},{label : 'Russian Federation', value : 'Russian Federation'},{label : 'Rwanda', value : 'Rwanda'},{label : 'Saint Barthélemy', value : 'Saint Barthélemy'},{label : 'Saint Helena, Ascension and Tristan da Cunha', value : 'Saint Helena, Ascension and Tristan da Cunha'},{label : 'Saint Kitts and Nevis', value : 'Saint Kitts and Nevis'},{label : 'Saint Lucia', value : 'Saint Lucia'},{label : 'Saint Martin (French part)', value : 'Saint Martin (French part)'},{label : 'Saint Pierre and Miquelon', value : 'Saint Pierre and Miquelon'},{label : 'Saint Vincent and the Grenadines', value : 'Saint Vincent and the Grenadines'},{label : 'Samoa', value : 'Samoa'},{label : 'San Marino', value : 'San Marino'},{label : 'Sao Tome and Principe', value : 'Sao Tome and Principe'},{label : 'Saudi Arabia', value : 'Saudi Arabia'},{label : 'Senegal', value : 'Senegal'},{label : 'Serbia', value : 'Serbia'},{label : 'Seychelles', value : 'Seychelles'},{label : 'Sierra Leone', value : 'Sierra Leone'},{label : 'Singapore', value : 'Singapore'},{label : 'Sint Maarten (Dutch part)', value : 'Sint Maarten (Dutch part)'},{label : 'Slovakia', value : 'Slovakia'},{label : 'Slovenia', value : 'Slovenia'},{label : 'Solomon Islands', value : 'Solomon Islands'},{label : 'Somalia', value : 'Somalia'},{label : 'South Africa', value : 'South Africa'},{label : 'South Georgia and the South Sandwich Islands', value : 'South Georgia and the South Sandwich Islands'},{label : 'South Sudan', value : 'South Sudan'},{label : 'Spain', value : 'Spain'},{label : 'Sri Lanka', value : 'Sri Lanka'},{label : 'Sudan', value : 'Sudan'},{label : 'Suriname', value : 'Suriname'},{label : 'Svalbard and Jan Mayen', value : 'Svalbard and Jan Mayen'},{label : 'Swaziland', value : 'Swaziland'},{label : 'Sweden', value : 'Sweden'},{label : 'Switzerland', value : 'Switzerland'},{label : 'Syrian Arab Republic', value : 'Syrian Arab Republic'},{label : 'Taiwan', value : 'Taiwan'},{label : 'Tajikistan', value : 'Tajikistan'},{label : 'Thailand', value : 'Thailand'},{label : 'Timor-Leste', value : 'Timor-Leste'},{label : 'Togo', value : 'Togo'},{label : 'Tokelau', value : 'Tokelau'},{label : 'Tonga', value : 'Tonga'},{label : 'Trinidad and Tobago', value : 'Trinidad and Tobago'},{label : 'Tunisia', value : 'Tunisia'},{label : 'Turkey', value : 'Turkey'},{label : 'Turkmenistan', value : 'Turkmenistan'},{label : 'Turks and Caicos Islands', value : 'Turks and Caicos Islands'},{label : 'Tuvalu', value : 'Tuvalu'},{label : 'Uganda', value : 'Uganda'},{label : 'Ukraine', value : 'Ukraine'},{label : 'United Arab Emirates', value : 'United Arab Emirates'},{label : 'United Kingdom', value : 'United Kingdom'},{label : 'United Republic of Tanzania', value : 'United Republic of Tanzania'},{label : 'United States', value : 'United States'},{label : 'Uruguay', value : 'Uruguay'},{label : 'Uzbekistan', value : 'Uzbekistan'},{label : 'Vanuatu', value : 'Vanuatu'},{label : 'Venezuela, Bolivarian Republic of', value : 'Venezuela, Bolivarian Republic of'},{label : 'Vietnam', value : 'Vietnam'},{label : 'Virgin Islands, British', value : 'Virgin Islands, British'},{label : 'Wallis and Futuna', value : 'Wallis and Futuna'},{label : 'Western Sahara', value : 'Western Sahara'},{label : 'Yemen', value : 'Yemen'},{label : 'Zambia', value : 'Zambia'},{label : 'Zimbabwe', value : 'Zimbabwe'}]" />
+	<aura:attribute name="countryAtBirthOptions" type="List"
+		default="[{label : 'Select..', value : 'Select..'},{label : 'Afghanistan', value : 'Afghanistan'},{label : 'Aland Islands', value : 'Aland Islands'},{label : 'Albania', value : 'Albania'},{label : 'Algeria', value : 'Algeria'},{label : 'Andorra', value : 'Andorra'},{label : 'Angola', value : 'Angola'},{label : 'Anguilla', value : 'Anguilla'},{label : 'Antarctica', value : 'Antarctica'},{label : 'Antigua and Barbuda', value : 'Antigua and Barbuda'},{label : 'Argentina', value : 'Argentina'},{label : 'Armenia', value : 'Armenia'},{label : 'Aruba', value : 'Aruba'},{label : 'Australia', value : 'Australia'},{label : 'Austria', value : 'Austria'},{label : 'Azerbaijan', value : 'Azerbaijan'},{label : 'Bahamas', value : 'Bahamas'},{label : 'Bahrain', value : 'Bahrain'},{label : 'Bangladesh', value : 'Bangladesh'},{label : 'Barbados', value : 'Barbados'},{label : 'Belarus', value : 'Belarus'},{label : 'Belgium', value : 'Belgium'},{label : 'Belize', value : 'Belize'},{label : 'Benin', value : 'Benin'},{label : 'Bermuda', value : 'Bermuda'},{label : 'Bhutan', value : 'Bhutan'},{label : 'Bonaire, Sint Eustatius and Saba', value : 'Bonaire, Sint Eustatius and Saba'},{label : 'Bosnia and Herzegovina', value : 'Bosnia and Herzegovina'},{label : 'Botswana', value : 'Botswana'},{label : 'Bouvet Island', value : 'Bouvet Island'},{label : 'Brazil', value : 'Brazil'},{label : 'British Indian Ocean Territory', value : 'British Indian Ocean Territory'},{label : 'Brunei Darussalam', value : 'Brunei Darussalam'},{label : 'Bulgaria', value : 'Bulgaria'},{label : 'Burkina Faso', value : 'Burkina Faso'},{label : 'Burundi', value : 'Burundi'},{label : 'Cambodia', value : 'Cambodia'},{label : 'Cameroon', value : 'Cameroon'},{label : 'Canada', value : 'Canada'},{label : 'Cape Verde', value : 'Cape Verde'},{label : 'Cayman Islands', value : 'Cayman Islands'},{label : 'Central African Republic', value : 'Central African Republic'},{label : 'Chad', value : 'Chad'},{label : 'Chile', value : 'Chile'},{label : 'China', value : 'China'},{label : 'Christmas Island', value : 'Christmas Island'},{label : 'Cocos (Keeling) Islands', value : 'Cocos (Keeling) Islands'},{label : 'Colombia', value : 'Colombia'},{label : 'Comoros', value : 'Comoros'},{label : 'Congo', value : 'Congo'},{label : 'Congo, the Democratic Republic of the', value : 'Congo, the Democratic Republic of the'},{label : 'Cook Islands', value : 'Cook Islands'},{label : 'Costa Rica', value : 'Costa Rica'},{label : 'Cote d\'Ivoire', value : 'Cote d\'Ivoire'},{label : 'Croatia', value : 'Croatia'},{label : 'Cuba', value : 'Cuba'},{label : 'Curaçao', value : 'Curaçao'},{label : 'Cyprus', value : 'Cyprus'},{label : 'Czech Republic', value : 'Czech Republic'},{label : 'Denmark', value : 'Denmark'},{label : 'Djibouti', value : 'Djibouti'},{label : 'Dominica', value : 'Dominica'},{label : 'Dominican Republic', value : 'Dominican Republic'},{label : 'Ecuador', value : 'Ecuador'},{label : 'Egypt', value : 'Egypt'},{label : 'El Salvador', value : 'El Salvador'},{label : 'Equatorial Guinea', value : 'Equatorial Guinea'},{label : 'Eritrea', value : 'Eritrea'},{label : 'Estonia', value : 'Estonia'},{label : 'Ethiopia', value : 'Ethiopia'},{label : 'Falkland Islands (Malvinas)', value : 'Falkland Islands (Malvinas)'},{label : 'Faroe Islands', value : 'Faroe Islands'},{label : 'Fiji', value : 'Fiji'},{label : 'Finland', value : 'Finland'},{label : 'France', value : 'France'},{label : 'French Guiana', value : 'French Guiana'},{label : 'French Polynesia', value : 'French Polynesia'},{label : 'French Southern Territories', value : 'French Southern Territories'},{label : 'Gabon', value : 'Gabon'},{label : 'Gambia', value : 'Gambia'},{label : 'Georgia', value : 'Georgia'},{label : 'Germany', value : 'Germany'},{label : 'Ghana', value : 'Ghana'},{label : 'Gibraltar', value : 'Gibraltar'},{label : 'Greece', value : 'Greece'},{label : 'Greenland', value : 'Greenland'},{label : 'Grenada', value : 'Grenada'},{label : 'Guadeloupe', value : 'Guadeloupe'},{label : 'Guatemala', value : 'Guatemala'},{label : 'Guernsey', value : 'Guernsey'},{label : 'Guinea', value : 'Guinea'},{label : 'Guinea-Bissau', value : 'Guinea-Bissau'},{label : 'Guyana', value : 'Guyana'},{label : 'Haiti', value : 'Haiti'},{label : 'Heard Island and McDonald Islands', value : 'Heard Island and McDonald Islands'},{label : 'Holy See (Vatican City State)', value : 'Holy See (Vatican City State)'},{label : 'Honduras', value : 'Honduras'},{label : 'Hungary', value : 'Hungary'},{label : 'Iceland', value : 'Iceland'},{label : 'India', value : 'India'},{label : 'Indonesia', value : 'Indonesia'},{label : 'Iran, Islamic Republic of', value : 'Iran, Islamic Republic of'},{label : 'Iraq', value : 'Iraq'},{label : 'Ireland', value : 'Ireland'},{label : 'Isle of Man', value : 'Isle of Man'},{label : 'Israel', value : 'Israel'},{label : 'Italy', value : 'Italy'},{label : 'Jamaica', value : 'Jamaica'},{label : 'Japan', value : 'Japan'},{label : 'Jersey', value : 'Jersey'},{label : 'Jordan', value : 'Jordan'},{label : 'Kazakhstan', value : 'Kazakhstan'},{label : 'Kenya', value : 'Kenya'},{label : 'Kiribati', value : 'Kiribati'},{label : 'Korea, Republic of', value : 'Korea, Republic of'},{label : 'Kuwait', value : 'Kuwait'},{label : 'Kyrgyzstan', value : 'Kyrgyzstan'},{label : 'Lao', value : 'Lao'},{label : 'Latvia', value : 'Latvia'},{label : 'Lebanon', value : 'Lebanon'},{label : 'Lesotho', value : 'Lesotho'},{label : 'Liberia', value : 'Liberia'},{label : 'Libya', value : 'Libya'},{label : 'Liechtenstein', value : 'Liechtenstein'},{label : 'Lithuania', value : 'Lithuania'},{label : 'Luxembourg', value : 'Luxembourg'},{label : 'Macao', value : 'Macao'},{label : 'Macedonia, the former Yugoslav Republic of', value : 'Macedonia, the former Yugoslav Republic of'},{label : 'Madagascar', value : 'Madagascar'},{label : 'Malawi', value : 'Malawi'},{label : 'Malaysia', value : 'Malaysia'},{label : 'Maldives', value : 'Maldives'},{label : 'Mali', value : 'Mali'},{label : 'Malta', value : 'Malta'},{label : 'Martinique', value : 'Martinique'},{label : 'Mauritania', value : 'Mauritania'},{label : 'Mauritius', value : 'Mauritius'},{label : 'Mayotte', value : 'Mayotte'},{label : 'Mexico', value : 'Mexico'},{label : 'Moldova, Republic of', value : 'Moldova, Republic of'},{label : 'Monaco', value : 'Monaco'},{label : 'Mongolia', value : 'Mongolia'},{label : 'Montenegro', value : 'Montenegro'},{label : 'Montserrat', value : 'Montserrat'},{label : 'Morocco', value : 'Morocco'},{label : 'Mozambique', value : 'Mozambique'},{label : 'Myanmar', value : 'Myanmar'},{label : 'Namibia', value : 'Namibia'},{label : 'Nauru', value : 'Nauru'},{label : 'Nepal', value : 'Nepal'},{label : 'Netherlands', value : 'Netherlands'},{label : 'New Caledonia', value : 'New Caledonia'},{label : 'New Zealand', value : 'New Zealand'},{label : 'Nicaragua', value : 'Nicaragua'},{label : 'Niger', value : 'Niger'},{label : 'Nigeria', value : 'Nigeria'},{label : 'Niue', value : 'Niue'},{label : 'Norfolk Island', value : 'Norfolk Island'},{label : 'North Korea', value : 'North Korea'},{label : 'Norway', value : 'Norway'},{label : 'Oman', value : 'Oman'},{label : 'Pakistan', value : 'Pakistan'},{label : 'Palestine', value : 'Palestine'},{label : 'Panama', value : 'Panama'},{label : 'Papua New Guinea', value : 'Papua New Guinea'},{label : 'Paraguay', value : 'Paraguay'},{label : 'Peru', value : 'Peru'},{label : 'Philippines', value : 'Philippines'},{label : 'Pitcairn', value : 'Pitcairn'},{label : 'Plurinational State of Bolivia', value : 'Plurinational State of Bolivia'},{label : 'Poland', value : 'Poland'},{label : 'Portugal', value : 'Portugal'},{label : 'Qatar', value : 'Qatar'},{label : 'Reunion', value : 'Reunion'},{label : 'Romania', value : 'Romania'},{label : 'Russian Federation', value : 'Russian Federation'},{label : 'Rwanda', value : 'Rwanda'},{label : 'Saint Barthélemy', value : 'Saint Barthélemy'},{label : 'Saint Helena, Ascension and Tristan da Cunha', value : 'Saint Helena, Ascension and Tristan da Cunha'},{label : 'Saint Kitts and Nevis', value : 'Saint Kitts and Nevis'},{label : 'Saint Lucia', value : 'Saint Lucia'},{label : 'Saint Martin (French part)', value : 'Saint Martin (French part)'},{label : 'Saint Pierre and Miquelon', value : 'Saint Pierre and Miquelon'},{label : 'Saint Vincent and the Grenadines', value : 'Saint Vincent and the Grenadines'},{label : 'Samoa', value : 'Samoa'},{label : 'San Marino', value : 'San Marino'},{label : 'Sao Tome and Principe', value : 'Sao Tome and Principe'},{label : 'Saudi Arabia', value : 'Saudi Arabia'},{label : 'Senegal', value : 'Senegal'},{label : 'Serbia', value : 'Serbia'},{label : 'Seychelles', value : 'Seychelles'},{label : 'Sierra Leone', value : 'Sierra Leone'},{label : 'Singapore', value : 'Singapore'},{label : 'Sint Maarten (Dutch part)', value : 'Sint Maarten (Dutch part)'},{label : 'Slovakia', value : 'Slovakia'},{label : 'Slovenia', value : 'Slovenia'},{label : 'Solomon Islands', value : 'Solomon Islands'},{label : 'Somalia', value : 'Somalia'},{label : 'South Africa', value : 'South Africa'},{label : 'South Georgia and the South Sandwich Islands', value : 'South Georgia and the South Sandwich Islands'},{label : 'South Sudan', value : 'South Sudan'},{label : 'Spain', value : 'Spain'},{label : 'Sri Lanka', value : 'Sri Lanka'},{label : 'Sudan', value : 'Sudan'},{label : 'Suriname', value : 'Suriname'},{label : 'Svalbard and Jan Mayen', value : 'Svalbard and Jan Mayen'},{label : 'Swaziland', value : 'Swaziland'},{label : 'Sweden', value : 'Sweden'},{label : 'Switzerland', value : 'Switzerland'},{label : 'Syrian Arab Republic', value : 'Syrian Arab Republic'},{label : 'Taiwan', value : 'Taiwan'},{label : 'Tajikistan', value : 'Tajikistan'},{label : 'Thailand', value : 'Thailand'},{label : 'Timor-Leste', value : 'Timor-Leste'},{label : 'Togo', value : 'Togo'},{label : 'Tokelau', value : 'Tokelau'},{label : 'Tonga', value : 'Tonga'},{label : 'Trinidad and Tobago', value : 'Trinidad and Tobago'},{label : 'Tunisia', value : 'Tunisia'},{label : 'Turkey', value : 'Turkey'},{label : 'Turkmenistan', value : 'Turkmenistan'},{label : 'Turks and Caicos Islands', value : 'Turks and Caicos Islands'},{label : 'Tuvalu', value : 'Tuvalu'},{label : 'Uganda', value : 'Uganda'},{label : 'Ukraine', value : 'Ukraine'},{label : 'United Arab Emirates', value : 'United Arab Emirates'},{label : 'United Kingdom', value : 'United Kingdom'},{label : 'United Republic of Tanzania', value : 'United Republic of Tanzania'},{label : 'United States', value : 'United States'},{label : 'Uruguay', value : 'Uruguay'},{label : 'Uzbekistan', value : 'Uzbekistan'},{label : 'Vanuatu', value : 'Vanuatu'},{label : 'Venezuela, Bolivarian Republic of', value : 'Venezuela, Bolivarian Republic of'},{label : 'Vietnam', value : 'Vietnam'},{label : 'Virgin Islands, British', value : 'Virgin Islands, British'},{label : 'Wallis and Futuna', value : 'Wallis and Futuna'},{label : 'Western Sahara', value : 'Western Sahara'},{label : 'Yemen', value : 'Yemen'},{label : 'Zambia', value : 'Zambia'},{label : 'Zimbabwe', value : 'Zimbabwe'}]" />
+	<aura:attribute name="EPIC" type="Boolean" default="false" />
+	<aura:attribute name="upload" type="Boolean" default="true" />
+	<aura:attribute name="USMLE" type="Boolean" default="false" />
+	<aura:attribute name="USorCA" type="Boolean" default="false" />
+	<aura:attribute name="disabled" type="Boolean" default="false" />
+	<aura:attribute name="gender" type="String[]" default=",Female,Male,X" />
+	<aura:attribute name="generationalSuffix" type="String[]" default=",Jr,Sr,II,III,IV,V" />
+	<aura:attribute name="phoneTypeOptions" type="String[]" default=",Home,Cell,Work" />
+	<aura:attribute name="citizenshipAtBirthCountry" type="String[]" />
+	<aura:attribute name="citizenshipUponEnteringMedSchoolCountry" type="String[]" />
+	<aura:attribute name="currentCitizenshipCountry" type="String[]" />
+	<aura:attribute name="currentCitizenshipCountryDual" type="Map" />
+	<aura:attribute name="birthCountry" type="String[]" />
+	<aura:attribute name="countryDualSelected" type="List" default="[]" />
+	<aura:attribute name="prohibitedCountriesMap" type="Map" default="{
+	                    'KP' : 'ECFMG may be subject to specific United States federal regulations that
+	                            prohibit entities from doing business with or providing a service to any
+	                            individuals who have an address of residence in specific restricted countries.
+	                            The country of North Korea is included on this list of restricted countries.
+	                            In light of this, ECFMG is not able to allow you to request this service.' }" />
+	<aura:attribute name="previouslyVerifiedOptions" type="List"
+		default="[{'label': 'Yes', 'value': 'true'},{'label': 'No', 'value': 'false'}]" />
+	<aura:attribute name="previouslyVerifiedProxy" type="String" access="private"
+		description="Due to a defect in Lightning radio buttons, cannot use booleans for values in options, so a proxy must be used." />
+	<aura:attribute name="previouslyAppliedOptions" type="List"
+		default="[{'label': 'Yes', 'value': 'true'},{'label': 'No', 'value': 'false'}]" />
+	<aura:attribute name="previouslyAppliedProxy" type="String" access="private"
+		description="Due to a defect in Lightning radio buttons, cannot use booleans for values in options, so a proxy must be used." />
+	<aura:attribute name="previouslyEPICOptions" type="List"
+		default="[{'label': 'Yes', 'value': 'true'},{'label': 'No', 'value': 'false'}]" />
+	<aura:attribute name="previouslyEPICProxy" type="String" access="private"
+		description="Due to a defect in Lightning radio buttons, cannot use booleans for values in options, so a proxy must be used." />
+	<aura:attribute name="passport_Photo_Includes_Expiration_Date" type="String" default="true" />
+	<aura:attribute name="Passport_Photo_Is_In_English" type="String" default="true" />
+	<aura:attribute name="Previous_ECFMG_Cert_or_Examination" type="String" default="true" />
+	<aura:attribute name="Previous_EPIC_Services" type="String" default="true" />
+	<aura:attribute name="payloadPassportExpiration" type="String" />
+	<aura:attribute name="payloadPassportTranslation" type="String" />
+	<aura:attribute name="payloadPassport" type="String" />
+	<aura:attribute name="mode" type="String" description="Valid values are Summary or empty." access="private" />
+	<aura:attribute name="showBackToSummary" type="Boolean" default="false" />
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+	<aura:if isTrue="{!v.pageReady}">
+		<aura:if isTrue="{!and(v.validationError, v.readOnlyMode)}">
+			<div style="color: red">
+				<center><b>All required information has not been provided. Please complete and/or correct your biographic information.</b></center>
+			</div>
+		</aura:if>
+		
+		<div class="slds-grid slds-gutters">
+			
+			<div class="slds-col slds-size_1-of-2"><span>
+					<h2>Identity Information</h2>
+					<c:gDisplayContent uniqueContentValue="EpicBiographicNote1">
+				    </c:gDisplayContent>
+					<lightning:input name="lastName" value="{!v.contact.LastName}" placeholder="" label="Last Name/Surname"
+						aura:id="fieldToValidate" required="true" disabled="{!v.readOnlyMode}" />
+					<lightning:input type="checkbox" label="My legal name consists of one name only" name="lastOnly"
+						checked="{!v.contact.legal_name_consists_of_one_name_only__c}" disabled="{!v.readOnlyMode}" />
+					<aura:if isTrue="{!v.pageReady}">
+						<aura:if isTrue="{!!v.contact.legal_name_consists_of_one_name_only__c}">
+							<lightning:input name="firstName" value="{!v.contact.FirstName}" placeholder=""
+								label="Rest of Name" aura:id="fieldToValidate"
+								required="{!!v.contact.legal_name_consists_of_one_name_only__c}"
+								disabled="{!v.readOnlyMode}" onblur="{!c.handleInputOnBlur}" />
+						</aura:if>
+					</aura:if>
+					<lightning:select name="generationalSuffix" label="Generational Suffix"
+						value="{!v.contact.Generational_Suffix__c}" disabled="{!v.readOnlyMode}">
+						<aura:iteration items="{!v.generationalSuffix}" var="genSuf">
+							<option text="{!genSuf}"></option>
+						</aura:iteration>
+					</lightning:select>
+					<lightning:select name="gender" label="Gender" aura:id="fieldToValidate" required="true"
+						value="{!v.contact.Gender__c}" disabled="{!v.readOnlyMode}">
+						<aura:iteration items="{!v.gender}" var="gen">
+							<option text="{!gen}"></option>
+						</aura:iteration>
+					</lightning:select>
+					<c:gDisplayContent uniqueContentValue="EPICBiographicIdentityInfoNote2">
+				    </c:gDisplayContent>					
+				
+					<lightning:input name="dateOfBirth" type="date" value="{!v.contact.Birthdate}" placeholder=""
+						label="Date of Birth" aura:id="fieldToValidate" required="true" disabled="{!v.readOnlyMode}"
+						onchange="{!c.checkDOBIfValid}" />
+					<aura:if isTrue="{!v.pageReady}">
+						<lightning:combobox name="passportCountry" label="Passport Country"
+							messageWhenValueMissing="Choose one!" value="{!v.contact.Passport_Country__c}"
+							options="{!v.passportCountryOptions}" aura:id="fieldToValidate" required="true"
+							disabled="{!v.readOnlyMode}">
+							<aura:iteration items="{!v.currentCitizenshipCountry}" var="co">
+								<option text="{!co}" selected="{!co == v.contact.Passport_Country__c}"></option>
+							</aura:iteration>
+						</lightning:combobox>
+					</aura:if>
+					<lightning:input name="passportNumber" value="{!v.contact.Passport_Number__c}" placeholder=""
+						label="Passport Number" aura:id="fieldToValidate" required="true" disabled="{!v.readOnlyMode}"
+						onblur="{!c.handleInputOnBlur}" />
+					<lightning:input name="passportIssueDate" type="date" value="{!v.contact.Passport_Issue_Date__c}"
+						placeholder="" label="Passport Issue Date" aura:id="fieldToValidate" required="true"
+						disabled="{!v.readOnlyMode}" onchange="{!c.checkIssueDateIfValid}" />
+					<lightning:input name="passportExpiration" type="date" value="{!v.contact.Passport_Expiration__c}"
+						placeholder="" label="Passport Expiration Date" aura:id="fieldToValidate" required="true"
+						disabled="{!v.readOnlyMode}" onchange="{!c.checkExpirationDateIfValid}" />
+					<aura:if isTrue="{!!v.readOnlyMode}">
+						<p><span class="redText">*</span>Upload Photo</p>
+						<!-- UX Note: we should not display this as an error since the user has not yet made a mistake, suggest we come back to this and use the branded "Warning" styles once finalized -->
+							<c:gDisplayContent uniqueContentValue="EPICBiographicIdentityInfoNote3">
+				            </c:gDisplayContent>
+						<c:cloudDocumentUploadWrapper aura:id="photo" payLoad="{!v.payloadPhoto}"
+							maxAllowedFileSize="{!v.maxsize}" acceptedFileFormats=".jpeg,.jpg" enableAnnotation="false"
+							enableRedaction="false" assetType="PHOTO"
+							onuploadcompleted="{!c.handleUploadFinishedPhoto}" />		
+						<c:gDisplayContent uniqueContentValue="upload_msg_jpeg_jpg">
+						</c:gDisplayContent>
+						<aura:set attribute="else">
+							Photo Preview
+							<c:cloudDocumentUploadWrapper aura:id="photo" payLoad="{!v.payloadPhoto}"
+								maxAllowedFileSize="{!v.maxsize}" acceptedFileFormats=".jpeg,.jpg"
+								hideUpload="{!v.upload}" enableAnnotation="false" enableRedaction="false"
+								assetType="PHOTO" onuploadcompleted="{!c.handleUploadFinishedPhoto}" /><br />
+						</aura:set>
+					</aura:if>
+					
+					<aura:if isTrue="{!!v.readOnlyMode}">
+						<p><span class="redText">*</span>Upload Passport</p>
+						<c:gDisplayContent uniqueContentValue="EpicBioIdentityInfoNote4">
+				            </c:gDisplayContent>
+						<c:cloudDocumentUploadWrapper aura:id="passport" payLoad="{!v.payloadPassport}"
+							maxAllowedFileSize="{!v.maxsize}" acceptedFileFormats=".jpeg,.jpg" enableAnnotation="false"
+							enableRedaction="false" assetType="PASSPORT"
+							onuploadcompleted="{!c.handleUploadFinishedPassport}" />
+							<c:gDisplayContent uniqueContentValue="upload_msg_jpeg_jpg">
+						</c:gDisplayContent>
+						<aura:set attribute="else">
+							Passport Preview
+							<c:cloudDocumentUploadWrapper aura:id="passport" payLoad="{!v.payloadPassport}"
+								maxAllowedFileSize="{!v.maxsize}" acceptedFileFormats=".jpeg,.jpg"
+								enableAnnotation="false" hideUpload="{!v.upload}" enableRedaction="false"
+								assetType="PASSPORT" onuploadcompleted="{!c.handleUploadFinishedPassport}" /><br />
+						</aura:set>
+					</aura:if>
+						<c:gDisplayContent uniqueContentValue="PleaseNoteOfPassportPreview">
+				    </c:gDisplayContent>											 		
+					<lightning:input type="radio" label="Yes" name="isExp" value="true" disabled="{!v.readOnlyMode}"
+						checked="{!v.contact.Passport_Photo_Includes_Expiration_Date__c}"
+						onchange="{!c.handleExpirationChecked}" />
+					<lightning:input type="radio" label="No" name="isExp" value="false" disabled="{!v.readOnlyMode}"
+						checked="{!or(v.contact.Passport_Photo_Includes_Expiration_Date__c == false, or(v.contact.Passport_Photo_Includes_Expiration_Date__c == 'false', v.contact.Passport_Photo_Includes_Expiration_Date__c == null))}"
+						onchange="{!c.handleExpirationChecked}" />
+					<aura:if
+						isTrue="{!and(or(v.readOnlyMode == false, v.readOnlyMode == true),  or(v.passport_Photo_Includes_Expiration_Date == 'false',or(v.passport_Photo_Includes_Expiration_Date == false, v.passport_Photo_Includes_Expiration_Date == null)))}">
+						<aura:if isTrue="{!v.readOnlyMode == false}">
+							<p><span class="redText">*</span>Upload Passport Expiration</p>
+							<aura:if
+							isTrue="{!and(v.passportExpirationDone != 'Yes', or(v.passport_Photo_Includes_Expiration_Date == false,or(v.passport_Photo_Includes_Expiration_Date == 'false', v.passport_Photo_Includes_Expiration_Date == null)))}">
+							<c:gDisplayContent uniqueContentValue="EPICBioPassportExpiration">
+				            </c:gDisplayContent>
+						</aura:if>
+							<c:cloudDocumentUploadWrapper aura:id="passportExpiration"
+								payLoad="{!v.payloadPassportExpiration}" maxAllowedFileSize="{!v.maxsize}"
+								acceptedFileFormats=".jpeg,.pdf,.tiff" enableAnnotation="false" enableRedaction="false"
+								onuploadcompleted="{!c.handleUploadFinishedPassportExpiration}" />
+								<c:gDisplayContent uniqueContentValue="upload_msg_jpeg_tiff_pdf">
+						</c:gDisplayContent>
+						</aura:if>
+						<aura:if isTrue="{!v.readOnlyMode == true}">
+							<c:cloudDocumentUploadWrapper aura:id="passportExpiration"
+								payLoad="{!v.payloadPassportExpiration}" maxAllowedFileSize="{!v.maxsize}"
+								acceptedFileFormats=".jpeg,.pdf,.tiff" enableAnnotation="false" enableRedaction="false"
+								hideUpload="{!v.upload}"
+								onuploadcompleted="{!c.handleUploadFinishedPassportExpiration}" />
+						</aura:if>
+						
+					</aura:if>
+						<c:gDisplayContent uniqueContentValue="CommunityBiographicExpirationNote">
+						</c:gDisplayContent>
+					<lightning:input type="radio" label="Yes" name="isEng" value="true" disabled="{!v.readOnlyMode}"
+						checked="{!v.contact.Passport_Photo_Is_In_English__c}" onchange="{!c.handleEnglishChecked}" />
+					<lightning:input type="radio" label="No" name="isEng" value="false" disabled="{!v.readOnlyMode}"
+						checked="{!or(v.contact.Passport_Photo_Is_In_English__c == false, or(v.contact.Passport_Photo_Is_In_English__c == 'false', v.contact.Passport_Photo_Is_In_English__c == null))}"
+						onchange="{!c.handleEnglishChecked}" />
+					<aura:if
+						isTrue="{!and(or(v.readOnlyMode == false, v.readOnlyMode == true), or(v.Passport_Photo_Is_In_English == 'false', or(v.Passport_Photo_Is_In_English == false, v.Passport_Photo_Is_In_English == null)))}">
+						<aura:if isTrue="{!v.readOnlyMode == false}">
+							<p>Upload Passport Translation</p>
+							<aura:if
+							isTrue="{!and(v.passportTranslationDone != 'Yes', or(v.Passport_Photo_Is_In_English == false,or(v.Passport_Photo_Is_In_English == 'false', v.Passport_Photo_Is_In_English == null)))}">
+							<c:gDisplayContent uniqueContentValue="latin_char_desc">
+				            </c:gDisplayContent>
+						</aura:if>
+							<c:cloudDocumentUploadWrapper aura:id="passportTranslation"
+								payLoad="{!v.payloadPassportTranslation}" maxAllowedFileSize="{!v.maxsize}"
+								acceptedFileFormats=".jpeg,.pdf,.tiff" enableAnnotation="false" enableRedaction="false"
+								onuploadcompleted="{!c.handleUploadFinishedPassportTranslation}" />
+								<c:gDisplayContent uniqueContentValue="upload_msg_jpeg_tiff_pdf">
+						</c:gDisplayContent>
+						</aura:if>
+						<aura:if isTrue="{!v.readOnlyMode == true}">
+							<c:cloudDocumentUploadWrapper aura:id="passportTranslation"
+								payLoad="{!v.payloadPassportTranslation}" maxAllowedFileSize="{!v.maxsize}"
+								acceptedFileFormats=".jpeg,.pdf,.tiff" enableAnnotation="false" enableRedaction="false"
+								onuploadcompleted="{!c.handleUploadFinishedPassportTranslation}"
+								hideUpload="{!v.upload}" />
+						</aura:if>
+					</aura:if>
+				</span></div>
+			<div class="slds-col slds-size_1-of-2"><span>
+					<h2>Contact Information</h2>
+					<c:gDisplayContent uniqueContentValue="EpicBiographicNote2">
+				    </c:gDisplayContent>
+					<c:DynamicAddress aura:id="submitAddress" street="{!v.contact.MailingStreet}"
+						city="{!v.contact.MailingCity}" state="{!v.contact.MailingStateCode}"
+						postalCode="{!v.contact.MailingPostalCode}" country="{!v.contact.MailingCountryCode}"
+						prohibitedCountriesMap="{!v.prohibitedCountriesMap}" readOnly="{!v.readOnlyMode}"
+						requiredFields="country,city,street" />
+					<lightning:input name="phone" type="tel" value="{!v.contact.Phone}" placeholder="" label="Phone"
+						aura:id="fieldToValidate" required="true" disabled="{!v.readOnlyMode}"
+						onblur="{!c.handleInputOnBlur}" />
+					<lightning:select name="phoneType" label="Phone Type" disabled="{!v.readOnlyMode}"
+						aura:id="fieldToValidate" required="true" value="{!v.contact.Phone_Type__c}">
+						<aura:iteration items="{!v.phoneTypeOptions}" var="pt">
+							<option text="{!pt}"></option>
+						</aura:iteration>
+					</lightning:select>
+					<h2>Citizenship Information</h2>					
+					<aura:if isTrue="{!v.pageReady}">
+						<lightning:combobox name="birthCountry" label="Birth Country"
+							value="{!v.contact.Birth_Country__c}" aura:id="fieldToValidate" required="true"
+							options="{!v.birthCountryOptions}" disabled="{!v.readOnlyMode}">
+							<aura:iteration items="{!v.birthCountry}" var="co">
+								<option text="{!co}" selected="{!co == v.contact.Birth_Country__c}"></option>
+							</aura:iteration>
+						</lightning:combobox>
+					</aura:if>
+					<lightning:input name="birthCity" value="{!v.contact.Birth_City__c}" placeholder=""
+						label="Birth City" disabled="{!v.readOnlyMode}" />
+					<lightning:input name="birthState" value="{!v.contact.Birth_State_Province__c}" placeholder=""
+						label="Birth State/Province" disabled="{!v.readOnlyMode}" />
+					<aura:if isTrue="{!v.pageReady}">
+						<lightning:combobox name="citizenshipAtBirthCountry" label="Citizenship at Birth"
+							value="{!v.contact.Citizenship_at_Birth__c}" aura:id="fieldToValidate" required="true"
+							options="{!v.countryAtBirthOptions}" disabled="{!v.readOnlyMode}">
+							<aura:iteration items="{!v.citizenshipAtBirthCountry}" var="co">
+								<option text="{!co}" selected="{!co == v.contact.Citizenship_at_Birth__c}"></option>
+							</aura:iteration>
+						</lightning:combobox>
+					</aura:if>
+					<lightning:select name="schoolCitizenship" label="Citizenship Upon Entering Medical School"
+						aura:id="schoolCitizenship" value="{!v.contact.Citizenship_Upon_Entering_Medical_School__c}"
+						disabled="{!v.readOnlyMode}">
+						<aura:if isTrue="{!v.citizenshipAtMedSchoolIsNull}">
+							<option text="None"></option>
+						</aura:if>
+						<aura:iteration items="{!v.citizenshipUponEnteringMedSchoolCountry}" var="co">
+							<option text="{!co}"
+								selected="{!co == v.contact.Citizenship_Upon_Entering_Medical_School__c}"></option>
+						</aura:iteration>
+					</lightning:select>
+					<lightning:dualListbox aura:id="fieldToValidate" name="CurrentCitizenship"
+						label="Current Citizenship" sourceLabel="Available Citizenship"
+						selectedLabel="Current Citizenship" options="{!v.currentCitizenshipCountryDual}"
+						value="{!v.countryDualSelected}" disabled="{!v.readOnlyMode}" required="true"
+						onchange="{!c.handleCitizenshipChange}" />
+						<c:gDisplayContent uniqueContentValue="citizenshipInformations">
+				    </c:gDisplayContent>
+					<br />
+					<h2>Existing Service IDs</h2>
+					<br />
+					<p>
+						<lightning:radioGroup aura:id="previouslyVerifiedRadioGroup" name="previouslyVerified"
+							type="radio"
+							label="Have you ever had your credentials verified by ECFMG's EICS service?"
+							options="{! v.previouslyVerifiedOptions }" value="{!v.previouslyVerifiedProxy}"
+							disabled="{!v.readOnlyMode}" onchange="{!c.handlePreviouslyVerifiedOnChange}" />
+					</p>
+					<lightning:radioGroup aura:id="previouslyAppliedRadioGroup" name="previouslyApplied" type="radio"
+						label="Have you ever submitted an Application for ECFMG Certification and/or an application to ECFMG for examination?"
+						options="{! v.previouslyAppliedOptions }" value="{!v.previouslyAppliedProxy}"
+						disabled="{!v.readOnlyMode}" onchange="{!c.handlePreviouslyAppliedOnChange}" />
+					<aura:if isTrue="{!v.Previous_ECFMG_Cert_or_Examination}">
+						<lightning:input name="usmleId" value="{!v.contact.Applicant_Provided_USMLE_ID__c}"
+							aura:id="fieldToValidate" disabled="{!v.readOnlyMode}" placeholder="" label="USMLE ID"
+							pattern="[0-9]{8}" messageWhenPatternMismatch="Please enter a valid USMLE ID as 01234567"
+							maxlength="8" onblur="{!c.handleUSMLEChange}" />
+					</aura:if>
+					<lightning:radioGroup name="previouslyEPIC" type="radio" label="Have you ever used ECFMG's EPIC service?"
+						options="{! v.previouslyEPICOptions }" value="{!v.previouslyEPICProxy}"
+						disabled="{!v.readOnlyMode}" onchange="{!c.handlePreviouslyEPICOnChange}" />
+					<aura:if isTrue="{!v.Previous_EPIC_Services}">
+						<lightning:input name="epicId" value="{!v.contact.Applicant_Provided_EPIC_ID__c}"
+							disabled="{!v.readOnlyMode}" placeholder="" label="EPIC ID" />
+					</aura:if>
+				</span></div>
+		</div><br />
+		<aura:if isTrue="{!!v.readOnlyMode}">
+			<center>
+				<aura:if isTrue="{!v.showBackToSummary == true}">
+					<lightning:button disabled="{!v.disabled || v.disableButtons}" variant="brand" name="save"
+						label="Save and Return" onclick="{!c.handleSaveAndReturn}" />
+					&nbsp;
+					<lightning:button aura:id="backToSummaryButton" variant="brand" name="summary" label="Cancel"
+						onclick="{!c.handleCancelAndReturn}" disabled="{!v.disableButtons}" />
+				</aura:if>
+				<aura:if isTrue="{!v.showBackToSummary == false}">
+					<lightning:button variant="brand" name="next" label="Previous" onclick="{!c.handlePrevious}"
+						disabled="{!v.disableButtons}" />&nbsp;&nbsp;&nbsp;
+					&nbsp;
+					<lightning:button disabled="{!v.disabled || v.disableButtons}" variant="brand" name="save"
+						label="Save Changes" onclick="{!c.handleSave}" />
+					&nbsp;
+					<lightning:button variant="brand" name="next" label="Next" onclick="{!c.handleNext}"
+						disabled="{!v.disableButtons}" />
+				</aura:if>
+			</center>
+		</aura:if>
+	</aura:if>
+	<aura:if isTrue="{!v.showExistingAccount}">
+		<div class="demo-only" style="height: 640px;">
+			<section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+				aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+				<div class="slds-modal__container">
+					<header class="slds-modal__header">
+						<button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+							title="Close">
+							<span class="slds-assistive-text">Close</span>
+						</button>
+						<h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Use Your Existing Account</h2>
+					</header>
+					<div class="slds-modal__content slds-var-p-around_medium" id="modal-content-id-1">
+						<p>							
+							<c:gDisplayContent uniqueContentValue="EPICBioFinalScreen">
+				           </c:gDisplayContent>
+						</p>
+						<p>	
+							<c:gDisplayContent uniqueContentValue="EpicBioFinallMessage">
+				           </c:gDisplayContent>
+						</p>
+					</div>
+					<footer class="slds-modal__footer">
+						<lightning:button aura:id="okButton" class="slds-button slds-button_brand"
+							onclick="{!c.handleExistingAccountOkButtonOnClick}">Ok</lightning:button>
+					</footer>
+				</div>
+			</section>
+			<div class="slds-backdrop slds-backdrop_open"></div>
+		</div>
+	</aura:if>
+</aura:component>

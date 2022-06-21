@@ -1,0 +1,6 @@
+<!--
+ - Created by Matthew on 11/13/18.
+ -->
+
+<aura:event type="APPLICATION" description="ContactAssociationTypeAddedAE">
+</aura:event>

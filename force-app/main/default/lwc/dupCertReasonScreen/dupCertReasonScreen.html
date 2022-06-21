@@ -1,0 +1,65 @@
+<template>  
+    <div class="formMargin"> 
+        <div class="slds-grid slds-wrap gridMargin"> 
+            <template if:true={spinner}>
+                <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+            </template>	
+            <div class="slds-col slds-p-top_small slds-size_1-of-1">
+                <c-g-display-content unique-content-value="request_dupe_reason"></c-g-display-content>
+            </div>
+            <div class="slds-col slds-p-top_small slds-size_1-of-2">
+                <span><span class="required">*</span>Reason for Duplicate Certificate Request:</span>
+            </div>
+            <div class="slds-col slds-p-top_small slds-size_1-of-2">
+                <lightning-combobox name="reason" variant="label-hidden" value={selectedReason} placeholder="Select" options={reasonOptions} class="reason" onchange={handleChangeForReason} onkeydown={preventBackslash}></lightning-combobox>
+            </div>
+            <template if:true={errorReason}>
+                <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                    <span></span>
+                </div>
+                <div class="slds-col slds-p-top_medium slds-size_1-of-2">            
+                    <span class="errormsg">Please enter your name exactly as it appears on the document.</span>           
+                </div>
+            </template>
+            <div class="slds-col slds-p-top_small slds-size_1-of-2">
+                <span><span class="required">*</span>Brief Explanation:</span>
+            </div>        
+            <div class="slds-col slds-p-top_small slds-size_1-of-2">
+                <textarea id="text-area-id-01" class="slds-textarea" rows="5" name="addInfo" placeholder={textPlaceHolder} onchange={handleChangeForInputValue}></textarea>
+            </div>
+            <template if:true={errorAddtnInfo}>
+                <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                    <span></span>
+                </div>
+                <div class="slds-col slds-p-top_medium slds-size_1-of-2">            
+                    <span class="errormsg">Please enter the value</span>           
+                </div>
+            </template>
+            <template if:true={errorAddtnInfo}>
+                <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                    <span></span>
+                </div>
+                <div class="slds-col slds-p-top_medium slds-size_1-of-2">            
+                    <span class="errormsg">You must provide an explanation.</span>           
+                </div>
+            </template>
+            <template if:true={showNameOnRecordChange}>
+                <div class="slds-col slds-p-top_small slds-size_1-of-1">
+                    <span>    
+                        <c-g-display-content unique-content-value="ECFMG_Cert_Duplicate_Name_Change"></c-g-display-content>                          
+                    </span>
+                </div>
+            </template>
+            <div class="slds-col slds-p-top_small slds-size_1-of-1">
+                <span class="dupNote">
+                    <c-g-display-content unique-content-value="ECFMG_Cert_Duplicate_Note"></c-g-display-content>
+                </span>
+            </div>
+            <div class="buttonAlignment" > 
+                <lightning-button variant="brand" label="Previous" title="Previous" onclick={prevbtn} class="slds-m-left_x-small"></lightning-button>                                 
+                <lightning-button variant="brand" label="Next" title="Next" onclick={nextbtn} class="slds-m-left_x-small"></lightning-button>
+                <lightning-button variant="brand" label="Discard Changes and Exit" title="Discard Changes and Exit" onclick={discardChanges} class="slds-m-left_x-small"></lightning-button>     
+            </div>
+        </div>
+    </div>
+</template>

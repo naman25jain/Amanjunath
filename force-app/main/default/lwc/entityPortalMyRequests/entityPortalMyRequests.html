@@ -1,0 +1,197 @@
+<template>
+    <div class="formMargin">
+        <div class="secContainer">
+            <template if:true={spinner}>
+                <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+            </template>
+            <template if:false={isActiveReqFound}>
+                <p>If you submit a request to change your service access, a case will be created and listed below. You can track the status of your request by returning to this screen and clicking the <strong>Case Number</strong> for more information.</p>
+                <div class="headeralign">
+                    <span class="headertxt">Active Requests ({recordsList.length})</span>
+                </div>
+                <div class="content"><span>--No Records Found--</span></div>
+            </template>
+            <template if:true={isActiveReqFound}>
+                <template if:false={showCaseDetail}>
+                    <p>If you submit a request to change your service access, a case will be created and listed below. You can track the status of your request by returning to this screen and clicking the <strong>Case Number</strong> for more information.</p>
+                    <div class="headeralign">
+                        <span class="headertxt">Active Requests({recordsList.length})</span>
+                    </div>
+                    <c-paginator class="paginatorAR" records={activeRequests} total-records={activeRequests.length}
+                        show-search-box="true" onpaginatorchange={handleARPaginatorChange} attributes-to-avoid={attributesList}>
+                    </c-paginator>
+                    <lightning-datatable  key-field="id" columns={columns} data={recordsToDisplay}
+                        hide-checkbox-column default-sort-direction={defaultSortDirection}
+                        sorted-direction={sortDirection} sorted-by={sortedBy} onsort={onHandleSort}
+                        onrowaction={displayCaseDetails}>
+                    </lightning-datatable>
+                </template>
+                <template if:true={showCaseDetail}>
+                    <div class="slds-grid slds-wrap gridMargin">
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-1">
+                            <span class="headerText">Case Information</span>
+                        </div>
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                            <span>Last Name/Surname</span>
+                        </div>
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                            <lightning-input class="entityLastName" disabled name="lastName" variant="label-hidden"
+                                value={lastName}></lightning-input>
+                        </div>
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                            <span>Rest of Name</span>
+                        </div>
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                            <lightning-input class="entityLastName" disabled name="restOfName" variant="label-hidden"
+                                value={restOfName}></lightning-input>
+                        </div>
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+                        <div class="slds-col slds-p-left_medium slds-p-top_medium slds-grid slds-wrap">
+                            <div class="slds-col">
+                                <div class="checkboxPadding">
+                                    <template if:false={checkBoxValue}>
+                                        <lightning-input type="checkbox" disabled variant="label-hidden"
+                                            name="checkBoxValue">
+                                        </lightning-input>
+                                    </template>
+                                    <template if:true={checkBoxValue}>
+                                        <lightning-input type="checkbox" disabled variant="label-hidden"
+                                            name="checkBoxValue" checked></lightning-input>
+                                    </template>
+                                </div>
+                                <div class="checkboxPaddingTranscript">
+                                    <span>The Contact's legal name consists of one name only</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                            <span>Generational Suffix</span>
+                        </div>
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                            <lightning-input class="entityGenerationalSuffix" disabled name="generationalSuffix"
+                                variant="label-hidden" value={generationalSuffix}></lightning-input>
+                        </div>
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                            <span>Email Address</span>
+                        </div>
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                            <lightning-input class="entityEmailAddress" disabled name="emailAddress" variant="label-hidden"
+                                value={emailAddress}></lightning-input>
+                        </div>
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                            <span>Phone Number</span>
+                        </div>
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                            <lightning-input class="entityPhoneNumber" disabled name="phoneNumber" variant="label-hidden"
+                                value={phoneNumber}></lightning-input>
+                        </div>
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                            <span>Department</span>
+                        </div>
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                            <lightning-input class="entityDepartment" disabled name="department" variant="label-hidden"
+                                value={department}></lightning-input>
+                        </div>
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                            <span>Job Title</span>
+                        </div>
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                            <lightning-input class="entityJobTitle" name="jobTitle" disabled variant="label-hidden"
+                                value={jobTitle}></lightning-input>
+                        </div>
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+                        <div class="slds-col slds-var-p-around_medium slds-size_2-of-4">
+                            <table class="slds-table">
+                                <caption style="display: none">
+                                </caption>
+                                <thead>
+                                    <tr class="slds-line-height_reset">
+                                        <th class="" scope="col">
+                                            <div class="slds-truncate" title="Service">Service(s) Requested</div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template for:each={servicesList} for:item="service" for:index="serviceIndex">
+                                        <tr key={service.serviceId} class="slds-line-height_reset">
+                                            <td class="slds-col">
+                                                <div class="checkboxPadding">
+                                                    <lightning-input type="checkbox" value={checkBox}
+                                                        class="servicecheckbox" disabled label="" name={service.serviceId}
+                                                        checked></lightning-input>
+                                                </div>
+                                                <div class="checkboxPaddingTranscript">
+                                                    <span>{service.serviceName}</span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+                        <template if:false={showIncompleteSignForm}>
+                            <div class="slds-col slds-var-p-around_x-small slds-size_4-of-4">
+                                <span>Signed Signature Form
+                                    <c-cloud-document-upload-wrapper class="cloudDocumentUpload"
+                                    pay-load={entityAssetFileURL}
+                                    max-allowed-file-size=10
+                                    accepted-file-formats=".jpeg,.jpg,.tiff,.pdf"
+                                    enable-annotation="false" enable-redaction="false"
+                                    asset-type="Signed Signature Form"
+                                    hide-upload="true">
+                                    </c-cloud-document-upload-wrapper>
+                                </span>
+                            </div>
+                        </template>
+                        <template if:true={showIncompleteSignForm}>
+                            <div class="slds-col slds-var-p-around_x-small slds-size_4-of-4">
+                                <span>Signed Signature Form</span>
+                                <c-cloud-document-upload-wrapper label="Signed Signature form" pay-load={assetIdToDisplay} max-allowed-file-size=10 accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" enable-annotation="false" enable-redaction="false" hide-upload="true">
+                                </c-cloud-document-upload-wrapper>
+                            </div>
+                        </template>
+                        <template if:true={showFileUploadAndSubmit}>
+                            <span>Upload Signed Signature Form</span>
+                            <c-cloud-document-upload-wrapper label="Signed Signature form upload" pay-load={assetIdToInsert} max-allowed-file-size=10 accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" enable-annotation="false" enable-redaction="false" ongeneratedurl={handleOnAssetUrlGenerated} onuploadcompleted={handleOnAssetInserted} azure-doc-url={signUrl}>
+                            </c-cloud-document-upload-wrapper>
+                        </template>
+                        <template if:true={showErrorMessages}>
+                            <div class="slds-col slds-var-p-around_x-small slds-size_1-of-4">
+                                <span class="errormsgName"> Please upload the signed signature form.</span>
+                            </div>
+                        </template>
+                    </div>
+                    <c-modal-component class="exceptionModal" title={modalTitle} message={modalContent}
+                        show-primary-button="true" primary-button-text="Yes" onprimarybuttonclick={handleYesClick}
+                        show-secondary-button="true" secondary-button-text="No">
+                    </c-modal-component>
+                    <div class="buttonAlignment"><br/>
+                        <template if:true={showFileUploadAndSubmit}>
+                            <lightning-button variant="brand" label="Submit" title="Submit" onclick={submitButton}
+                                class="slds-m-left_x-small"></lightning-button>
+                        </template>
+                        <lightning-button variant="brand" label="Cancel" title="Cancel" onclick={openModal}
+                            class="slds-m-left_x-small">
+                        </lightning-button>
+                    </div>
+                </template>
+            </template>
+        </div>
+    </div>
+</template>

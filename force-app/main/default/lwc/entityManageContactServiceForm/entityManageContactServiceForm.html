@@ -1,0 +1,208 @@
+<template>
+    <template if:true = {created}>
+        <span style="color:green">
+        <b>Record Successfully Created!</b><br/>
+    </span>
+    </template>    
+    <div class = 'isa_error'>
+    <template if:false = {firstFlag}>
+    * This entity contact does not have access to the Entity Portal. Please enable Entity Portal Access before assigning services. <br/>    
+    </template>
+    <template if:false = {secondFlag}>
+        * A coordinator does not exist for the selected service, and the role requested for this contact is a "user". Please define a coordinator for this service first before adding a user.<br/>
+    </template>
+    <template if:false = {thirdFlag}>
+        * The service requested  requires the contact's signature, but a signature is currently not on file. Please upload a signature first before assigning the service.<br/>
+    </template>
+    <template if:false = {fourthFlag}>
+        * The service requested  requires an entity seal, but a seal is currently not on file for this entity. Please upload a seal first before assigning the service.<br/>
+    </template>
+    <template if:false = {fifthFlag}>
+        * The service requested  requires the Performance Information Agreement(PIA), but a PIA is currently not on file. Please upload the PIA before assigning the service.<br/>
+    </template>
+    <template if:false = {sixthFlag}>
+        * The service requested  requires the Enrollment Verification Service. Please assign a user of this entity to Enrollment Verification Service before assigning Performance Data Service.<br/>
+    </template>
+    <template if:false = {seventhFlag}>
+        * The service requested  requires the Credential Verification Service. Please assign a user of this entity to Credential Verification Service before assigning Performance Data Service.<br/>
+    </template>
+    <template if:false = {eigthFlag}>
+        * The entity contact already has access to the service being requested.<br/>
+    </template>
+    </div>
+    <div class="formMargin">
+        <template if:true={spinner}>
+			<lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+		</template>
+        <div class="slds-grid slds-wrap gridMargin">   
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-1"> 
+                <span class="headerText">Manage User Access</span>
+            </div>
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-1"> 
+                <span class="subHeaderText">You can manage services for the contact below by submitting this form</span>
+            </div>
+            <div class="slds-col slds-size_1-of-1 slds-p-left_medium">                  
+                <span class="modContHdr">Contact Information : </span>   
+            </div>           
+            
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">     
+                            
+                <span>Contact Name</span>
+            </div>             
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">
+                                   
+                    <lightning-input class="entityName" disabled type="text" name="contactName" onchange={handleChangeForInputFields} variant="label-hidden" value={contactName}></lightning-input>        
+                      
+              </div>
+              <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">     
+                              
+                <span>Account Name</span>
+            </div>             
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">
+                <select class="slds-select" name = "optionSelect" onchange={changeHandler} >
+                   
+                    <template  for:each={entityOptions} for:item="bear">
+                        <option key={bear.value} value={bear.value} >{bear.label}</option>
+                    </template>
+                </select>                 
+        
+              </div>
+        </div>
+        <div class="buttonAlignment" ><br/>
+            <lightning-button variant="brand" label="Manage Services" title="Manage Services" onclick={loadServiceDetails} class="slds-m-left_x-small"></lightning-button>
+        </div>
+        <template if:true={showNewServButton}>
+            <div class="buttonAlignment" ><br/>
+                <lightning-button variant="brand" label="Add New Service" title="Add New Service" onclick={addNewService} class="slds-m-left_x-small"></lightning-button>
+            </div>
+        </template>
+        
+        <template if:true={showServices}>
+            <div class="slds-grid slds-wrap gridMargin">  
+                <div class="slds-col slds-size_1-of-1 slds-var-p-around_medium">   
+                    <template if:true={showErrorMsg}>
+                        <span class="errormsg">This is the last coordinator for this service. Please define a different coordinator before removing this user's access.</span>
+                    </template>
+                </div>
+                <div class="slds-col slds-size_1-of-1 slds-var-p-around_medium">                  
+                    <span class="modContHdr">Service Information : </span>   
+                </div>  
+                <div class = "tablePadding">
+                    <table
+                    class="slds-table slds-no-cell-focus slds-table_bordered slds-table_edit slds-table_fixed-layout slds-table_resizable-cols slds-table_striped "
+                    role="grid">             
+                
+                    <caption></caption>
+                    <thead>
+                        <tr >
+                            <th aria-label="Service Name" aria-sort="none"
+                                class="slds-is-resizable slds-is-sortable slds-text-align_center slds-cell-wrap"
+                                scope="col">
+                                Service Name
+                            </th>
+                            <th aria-label="Role" aria-sort="none"
+                                class="slds-is-resizable slds-is-sortable slds-text-align_center slds-cell-wrap"
+                                scope="col">
+                                Role
+                            </th>
+                            <th aria-label="Action" aria-sort="none"
+                            class="slds-is-resizable slds-is-sortable slds-text-align_center slds-cell-wrap"
+                            scope="col">
+                                Action
+                            </th>
+                    
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template for:each={serviceList} for:item='recordItem' for:index='index'>
+        
+                            <tr key={recordItem.serviceId}>
+                            
+                                <td class="slds-text-align_center slds-cell-wrap">
+                                    <lightning-formatted-rich-text value={recordItem.serviceName}></lightning-formatted-rich-text>
+                                    
+                                </td>
+                                <td class="slds-text-align_center slds-cell-wrap">
+                                    <lightning-formatted-rich-text value={recordItem.role}></lightning-formatted-rich-text>
+                                
+                                </td>
+                                <td class="slds-text-align_center slds-cell-wrap">
+                                   <a href="javascript:void(0)"  >
+                                         <lightning-formatted-rich-text value="EDIT" onclick={editService} 
+                                        data-service-id={recordItem.serviceId} data-role-id={recordItem.role}
+                                        data-service-name={recordItem.serviceName}></lightning-formatted-rich-text>
+                                    </a>
+                                    <br/>
+                                    <a href="javascript:void(0)"  >
+                                        <lightning-formatted-rich-text value="DELETE" onclick={deleteService} 
+                                        data-service-id={recordItem.serviceId} ></lightning-formatted-rich-text>
+                                    </a>
+                                </td>
+                                
+                            </tr>
+
+                        </template>
+                    </tbody>
+                    </table>
+                </div>         
+            </div>
+            
+<c-role-modal-component title='' message=''  show-primary-button='true' primary-button-text='Confirm' onprimarybuttonclick={handleConfirm} show-secondary-button='true' secondary-button-text='Cancel'>
+   
+</c-role-modal-component>
+<c-modal-component message='Please confirm you want to deactivate the access for this user and service '  show-primary-button='true' primary-button-text='Confirm' onprimarybuttonclick={handleDelete} show-secondary-button='true' secondary-button-text='Cancel'></c-modal-component>
+        </template>
+        <template if:true={isModalOpen}>
+            <!-- Modal/Popup Box LWC starts here -->
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <!-- Modal/Popup Box LWC header here -->
+                    <header class="slds-modal__header">
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Add New Service</h2>
+                    </header>
+                    <!-- Modal/Popup Box LWC body starts here -->
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <template if:true={err}>
+                            <span style="color:red">Both service and role are mandatory fields.</span>
+                        </template><br/>
+                        Choose the role and service you wish to add the contact in.<br/>
+                        <div class="slds-grid slds-wrap gridMargin">
+                            <div class="slds-col slds-var-p-around_large slds-size_1-of-2" style="text-align: center;">
+                                <span style="color:red">*</span><span>Service:</span>
+                            </div>             
+                            <div class="slds-col slds-var-p-around_large slds-size_1-of-2" style="text-align: center;">
+                                <select class="slds-select" name = "serviceSelect" onchange={serviceChangeHandler}>
+                                    <template  for:each={serviceOptions} for:item="loopRec">
+                                        <option key={loopRec.value} value={loopRec.value} >{loopRec.label}</option>
+                                    </template>
+                                </select>                
+                        
+                              </div>
+                              
+                            <div class="slds-col slds-var-p-around_large slds-size_1-of-2" style="text-align: center;">     
+                                <span style="color:red">*</span><span>Role:</span>
+                            </div>             
+                            <div class="slds-col slds-var-p-around_large slds-size_1-of-2" style="text-align: center;">
+                            <select class="slds-select" name = "roleSelect" onchange={roleChangeHandler}>
+                                    <template  for:each={roleOptions} for:item="role">
+                                        <option key={role.value} value={role.label} >{role.label}</option>
+                                    </template>
+                                </select>      
+                        
+                              </div>
+                            </div>
+                          <br/>
+                    </div>
+                    <!-- Modal/Popup Box LWC footer starts here -->
+                    <footer class="slds-modal__footer">
+                        <button class="slds-button slds-button_neutral" onclick={closeModal} title="Cancel">Cancel</button>
+                        <button class="slds-button slds-button_brand" onclick={submitDetails} title="Save">Save</button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+    </div>       
+
+
+</template>

@@ -1,0 +1,12 @@
+.THIS {
+}
+
+.THIS .widebutton {
+    font-size: 15px !important;
+    float: left !important;
+    width: 200px !important;
+}
+
+.THIS .bgwhite {
+background-color: white;
+}

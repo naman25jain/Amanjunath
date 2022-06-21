@@ -1,0 +1,16 @@
+<template>
+    <lightning-card title="Compile Verification Packet">
+        <template if:true={showSendMethod}>
+            <c-confirm-send-method record-id={recordId} case-rec-type-dev-name={caseRecTypeDevName} onnextevent={showManageVPScreen}></c-confirm-send-method>
+        </template>
+        <template if:true={showManageVP}>
+            <c-manage-verification-packet record-id={recordId} case-rec-type-dev-name={caseRecTypeDevName} show-checkbox-fields-veri-packet={showCheckboxFieldsVeriPacket} onshowfinalscreen={showVPFinalScreen}></c-manage-verification-packet>
+        </template>
+        <template if:true={showWebsiteScreen}>
+            <c-compile-verification-packet-website-screen case-rec-type-dev-name={caseRecTypeDevName} case-record-id={recordId}></c-compile-verification-packet-website-screen>
+        </template>
+        <template if:true={showFinalScreen}>
+            <c-compile-v-p-final-screen record-id={recordId} case-rec-type-dev-name={caseRecTypeDevName} send-method={sendMethod} onshowmanagevpscreen={showManageScreen}></c-compile-v-p-final-screen>
+        </template>
+    </lightning-card>
+</template>

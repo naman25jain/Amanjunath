@@ -1,0 +1,15 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" 
+                controller="FileEditorController" access="global">
+    <aura:attribute name="recordId" type="String" />
+	<aura:attribute name="fileList" type="String[]" />
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+	<force:recordData
+		aura:id			= "recordLoader"
+		fields			=  "Id"
+		recordId		= "{!v.recordId}"
+		targetError		= "{!v.recordError}"
+		targetFields	= "{!v.caseRecord}"
+		mode			= "EDIT"/>
+<center><lightning:button label="Open Full Screen" onclick="{!c.openMultipleFiles}"/></center>
+<br/>
+</aura:component>

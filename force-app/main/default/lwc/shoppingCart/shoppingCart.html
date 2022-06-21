@@ -1,0 +1,107 @@
+<!-- sldsValidatorIgnore -->
+<template>
+
+  <template if:true={spinner}>
+    <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+  </template>
+
+  <h1 class="slds-text-heading_medium slds-m-bottom_medium slds-text-align_center">Review your Cart</h1>
+  <div class="c-container">
+
+    <!-- Main cart area with the different lines -->
+    <lightning-card title="Cart Items" icon-name="utility:cart">
+
+      <!-- Body -->
+      <div class="slds-p-horizontal_small">
+        <lightning-datatable data={data} columns={columns} key-field="Product" hide-checkbox-column=true>
+        </lightning-datatable>
+        <h1 class="slds-text-heading_small slds-p-vertical_small slds-text-align_right slds-border_bottom">
+          Subtotal:&nbsp;
+          <b>
+            <lightning-formatted-number value={subtotal} format-style="currency" currency-code="USD">
+            </lightning-formatted-number>
+          </b>
+        </h1>
+
+        <!-- Other balances -->
+        <div class="slds-p-around_small">
+          <!-- Unpaid Balance section -->
+          <template if:true={hasUnpaidBalance}>
+            <div>
+              <h3 class="slds-text-heading_small">
+                You have an unpaid balance of&nbsp;
+                <b>
+                  <lightning-formatted-number value={unpaidBalance} format-style="currency" currency-code="USD">
+                  </lightning-formatted-number>
+                </b>&nbsp;
+                on your MyIntealth account. Access your&nbsp;
+                <a href={url} onclick={navigateToFinancialAccount}>Financial Account</a>&nbsp;
+                history for more details.
+              </h3><br />
+            </div>
+          </template>
+          <!-- Credit section -->
+          <template if:true={appliedCredit}>
+            <div>
+              <h3 class="slds-text-heading_small">
+                You have applied a credit of&nbsp;
+                <b>
+                  <lightning-formatted-number value={appliedCredit} format-style="currency" currency-code="USD">
+                  </lightning-formatted-number>
+                </b>&nbsp;
+                to your total balance.
+              </h3>
+            </div>
+          </template>
+        </div>
+
+        <!-- Total section -->
+        <h1 class="slds-text-heading_medium slds-align_absolute-center slds-m-around_small">
+          <b>Total:&nbsp;
+            <lightning-formatted-number value={totalAmount} format-style="currency" currency-code="USD">
+            </lightning-formatted-number>
+          </b>
+        </h1>
+
+        <h3 class="slds-text-heading_small">Important note: once you click Proceed to Payment
+          you cannot return to this screen. Clicking the back button in your browser will start the entire
+          application/service request over again, and you will need to complete all items again in order to
+          proceed.</h3>
+      </div>
+
+      <!-- Footer -->
+      <div slot="footer" class="slds-align_absolute-center">
+        <lightning-button variant="brand" label="Previous" title="Previous" class="slds-m-around_x-small" onclick={previousEvent}></lightning-button>
+        <lightning-button variant="brand" label={processPaymentLabel} title={processPaymentLabel} class="slds-m-around_x-small" onclick={processPaymentAsync}></lightning-button>
+      </div>
+
+    </lightning-card>
+
+    <br />
+
+    <!-- Credit secction - If available -->
+    <template if:true={showCredit}>
+      <lightning-card title="Credits on your account" icon-name="utility:money">
+        <div class="slds-p-around_medium">
+          <h3 class="slds-text-heading_small">
+            You have a credit of&nbsp;
+            <b>
+              <lightning-formatted-number value={credit} format-style="currency" currency-code="USD">
+              </lightning-formatted-number>
+            </b>&nbsp;
+            in your ECFMG financial account. You can apply this credit to your Total above.
+          </h3><br />
+          <lightning-button variant="brand" label="Apply Credits" class="slds-m-around_x-small" onclick={applyCredits}>
+          </lightning-button>
+        </div>
+      </lightning-card>
+    </template>
+  </div>
+
+  <br />
+
+  <div class="slds-p-around_medium slds-text-align_center slds-text-heading_medium">
+    <h3>To view your transaction history, access your <a href={url} onclick={navigateToFinancialAccount}>Financial Account</a> page.</h3>
+  </div>
+
+</template>

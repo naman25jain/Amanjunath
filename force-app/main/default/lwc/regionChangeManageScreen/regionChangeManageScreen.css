@@ -1,0 +1,85 @@
+.padding {
+    padding-top: 20px;
+    margin-left: 30%;
+    margin-right: 25%;
+  }
+  .header{
+    font-size: 20px
+  }
+  .formMargin {
+    margin-left: 20%;
+    margin-right: 20%;
+    padding-top: 20px;
+  }
+  .paddingright{
+    padding-right: 50%;
+  }
+  .buttonAlignment {
+    padding-top: 25px;
+    padding-left: 35%;
+  }
+  .EPItalic{
+    font-style:italic;
+  }
+  
+  .errormsg{
+    color:#ff0000;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  
+  .successmsg{
+    color:#4BB543;
+    font-size: 13px;
+  }
+  
+  .regionSurchargeSection .slds-form-element {
+    width:30px;
+    position: absolute;
+    float: left;
+  }
+  
+  .regionSurchargeSection .regionname {
+    padding-left: 20px;
+  }
+  
+  .regionSurchargeSection .regiondesc {
+    padding-left: 30px;
+  }
+  
+  .selectedregion {
+    background-color: #cccccc;
+  }  
+
+  .examtypecheckbox  {
+    width:30px;
+    position: absolute;
+    float: left;
+  }
+
+  .examtypetitle {
+    padding-left: 25px;
+    font-size: 12px;
+  }
+
+  .hidemode { display: none }
+
+  .w30 { width:30% !important; float:left; }
+
+  .w70 { width:70% !important; }
+
+  .w80 { width:80% !important; }
+
+  .f14 { font-size: 14px; }
+
+  .sldsexamregid {padding:10px;}
+
+  .maincontainer {padding:20px;}
+
+  .link { color: #005fb2; float: left; cursor: pointer}
+
+  .pB20 { padding-bottom: 20px; }
+
+  .centeralign { text-align:center; padding-top:10px;}
+
+  .surchargeregionsection caption { display: none;}

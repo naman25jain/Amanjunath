@@ -1,0 +1,7 @@
+<!--
+ - Created by Matthew on 12/4/18.
+ -->
+
+<design:component>
+    <design:attribute name="readOnlyMode" label="Is Read Only" />
+</design:component>

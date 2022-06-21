@@ -1,0 +1,5 @@
+<design:component>
+    <design:attribute name="caseId" label="Case Id" description="The case id on which the existing contact will be found for Cibis Duplicate check."/>
+    <design:attribute name="contactId" label="Contact Id" description="The final contact id for output to flow for additional processing."/>
+    <design:attribute name="recordId" label="record Id" description="The final record id for output to flow for Cibis Duplicate Check processing."/>
+</design:component>

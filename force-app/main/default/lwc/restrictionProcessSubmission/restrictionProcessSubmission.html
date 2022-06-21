@@ -1,0 +1,29 @@
+<template>
+    <lightning-quick-action-panel header="Submit Process">
+        <lightning-spinner alternative-text="Loading" size="large" if:true={isSpinner}></lightning-spinner>
+            <div class="message" style="text-align:center;"></div>
+        <template if:true={enableUserChoice}>
+            <div class="slds-align_absolute-center">
+                <!-- <div class="slds-checkbox">
+                    <input type="checkbox" name="options" id="checkbox-unique-id-75" value="checkbox-unique-id-75" />
+                    <label class="slds-checkbox__label" for="checkbox-unique-id-75">
+                        <span class="slds-checkbox_faux"></span>
+                        <span class="slds-form-element__label">Yes</span>
+                    </label>
+                </div>
+                <div class="slds-checkbox">
+                    <input type="checkbox" name="options" id="checkbox-unique-id-76" value="checkbox-unique-id-76" />
+                    <label class="slds-checkbox__label" for="checkbox-unique-id-76">
+                        <span class="slds-checkbox_faux"></span>
+                        <span class="slds-form-element__label">No</span>
+                    </label>
+                </div> -->
+                <lightning-radio-group name="radioGroup" variant='label-hidden' options={options} type="radio"></lightning-radio-group>
+                <!-- <lightning-button variant="brand" label="Brand" title="Submit" onclick={handleUserChoice} class="slds-m-left_x-small"></lightning-button> -->
+            </div>
+        </template>
+        <div slot="footer" if:true={enableUserChoice}>
+            <lightning-button variant="brand" label="Submit" title="Submit" onclick={handleUserChoice} class="slds-m-left_x-small"></lightning-button>
+        </div>
+    </lightning-quick-action-panel>
+</template>

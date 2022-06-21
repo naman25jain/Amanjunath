@@ -1,0 +1,18 @@
+.buttonAlignment{
+  padding-left: 20%;    
+  padding-top: 2%; 
+  padding-bottom: 2%;
+}
+.formMargin{
+  margin-left: 25px;
+  margin-right: 20px;
+  padding-top: 10px;
+}
+ul.subAffirmation{
+  list-style-type: circle;
+  font-weight: normal;
+}
+.errormsg{
+  color:#ff0000;
+  font-size: 13px;
+}

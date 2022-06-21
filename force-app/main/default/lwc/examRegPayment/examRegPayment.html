@@ -1,0 +1,23 @@
+<template >
+	
+	<div class="formMargin slds-p-top_medium"> 
+		<template if:true={spinner}>
+			<lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+		</template>
+		<div style="text-align:center">
+			<h2>Payment Information</h2>
+		</div>
+				
+				<lightning-input type="number" label="Card Number" onkeydown={alertFunc}></lightning-input>
+				
+				<lightning-input type="number" label="CVC" max="999" onkeydown={alertFunc}></lightning-input>
+				
+				<lightning-input name="Name" label="Card Holder Name" ></lightning-input>
+				<lightning-input type="date" name="Expiration" label="Expiration Date" ></lightning-input>
+				
+			<div class="buttonAlignment">
+				<lightning-button variant="brand" label="Previous" title="Previous" onclick={prevButton} class="slds-m-left_x-small"></lightning-button>
+				<lightning-button variant="brand" label="Complete Order ($175.00)" title="Complete Order" onclick={nextButton} class="slds-m-left_x-small"></lightning-button>
+			</div>
+		</div>
+</template>

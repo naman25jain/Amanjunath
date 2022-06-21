@@ -1,0 +1,15 @@
+.padding {
+    padding-top: 20px;
+    margin-left: 25%;
+    margin-right: 25%;
+}
+.buttonAlignment{
+    padding-left: 44%;
+    padding-top: 2%;
+} 
+.cancelButton{
+    margin-left:2%;
+}
+.is_error{
+    color: #D8000C;
+}

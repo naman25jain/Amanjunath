@@ -1,0 +1,7 @@
+<!--
+ - Created by Matthew on 2019-03-05.
+ -->
+
+<design:component>
+    <design:attribute name="layout" datasource="Stacked,Horizontal" label="Form Layout" description="Used to determine how to form will layout." />
+</design:component>

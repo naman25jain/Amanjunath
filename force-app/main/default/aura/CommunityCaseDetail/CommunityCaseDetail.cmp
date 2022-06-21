@@ -1,0 +1,62 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" 
+                access="global">
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="recordError"            	 type="String" />
+    <aura:attribute name="runOnce"            	 type="boolean" default="false" />
+	<aura:attribute name="caseRecord"			  	 type="Object" />
+    <aura:attribute name="cStatus" type="String" />
+	<aura:attribute name="currentStage" type="Object"/>
+	<aura:attribute name="activeStages" type="Object[]"/>
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:handler name="change" value="{!v.caseRecord}" action="{!c.change}" />
+	<force:recordData
+		aura:id			= "recordLoader"
+		fields			= "Id,Internal_Status__c"
+		recordId		= "{!v.recordId}"
+		targetError		= "{!v.recordError}"
+		targetFields	= "{!v.caseRecord}"
+		mode			= "EDIT"
+        recordUpdated = "{!c.handleCaseRecordDataUpdated}" />
+
+
+<table width="100%" bgcolor="#FFFFFF">
+    <tr><td>
+		<aura:if isTrue="{!or(v.caseRecord.Internal_Status__c == 'Photo and Passport Review', v.caseRecord.Internal_Status__c == 'New')}">
+            <lightning:progressIndicator currentStep="2" type="path" hasError="false" variant="base">
+                <lightning:progressStep label="Provide Personal Information" value="1"/>
+                <lightning:progressStep label="Photo and Passport Review" value="2"/>
+                <lightning:progressStep label="Notary Check" value="3"/>
+                <lightning:progressStep label="Notary Review" value="4"/>
+                <lightning:progressStep label="Verified" value="5"/>
+            </lightning:progressIndicator>
+		</aura:if>
+		<aura:if isTrue="{!v.caseRecord.Internal_Status__c == 'Notary Check'}">
+            <lightning:progressIndicator currentStep="3" type="path" hasError="false" variant="base">
+                <lightning:progressStep label="Provide Personal Information" value="1"/>
+                <lightning:progressStep label="Photo and Passport Review" value="2"/>
+                <lightning:progressStep label="Notary Check" value="3"/>
+                <lightning:progressStep label="Notary Review" value="4"/>
+                <lightning:progressStep label="Verified" value="5"/>
+            </lightning:progressIndicator>
+		</aura:if>
+		<aura:if isTrue="{!v.caseRecord.Internal_Status__c == 'Notary Review'}">
+            <lightning:progressIndicator currentStep="4" type="path" hasError="false" variant="base">
+                <lightning:progressStep label="Provide Personal Information" value="1"/>
+                <lightning:progressStep label="Photo and Passport Review" value="2"/>
+                <lightning:progressStep label="Notary Check" value="3"/>
+                <lightning:progressStep label="Notary Review" value="4"/>
+                <lightning:progressStep label="Verified" value="5"/>
+            </lightning:progressIndicator>
+		</aura:if>
+		<aura:if isTrue="{!v.caseRecord.Internal_Status__c == 'Completed Verified'}">
+            <lightning:progressIndicator currentStep="5" type="path" hasError="false" variant="base">
+                <lightning:progressStep label="Provide Personal Information" value="1"/>
+                <lightning:progressStep label="Photo and Passport Review" value="2"/>
+                <lightning:progressStep label="Notary Check" value="3"/>
+                <lightning:progressStep label="Notary Review" value="4"/>
+                <lightning:progressStep label="Verified" value="5"/>
+            </lightning:progressIndicator>
+		</aura:if>
+        </td></tr><tr><td><lightning:flow aura:id="Community_Steps" onstatuschange="{!c.statusChange}" /></td></tr>
+</table>
+</aura:component>

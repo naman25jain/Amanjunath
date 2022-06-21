@@ -1,0 +1,203 @@
+<template>
+
+	<lightning-quick-action-panel header="Add Entities/Applicants">
+		<lightning-spinner alternative-text="Loading" size="large" if:true={isSpinner}></lightning-spinner>
+		<!--
+            <c-g-display-content unique-content-value="Restriction_Request_Status_Error_Bulk_Process"></c-g-display-content>
+        </div> -->
+		<div if:true={isBulkProcessReady}>
+			<div class="slds-float--right slds-m-around_small">
+				<lightning-input type="toggle" label="Bulk Process" name="input1" onchange={handleShowFilter}>
+				</lightning-input>
+			</div><br /><br /><br /><br />
+         </div>
+			<div if:true={showFilter}>
+				<lightning-layout>
+					<lightning-layout-item size="6">
+						<lightning-input name="enterreport" variant="label-hidden" onchange={handleReprId}
+							label="Enter Report Id" placeholder="Please enter report Id" type="text">
+						</lightning-input>
+					</lightning-layout-item>
+					<lightning-layout-item size="4">
+						<div></div>
+						<lightning-button variant="brand" label='Run Bulk Process' onclick={handleRunReport}>
+						</lightning-button>
+					</lightning-layout-item>
+				</lightning-layout>
+			</div>
+
+			<div if:false={showFilter}>
+				<lightning-layout if:true={isBulkProcessReady}>
+					<lightning-layout-item size="2">
+						<lightning-combobox name="progress" variant="label-hidden" value={selectedValue}
+							placeholder="Select Progress" options={options} onchange={handleAccountContactSelect}
+							disabled>
+						</lightning-combobox>
+					</lightning-layout-item>
+					<lightning-layout-item size="6">
+						<lightning-input class="searchinput" variant="label-hidden" name="enter-search"
+							label="Search when user hits the 'enter' key" placeholder="Enter value here" type="search"
+							onchange={handleInputSearch}>
+						</lightning-input>
+					</lightning-layout-item>
+					<lightning-layout-item size="2">
+						<lightning-button label="Search" variant="brand" onclick={handleKeyUp}></lightning-button>
+					</lightning-layout-item>
+				</lightning-layout>
+				<br/>
+
+				<template if:true={enableTable}>
+					<div class="slds-scrollable" if:true={isAccounts}>
+						<table class="slds-table slds-table_cell-buffer slds-table_bordered">
+							<thead>
+								<tr class="slds-line-height_reset">
+									<th class="" scope="col">
+									</th>
+									<th class="" scope="col">
+										<div class="slds-truncate" title="Name">Name</div>
+									</th>
+									<th class="" scope="col">
+										<div class="slds-truncate" title="Medschool Code">Medschool Code</div>
+									</th>
+									<th class="" scope="col">
+										<div class="slds-truncate" title="Institution ID">Institution ID</div>
+									</th>
+									<th class="" scope="col">
+										<div class="slds-truncate" title="BillingStreet">BillingStreet</div>
+									</th>
+									<th class="" scope="col">
+										<div class="slds-truncate" title="BillingCity">BillingCity</div>
+									</th>
+									<th class="" scope="col">
+										<div class="slds-truncate" title="BillingCountry">BillingCountry</div>
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								<template for:each={records} for:item="val">
+									<tr key={val.Id}>
+										<th scope="col">
+											<div if:true={isBulkProcessReady}>
+												<lightning-input onchange={getSelectedRow} class="checkboxes"
+													type="checkbox" checked={val.checked} data-id={val.Id}>
+												</lightning-input>
+											</div>
+											<div if:false={isBulkProcessReady}>
+												<lightning-input onchange={getSelectedRow} class="checkboxes"
+													type="checkbox" checked={val.checked} data-id={val.Id} disabled>
+												</lightning-input>
+											</div>
+										</th>
+										<th scope="col">
+											<div><a data-id={val.Id} onclick={openRecord}>{val.Name}</a></div>
+										</th>
+										<th scope="col">
+											<div>{val.Medschool_Code__c}</div>
+										</th>
+										<th scope="col">
+											<div>{val.Institution_ID__c}</div>
+										</th>
+										<th scope="col">
+											<div>{val.BillingStreet}</div>
+										</th>
+										<th scope="col">
+											<div>{val.BillingCity}</div>
+										</th>
+										<th scope="col">
+											<div>{val.BillingCountry}</div>
+										</th>
+									</tr>
+								</template>
+							</tbody>
+						</table>
+					</div>
+
+					<div class="slds-scrollable" if:true={isContacts}>
+						<table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_resizable-col">
+							<thead>
+								<tr class="slds-line-height_reset">
+									<th class="" scope="col">
+									</th>
+									<th class="" scope="col">
+										<div class="slds-truncate" title="First Name">Name</div>
+									</th>
+									<th class="" scope="col">
+										<div class="slds-truncate" title="RecordType Name">RecordType Name</div>
+									</th>
+									<th class="" scope="col">
+										<div class="slds-truncate" title="ECFMG Id">ECFMG Id</div>
+									</th>
+									<th class="" scope="col">
+										<div class="slds-truncate" title="DOB">DOB</div>
+									</th>
+									<th class="" scope="col">
+										<div class="slds-truncate" title="Gender">Gender</div>
+									</th>
+									<th class="" scope="col">
+										<div class="slds-truncate" title="MailingStreet">MailingStreet</div>
+									</th>
+									<th class="" scope="col">
+										<div class="slds-truncate" title="MailingCity">MailingCity</div>
+									</th>
+									<th class="" scope="col">
+										<div class="slds-truncate" title="MailingCountry">MailingCountry</div>
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								<template for:each={records} for:item="val">
+									<tr key={val.Id}>
+										<th scope="col">
+											<div if:true={isBulkProcessReady}>
+												<lightning-input onchange={getSelectedRow} class="checkboxes"
+													type="checkbox" checked={val.checked} data-id={val.Id}>
+												</lightning-input>
+											</div>
+											<div if:false={isBulkProcessReady}>
+												<lightning-input onchange={getSelectedRow} class="checkboxes"
+													type="checkbox" checked={val.checked} data-id={val.Id} disabled>
+												</lightning-input>
+											</div>
+										</th>
+										<th scope="col">
+											<div><a data-id={val.Id} onclick={openRecord}>{val.Name}</a></div>
+										</th>
+										<th scope="col">
+											<div>{val.RecordType.Name}</div>
+										</th>
+										<th scope="col">
+											<div>{val.MyIntealth_ID__c}</div>
+										</th>
+										<th scope="col">
+											<div>{val.Birthdate}</div>
+										</th>
+										<th scope="col">
+											<div>{val.Gender__c}</div>
+										</th>
+										<th scope="col">
+											<div>{val.MailingStreet}</div>
+										</th>
+										<th scope="col">
+											<div>{val.MailingCity}</div>
+										</th>
+										<th scope="col">
+											<div>{val.MailingCountry}</div>
+										</th>
+									</tr>
+								</template>
+							</tbody>
+						</table>
+					</div>
+				</template>
+                <template if:false={enableTable}>
+                    <div style="text-align:center;" if:false={isBulkProcessReady}>No Data found</div>
+                </template>
+			</div><br /><br />
+			<div slot="footer" if:true={isBulkProcessReady}>
+				<lightning-button if:false={showFilter} variant="brand" label="Add/Remove" onclick={handleRunReport}
+					class="slds-m-left_x-small">
+				</lightning-button>
+			</div>
+	</lightning-quick-action-panel>
+
+</template>

@@ -1,0 +1,31 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,forceCommunity:availableForAllPageTypes">
+
+    <aura:attribute name="service" type="String" />
+    
+    <aura:attribute name="title" type="String" default="Insert Title Here" />
+    <aura:attribute name="editUrl" type="String" />
+	<aura:attribute name="hideEditButton" type="Boolean" default="false" />
+	<aura:attribute name="showHelpIcon" type="Boolean" default="false" />
+	<aura:attribute name="helpText" type="String" />
+    
+	<aura:handler name="init" action="{!c.doInit}" value="{!this}" />
+    
+	<div class="slds-p-vertical_small">
+		<div class="slds-grid slds-border_bottom slds-p-bottom_xx-small">
+			<div class="slds-col slds-size_1-of-2">
+				<h2>{!v.title}</h2>
+			</div>
+			<div class="slds-col slds-size_1-of-2 slds-text-align_right">
+				<aura:if isTrue="{!v.hideEditButton == false}">
+					<lightning:button label="Edit" title="Edit" variant="brand" onclick="{! c.handleEditOnClick }"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				</aura:if>
+				<aura:if isTrue="{!v.showHelpIcon}">
+					<div class="tooltip"><lightning:icon iconName="action:question_post_action" size="xx-small" />
+						<span class="tooltiptext">{!v.helpText}</span>
+					</div>
+				</aura:if>
+			</div>
+		</div>
+	</div>
+
+</aura:component>

@@ -1,0 +1,110 @@
+<template>
+   <div class="slds-card slds-card_boundary">
+      <template if:true={spinner}>
+         <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+      </template>
+      <div class="slds-page-header slds-page-header_record-home">
+         <header class="slds-media slds-media_center slds-has-flexi-truncate">
+            <div class="slds-media__figure">
+               <span class="slds-icon_container slds-icon-standard-drafts" title="Documents">
+                  <lightning-icon size="small" icon-name="standard:drafts"></lightning-icon>
+               </span>
+            </div>
+            <div class="slds-media__body">
+               <h2 class="slds-card__header-title">
+                  <span><strong>Build Your Document</strong></span>
+               </h2>
+            </div>
+         </header>
+      </div>
+      <div class="row">
+         <div class="column left">
+            <div class="wrapperDiv">
+               <div class="topSectionsWrapper">
+                  <div class="listWrapper topSection">
+                     <div class="assetWrapperDiv">
+                        <div class="assetSectionWrapper">
+                           <div class="assetSection">
+                              <lightning-datatable class="assetListTable" data={recordsList} columns={columns} key-field="Id"
+                                 hide-checkbox-column show-row-number-column default-sort-direction={defaultSortDirection}
+                                 sorted-direction={sortDirection} sorted-by={sortedBy} onsort={onHandleSort}
+                                 onrowaction={handleRowActions}>
+                              </lightning-datatable>
+                           </div>                        
+                        </div> 
+                     </div>                                         
+                  </div>
+                  <template if:false={readOnly}>
+                     <div class="attributesSelectionWrapper topSection">
+                        <lightning-combobox name="documentType" label="Document Type" value={docTypeVal}
+                           placeholder="Select Document Type" options={docTypeOptions}
+                           onchange={handleDocumentTypeChange} class="documentType"></lightning-combobox>
+                        <template if:true={showEntitySelect}>
+                           <lightning-combobox name="cats" label="Entity" value={entityVal} class="cats"
+                              placeholder="Select Entity" options={entityOptions} onchange={handleEntityChange}>
+                           </lightning-combobox>
+                        </template>
+                        <template if:true={showNameOnDocument}>
+                           <lightning-input type="text" class="nameOnDocText" label="Name on Document"
+                              placeholder="Enter name on document" onchange={handleNameChange}>
+                           </lightning-input>
+                        </template>
+                     </div>
+                  </template>
+               </div>
+            </div>
+         </div>
+         <template if:false={readOnly}>
+            <template if:false={showbuilder}>
+               <div class="column left text-center">
+                  <lightning-button variant="brand" label="Build Document" title="Build Document"
+                     onclick={showDocumentBuilder}></lightning-button>
+                  <template if:true={linkButtonVisibility}> 
+                     <span style="margin-left:0.5rem;">
+                        <lightning-button variant="brand" label="Link Asset To Verification Packet" title="Link Asset To Verification Packet"
+                        onclick={linkAssetToVP}></lightning-button>
+                  </span>
+                  </template>
+               </div>               
+            </template>            
+            <template if:true={showbuilder}>
+               <div class="column left text-center">
+                  <lightning-button variant="brand" label="Hide Builder" title="Hide Builder" onclick={hideBuilder}>
+                  </lightning-button>
+               </div>
+            </template>
+            <template if:true={showViewer}>
+               <div class="column center">
+                  <c-document-viewer ondocviewer_save_document={handleSaveDocument} asset-type={assetType}
+                     enable-redaction={enableRedaction} enable-annotation={enableAnnotation}
+                     ondocviewer_redaction_applied={handleRedactionApplied} enable-saving={enableSaving}>
+                  </c-document-viewer>
+               </div>
+            </template>
+            <template if:true={showbuilder}>
+               <div class="column middle">
+                  <c-document-viewer ondocviewer_save_document={handleSaveDocument} asset-type={assetType}
+                     enable-redaction="false" enable-annotation="false" enable-saving="false">
+                  </c-document-viewer>
+               </div>
+               <div class="column right">
+                  <c-document-builder ondocbuilder_save_document={handleSaveDocument} asset-type={assetType}
+                     enable-redaction={enableRedaction} ondocbuilder_redaction_applied={handleRedactionApplied}
+                     enable-annotation={enableAnnotation} enable-saving="true">
+                  </c-document-builder>
+               </div>
+            </template>
+         </template>
+         <template if:true={readOnly}>
+            <div class="column center">
+               <c-document-viewer ondocviewer_save_document={handleSaveDocument} asset-type={assetType}
+                  enable-redaction={enableRedaction} enable-annotation={enableAnnotation} enable-saving="false">
+               </c-document-viewer>
+            </div>
+         </template>
+      </div>
+   </div>
+   <c-modal-component class="exceptionModal" title={modalTitle} message={modalContent} show-primary-button="true" primary-button-text="Replace"
+    onprimarybuttonclick={handleReplace} show-secondary-button="true" secondary-button-text="Cancel" >
+   </c-modal-component>
+</template>

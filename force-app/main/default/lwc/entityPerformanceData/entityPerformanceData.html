@@ -1,0 +1,32 @@
+<template>
+    <template if:true={spinner}>
+        <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+    </template>
+    <template if:true={restrictedAccess}>
+        <div class="padding">
+            <lightning-formatted-rich-text class='errormsg' value={errorMessages}>
+            </lightning-formatted-rich-text>
+        </div>
+    </template>
+    <template if:false={restrictedAccess}>
+        <template if:true={displayNoPerformanceDataEnrolled}>
+            <div class="padding">
+                <lightning-formatted-rich-text class='errormsg' value={errorMessagesText}>
+                </lightning-formatted-rich-text>
+            </div>
+        </template>
+        <template if:false={displayNoPerformanceDataEnrolled}>
+            <p>Welcome to Performance Data! Your medical school has authorized you to access information on the performance of your school’s students/graduates on USMLE Step 1 and Step 2. Data provided include: the examinee's name; USMLE Identification Number; exam type and date taken; pass/fail outcome; and, for Step 1 and Step 2 CK, the examinee's numerical score, if one was reported for their exam administration. Detailed information is available in the Provision of Performance Data to Medical Schools.</p><br>
+            <p>Data are available for 365 days from the date the record is made available in MyIntealth.</p><br>
+            <a target="_self" class="slds-button slds-button_brand" download="ExportToCSV.csv" href={hrefdata}
+                onclick={exportToCSV} style="margin-left: 80%;">Export Performance Data</a><br /><br />
+            <c-paginator class="paginatorPerformance" records={performanceDataRecords} total-records={performanceDataRecords.length}
+                show-search-box="true" onpaginatorchange={handlePaginatorChange} attributes-to-avoid={attributesList}>
+            </c-paginator>
+            <lightning-datatable class="performance-data-table" key-field="id" columns={columnsPerformance} data={recordsToDisplayPerformance}
+                hide-checkbox-column show-row-number-column default-sort-direction={defaultSortDirection}
+                sorted-direction={sortDirection} sorted-by={sortedBy} onsort={onHandleSort}>
+            </lightning-datatable>
+        </template>
+    </template>
+</template>

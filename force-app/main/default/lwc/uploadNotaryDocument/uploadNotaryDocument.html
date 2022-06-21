@@ -1,0 +1,74 @@
+<template>
+    <div class="slds-grid slds-gutters">
+		<div class="slds-col slds-size_1-of-1"><span>
+		<h2>Provide Notarized Identification Form</h2><br/>
+		Please upload your complete, certified EIF available <lightning-formatted-url value={eifDownloadLink} label ="here." tooltip="Download EIF" target="_blank"></lightning-formatted-url><br/><br/>
+		<c-g-display-content unique-content-value="UploadNotarizedIdVerification_Content"></c-g-display-content>
+		</span></div>
+    </div>
+    <div class="slds-card slds-card_boundary">
+        <div class="slds-page-header slds-page-header_record-home">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__figure">
+                    <span class="slds-icon_container slds-icon-standard-drafts" title="Documents">
+                        <lightning-icon size="small" icon-name="standard:drafts"></lightning-icon>
+                    </span>
+                </div>
+                <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                        <span><strong>Upload Notarized Identification Form</strong></span>
+                    </h2>
+                </div>
+            </header>
+        </div>
+        <c-document-upload onfileuploaded={handleFileUploaded} accepted-file-formats={acceptedFileFormats}
+            max-allowed-file-size={maxAllowedFileSize}></c-document-upload>
+
+        <template if:true={documents.length}>
+            <lightning-datatable key-field="id" data={documents} columns={columns} hide-checkbox-column
+                onrowaction={handleRowAction}>
+            </lightning-datatable>
+        </template>
+    </div>
+    <br/>
+        <lightning-button disabled={disableSave} label="Submit Document" variant="brand" title="Save" onclick={handleSave}></lightning-button>
+            &nbsp;
+        <lightning-button label="Cancel" variant="brand" title="Cancel" onclick={handleCancel}></lightning-button>
+
+    <c-modal header={header}><span slot="content">
+            <c-document-viewer 
+                ondocviewer_ready={handleShowDocument} ondocviewer_save_document={handleSaveDocument}
+                document={document} enable-redaction={enableRedaction} enable-annotation={enableAnnotation}
+                asset-type={assetType}>
+            </c-document-viewer>
+        </span>
+    </c-modal>
+    <template if:true={docSaved}>
+		<div class="demo-only" style="height: 640px;">
+			<section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+				<div class="slds-modal__container">
+					<header class="slds-modal__header">
+						<h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Notarized Identification Form Submitted!</h2>
+					</header>
+					<div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+						<p class="slds-p-bottom_small">
+                            <template if:true={caseNumber}>
+                              You have successfully submitted your notarized identification form for review. For reference, your case number for this request is {caseNumber}. ECFMG will update the status of your case as soon as your request has been processed.
+                            </template>
+							<template if:false={caseNumber}>
+								You have successfully submitted your identification documentation. ECFMG will update the status of your case as soon as your request has been processed.
+                        </template>
+						</p>
+						<p class="slds-p-bottom_small">
+							 Please contact us if you have any questions.
+						</p>
+					</div>
+					<footer class="slds-modal__footer">
+                        <lightning-button label="OK" variant="brand" title="OK" onclick={handleCancel}></lightning-button>
+					</footer>
+				</div>
+			</section>
+			<div class="slds-backdrop slds-backdrop_open"></div>
+		</div>
+	</template>
+</template>

@@ -1,0 +1,52 @@
+.padding {
+    padding-top: 20px;
+    margin-left: 24px;
+  }
+  .formMargin {
+    margin-left: 25%;
+    margin-right: 25%;
+    padding-top: 20px;
+  }
+  .formMargin p {
+    margin-bottom: 20px;
+  }
+  .buttonAlignment {
+    padding-left: 18%;
+    padding-top: 3%;
+    top: 55px;
+    left: 45px;
+  }
+
+  .headerSection {
+    color: #000080;
+    font-size: 13px;
+    font-weight: bold;
+  }
+
+  .headerSection1 {
+    color: #ff0000;
+    font-size: 13px;
+    display: inline-flex;
+    font-weight: bold;
+  }
+
+  .slds-box {
+    border-color: #ff0000;
+    margin-right: 13px;
+  }
+
+  h1 {
+    font-size: 1.5em;
+  }
+
+  h2 {
+    font-size: 1.125em;
+  }
+
+  .content > h3,
+  .slds-col > h3 {
+    margin-top: 20px;
+  }
+  .mt-20 {
+    margin-top: 20px;
+  }

@@ -1,0 +1,718 @@
+<template>
+   <div class="formMargin">
+      <template if:true={spinner}>
+         <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+      </template>
+      <br />
+      <div class="slds-is-relative">
+         <div class="slds-grid slds-wrap">
+            <template if:true={diplomaRejected}>
+               <br /><br />
+               <!--Diploma Document-->
+               <div class="slds-col slds-size_1-of-1 ">
+                  <div class="slds-section slds-is-open">
+                     <h3 class="slds-section__title headerbackground">
+                        <span class="slds-truncate slds-p-horizontal_small"
+                           title="Section Title">{label.diplomaDocumentUpload}</span>
+                     </h3>
+                  </div>
+               </div>
+               <div class="slds-col slds-size_1-of-1 ">
+                  <template for:each={rejLangFD} for:item="fd">
+                     <ul class="subAffirmation" key={fd}>
+                        <li>
+                           {fd}
+                        </li>
+                     </ul>
+                  </template>
+               </div>
+               <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                  <span class="required">*</span>
+                  <span>Upload Diploma</span>
+               </div>
+               <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                  <c-cloud-document-upload-wrapper label="Upload Diploma" pay-load={payloadFinalMedDiploma}
+                     max-allowed-file-size=10 accepted-file-formats=".jpeg,.jpg,.pdf,.tiff" enable-annotation="false" azure-doc-url={FMDUrl}
+                     enable-redaction="false" ongeneratedurl={handleDiplomaUpload}>
+                  </c-cloud-document-upload-wrapper>
+                  <c-g-display-content unique-content-value="upload_msg_jpeg_tiff_pdf"></c-g-display-content>
+               </div>
+               <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                  <span></span>
+               </div>
+               <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                  <template if:true={isErrMsgDipDetails}>
+                     <span class="errormsg">{label.diplomaisMandatory}</span>
+                  </template>
+               </div>
+               <template if:true={isPrimaryDiplomaUploaded}>
+                  <div class="slds-col slds-p-top_medium slds-size_1-of-1">
+                     <div class="slds-grid slds-border_bottom slds-p-bottom_xx-small">
+                        <div class="slds-col">
+                           <h1 class="gridHeader">{label.diplomaDocumentUploadNameDocumentation}</h1>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                     <span>Name on System</span>
+                  </div>
+                  <div class="slds-col slds-size_1-of-2 slds-p-top_medium ">
+                     <lightning-input type="text" name="nameonSystem" variant="label-hidden" value={contactName}
+                        label="Name on System" disabled></lightning-input>
+                  </div>
+                  <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                     <span class="required">*</span>
+                     <span>Name on Document</span>
+                  </div>
+                  <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+                     <lightning-input class="diplomaName" type="text" name="nameonDiplomaDocument"
+                        variant="label-hidden" label="Name on Document" value={nameonDiplomaDocumentVal}
+                        onchange={handleChangeForInputFields}></lightning-input>
+                  </div>
+                  <div class="slds-col slds-p-top_medium slds-size_1-of-2 errorMsgAlignment">
+                     <span></span>
+                  </div>
+                  <div class="slds-col slds-p-top_medium slds-size_1-of-2 errorMsgAlignment">
+                     <template if:true={isErrMsgDipName}>
+                        <span class="errormsg">{label.graduateScreenNameonDocMessage}</span>
+                     </template>
+                  </div>
+                  <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                     <span>Name on Document is different</span>
+                  </div>
+                  <div class="slds-col slds-size--1-of-2 slds-p-top_medium ">
+                     <lightning-input type="checkbox" data-id="diplomaDiff" name="isDiplomaNameDifferent"
+                        variant="label-hidden" label="Name on Document is different"
+                        onchange={handleChangeDiplomaNameDifferent}>
+                     </lightning-input>
+                  </div>
+                  <template if:true={isDiplomaNameDifferent}>
+                     <!--Diploma Name Document-->
+                     <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                        <span>Upload Name Documentation</span>
+                     </div>
+                     <template if:true={showDipNameDocButton}>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                           <c-cloud-document-upload-wrapper label="Upload Name Documentation"
+                              pay-load={payloadFMDNameDoc} max-allowed-file-size=10
+                              accepted-file-formats=".jpeg,.jpg,.pdf,.tiff" enable-annotation="false"
+                              enable-redaction="false" show-delete-button="true" azure-doc-url={FMDNameUrl}
+                              ongeneratedurl={handleOnDiplomaNameDoc}>
+                           </c-cloud-document-upload-wrapper>
+                        </div>
+                     </template>
+                  </template>
+                  <div class="slds-col slds-size_1-of-1 slds-p-top_medium">
+                     <div class="slds-grid slds-border_bottom slds-p-bottom_xx-small">
+                        <div class="slds-col">
+                           <h1 class="gridHeader">{label.diplomaDocumentUploadTranslation}</h1>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                     <span>Diploma is not in English</span>
+                  </div>
+                  <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+                     <lightning-input type="checkbox" data-id="diplomaEng" variant="label-hidden"
+                        name="isDiplomaNameinEnglish" label="Diploma is not in English" value={isDiplomaNameinEnglish}
+                        onclick={handleChangeDiplomaInEnglish}>
+                     </lightning-input>
+                  </div>
+               </template>
+               <template if:true={isDiplomaNameinEnglish}>
+                  <!--Translation Document-->
+                  <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                     <span class="required">*</span>
+                     <span>Upload Diploma Translation</span>
+                  </div>
+                  <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                     <template if:true={showDipTransDocButton}>
+                        <c-cloud-document-upload-wrapper label="Upload Name Transalation" pay-load={payloadFMDTransDoc}
+                           max-allowed-file-size=10 accepted-file-formats=".jpeg,.jpg,.pdf,.tiff"
+                           enable-annotation="false" enable-redaction="false" azure-doc-url={FMDTransUrl}
+                           ongeneratedurl={handleOnDiplomaEnglish}>
+                        </c-cloud-document-upload-wrapper>
+                     </template>
+                  </div>
+                  <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                     <span></span>
+                  </div>
+                  <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                     <template if:true={isErrMsgDipTransDetails}>
+                        <span class="errormsg">{label.diplomaDocumentTranslationMandatory}</span>
+                     </template>
+                  </div>
+               </template>
+            </template>
+            <template if:true={transcriptRejected}>
+               <br /><br />
+               <!--Transcript Document-->
+               <div class="slds-col slds-size_1-of-1 ">
+                  <div class="slds-section slds-is-open">
+                     <h3 class="slds-section__title headerbackground">
+                        <span class="slds-truncate slds-p-horizontal_small"
+                           title="Section Title">{label.transcriptUpload}</span>
+                     </h3>
+                  </div>
+               </div>
+               <div class="slds-col slds-size_1-of-1 ">
+                  <template for:each={rejLangFT} for:item="ft">
+                     <ul class="subAffirmation" key={ft}>
+                        <li>
+                           {ft}
+                        </li>
+                     </ul>
+                  </template>
+               </div>
+               <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                  <span class="required">*</span>
+                  <span>Upload Final Transcript</span>
+               </div>
+               <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                  <c-cloud-document-upload-wrapper label="Upload Final Transcript"
+                     pay-load={payloadFinalMedSchoolTranscript} max-allowed-file-size=10 azure-doc-url={FMTUrl}
+                     accepted-file-formats=".jpeg,.jpg,.pdf,.tiff" enable-annotation="false" enable-redaction="false"
+                     ongeneratedurl={handleOnTranscript}>
+                  </c-cloud-document-upload-wrapper>
+               </div>
+               <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                  <span></span>
+               </div>
+               <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                  <template if:true={isErrMsgTranscriptDetails}>
+                     <span class="errormsg">Please upload Final Transcript Details</span>
+                  </template>
+               </div>
+               <template if:true={isPrimaryTranscriptUploaded}>
+                  <div class="slds-col slds-p-top_medium slds-size_1-of-1">
+                     <div class="slds-grid slds-border_bottom slds-p-bottom_xx-small">
+                        <div class="slds-col">
+                           <h1 class="gridHeader">{label.diplomaDocumentUploadNameDocumentation}</h1>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                     <span>Name on System</span>
+                  </div>
+                  <div class="slds-col slds-size_1-of-2 slds-p-top_medium ">
+                     <lightning-input type="text" name="nameonSystem" variant="label-hidden" value={contactName}
+                        label="Name on System" disabled></lightning-input>
+                  </div>
+                  <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                     <span class="required">*</span>
+                     <span>Name on Document</span>
+                  </div>
+                  <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+                     <lightning-input class="finalName" type="text" label="Name on Document" variant="label-hidden"
+                        name="nameonFinalTranscriptDocument" value={nameonFinalDocumentVal}
+                        onchange={handleChangeForInputFields}></lightning-input>
+                  </div>
+                  <div class="slds-col slds-p-top_medium slds-size_1-of-2 errorMsgAlignment">
+                     <span></span>
+                  </div>
+                  <div class="slds-col slds-p-top_medium slds-size_1-of-2 errorMsgAlignment">
+                     <template if:true={isErrMsgTranscriptName}>
+                        <span class="errormsg">{label.graduateScreenNameonDocMessage}</span>
+                     </template>
+                  </div>
+                  <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                     <span>Name on Document is different</span>
+                  </div>
+                  <div class="slds-col slds-size--1-of-2 slds-p-top_medium">
+                     <lightning-input type="checkbox" data-id="finalDiff" variant="label-hidden"
+                        label="Name on Document is different" name="isFinalMedicalTranscriptDifferent"
+                        onchange={handleChangeFMTNameDifferent}>
+                     </lightning-input>
+                  </div>
+                  <template if:true={isFinalMedicalTranscriptDifferent}>
+                     <!--Transcript Name Document-->
+                     <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                        <span>Upload Name Documentation</span>
+                     </div>
+                     <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                        <template if:true={showTranscriptNameDocButton}>
+                           <c-cloud-document-upload-wrapper label="Upload Name Documentation"
+                              pay-load={payloadFMTranscriptNameDoc} max-allowed-file-size=10 azure-doc-url={FMTNameUrl}
+                              accepted-file-formats=".jpeg,.jpg,.pdf,.tiff" enable-annotation="false"
+                              enable-redaction="false" show-delete-button="true"
+                              ongeneratedurl={handleOnTranscriptNameDoc}>
+                           </c-cloud-document-upload-wrapper>
+                        </template>
+                     </div>
+                  </template>
+                  <div class="slds-col slds-size_1-of-1 slds-p-top_medium">
+                     <div class="slds-grid slds-border_bottom slds-p-bottom_xx-small">
+                        <div class="slds-col">
+                           <h1 class="gridHeader">{label.transcriptTranslationUpload}</h1>
+                        </div>
+                     </div>
+                  </div>
+                  <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                     <span>Transcript is not in English</span>
+                  </div>
+                  <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+                     <lightning-input type="checkbox" data-id="finalEng" variant="label-hidden"
+                        label="Transcript is not in English" name="isFinalMedicalTranscriptinEnglish"
+                        onchange={handleChangeFinalMedicalTranscriptinEnglish}>
+                     </lightning-input>
+                  </div>
+               </template>
+               <template if:true={isFinalMedicalTranscriptinEnglish}>
+                  <!--Transcript Translation Document-->
+                  <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                     <span>Upload Final Transcript Translation</span>
+                  </div>
+                  <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                     <template if:true={showFMTranscriptTransDocButton}>
+                        <c-cloud-document-upload-wrapper label="Upload Transcript Transalation"
+                           pay-load={payloadFMTranscriptTransDoc} max-allowed-file-size=10 azure-doc-url={FMTTransUrl}
+                           accepted-file-formats=".jpeg,.jpg,.pdf,.tiff" enable-annotation="false"
+                           enable-redaction="false" ongeneratedurl={handleOnTranscriptEnglish}>
+                        </c-cloud-document-upload-wrapper>
+                     </template>
+                  </div>
+                  <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                     <span></span>
+                  </div>
+                  <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                     <template if:true={isErrMsgFinalMedTransDetails}>
+                        <span class="errormsg">{label.finalMedicalSchoolTranscriptTranslationMandatory}</span>
+                     </template>
+                  </div>
+               </template>
+            </template>
+            <template if:true={tctRejected}>
+               <div class="slds-col slds-size_1-of-1 ">
+                  <div class="slds-section slds-is-open">
+                     <h3 class="slds-section__title headerbackground">
+                        <span class="slds-truncate slds-p-horizontal_small" title="Section Title">Transfer Credit
+                           Transcript</span>
+                     </h3>
+                  </div>
+               </div>
+               <div class="slds-col slds-size_1-of-1 ">
+                  <template for:each={rejLangTCT} for:item="tct">
+                     <ul class="subAffirmation" key={tct}>
+                        <li>
+                           {tct}
+                        </li>
+                     </ul>
+                  </template>
+               </div>
+               <template if:false={readOnly}>
+                  <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                     <span><span class="required">*</span>Other Medical School</span>
+                  </div>
+                  <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                     <input id="inputSchool" name="inputSchool" list="valueList" data-medicalschool
+                        onchange={handleSchoolChange} class="slds-input schoolRecord"
+                        type="text" />
+                     <datalist id="valueList" class="schoolRecordDatalist">
+                        <template for:each={validSchoolRecords} for:item='item'>
+                           <option key={item.Id} data-entityid={item.Id} value={item.Name}>
+                              {item.Name}
+                              <br>
+                              <em>{item.BillingStreet}, {item.BillingCity}, {item.BillingState},
+                                 {item.BillingPostalCode},
+                                 {item.BillingCountry}</em>
+                           </option>
+                        </template>
+                     </datalist>
+                  </div>
+                  <div class="slds-col slds-p-top_small slds-size_1-of-2">
+                     <span><span class="required">*</span>Attendance Start Month & Year</span>
+                  </div>
+                  <div class="slds-col slds-p-top_medium slds-size_1-of-2 slds-grid slds-gutters">
+                     <div class="slds-col">
+                        <label for="startMonth">Month</label><br>
+                        <lightning-combobox name="startMonth" variant="label-hidden" placeholder="Select"
+                           options={startMonthPicklistOptions} class="startMonth" onchange={handleChangeForInputValue}>
+                        </lightning-combobox>
+                     </div>
+                     <div class="slds-col">
+                        <label for="startYear">Year</label><br>
+                        <lightning-input variant="label-hidden" type="text" class="startYear" maxlength="4"
+                           name="startYear" pattern="[1-9][0-9]{3}"
+                           message-when-pattern-mismatch="Please enter valid year as 1234"
+                           onchange={handleChangeForInputValue}></lightning-input>
+                     </div>
+                  </div>
+                  <div class="slds-col slds-p-top_small slds-size_1-of-2">
+                     <span><span class="required">*</span>Attendance End Month & Year</span>
+                  </div>
+                  <div class="slds-col slds-p-top_medium slds-size_1-of-2 slds-grid slds-gutters">
+                     <div class="slds-col">
+                        <label for="endMonth">Month</label><br>
+                        <lightning-combobox name="endMonth" variant="label-hidden" placeholder="Select"
+                           options={endMonthPicklistOptions} class="endMonth" onchange={handleChangeForInputValue}>
+                        </lightning-combobox>
+                     </div>
+                     <div class="slds-col">
+                        <label for="endYear">Year</label><br>
+                        <lightning-input variant="label-hidden" type="text" class="endYear" maxlength="4" name="endYear"
+                           pattern="[1-9][0-9]{3}" message-when-pattern-mismatch="Please enter valid year as 1234"
+                           onchange={handleChangeForInputValue}></lightning-input>
+                     </div>
+                  </div>
+                  <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                     <span><span class="required">*</span>Number of Years Attended</span>
+                  </div>
+                  <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                     <lightning-input type="number" step="0.01" variant="label-hidden" name="numberOfYears"
+                        class="attendedYears" onchange={handleChangeForInputValue}></lightning-input>
+                  </div>
+                  <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                     <span>School Program</span>
+                  </div>
+                  <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                     <lightning-input type="text" class="schoolProgram" name='program' variant="label-hidden"
+                        onchange={handleChangeForInputValue}></lightning-input>
+                  </div>
+                  <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                     <span>Student Id</span>
+                  </div>
+                  <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                     <lightning-input type="text" class="studentId" name="studentId" variant="label-hidden"
+                        onchange={handleChangeForInputValue}></lightning-input>
+                  </div>
+                  <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                     <span>Specialty</span>
+                  </div>
+                  <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                     <lightning-input type="text" class="speciality" name='speciality' variant="label-hidden"
+                        onchange={handleChangeForInputValue}></lightning-input>
+                  </div>
+                  <div
+                     class="slds-col slds-size--1-of-1 slds-p-top_large transferCreditSection tcMainSection transferCreditCourse">
+                     <div class="slds-section slds-is-open">
+                        <h3 class="slds-section__title headerbackground">
+                           <span class="slds-truncate " title="Section Title">Transfer Credits Transcript
+                              Details</span>
+                        </h3>
+                     </div>
+                  </div>
+                  <!--Transfer Credits Table to capture data of multiple courses -->
+                  <template if:true={showTable}>
+                     <div class="tcTableWrapper tcMainSection transferCreditSection">
+                        <table
+                           class="slds-table slds-no-cell-focus slds-table_bordered slds-table_edit slds-table_fixed-layout slds-table_resizable-cols tcMainSection tcTable transferCreditSection tcid"
+                           role="grid">
+                           <caption>Transfer Credits Table</caption>
+                           <thead>
+                              <tr class="slds-line-height_reset">
+                                 <th aria-label="Course Title" aria-sort="none"
+                                    class="slds-is-resizable slds-is-sortable slds-text-align_center" scope="col">
+                                    <span class="slds-truncate" title="Course Title">Course Title</span>
+                                 </th>
+                                 <th aria-label="Number of Credits" aria-sort="none"
+                                    class="slds-is-resizable slds-is-sortable slds-text-align_center" scope="col">
+                                    <span class="slds-truncate" title="Number of Credits">Number of
+                                       Credits</span>
+                                 </th>
+                                 <th aria-label="What was the outcome of this course?" aria-sort="none"
+                                    class="slds-is-resizable slds-is-sortable slds-text-align_center" scope="col">
+                                    <span class="slds-truncate">
+                                       Course Outcome
+                                    </span>
+                                 </th>
+                                 <th aria-label="Date Credits Earned" aria-sort="none"
+                                    class="slds-is-resizable slds-is-sortable slds-text-align_center" scope="col">
+                                    <span class="slds-truncate" title="Date Credits Earned">Date Credits
+                                       Earned</span>
+                                 </th>
+                              </tr>
+                           </thead>
+                           <tbody>
+                              <template for:each={tcWrapperList} for:item="tc" for:index="tcIndex">
+                                 <tr key={tc.tcid} class="tcDetailsRow" data-tcid={tc.tcId}>
+                                    <td>
+                                       <lightning-input type="text" class="transferCreditCourseInput"
+                                          value={tc.transferCreditCourse} variant="label-hidden"
+                                          onchange={changeTcCourse}>
+                                       </lightning-input>
+                                    </td>
+                                    <td>
+                                       <lightning-input type="number" step="0.01"
+                                          onkeydown={validateTransferCreditGradeInput} class="transferCreditGradeInput"
+                                          value={tc.transferCreditGrade} variant="label-hidden"
+                                          onchange={changeTcGrade}></lightning-input>
+                                    </td>
+                                    <td>
+                                       <lightning-radio-group name={tc.tcid} label=""
+                                          class="transferCreditCourseOutcomeInput" options={options}
+                                          value={tc.courseOutcome} type="radio" onchange={changeTcOutcome}>
+                                       </lightning-radio-group>
+                                    </td>
+                                    <td>
+                                       <div
+                                          class="slds-col slds-p-top_medium transferCreditSection tcMainSection creditsDate slds-grid slds-gutters">
+                                          <div class="slds-col ">
+                                             <label for="inputGradMonth">Month</label><br>
+                                             <template if:true={monthPicklistOptions}>
+                                                <select data-selected-month={tc.creditsEarnedMonth}
+                                                   class="slds-select monthPicklist" onchange={changeTcMonth}>
+                                                   <option value=""></option>
+                                                   <template for:each={monthPicklistOptions} for:item="listViewItem">
+                                                      <option key={listViewItem.value} value={listViewItem.value}>
+                                                         {listViewItem.label}
+                                                      </option>
+                                                   </template>
+                                                </select>
+                                             </template>
+                                          </div>
+                                          <div class="slds-col ">
+                                             <label for="inputCreditEarnedYear">Year</label><br>
+                                             <lightning-input value={tc.creditsEarnedYear} onkeydown={preventDecimal}
+                                                class="creditEarnedYearInput" type="text" variant="label-hidden"
+                                                onchange={changeTcYear}>
+                                             </lightning-input>
+                                          </div>
+                                       </div>
+                                    </td>
+                                    <td>
+                                       <div class="delete-icon" onclick={deleteTcRow}>
+                                          <span
+                                             class="slds-icon_container slds-icon-action-delete slds-icon_container--circle"
+                                             title="Delete Course">
+                                             <svg class="slds-icon slds-icon--x-small" aria-hidden="true">
+                                                <use xlink:href="/_slds/icons/action-sprite/svg/symbols.svg#delete">
+                                                </use>
+                                             </svg>
+                                             <span class="slds-assistive-text">Delete Course</span>
+                                          </span>
+                                       </div>
+                                    </td>
+                                    <td>
+                                       <div class="add-icon" onclick={addTcRow}>
+                                          <span
+                                             class="slds-icon_container slds-icon-action-add-relationship slds-icon_container--circle"
+                                             title="Add Course">
+                                             <svg class="slds-icon slds-icon--x-small" aria-hidden="true">
+                                                <use
+                                                   xlink:href="/_slds/icons/action-sprite/svg/symbols.svg#add_relationship">
+                                                </use>
+                                             </svg>
+                                             <span class="slds-assistive-text">Add Course</span>
+                                          </span>
+                                       </div>
+                                    </td>
+                                 </tr>
+                              </template>
+                           </tbody>
+                        </table>
+                     </div>
+                  </template>
+               </template>
+               <template if:true={readOnly}>
+                  <lightning-layout-item padding="around-small" size="6">
+                     <div class="">Other Medical School</div>
+                  </lightning-layout-item>
+                  <lightning-layout-item padding="around-small" size="6">
+                     <div class="">{medicalSchool}</div>
+                  </lightning-layout-item>
+                  <lightning-layout-item padding="around-small" size="6">
+                     <div class="">Attendance Start Month & Year</div>
+                  </lightning-layout-item>
+                  <lightning-layout-item padding="around-small" size="6">
+                     <div class="readonly-startmonth">{startMonth}
+                     </div>
+                     <div class="readonly-startyear">{startYear}
+                     </div>
+                  </lightning-layout-item>
+                  <lightning-layout-item padding="around-small" size="6">
+                     <div class="">Attendance End Month & Year</div>
+                  </lightning-layout-item>
+                  <lightning-layout-item padding="around-small" size="6">
+                     <div class="readonly-endmonth">{endMonth}
+                     </div>
+                     <div class="readonly-endyear">{endYear}
+                     </div>
+                  </lightning-layout-item>
+                  <lightning-layout-item padding="around-small" size="6">
+                     <div class="">Number of Years Attended</div>
+                  </lightning-layout-item>
+                  <lightning-layout-item padding="around-small" size="6">
+                     <div class="">{numberOfYears}</div>
+                  </lightning-layout-item>
+                  <lightning-layout-item padding="around-small" size="6">
+                     <div class="">School Program</div>
+                  </lightning-layout-item>
+                  <lightning-layout-item padding="around-small" size="6">
+                     <div class="">{program}</div>
+                  </lightning-layout-item>
+                  <lightning-layout-item padding="around-small" size="6">
+                     <div class="">Student Id</div>
+                  </lightning-layout-item>
+                  <lightning-layout-item padding="around-small" size="6">
+                     <div class="">{studentId}</div>
+                  </lightning-layout-item>
+                  <lightning-layout-item padding="around-small" size="6">
+                     <div class="">Speciality</div>
+                  </lightning-layout-item>
+                  <lightning-layout-item padding="around-small" size="6">
+                     <div class="">{speciality}</div>
+                  </lightning-layout-item>
+                  <lightning-layout-item padding="around-small" size="6">
+                     <div class="">Transfer Credits to Degree School</div>
+                  </lightning-layout-item>
+                  <lightning-layout-item padding="around-small" size="6">
+                     <template if:true={transferCreditsCheckbox}>
+                        <lightning-input type="checkbox"
+                           class="transferCreditsDegreeCheckbox assetCheckbox checkboxClass"
+                           value={transferCreditsCheckbox} checked disabled name="transferCredits"></lightning-input>
+                     </template>
+                  </lightning-layout-item>
+                  <template for:each={tcWrapperList} for:item='tcRecord' for:index='index'>
+                     <lightning-layout multiple-rows="true" key={tcRecord.tcId}>
+                        <lightning-layout-item padding="around-small" size="6">
+                           <div class="">Course Title</div>
+                        </lightning-layout-item>
+                        <lightning-layout-item padding="around-small" size="6">
+                           <div>{tcRecord.transferCreditCourse}</div>
+                        </lightning-layout-item>
+                        <lightning-layout-item padding="around-small" size="6">
+                           <div class="">Number of Credits</div>
+                        </lightning-layout-item>
+                        <lightning-layout-item padding="around-small" size="6">
+                           <div>{tcRecord.transferCreditGrade}</div>
+                        </lightning-layout-item>
+                        <lightning-layout-item padding="around-small" size="6">
+                           <div class="">What was the outcome of this course?</div>
+                        </lightning-layout-item>
+                        <lightning-layout-item padding="around-small" size="6">
+                           <div>{tcRecord.courseOutcome}</div>
+                        </lightning-layout-item>
+                        <lightning-layout-item padding="around-small" size="6">
+                           <div class="">Date Credits Earned</div>
+                        </lightning-layout-item>
+                        <lightning-layout-item padding="around-small" size="6">
+                           <div>{tcRecord.creditsEarnedMonth} {tcRecord.creditsEarnedYear}</div>
+                        </lightning-layout-item>
+                        <div class="separatorborderbottom"></div>
+                     </lightning-layout>
+                  </template>
+               </template>
+               <div
+                  class="slds-col slds-p-top_medium slds-size_1-of-2 transferCreditSection tcMainSection transferCreditTranscript">
+                  <span><span class="required">*</span>Upload Transfer Credits Transcript</span>
+                  <span class="assetIdsCollection" data-asset-id={assetIdsCollection}></span>
+               </div>
+               <!--Transfer Credit Transcript Upload-->
+               <div
+                  class="slds-col transferCreditSection slds-p-top_medium slds-size_1-of-2 transferCreditTranscript transferCreditTranscriptUpload tcMainSection">
+                  <template if:true={tctAssetIdUpdated}>
+                     <c-cloud-document-upload-wrapper class="cloudDocumentUpload" pay-load={tctPayload} azure-doc-url={tctUrl}
+                        max-allowed-file-size=10 accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" enable-annotation="false"
+                        enable-redaction="false" asset-type="Transfer Credit Transcript"
+                        ongeneratedurl={handleTctUploaded}>
+                     </c-cloud-document-upload-wrapper>
+                  </template>
+               </div>
+               <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                  <span></span>
+               </div>
+               <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                  <template if:true={isErrMsgTctDetails}>
+                     <span class="errormsg">Please upload Transfer Credit Transcript Details</span>
+                  </template>
+               </div>
+               <template if:true={tctUploaded}>
+                  <!-- Start of Transfer Credits Transcript Name Asset Section -->
+                  <div
+                     class="slds-col slds-size--1-of-1 slds-border_bottom transferCreditSection tcNameSection slds-p-top_large">
+                     <h4 class="gridHeader ">Name Documentation</h4>
+                  </div>
+                  <div class="slds-col transferCreditSection tcNameSection slds-p-top_x-large slds-size_1-of-2">
+                     <span>Name on System</span>
+                  </div>
+                  <div class="slds-col transferCreditSection tcNameSection slds-p-top_x-large slds-size_1-of-2">
+                     <input value={contactName} class="slds-input " type="text" disabled />
+                  </div>
+                  <div class="slds-col slds-p-top_x-large tcNameSection slds-size_1-of-2 transferCreditSection ">
+                     <span><span class="required">*</span>Name on Document</span>
+                  </div>
+                  <div class="slds-col transferCreditSection tcNameSection slds-p-top_x-large slds-size_1-of-2 ">
+                     <lightning-input type="text" label="Name on Document" name="nameonTctDocument" value={tctName}
+                        variant="label-hidden" class="tctName" onchange={handleChangeForInputFields}></lightning-input>
+                  </div>
+                  <div class="slds-col slds-p-top_medium slds-size_1-of-2 errorMsgAlignment">
+                     <span></span>
+                  </div>
+                  <div class="slds-col slds-p-top_medium slds-size_1-of-2 errorMsgAlignment">
+                     <template if:true={isErrMsgTctName}>
+                        <span class="errormsg">{label.graduateScreenNameonDocMessage}</span>
+                     </template>
+                  </div>
+                  <div class="slds-col slds-p-top_x-large slds-size_1-of-2 transferCreditSection tcNameSection">
+                     <span>Is Name on the Document different?</span>
+                  </div>
+                  <div
+                     class="slds-col transferCreditSection slds-p-top_x-large slds-size_1-of-2 tcNameSection tcNameSection">
+                     <lightning-input type="checkbox" class="nameOnTranscriptCheckbox assetCheckbox checkboxClass"
+                        onclick={handleTransferCreditInnerCheckboxClick} name="nameOnTranscript">
+                     </lightning-input>
+                  </div>
+                  <template if:true={tctNameDocNeeded}>
+                     <div
+                        class="slds-col slds-p-top_x-large slds-size_1-of-2 transferCreditSection  tcNameSectionUpload">
+                        <span>Upload Name Documentation</span>
+                     </div>
+                     <div
+                        class="slds-col transferCreditSection tcNameSectionUpload  tctNameDocumenatationSectionUploadId  slds-p-top_x-large slds-size_1-of-2 tctNameDocId">
+                        <c-cloud-document-upload-wrapper class="cloudDocumentUpload" pay-load={tctNameDocPayload}
+                           max-allowed-file-size=10 accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" azure-doc-url={tctNameUrl}
+                           enable-annotation="false" enable-redaction="false" asset-type="Name Document"
+                           ongeneratedurl={handleNameDocUploaded} show-delete-button="true"
+                           onafterdelete={deleteNameAsset}>
+                        </c-cloud-document-upload-wrapper>
+                     </div>
+                  </template>
+                  <!-- End of Transfer Credits Transcript Name Asset Section -->
+                  <!-- Start of Transfer Credits Transcript Translation Asset Section -->
+                  <div
+                     class="slds-col slds-size--1-of-1 slds-border_bottom transferCreditSection tcTranslationSection slds-p-top_large">
+                     <h4 class="gridHeader ">Transfer Credit Transcript Translation </h4>
+                  </div>
+                  <div class="slds-col slds-p-top_small slds-size_1-of-2 transferCreditSection tcTranslationSection">
+                     <span>Is your Transfer Credit Transcript in a language other than English?</span>
+                  </div>
+                  <div class="slds-col transferCreditSection tcTranslationSection slds-p-top_medium slds-size_1-of-2">
+                     <lightning-input type="checkbox" class="isTranscriptInEnglishCheckbox assetCheckbox checkboxClass"
+                        onclick={handleTransferCreditTrans} name="isTranscriptEnglish">
+                     </lightning-input>
+                  </div>
+                  <template if:true={tctTransNeeded}>
+                     <div
+                        class="slds-col slds-p-top_x-large slds-size_1-of-2 transferCreditSection tcTranslationSectionUpload tctTranslationId">
+                        <span>Upload Transfer Credits Transcript Translation (if not in English)</span>
+                     </div>
+                     <div
+                        class="slds-col transferCreditSection tcTranslationSectionUpload tctTranslationDoc slds-p-top_x-large slds-size_1-of-2">
+                        <c-cloud-document-upload-wrapper class="cloudDocumentUpload" pay-load={tctTransPayload}
+                           max-allowed-file-size=10 accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" azure-doc-url={tctTransUrl}
+                           enable-annotation="false" enable-redaction="false" asset-type="Translation"
+                           ongeneratedurl={handleTctTranslationUploaded}>
+                        </c-cloud-document-upload-wrapper>
+                     </div>
+                     <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                        <span></span>
+                     </div>
+                     <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                        <template if:true={isErrMsgTctTransDetails}>
+                           <span class="errormsg">Please upload Transfer Credit Transcript Translation details</span>
+                        </template>
+                     </div>
+                  </template>
+               </template>
+            </template>
+         </div>
+      </div>
+   </div>
+   <div style='text-align: center;'>
+      <br />
+      <lightning-button variant="brand" label="Submit" title="Save" onclick={saveButton} class="slds-m-left_x-small">
+      </lightning-button>
+      <lightning-button variant="brand" label="Cancel" title="Cancel" onclick={cancelButton}
+         class="slds-m-left_x-small"></lightning-button>
+   </div>
+</template>

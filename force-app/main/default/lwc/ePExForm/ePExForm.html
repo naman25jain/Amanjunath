@@ -1,0 +1,47 @@
+<template>
+    <div class="slds-is-relative">
+        <template if:true={spinner}>
+            <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+        </template>
+        <div class="padding" >
+            <h2>Eligibility Period Extension Request</h2>
+        </div>
+        <div class="padding" >
+            <div style="text-align: center;">
+                Before you begin, please read the <a href="javascript:void(0)" onclick={displayModalClass}>Important Information About Eligibility Period Extension Requests</a>.
+            </div>
+            <div>
+            </br>
+                <Strong>Please select the exam(s) for which you would like to request an eligibility period extension:</Strong>
+            </div></br></br>
+            <div class = 'errormessage'>
+                <template for:each={recordsList} for:item='erRecord' for:index='index'>
+                    <div key ={erRecord.case}>
+                        <lightning-input class="checkbox-float" type="checkbox" id={erRecord.case} value={erRecord.case} label ={erRecord.type} onchange={handleChange} checked={erRecord.check}></lightning-input></br>
+                        <Strong>Original Eligibility Period:</Strong>&nbsp;
+                        <lightning-formatted-date-time value={erRecord.epStartDate} time-zone="UTC"></lightning-formatted-date-time>-&nbsp;
+                        <lightning-formatted-date-time value={erRecord.epEndDate} time-zone="UTC"></lightning-formatted-date-time></br>
+                        <Strong>Extended Eligibility Period Requested:</Strong>&nbsp;
+                        <lightning-formatted-date-time value={erRecord.extendedStartDate} time-zone="UTC"></lightning-formatted-date-time>-&nbsp;
+                        <lightning-formatted-date-time value={erRecord.extendedEndDate} time-zone="UTC"></lightning-formatted-date-time></br>
+                        <Strong>Processing Deadline:</Strong>&nbsp;
+                        <lightning-formatted-date-time value={erRecord.deadline} time-zone="UTC"></lightning-formatted-date-time></br>
+                    </br></br>
+                    </div>
+                </template>
+            </div>
+            <div>
+                <c-g-display-content unique-content-value="EPEx_Form_Certification_By_Applicant"></c-g-display-content>
+                <lightning-input class="checkbox-float-certification" label='Please check this box to indicate that you have read, understood, and agree to the above notice.' type="checkbox" checked={accepted} onchange={handleCheckboxChange}></lightning-input>
+            </div>
+            <div style="text-align: center;">
+            </br></br>
+                    <lightning-button variant="brand" label="Previous" title="Previous" onclick={prevButton} class="slds-m-left_x-small"></lightning-button>
+                    <lightning-button variant="brand" label="Next" title="Next" onclick={nextButton}  class="slds-m-left_x-small" disabled={btnDisabled}></lightning-button>
+                    <lightning-button variant="brand" label="Cancel" title="Cancel" onclick={cancelButtonToOpen} class="slds-m-left_x-small"></lightning-button>
+            </div>
+        </div>
+    </div>   
+    <c-modal-component data-id='modalExisting' title='Important Information About Eligibility Period Extension Requests' message={instructionsContent}  show-primary-button='true' primary-button-text='Close' onprimarybuttonclick={closeButton} show-secondary-button='false' secondary-button-text=''></c-modal-component>
+    <c-modal-component data-id = 'newModalAlert' title='Alert' message='Are you sure you want to cancel? All changes will be lost.'  show-secondary-button='true' secondary-button-text='Cancel' onsecondarybuttonclick={closeModal} show-primary-button='true' primary-button-text='OK' onprimarybuttonclick={cancelButton}></c-modal-component>
+</template>

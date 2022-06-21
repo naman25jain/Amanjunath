@@ -1,0 +1,23 @@
+<template>
+    <div class="formMargin">
+        <div class="secContainer">
+            <div class="headeralign" >
+                <span class="headertxt"><h3>My Case Requests</h3>
+                </span>
+            </div>
+        </br>
+            <lightning-datatable key-field="id" columns={columns} data={data} hide-checkbox-column
+            default-sort-direction={defaultSortDirection} sorted-direction={sortDirection} sorted-by={sortedBy}
+            onsort={onHandleSort} onrowaction={handleRowActions}>
+            </lightning-datatable>
+        </br>
+            <template if:true= {isCaseReqFound}>
+                <span> <b>Note:</b> If a restriction is applied to any of your cases then you will not be able to make edits to them.
+                </span>
+            </template>
+            <template if:false= {isCaseReqFound}>
+            <div class="noRecordsSection"> No Records Found </div>
+            </template>
+        </div>
+    </div>
+</template>

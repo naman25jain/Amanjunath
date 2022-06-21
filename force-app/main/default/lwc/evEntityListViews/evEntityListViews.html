@@ -1,0 +1,51 @@
+<template>
+    <div class="formMargin">
+        <div class="secContainer">
+            <template if:true={restrictedAccess}>
+                <div class="padding"><lightning-formatted-rich-text class='errormsg' value={errorMessages}> </lightning-formatted-rich-text>
+                </div>
+            </template>
+            <template if:false={restrictedAccess}>
+                <template if:true={isExptDataAvailable}> 
+                    <c-g-display-content unique-content-value="enrollment_verification_request_list"></c-g-display-content>
+                    <a target="_self" class="slds-button slds-button_brand" download="EnrollmentVerificationData.csv" href={hrefdata}
+                    onclick={exportToCSV} style="margin-left: 75%;">Export Enrollment Verification Data</a><br /><br />
+                </template>
+            </template> 
+            <!--Active Request-->
+            <div class="headeralign">
+                <span class="headertxt">Active Requests({data.length})</span>
+            </div>
+            <template if:true={isActiveReqFound}>
+                <c-paginator class="paginatorAR" records={activeRequests} total-records={activeRequests.length}
+                        show-search-box="true" onpaginatorchange={handleARPaginatorChange} attributes-to-avoid={attributesList}>
+                </c-paginator>
+                <lightning-datatable key-field="id" columns={col} data={recordsToDisplay} hide-checkbox-column show-row-number-column
+                        default-sort-direction={defaultSortDirection} sorted-direction={sortDirection} sorted-by={sortedBy}
+                        onsort={onHandleSort} onrowaction={handleRowActions}>
+                </lightning-datatable>
+            </template>
+            <template if:false={isActiveReqFound}>
+                <div class="noRecordsSection">--No Records Found--</div>
+            </template>
+        </div> 
+        <!--Completed Request-->
+        <div class="secContainer">
+            <div class="headeralign">
+                <span class="headertxt">Completed Requests({dataCom.length})</span>
+            </div>  
+            <template if:true={isCompletedReqFound}>
+                <c-paginator class="paginatorCR" records={completedRequests} total-records={completedRequests.length}
+                        show-search-box="true" onpaginatorchange={handleCRPaginatorChange} attributes-to-avoid={attributesList}>
+                </c-paginator>
+                <lightning-datatable key-field="id" columns={col} data={recordsToDisplayCom} hide-checkbox-column show-row-number-column
+                        default-sort-direction={defaultSortDirectionCom} sorted-direction={sortDirectionCom} sorted-by={sortedByCom}
+                        onsort={onHandleSortCompleted} onrowaction={handleRowActions}>
+                </lightning-datatable>
+            </template>
+            <template if:false={isCompletedReqFound}>
+                <div class="noRecordsSection">--No Records Found--</div>
+            </template>
+        </div>
+    </div> 
+</template>

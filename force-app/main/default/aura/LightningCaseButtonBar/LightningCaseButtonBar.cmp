@@ -1,0 +1,18 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" 
+                access="global">
+    <aura:attribute name="recordId" type="String" />
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+	<force:recordData
+		aura:id			= "recordLoader"
+		fields			=  "Id"
+		recordId		= "{!v.recordId}"
+		targetError		= "{!v.recordError}"
+		targetFields	= "{!v.caseRecord}"
+		mode			= "EDIT"/>
+
+
+<table width="100%" bgcolor="#FFFFFF">
+    <tr><td><lightning:flow aura:id="Case_Flow_Dispatcher" onstatuschange="{!c.statusChange}" /></td>
+</tr>
+</table>
+</aura:component>

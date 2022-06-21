@@ -1,0 +1,7 @@
+/**
+ * Created by Matthew on 11/6/18.
+ */
+.THIS .slds-dropdown-trigger .slds-dropdown {
+    height: 250px;
+    overflow: auto;
+}

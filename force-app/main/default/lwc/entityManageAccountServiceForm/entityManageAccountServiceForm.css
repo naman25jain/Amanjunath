@@ -1,0 +1,25 @@
+.formMargin{
+  margin-left: 5%;
+  margin-right: 5%;
+  padding-top: 5px;
+}
+.errormsg{
+  color:#ff0000;
+  font-size: 13px;
+  text-align: center;
+  padding-left:10%;    
+}
+.modContHdr{
+  font-size: 13px;
+  font-weight: bold;
+}
+.headerText{
+  font-size: 16px;
+  font-weight: bold;
+}
+.slds-modal__container{
+  display: table;
+}
+.modalHeight{
+  height : 350px;
+}

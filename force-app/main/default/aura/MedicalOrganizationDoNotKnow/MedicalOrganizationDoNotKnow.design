@@ -1,0 +1,8 @@
+<!--
+ - Created by Matthew on 12/6/18.
+ -->
+
+<design:component>
+    <design:attribute name="readOnly" label="Is Read Only?" />
+    <design:attribute name="associationRecordType" label="Association Type Record Type Name" description="The name of the association type record type." />
+</design:component>

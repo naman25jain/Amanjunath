@@ -1,0 +1,21 @@
+.buttonAlignment{
+    padding-left: 44%;    
+    padding-top: 2%; 
+}  
+.checkbox{
+    display: inline-flex;
+}
+.padding{
+    padding-top: 20px;
+}
+.header{
+    line-height: 2;
+    text-align: center;
+}
+.checkbox-float{
+    float: left;
+}
+.errormsg{
+    color:#ff0000;
+    font-size: 13px;
+}

@@ -1,0 +1,106 @@
+<template>
+    <lightning-record-edit-form record-id={getIdFromParent} object-api-name="Contact">
+        <div class="padding">
+            <c-g-display-content unique-content-value="app_for_cert_profile_heading"></c-g-display-content>
+        </div>
+        <div class="padding">
+            <c-g-display-content unique-content-value="app_for_cert_profile_description"></c-g-display-content>
+        </div>
+        <div class="formMargin">
+            <div class="slds-grid slds-wrap">
+                <div class="slds-col slds-size--1-of-1 gridColPadding">
+                    <div class="slds-grid slds-border_bottom slds-p-bottom_xx-small">
+                        <div class="slds-col">
+                            <h1 class="gridHeader">{label.identityInformationMessage}</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-col slds-p-top_small slds-size_1-of-2">
+                    <span>Last Name/Surname</span>
+                </div>
+                <div class="slds-col slds-p-top_small slds-size_1-of-2">
+                    <lightning-input-field field-name="LastName" disabled variant="label-hidden"></lightning-input-field>
+                </div>
+                <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                    <span>Rest of Name</span>
+                </div>
+                <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                    <lightning-input-field field-name="FirstName" disabled variant="label-hidden"></lightning-input-field>
+                </div>
+                <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                    <span>Generational Suffix</span>
+                </div>
+                <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                    <lightning-input-field field-name="Generational_Suffix__c" disabled variant="label-hidden"></lightning-input-field>
+                </div>
+                <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                    <span>Gender</span>
+                </div>
+                <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                    <lightning-input-field field-name="Gender__c" disabled variant="label-hidden"></lightning-input-field>
+                </div>
+                <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                    <span>Date of Birth</span>
+                </div>
+                <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                    <lightning-input-field field-name="Birthdate" disabled variant="label-hidden"></lightning-input-field>
+                </div>
+                <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                    <span>Citizenship Upon Entering Medical School</span>
+                </div>
+                <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                    <lightning-input-field field-name="Citizenship_Upon_Entering_Medical_School__c" disabled variant="label-hidden"></lightning-input-field>
+                </div>
+                <div class="slds-col slds-size--1-of-1 gridColPadding slds-p-top_large">
+                    <div class="slds-grid slds-border_bottom slds-p-bottom_xx-small">
+                        <div class="slds-col">
+                            <h1 class="gridHeader">{label.contactInformationMessage}</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-col slds-p-top_small slds-size_1-of-2">
+                    <span>Country</span>
+                </div>
+                <div class="slds-col slds-p-top_small slds-size_1-of-2">
+                    <lightning-input-field field-name="MailingCountry" disabled variant="label-hidden"></lightning-input-field>
+                </div>
+                <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                    <span>Street</span>
+                </div>
+                <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                    <lightning-input-field field-name="MailingStreet" disabled variant="label-hidden"></lightning-input-field>
+                </div>
+                <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                    <span>City</span>
+                </div>
+                <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                    <lightning-input-field field-name="MailingCity" disabled variant="label-hidden"></lightning-input-field>
+                </div>
+                <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                    <span>State</span>
+                </div>
+                <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                    <lightning-input-field field-name="MailingState" disabled variant="label-hidden"></lightning-input-field>
+                </div>
+                <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                    <span>ZIP Code</span>
+                </div>
+                <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                    <lightning-input-field field-name="MailingPostalCode" disabled variant="label-hidden"></lightning-input-field>
+                </div>
+                <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                    <span>Email Address</span>
+                </div>
+                <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                    <lightning-input-field field-name="Email" disabled variant="label-hidden"></lightning-input-field>
+                </div>
+                <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                    <span>Telephone Number</span>
+                </div>
+                <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                    <lightning-input-field field-name="Phone" disabled variant="label-hidden"></lightning-input-field>
+                </div>
+            </div>
+        </div>
+    </lightning-record-edit-form>
+</template>

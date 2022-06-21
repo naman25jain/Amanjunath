@@ -1,0 +1,329 @@
+<template> 
+    <lightning-record-edit-form record-id={objectId}  object-api-name={objectType} onsubmit={handleSubmit} onload={handleOnLoad}>       
+        <div class="slds-is-relative">
+            <template if:true={spinner}>
+                <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+            </template>
+            <lightning-messages></lightning-messages>            
+            <div class="padding">
+                    <c-g-display-content unique-content-value="app_for_cert_school_review_heading"></c-g-display-content>
+            </div>  
+            <template if:false={disabledMedSchoolDetails}>
+                <div class="padding">
+                        <c-g-display-content unique-content-value="app_for_cert_school_review_description"></c-g-display-content>
+                </div>
+                <div class="padding">
+                    <template if:true={showError}>
+                        <lightning-formatted-rich-text class='errormsg' value={errorMessagesText}></lightning-formatted-rich-text>
+                        <lightning-formatted-rich-text class='successmsg' value={successMessageText}></lightning-formatted-rich-text>
+                    </template>
+                </div>
+                <div class="formMargin">
+                    <div class="slds-grid slds-wrap">
+                        <div class="slds-col slds-p-top_small slds-size_1-of-2">
+                            <span><span class="required">*</span>Medical Education Status</span>
+                        </div>
+                        <div class="slds-col slds-p-top_small slds-size_1-of-2">
+                            <lightning-radio-group name="statusRadioGroup" class="statusRadioGroup" data-radiogroup  variant="label-hidden" value={selectedValue} options={statusOptions} type="radio"></lightning-radio-group>
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                            <span><span class="required">*</span>Degree Medical School</span>
+                             <!-- Following helptext will need to be added to the related field when label issues remediated, currently placeholder for language edits-->
+                            <lightning-helptext content="Your Degree Medical School is the school that awarded or will award your medical degree."></lightning-helptext>
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                            <input id="inputSchool" name="inputSchool" list="valueList" data-medicalschool placeholder={placeholder} value={medicalSchool} onchange={handleSchoolChange} class="slds-input schoolRecord" type="text"  />
+                            <datalist id="valueList" class="schoolRecordDatalist">
+                                <template for:each={schoolRecordValues.data} for:item='item'>
+                                    <option key={item.Id} data-entityid={item.Id} value={item.Name}>
+                                        {item.Name} 
+                                        <br>
+                                        <em>{item.BillingStreet}, {item.BillingCity}, {item.BillingState}, {item.BillingPostalCode}, {item.BillingCountry}</em>
+                                    </option>
+                                </template>
+                            </datalist>
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2 attendance-date-error">
+                        </div>                        
+                        <!-- Code added by Shailaja. User Story#. Date format stories-->
+                        <div class="slds-col slds-p-top_small slds-size_1-of-2">
+                            <span><span class="required">*</span>Attendance Start Month & Year</span>
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2 slds-grid slds-gutters">                        
+                            <div class="slds-col">
+                                <label for="inputStartMonth">Month</label><br>
+                                <lightning-combobox name="startMonth" variant="label-hidden" value={startMonth} placeholder="Select"
+                                                    options={startMonthPicklistOptions} class="startMonth" onchange={handleChangeForInputValue}></lightning-combobox>
+                            </div>
+                            <div class="slds-col">
+                                <label for="inputStartYear">Year</label><br>
+                                <lightning-combobox name="startYear" variant="label-hidden" value={selectedStartYear} placeholder="Select"
+                                                    options={optionsYears} class="startYear" onchange={handleChangeForInputValue}></lightning-combobox>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2 start-date-error">
+                        </div>
+                        <div class="slds-col slds-p-top_small slds-size_1-of-2">
+                            <span><span class="required">*</span>Attendance End Month & Year</span>
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2 slds-grid slds-gutters">                        
+                            <div class="slds-col">
+                                <label for="inputEndMonth">Month</label><br>
+                                <!--<lightning-input-field field-name="End_Month__c" variant="label-hidden" value={endMonth}></lightning-input-field>                                -->
+                                <lightning-combobox name="endMonth" variant="label-hidden" value={endMonth} placeholder="Select"
+                                                    options={endMonthPicklistOptions} class="endMonth" onchange={handleChangeForInputValue}></lightning-combobox>
+                            </div>
+                            <div class="slds-col">
+                                <label for="inputEndYear">Year</label><br>
+                                <!-- <input id="inputEndYear" maxlength ="4" name="End_Year__c" data-endyear value={selectedEndYear} placeholder={placeholder} onchange={handleEndYearChange} disabled={endYearDisabled} title={endYearDisabledMessage} class="slds-input endYearRecord" type="text" /> -->
+                                <!--<lightning-input-field field-name="End_Year__c" maxlength ="4" variant="label-hidden" value={selectedendYear}></lightning-input-field>-->
+                                <lightning-combobox name="endYear" variant="label-hidden" value={selectedEndYear} placeholder="Select"
+                                                    options={optionsYears} class="endYear" onchange={handleChangeForInputValue}></lightning-combobox>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2 end-date-error">
+                        </div>
+
+                        <div class="slds-col slds-p-top_small slds-size_1-of-2">
+                            <span><span class="required">*</span>Number of Years Attended</span>
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                            <lightning-input-field field-name="Number_of_Years_Attended__c" variant="label-hidden" value={numberOfYearsAttended} class="attendedYears"></lightning-input-field>
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                            <span>School Program</span>
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                            <lightning-input-field field-name="School_Program__c" variant="label-hidden" value={schoolprog}></lightning-input-field>
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                            <span><span class="required">*</span>Graduation Month & Year</span>
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2 slds-grid slds-gutters">                        
+                            <div class="slds-col">
+                                <label for="inputGradMonth">Month</label><br>
+                                <lightning-input-field field-name="Graduation_Month__c" variant="label-hidden" data-gradmonth value={selectedGradMonth} disabled={gradYearDisabled} title={gradYearDisabledMessage} class="gradMonthRecord"></lightning-input-field>                        
+                            </div>
+                            <div class="slds-col">
+                                <label for="inputGradYear">Year</label><br>
+                                <lightning-combobox name="inputGradYear" variant="label-hidden" data-gradyear value={selectedGradYear} placeholder={placeholder}
+                                                    options={gradYears} onchange={handleGradYearChange} disabled={gradYearDisabled} title={gradYearDisabledMessage} class="gradYearRecord"></lightning-combobox>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2"></div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2 grad-date-error"></div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                            <span><span class="required">*</span>Degree Title</span>
+                        </div>
+                        <div class="slds-col slds-var-p-top_medium slds-size_1-of-2">
+                            <lightning-combobox name="inputDegree" variant="label-hidden" data-degreetitle value={degreetitle} placeholder={placeholder} onchange={handleDegreeChange}
+                            disabled={degreeDisabled} options={degNameList} title={degreeDisabledMessage} class="degreeRecord"></lightning-combobox>                   
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2 ">
+                            <span><span class="required">*</span>Degree Issue Month & Year</span>
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2 slds-grid slds-gutters">
+                            <div class="slds-col">
+                                <label for="inputDegMonth">Month</label><br>
+                                <!--<lightning-input-field field-name="Degree_Issue_Month__c" variant="label-hidden" value={degreeMonth}></lightning-input-field>-->
+                                <lightning-combobox name="degreeMonth" variant="label-hidden" value={degreeMonth} placeholder="Select"
+                                                    options={degreeIssueMonthPicklistOptions} class="degreeMonth" onchange={handleChangeForInputValue}></lightning-combobox>
+                            </div>
+                            <div class="slds-col">
+                                <label for="inputDegreeYear">Year</label><br>
+                                <!--<lightning-input-field field-name="Degree_Issue_Year__c" maxlength ="4" variant="label-hidden" value={selectedDegreeIssueYear}></lightning-input-field>-->
+                                <lightning-combobox name="degreeYear" variant="label-hidden" value={selectedDegreeIssueYear} placeholder="Select"
+                                                    options={optionsYears} class="degreeYear" onchange={handleChangeForInputValue}></lightning-combobox>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2"></div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2 degree-date-error"></div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                            <span>Student ID</span>
+                             <!-- Following helptext will need to be added to the related field when label issues remediated, currently placeholder for language edits-->
+                            <lightning-helptext content="If your medical school assigned you a unique student Identification Number, enter that number here. ECFMG may provide your medical school with this number to assist them in identifying you for the purpose of verifying your enrollment status."></lightning-helptext>
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                            <lightning-input-field field-name="Student_ID__c" variant="label-hidden" value={studentid}></lightning-input-field>
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                            <span>Specialty</span>
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                            <lightning-input-field field-name="Specialty__c" variant="label-hidden" value={specialty}></lightning-input-field>
+                        </div>
+                    </div>
+                </div>
+            </template>
+            <template if:true={disabledMedSchoolDetails}>
+                <div class="formMargin">
+                    <div class="slds-grid slds-wrap">
+                        <div class="slds-col slds-p-top_small slds-size_1-of-2">
+                            <span><span class="required">*</span>Medical Education Status</span>
+                        </div>
+                        <div class="slds-col slds-p-top_small slds-size_1-of-2">
+                            <lightning-radio-group name="statusRadioGroup" class="statusRadioGroup" data-radiogroup disabled variant="label-hidden" value={selectedValue} options={statusOptions} type="radio"></lightning-radio-group>
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                            <span><span class="required">*</span>Degree Medical School</span>
+                             <!-- Following helptext will need to be added to the related field when label issues remediated, currently placeholder for language edits-->
+                            <lightning-helptext content="Your Degree Medical School is the school that awarded or will award your medical degree."></lightning-helptext>
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                            <input id="inputSchool1" name="inputSchool" disabled list="valueList" data-medicalschool placeholder={placeholder} value={medicalSchool} onchange={handleSchoolChange} class="slds-input schoolRecord" type="text"  />
+                            <datalist id="valueList1" class="schoolRecordDatalist">
+                                <template for:each={schoolRecordValues.data} for:item='item'>
+                                    <option key={item.Id} data-entityid={item.Id} value={item.Name}>
+                                        {item.Name} 
+                                        <br>
+                                        <em>{item.BillingStreet}, {item.BillingCity}, {item.BillingState}, {item.BillingPostalCode}, {item.BillingCountry}</em>
+                                    </option>
+                                </template>
+                            </datalist>
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2"></div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2 attendance-date-error"></div>
+                        <!-- Code added by Shailaja. User Story#. Date format stories. Graduate - Fields need to be disabled-->
+                        <div class="slds-col slds-p-top_small slds-size_1-of-2">
+                            <span><span class="required">*</span>Attendance Start Month & Year</span>
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2 slds-grid slds-gutters">                        
+                            <div class="slds-col">
+                                <label for="inputStartMonth">Month</label><br>
+                                <lightning-input-field field-name="Start_Month__c" disabled variant="label-hidden" value={startMonth}></lightning-input-field>
+                                <!--<lightning-combobox name="startMonth" variant="label-hidden" value={startMonth} placeholder="Select"
+                                                    options={startMonthPicklistOptions} class="startMonth" onchange={handleChangeForInputValue}></lightning-combobox> -->
+                            </div>
+                            <div class="slds-col">
+                                <label for="inputStartYear">Year</label><br>
+                                <!-- <input id="inputStartYear" maxlength ="4" name="Start_Year__c" list="valueListStartYear" data-startyear value={selectedStartYear} placeholder={placeholder} onchange={handleStartYearChange} disabled={startYearDisabled} title={startYearDisabledMessage} class="slds-input startYearRecord" type="text" /> -->
+                                <lightning-combobox field-name="Start_Year__c" disabled variant="label-hidden" value={selectedStartYear} placeholder="Select" options={optionsYears}></lightning-combobox>
+                                <!--<lightning-input variant="label-hidden" type="text" class="startYear" maxlength ="4" name="startYear" value={selectedStartYear} pattern="[1-9][0-9]{3}" message-when-pattern-mismatch="Enter year as YYYY." onchange={handleChangeForInputValue} ></lightning-input>-->
+                            </div>
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2"></div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2 start-date-error"></div>
+                        <div class="slds-col slds-p-top_small slds-size_1-of-2">
+                            <span><span class="required">*</span>Attendance End Month & Year</span>
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2 slds-grid slds-gutters">                        
+                            <div class="slds-col">
+                                <label for="inputEndMonth">Month</label><br>
+                                <lightning-input-field field-name="End_Month__c" disabled variant="label-hidden" value={endMonth}></lightning-input-field>
+                                <!--<lightning-combobox name="endMonth" variant="label-hidden" value={endMonth} placeholder="Select"
+                                                    options={endMonthPicklistOptions} class="endMonth" onchange={handleChangeForInputValue}></lightning-combobox> -->
+                            </div>
+                            <div class="slds-col">
+                                <label for="inputEndYear">Year</label><br>
+                                <!--<input id="inputEndYear" maxlength ="4" name="End_Year__c" data-endyear value={selectedEndYear} placeholder={placeholder} onchange={handleEndYearChange} disabled={endYearDisabled} title={endYearDisabledMessage} class="slds-input endYearRecord" type="text" /> -->
+                                <lightning-combobox field-name="End_Year__c" disabled variant="label-hidden" value={selectedEndYear} placeholder="Select"
+                                                    options={optionsYears}></lightning-combobox>
+                                <!--<lightning-input variant="label-hidden" type="text" class="endYear" maxlength ="4" name="endYear" value={selectedEndYear} pattern="[1-9][0-9]{3}" message-when-pattern-mismatch="Enter year as YYYY." onchange={handleChangeForInputValue}></lightning-input>-->
+                            </div>
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2"></div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2 end-date-error"></div>                        
+                        <div class="slds-col slds-p-top_small slds-size_1-of-2">
+                            <span><span class="required">*</span>Number of Years Attended</span>
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                            <lightning-input-field field-name="Number_of_Years_Attended__c" disabled variant="label-hidden" value={numberOfYearsAttended} class="attendedYears"></lightning-input-field>
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                            <span>School Program</span>
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                            <lightning-input-field field-name="School_Program__c" disabled variant="label-hidden" value={schoolprog}></lightning-input-field>
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                            <span><span class="required">*</span>Graduation Month & Year</span>
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2 slds-grid slds-gutters">
+                            <div class="slds-col">
+                                <label for="inputGradMonth">Month</label><br>
+                                <lightning-input-field field-name="Graduation_Month__c" variant="label-hidden" data-gradmonth value={selectedGradMonth} disabled title={gradYearDisabledMessage} class="gradMonthRecord"></lightning-input-field>                        
+                            </div>
+                            <div class="slds-col">
+                                <label for="inputGradYear">Year</label><br>
+                                <lightning-combobox name="inputGradYear" variant="label-hidden" data-gradyear value={selectedGradYear} placeholder={placeholder}
+                                                    options={gradYears} onchange={handleGradYearChange} disabled title={gradYearDisabledMessage} class="gradYearRecord"></lightning-combobox>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2"></div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2 grad-date-error"></div>    
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                            <span><span class="required">*</span>Degree Title</span>
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                            <lightning-combobox name="inputDegree" variant="label-hidden" data-degreetitle value={degreetitle} placeholder={placeholder} onchange={handleDegreeChange}
+                            disabled options={degNameList} title={degreeDisabledMessage} class="degreeRecord"></lightning-combobox>
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                            <span><span class="required">*</span>Degree Issue Month & Year</span>
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2 slds-grid slds-gutters">
+                            <div class="slds-col">
+                                <label for="inputDegMonth">Month</label><br>
+                                <lightning-input-field field-name="Degree_Issue_Month__c" disabled variant="label-hidden" value={degreeMonth}></lightning-input-field>
+                                <!--<lightning-combobox name="degreeMonth" variant="label-hidden" value={degreeMonth} placeholder="Select"
+                                                    options={degreeIssueMonthPicklistOptions} class="degreeMonth" onchange={handleChangeForInputValue}></lightning-combobox>-->
+                            </div>
+                            <div class="slds-col">
+                                <label for="inputDegreeYear">Year</label><br>
+                                <lightning-combobox field-name="Degree_Issue_Year__c" disabled name="degreeYear" variant="label-hidden" value={selectedDegreeIssueYear} placeholder="Select"
+                                                    options={optionsYears} class="degreeYear" onchange={handleChangeForInputValue}></lightning-combobox>
+                                <!--<lightning-input variant="label-hidden" type="text" class="degreeYear" maxlength ="4" name="degreeYear" value={selectedDegreeIssueYear} pattern="[1-9][0-9]{3}" message-when-pattern-mismatch="Enter year as YYYY." onchange={handleChangeForInputValue}></lightning-input>-->
+                            </div>
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2 degree-date-error">
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                <span>Student ID</span>
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                            <lightning-input-field field-name="Student_ID__c" disabled variant="label-hidden" value={studentid}></lightning-input-field>
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                <span>Specialty</span>
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                            <lightning-input-field field-name="Specialty__c" disabled variant="label-hidden" value={specialty}></lightning-input-field>
+                        </div>
+                    </div>
+                </div>
+            </template>
+            <template if:false={showExamRegActionButton}>
+                <div class="buttonAlignment">                        
+                    <lightning-button variant="brand" label="Save" title="Save" onclick={saveButton} type="submit" class="slds-m-left_x-small"></lightning-button>
+                    <lightning-button variant="brand" label="Previous" title="Previous" onclick={prevButton} class="slds-m-left_x-small"></lightning-button>
+                    <lightning-button variant="brand" label="Next" title="Next" onclick={nextButton} type="submit" class="slds-m-left_x-small"></lightning-button>
+                    <lightning-button variant="brand" label="Cancel" title="Cancel" onclick={cancelButton} class="slds-m-left_x-small"></lightning-button>
+                </div>
+            </template>
+            <template if:true={showExamRegActionButton}>
+                <template if:false={reSubmitFromAppForCert}>
+                    <div class="buttonAlignment">                    
+                        <lightning-button variant="brand" label="Discard Changes and Exit" title="Discard Changes and Exit" onclick={discardButton} class="slds-m-left_x-small"></lightning-button>
+                        <lightning-button variant="brand" label="Next" title="Next" onclick={nextButton} type="submit" class="slds-m-left_x-small"></lightning-button>                
+                    </div>
+                </template>  
+                <template if:true={reSubmitFromAppForCert}>
+                    <div class="buttonAlignment">     
+                        <lightning-button variant="brand" label="Discard Changes and Exit" title="Discard Changes and Exit" onclick={discardButton} class="slds-m-left_x-small"></lightning-button>
+                        <lightning-button variant="brand" label="Previous" title="Previous" onclick={prevButton} class="slds-m-left_x-small"></lightning-button>
+                        <lightning-button variant="brand" label="Next" title="Next" onclick={nextButton} type="submit" class="slds-m-left_x-small"></lightning-button>
+                    </div>
+                </template>  
+            </template>
+            <div class="footer">&nbsp;</div>        
+        </div>  
+    </lightning-record-edit-form>
+</template>

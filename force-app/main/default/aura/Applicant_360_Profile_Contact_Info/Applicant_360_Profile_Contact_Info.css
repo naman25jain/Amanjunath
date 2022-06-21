@@ -1,0 +1,17 @@
+.THIS {
+}
+
+.THIS.slds-spinner_container {  
+  z-index: 10000;
+  position: fixed;   
+}
+
+.THIS .slds-form-element.actions {
+    margin-top: 30px;
+}
+
+@media (max-width: 600px) {
+	.THIS .slds-form-element.actions {
+	    margin-top: 0px;
+	}
+}

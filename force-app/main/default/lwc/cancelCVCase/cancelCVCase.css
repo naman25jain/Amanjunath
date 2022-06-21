@@ -1,0 +1,8 @@
+.errormsg{
+    color : #ff0000;
+    font-size : 16px;
+}
+.successmsg{
+    color : #00ff00;
+    font-size : 16px
+}

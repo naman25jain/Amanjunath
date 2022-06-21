@@ -1,0 +1,265 @@
+<template> 
+    <div class="formMargin">
+        <template if:true={spinner}>
+            <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+        </template>
+        <div class="slds-grid slds-wrap">
+            <div class="slds-col slds-size_1-of-1 ">
+                <template for:each={rejLang} for:item="rej">
+                    <ul class="subAffirmation" key={rej}>
+                        <li>
+                            {rej}
+                        </li>
+                    </ul>
+                </template> 
+            </div>  
+        </div>
+    </div>  
+    <div class="slds-grid slds-wrap gridMargin">
+    <lightning-layout-item padding="around-small" size="12">
+        <template class="formMargin" for:each={payloads} for:item="payload">
+            <ul key={payload.Id}>
+            <li>
+                <template if:true={payload.showADMSattr}>
+                    <div class="formMargin">
+                        <strong>Asset Name:</strong>&nbsp; {payload.name}<br>
+                        <strong>Asset Type:</strong>&nbsp; {payload.type}<br>
+                        <template if:true={payload.attendanceStartDate}>
+                            <strong>Attendance Start Date:</strong>&nbsp; <lightning-formatted-date-time value={payload.attendanceStartDate} time-zone="UTC"></lightning-formatted-date-time><br>
+                        </template>
+                        <template if:true={payload.attendanceEndDate}>
+                            <strong>Attendance End Date:</strong>&nbsp; <lightning-formatted-date-time value={payload.attendanceEndDate} time-zone="UTC"></lightning-formatted-date-time><br>
+                        </template>
+                        <template if:true={payload.degreeIssueDate}>
+                            <strong>Degree Issue Date:</strong>&nbsp; <lightning-formatted-date-time value={payload.degreeIssueDate} time-zone="UTC"></lightning-formatted-date-time><br>
+                        </template>
+                        <template if:true={payload.degreeTitle}>
+                            <strong>Degree Title:</strong>&nbsp; {payload.degreeTitle}<br>
+                        </template>
+                        <template if:true={payload.graduationYear}>
+                            <strong>Graduation Year:</strong>&nbsp; {payload.graduationYear}<br>
+                        </template>
+                    </div>
+                </template>
+
+                <template if:true={payload.showAGDattr}>
+                    <div class="formMargin">
+                        <strong>Asset Name:</strong>&nbsp; {payload.name}<br>
+                        <strong>Asset Type:</strong>&nbsp; {payload.type}<br>
+                        <template if:true={payload.attendanceStartDate}>
+                            <strong>Attendance Start Date:</strong>&nbsp; <lightning-formatted-date-time value={payload.attendanceStartDate} time-zone="UTC"></lightning-formatted-date-time><br>
+                        </template>
+                        <template if:true={payload.attendanceEndDate}>
+                            <strong>Attendance End Date:</strong>&nbsp;<lightning-formatted-date-time value={payload.attendanceEndDate} time-zone="UTC"></lightning-formatted-date-time><br>
+                        </template>
+                        <template if:true={payload.degreeExpectedToBeIssuedMonth}>
+                            <strong>Degree expected to be issued Month:</strong>&nbsp; {payload.degreeExpectedToBeIssuedMonth}<br>
+                        </template>
+                        <template if:true={payload.degreeExpectedToBeIssuedYear}>
+                            <strong>Degree expected to be issued Year:</strong>&nbsp; {payload.degreeExpectedToBeIssuedYear}<br>
+                        </template>
+                        <template if:true={payload.degreeTitle}>
+                            <strong>Degree Title:</strong>&nbsp; {payload.degreeTitle}<br>
+                        </template>
+                        <template if:true={payload.graduationYear}>
+                            <strong>Graduation Year:</strong>&nbsp; {payload.graduationYear}<br>
+                        </template>
+                    </div>
+                </template>
+
+                <template if:true={payload.showCGSattr}>
+                    <div class="formMargin">
+                        <strong>Asset Name:</strong>&nbsp; {payload.name}<br>
+                        <strong>Asset Type:</strong>&nbsp; {payload.type}<br>
+                        <template if:true={payload.issueDate}>
+                            <strong>Issue Date:</strong>&nbsp; <lightning-formatted-date-time value={payload.issueDate} time-zone="UTC"></lightning-formatted-date-time><br>
+                        </template>
+                        <template if:true={payload.expirationDate}>
+                            <strong>Expiration Date:</strong>&nbsp; <lightning-formatted-date-time value={payload.expirationDate} time-zone="UTC"></lightning-formatted-date-time><br>
+                        </template>
+                    </div>
+                </template>
+
+                <template if:true={payload.showFMDattr}>
+                    <div class="formMargin">
+                        <strong>Asset Name:</strong>&nbsp; {payload.name}<br>
+                        <strong>Asset Type:</strong>&nbsp; {payload.type}<br>
+                        <template if:true={payload.attendanceStartDate}>
+                            <strong>Attendance Start Date:</strong>&nbsp; <lightning-formatted-date-time value={payload.attendanceStartDate} time-zone="UTC"></lightning-formatted-date-time><br>
+                        </template>
+                        <template if:true={payload.attendanceEndDate}>
+                            <strong>Attendance End Date:</strong>&nbsp; <lightning-formatted-date-time value={payload.attendanceEndDate} time-zone="UTC"></lightning-formatted-date-time><br>
+                        </template>
+                        <template if:true={payload.degreeIssueDate}>
+                            <strong>Degree Issue Date:</strong>&nbsp; <lightning-formatted-date-time value={payload.degreeIssueDate} time-zone="UTC"></lightning-formatted-date-time><br>
+                        </template>
+                        <template if:true={payload.degreeTitle}>
+                            <strong>Degree Title:</strong>&nbsp; {payload.degreeTitle}<br>
+                        </template>
+                        <template if:true={payload.graduationYear}>
+                            <strong>Graduation Year:</strong>&nbsp; {payload.graduationYear}<br>
+                        </template>
+                    </div>
+                </template>
+
+                <template if:true={payload.showFMSTattr}>
+                    <div class="formMargin">
+                        <strong>Asset Name:</strong>&nbsp; {payload.name}<br>
+                        <strong>Asset Type:</strong>&nbsp; {payload.type}<br>
+                        <template if:true={payload.attendanceStartDate}>
+                            <strong>Attendance Start Date:</strong>&nbsp; <lightning-formatted-date-time value={payload.attendanceStartDate} time-zone="UTC"></lightning-formatted-date-time><br>
+                        </template>
+                        <template if:true={payload.attendanceEndDate}>
+                            <strong>Attendance End Date:</strong>&nbsp; <lightning-formatted-date-time value={payload.attendanceEndDate} time-zone="UTC"></lightning-formatted-date-time><br>
+                        </template>
+                        <template if:true={payload.degreeIssueDate}>
+                            <strong>Degree Issue Date:</strong>&nbsp; <lightning-formatted-date-time value={payload.degreeIssueDate} time-zone="UTC"></lightning-formatted-date-time><br>
+                        </template>
+                        <template if:true={payload.degreeTitle}>
+                            <strong>Degree Title:</strong>&nbsp; {payload.degreeTitle}<br>
+                        </template>
+                        <template if:true={payload.graduationYear}>
+                            <strong>Graduation Year:</strong>&nbsp; {payload.graduationYear}<br>
+                        </template>
+                    </div>
+                </template>
+
+                <template if:true={payload.showMRCattr}>
+                    <div class="formMargin">
+                        <strong>Asset Name:</strong>&nbsp; {payload.name}<br>
+                        <strong>Asset Type:</strong>&nbsp; {payload.type}<br>
+                        <template if:true={payload.issueDate}>
+                            <strong>Issue Date:</strong>&nbsp; <lightning-formatted-date-time value={payload.issueDate} time-zone="UTC"></lightning-formatted-date-time><br>
+                        </template>
+                        <template if:true={payload.expirationDate}>
+                            <strong>Expiration Date:</strong>&nbsp; <lightning-formatted-date-time value={payload.expirationDate} time-zone="UTC"></lightning-formatted-date-time><br>
+                        </template>                        
+                    </div>
+                </template>
+
+                <template if:true={payload.showPostTCattr}>
+                    <div class="formMargin">
+                        <strong>Asset Name:</strong>&nbsp; {payload.name}<br>
+                        <strong>Asset Type:</strong>&nbsp; {payload.type}<br>
+                        <template if:true={payload.title}>
+                            <strong>Title:</strong>&nbsp; {payload.title}<br>
+                        </template>
+                        <template if:true={payload.issueDate}>
+                            <strong>Issue Date:</strong>&nbsp; <lightning-formatted-date-time value={payload.issueDate} time-zone="UTC"></lightning-formatted-date-time><br>
+                        </template>
+                        <template if:true={payload.programStartDate}>
+                            <strong>Program Start Date:</strong>&nbsp; <lightning-formatted-date-time value={payload.programStartDate} time-zone="UTC"></lightning-formatted-date-time><br>
+                        </template>
+                        <template if:true={payload.programEndDate}>
+                            <strong>Program End Date:</strong>&nbsp; <lightning-formatted-date-time value={payload.programEndDate} time-zone="UTC"></lightning-formatted-date-time><br>
+                        </template>                        
+                    </div>
+                </template>
+
+                <template if:true={payload.showPreICattr}>
+                    <div class="formMargin">
+                        <strong>Asset Name:</strong>&nbsp; {payload.name}<br>
+                        <strong>Asset Type:</strong>&nbsp; {payload.type}<br>
+                        <template if:true={payload.title}>
+                            <strong>Title:</strong>&nbsp; {payload.title}<br>
+                        </template>
+                        <template if:true={payload.issueDate}>
+                            <strong>Issue Date:</strong>&nbsp; <lightning-formatted-date-time value={payload.issueDate} time-zone="UTC"></lightning-formatted-date-time><br>
+                        </template>
+                        <template if:true={payload.programStartDate}>
+                            <strong>Program Start Date:</strong>&nbsp; <lightning-formatted-date-time value={payload.programStartDate} time-zone="UTC"></lightning-formatted-date-time><br>
+                        </template>
+                        <template if:true={payload.programEndDate}>
+                            <strong>Program End Date:</strong>&nbsp; <lightning-formatted-date-time value={payload.programEndDate} time-zone="UTC"></lightning-formatted-date-time><br>
+                        </template>                        
+                    </div>
+                </template>
+
+                <template if:true={payload.showSMSTattr}>
+                    <div class="formMargin">
+                        <strong>Asset Name:</strong>&nbsp; {payload.name}<br>
+                        <strong>Asset Type:</strong>&nbsp; {payload.type}<br>
+                        <template if:true={payload.attendanceStartDate}>
+                            <strong>Attendance Start Date:</strong>&nbsp; <lightning-formatted-date-time value={payload.attendanceStartDate} time-zone="UTC"></lightning-formatted-date-time><br>
+                        </template>
+                        <template if:true={payload.attendanceEndDate}>
+                            <strong>Attendance End Date:</strong>&nbsp; <lightning-formatted-date-time value={payload.attendanceEndDate} time-zone="UTC"></lightning-formatted-date-time><br>
+                        </template>                        
+                    </div>
+                </template>
+
+                <template if:true={payload.showSQattr}>
+                    <div class="formMargin">
+                        <strong>Asset Name:</strong>&nbsp; {payload.name}<br>
+                        <strong>Asset Type:</strong>&nbsp; {payload.type}<br>
+                        <template if:true={payload.title}>
+                            <strong>Title:</strong>&nbsp; {payload.title}<br>
+                        </template>
+                        <template if:true={payload.issueDate}>
+                            <strong>Issue Date:</strong>&nbsp; <lightning-formatted-date-time value={payload.issueDate} time-zone="UTC"></lightning-formatted-date-time><br>
+                        </template>                        
+                    </div>
+                </template>
+
+                <template if:true={payload.showTranDocDetails}>
+                    <div class="formMargin">
+                        <strong>Asset Name:</strong>&nbsp; {payload.name}<br>
+                        <strong>Asset Type:</strong>&nbsp; {payload.type}<br>
+                    </div>
+                </template>
+
+                <template if:true={payload.showTCTattr}>
+                    <div class="formMargin">
+                        <strong>Asset Name:</strong>&nbsp; {payload.name}<br>
+                        <strong>Asset Type:</strong>&nbsp; {payload.type}<br>
+                        <template if:true={payload.startYear}>
+                            <strong>Attendance Start Month &amp; Year:</strong>&nbsp; {payload.startMonth} {payload.startYear}<br>
+                        </template>
+                        <template if:true={payload.endYear}>
+                            <strong>Attendance End Month &amp; Year:</strong>&nbsp; {payload.endMonth} {payload.endYear}<br>
+                        </template>
+                    </div>
+                </template>
+
+                <template if:true={payload.showTCTECFMGAttr}>
+                    <div class="formMargin">
+                        <strong>Asset Name:</strong>&nbsp; {payload.name}<br>
+                        <strong>Asset Type:</strong>&nbsp; {payload.type}<br>
+                        <template if:true={payload.startYear}>
+                            <strong>Attendance Start Month &amp; Year:</strong>&nbsp; {payload.startMonth} {payload.startYear}<br>
+                        </template>
+                        <template if:true={payload.endYear}>
+                            <strong>Attendance End Month &amp; Year:</strong>&nbsp; {payload.endMonth} {payload.endYear}<br>
+                        </template>                        
+                    </div>
+                </template>
+
+                <template if:true={payload.showLetterFromDeanAttr}>
+                    <div class="formMargin">
+                        <strong>Asset Name:</strong>&nbsp; {payload.name}<br>
+                        <strong>Asset Type:</strong>&nbsp; {payload.type}<br>
+                        <template if:true={payload.deansLetterDate}>
+                            <strong>Expected Degree Issue Date:</strong>&nbsp; <lightning-formatted-date-time value={payload.deansLetterDate} time-zone="UTC"></lightning-formatted-date-time><br>
+                        </template>                        
+                    </div>
+                </template>
+
+                <template if:true={payload.showPreMedAttr}>
+                    <div class="formMargin">
+                        <strong>Asset Name:</strong>&nbsp; {payload.name}<br>
+                        <strong>Asset Type:</strong>&nbsp; {payload.type}<br>
+                    </div>
+                </template>
+
+            <c-cloud-document-upload-wrapper pay-load={payload.assetPayload}                                                      
+            enable-annotation="false" 
+            enable-redaction="false"
+            enable-saving="false"
+            hide-upload = "true"
+            asset-type={payload.assetPayload.documentType} class="formMargin"> </c-cloud-document-upload-wrapper>
+        </li>
+    </ul>
+             </template>   
+            </lightning-layout-item>  
+        </div>  
+</template>

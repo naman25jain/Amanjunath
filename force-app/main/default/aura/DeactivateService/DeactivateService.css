@@ -1,0 +1,11 @@
+.THIS.cuf-content {
+    padding: spacingNone !important;
+  }
+  .THIS.slds-var-p-around--medium {
+    padding: spacingNone !important;
+  }
+  .THIS.slds-modal__content{
+    overflow-y:hidden !important;
+    height:unset !important;
+    max-height:unset !important;
+  }

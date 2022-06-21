@@ -1,0 +1,33 @@
+<template>
+    <div class="slds-is-relative">        
+        <template if:true={spinner}>
+            <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+        </template>
+        <div class="padding">
+            <h2 class="header"><lightning-formatted-rich-text value={label.termsTitle}></lightning-formatted-rich-text></h2>
+        </div>        
+        <template for:each={recordsList} for:item='recordItem' for:index='index'>
+            <div class="padding" key={recordItem.termsId}>
+                <lightning-formatted-rich-text value={recordItem.termsContent}></lightning-formatted-rich-text><br /><br />
+                <lightning-input class="checkbox-float" type="checkbox" id={recordItem.termsId} name={recordItem.termsId} onchange={handleChangeCheckBox}></lightning-input>
+                <lightning-formatted-rich-text value={recordItem.termsCheckboxCont}></lightning-formatted-rich-text>
+            </div>  
+        </template>        
+        <template if:true={showError}>
+            <div class="padding">
+                <lightning-formatted-rich-text class='errormsg' value={errorMessagesText}></lightning-formatted-rich-text>
+            </div>
+        </template>
+        <div class="buttonAlignment">
+            <lightning-button variant="brand" label="Previous" title="Previous" onclick={prevButton} class="slds-m-left_x-small"></lightning-button>              
+            <template if:true={btnNotDisabled}>
+                <lightning-button variant="brand" label="Next" title="Next" onclick={handleClick} class="slds-m-left_x-small"></lightning-button>
+            </template>
+            <template if:false={btnNotDisabled}>
+                <lightning-button variant="brand" disabled label="Next" title="Next" onclick={handleClick} class="slds-m-left_x-small"></lightning-button>
+            </template>              
+            <lightning-button variant="brand" label="Cancel" title="Cancel" onclick={cancelButtonToOpen} class="slds-m-left_x-small"></lightning-button>
+        </div>
+    </div>
+    <c-modal-component data-id='newModalAlert' title='Alert' message='Are you sure you want to cancel? All changes will be lost.' show-secondary-button='true' secondary-button-text='Cancel' onsecondarybuttonclick={closeModal} show-primary-button='true' primary-button-text='OK' onprimarybuttonclick={cancelButton}></c-modal-component>
+</template>

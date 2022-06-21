@@ -1,0 +1,7 @@
+<!--
+ - Created by Matthew on 9/17/18.
+ -->
+
+<aura:component description="Notification" implements="flexipage:availableForAllPageTypes,force:appHostable,forceCommunity:availableForAllPageTypes">
+    <aura:handler event="c:NotificationEvent" action="{!c.handleNotificationEvent}"/>
+</aura:component>

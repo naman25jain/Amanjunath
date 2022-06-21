@@ -1,0 +1,41 @@
+.image {
+    border: none;
+    pointer-events: none;
+}
+
+.full-screen {
+    border: none;
+    height: 60vh;
+}
+
+.iframeWrapper {
+    z-index: 2;
+    height: 225px;
+    width: 300px;
+    margin: 0 auto;
+    cursor: pointer;
+}
+.iframeWrapperSummScre {
+    z-index: 2;
+    cursor: pointer;
+    margin: 0 auto;
+}
+
+.iframeWrapper .image {
+    height: 100%!important;
+}
+
+.contentWrapper,
+.contentImageWrapper {
+    text-align: center;
+    width: 100%;
+    height: 100%;
+}
+
+.contentImageWrapper {
+    overflow: hidden;
+}
+
+.contentImageWrapper img {
+    height: 100%;
+}

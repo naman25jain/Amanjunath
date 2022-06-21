@@ -1,0 +1,61 @@
+.padding {
+  padding-top: 20px;
+  margin-left: 25%;
+  margin-right: 25%;
+}
+.header{
+  font-size: 20px
+}
+.formMargin {
+  margin-left: 25%;
+  margin-right: 25%;
+  padding-top: 20px;
+}
+.paddingright{
+  padding-right: 50%;
+}
+.buttonAlignment {
+  padding-top: 25px;
+  padding-left: 27%;
+}
+.step2CSPadding{
+  padding-top: 5px;
+}
+.EPItalic{
+  font-style:italic;
+}
+
+.errormsg{
+  color:#ff0000;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.successmsg{
+  color:#4BB543;
+  font-size: 13px;
+}
+
+.exceptions-table td {
+  padding: 2px;
+}
+.regionSurchargeSection .slds-form-element {
+  width:30px;
+  position: absolute;
+  float: left;
+}
+
+.regionSurchargeSection .regionname {
+  padding-left: 20px;
+}
+
+.regionSurchargeSection .regiondesc {
+  padding-left: 30px;
+}
+
+.selectedregion {
+  background-color: #cccccc;
+}
+
+.regiontable caption { display: none; }
+.warning{padding-top: 3%;}

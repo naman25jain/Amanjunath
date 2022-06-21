@@ -1,0 +1,33 @@
+<!--
+ - Created by Matthew on 10/31/18.
+ -->
+<aura:component controller="ApplicantCommunityController" description="Applicant Medical Schools" implements="lightning:availableForFlowScreens,forceCommunity:availableForAllPageTypes">
+
+    <aura:attribute name="contactId" type="String" />
+    <aura:attribute name="schools" type="ContactMedicalSchoolViewModel[]" />
+    <aura:attribute name="disabled" type="Boolean" default="false"/>
+
+    <aura:attribute name="submittedRecordType" type="String" default="Unapproved Medical School" />
+    <aura:attribute name="associationRecordType" type="String" default="Degree Medical School" />
+
+
+    <aura:registerEvent name="notificationEvent" type="c:NotificationEvent"/>
+
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}" />
+
+    <aura:handler event="c:ApplicantMedicalSchoolAddedAE" action="{!c.handleSchoolAddedEvent}" />
+    <aura:handler event="c:ApplicantMedicalSchoolDeletedAE" action="{!c.handleSchoolDeletedEvent}" />
+
+    <!--<aura:handler name="schoolDeletedEvent" event="c:GenericComponentEvent" action="{!c.handleSchoolDeletedEvent}" />-->
+
+    <div class="slds-grid slds-wrap">
+        <aura:iteration items="{!v.schools}" var="school">
+            <div class="slds-col slds-size_1-of-2 slds-p-around_x-small">
+                <c:ApplicantMedicalSchoolCard school="{!school}" disabled="{!v.disabled}"/>
+            </div>
+        </aura:iteration>
+    </div>
+
+    <c:Notification />
+
+</aura:component>

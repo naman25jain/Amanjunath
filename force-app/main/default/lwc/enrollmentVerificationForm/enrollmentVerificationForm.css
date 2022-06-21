@@ -1,0 +1,39 @@
+.padding{
+  padding-top: 20px;
+}
+.stepHeader{
+  font-size: 20px
+}
+.header{
+  line-height: 2;
+}
+.buttonAlignment{
+  padding-top: 2%;
+}
+.info-icon{
+  position: relative;
+  bottom: 8px;
+}
+.required{
+  color: red;
+  padding-bottom: 1px;
+  margin-bottom: 1px
+}
+.THIS .slds-align_absolute-center{
+  display: block;
+} 
+.THIS section.slds-modal.slds-fade-in-open{
+  max-width: 90rem!important;
+  width: 90%!important;
+  margin: 0 auto;
+}  
+.THIS .slds-modal__close{
+  margin-right: 10px;
+}  
+.THIS .iframeWrapper{
+  margin: 5px!important;
+}
+.applicantText{ 
+  font-weight: bold;
+  padding-left: 35%;
+}

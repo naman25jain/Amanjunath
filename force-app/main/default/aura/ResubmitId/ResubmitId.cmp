@@ -1,0 +1,271 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,forceCommunity:availableForAllPageTypes" access="global" controller="CommunityIdentityVerificationController" extends="c:CommunityBase">
+	<aura:attribute name="pageReady" type="Boolean" default="false" access="private" description="Indicates that the server calls are complete" />
+	<aura:attribute name="currentCitizenshipCountry" type="String[]"/>
+	<aura:attribute name="service" type="String"/>
+    <aura:attribute name="caseId" type="String" />
+	<aura:attribute name="contactId" type="String" />
+	<aura:attribute name="currentCaseId" type="String" />
+    <aura:attribute name="fileId" type="String" />
+    <aura:attribute name="photoId" type="String" />
+	<aura:attribute name="photoIsExpired" type="Boolean" />
+    <aura:attribute name="passportId" type="String" />
+    <aura:attribute name="passportExpirationId" type="String" />
+    <aura:attribute name="passportTranslationId" type="String" />
+    <aura:attribute name="photoIdNew" type="String" />
+    <aura:attribute name="passportIdNew" type="String" />
+    <aura:attribute name="passportExpirationIdNew" type="String" />
+    <aura:attribute name="passportTranslationIdNew" type="String" />
+    <aura:attribute name="showPhotoError" type="Boolean" default="false" />
+    <aura:attribute name="showPassportError" type="Boolean" default="false" />
+    <aura:attribute name="readOnlyMode" type="Boolean" default="false" />
+    <aura:attribute name="fileList" type="String[]" />
+    <aura:attribute name="contact" type="Object" default="{}" />
+    <aura:attribute name="case" type="Object" default="{}" />
+    <aura:attribute name="lastOnly" type="Boolean" default="false" />
+    <aura:attribute name="USorCA" type="Boolean" default="false" />
+    <aura:attribute name="disabled" type="Boolean" default="false" />
+    <aura:attribute name="gender" type="String[]" default=",Female,Male,X"/>
+    <aura:attribute name="generationalSuffix" type="String[]" default=",Jr,Sr,II,III,IV,V"/>
+    <aura:attribute name="phoneTypeOptions" type="String[]" default=",Home,Cell,Work"/>
+    <aura:attribute name="countryOptions" type="String[]" default=",Afghanistan,Aland Islands,Albania,Algeria,Andorra,Angola,Anguilla,Antarctica,Antigua and Barbuda,Argentina,Armenia,Aruba,Australia,Austria,Azerbaijan,Bahamas,Bahrain,Bangladesh,Barbados,Belarus,Belgium,Belize,Benin,Bermuda,Bhutan,Bonaire, Sint Eustatius and Saba,Bosnia and Herzegovina,Botswana,Bouvet Island,Brazil,British Indian Ocean Territory,Brunei Darussalam,Bulgaria,Burkina Faso,Burundi,Cambodia,Cameroon,Canada,Cape Verde,Cayman Islands,Central African Republic,Chad,Chile,China,Christmas Island,Cocos (Keeling) Islands,Colombia,Comoros,Congo,Congo the Democratic Republic of the,Cook Islands,Costa Rica,Cote d'Ivoire,Croatia,Cuba,Curaçao,Cyprus,Czech Republic,Denmark,Djibouti,Dominica,Dominican Republic,Ecuador,Egypt,El Salvador,Equatorial Guinea,Eritrea,Estonia,Ethiopia,Falkland Islands (Malvinas),Faroe Islands,Fiji,Finland,France,French Guiana,French Polynesia,French Southern Territories,Gabon,Gambia,Georgia,Germany,Ghana,Gibraltar,Greece,Greenland,Grenada,Guadeloupe,Guatemala,Guernsey,Guinea,Guinea-Bissau,Guyana,Haiti,Heard Island and McDonald Islands,Holy See (Vatican City State),Honduras,Hungary,Iceland,India,Indonesia,Iran Islamic Republic of,Iraq,Ireland,Isle of Man,Israel,Italy,Jamaica,Japan,Jersey,Jordan,Kazakhstan,Kenya,Kiribati,Korea Republic of,Kuwait,Kyrgyzstan,Lao,Latvia,Lebanon,Lesotho,Liberia,Libya,Liechtenstein,Lithuania,Luxembourg,Macao,Macedonia the former Yugoslav Republic of,Madagascar,Malawi,Malaysia,Maldives,Mali,Malta,Martinique,Mauritania,Mauritius,Mayotte,Mexico,Moldova Republic of,Monaco,Mongolia,Montenegro,Montserrat,Morocco,Mozambique,Myanmar,Namibia,Nauru,Nepal,Netherlands,New Caledonia,New Zealand,Nicaragua,Niger,Nigeria,Niue,Norfolk Island,North Korea,Norway,Oman,Pakistan,Palestine,Panama,Papua New Guinea,Paraguay,Peru,Philippines,Pitcairn,Plurinational State of Bolivia,Poland,Portugal,Qatar,Reunion,Romania,Russian Federation,Rwanda,Saint Barthélemy,Saint Helena, Ascension and Tristan da Cunha,Saint Kitts and Nevis,Saint Lucia,Saint Martin (French part),Saint Pierre and Miquelon,Saint Vincent and the Grenadines,Samoa,San Marino,Sao Tome and Principe,Saudi Arabia,Senegal,Serbia,Seychelles,Sierra Leone,Singapore,Sint Maarten (Dutch part),Slovakia,Slovenia,Solomon Islands,Somalia,South Africa,South Georgia and the South Sandwich Islands,South Sudan,Spain,Sri Lanka,Sudan,Suriname,Svalbard and Jan Mayen,Swaziland,Sweden,Switzerland,Syrian Arab Republic,Taiwan,Tajikistan,Thailand,Timor-Leste,Togo,Tokelau,Tonga,Trinidad and Tobago,Tunisia,Turkey,Turkmenistan,Turks and Caicos Islands,Tuvalu,Uganda,Ukraine,United Arab Emirates,United Kingdom,United Republic of Tanzania,United States,Uruguay,Uzbekistan,Vanuatu,Venezuela, Bolivarian Republic of,Vietnam,Virgin Islands, British,Wallis and Futuna,Western Sahara,Yemen,Zambia,Zimbabwe"/>                     
+	<aura:attribute name="legal_name_consists_of_one_name_only" type="Boolean" default="true"/>
+	<aura:attribute name="passport_Photo_Includes_Expiration_Date" type="String" default="true"/>
+	<aura:attribute name="Passport_Photo_Is_In_English" type="String"  default="true"/>
+	<aura:attribute name="photoErrors" type="String[]"/>
+	<aura:attribute name="passportErrors" type="String[]"/>
+	<aura:attribute name="actionRequired" type="Boolean" default="false"/>
+	<aura:attribute name="showCompleteModal" type="Boolean" default="false"/>
+	<aura:attribute name="caseNumber" type="String" />
+	<aura:attribute name="passportUploaded" type="String" default="No" />
+	<aura:attribute name="passportUploadedNew" type="String" default="No" />
+	<aura:attribute name="payloadPassport" type="String" />
+	<aura:attribute name="payloadPassportExisting" type="String" />
+	<aura:attribute name="passportUploadedVerified" type="String" default="No" />
+	<aura:attribute name="payloadPassportVerified" type="String" />	
+	<aura:attribute name="photoUploadedPrevious" type="String" default="No" />
+	<aura:attribute name="payloadPhotoPrevious" type="String" />
+	<aura:attribute name="upload" type="Boolean" default="true" />
+	<aura:attribute name="maxsize" type="Integer" default="10" />
+	<aura:attribute name="photoUploadedNew" type="String" default="No" />
+	<aura:attribute name="payloadPhotoNew" type="String" />
+	<aura:attribute name="payloadPassportTranslation" type="String" />
+	<aura:attribute name="payloadPassportTranslationExisting" type="String" />
+	<aura:attribute name="passportTranslationDone" type="String" default="No" />
+	<aura:attribute name="passportTranslationDoneNew" type="String" default="No" />
+	<aura:attribute name="passportTranslationDoneNewInitialLoading" type="String" default="No" />
+	<aura:attribute name="payloadPassportExpiration" type="String" />
+	<aura:attribute name="payloadPassportExpirationExisting" type="String" />
+	<aura:attribute name="passportExpirationDone" type="String" default="No" />
+	<aura:attribute name="passportExpirationDoneNew" type="String" default="No" />
+	<aura:attribute name="passportExpirationDoneNewInitialLoading" type="String" default="No" />
+	<aura:attribute name="showSaveSpinner" type="Boolean" default="false" />
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}" />	
+	<div class="slds-grid slds-gutters">
+		<aura:if isTrue="{!v.showSaveSpinner}">
+			<lightning:spinner variant="brand" alternativeText="Loading" size="large" />
+		</aura:if>
+		<div class="{!!v.photoIsExpired ?'slds-col slds-size_1-of-2' : 'slds-align_absolute-center' }"><span>
+			<h2>Resubmit Photograph</h2>
+			<aura:if isTrue="{!!v.showPhotoError}">
+		    	<c:gDisplayContent uniqueContentValue="ResubmitId_Photo" />
+		    </aura:if><br/><br/>
+			<aura:if isTrue="{!v.showPhotoError}">
+				<c:gDisplayContent uniqueContentValue="ResubmitId_Photo_Def" />
+				<ul>
+					<aura:iteration items="{!v.photoErrors}" var="photoErr">
+					<li>• {!photoErr}</li>		    	
+					</aura:iteration>
+				</ul>
+				
+				<p><strong><span class="errorText">*</span>Upload Photo</strong></p>
+				<c:gDisplayContent uniqueContentValue="ResubmitId_Photo_Warning" />
+				<c:cloudDocumentUploadWrapper aura:id="photo" payLoad="{!v.payloadPhotoNew}"
+					maxAllowedFileSize="{!v.maxsize}" acceptedFileFormats=".jpeg,.jpg" enableAnnotation="false"
+					enableRedaction="{!v.upload}" assetType="PHOTO" onuploadcompleted="{!c.handleUploadFinishedPhoto}" required="true" />
+			<c:gDisplayContent uniqueContentValue="upload_msg_jpeg_jpg">
+						</c:gDisplayContent>
+				</aura:if>			
+			<aura:if isTrue="{!v.photoUploadedPrevious == 'Yes'}"> 
+				<br/><strong>Previously Submitted Photo</strong><br/>
+				 <c:cloudDocumentUploadWrapper aura:id="prephoto" payLoad="{!v.payloadPhotoPrevious}"
+								maxAllowedFileSize="{!v.maxsize}" acceptedFileFormats=".jpeg,.jpg" 
+								hideUpload="{!v.upload}" enableAnnotation="false" enableRedaction="false" assetType="PHOTO" />
+			</aura:if>
+		</span></div>
+		<aura:if isTrue="{!!v.photoIsExpired}">
+		<div class="slds-col slds-size_1-of-2"><span>
+			<h2>Resubmit Passport</h2>
+			<aura:if isTrue="{!!v.showPassportError}">
+		    	<c:gDisplayContent uniqueContentValue="ResubmitId_Passport" />
+		    </aura:if><br/><br/>
+		    <aura:if isTrue="{!v.showPassportError}">
+				<c:gDisplayContent uniqueContentValue="ResubmitId_Passport_Def" />
+				<ul>
+					<aura:iteration items="{!v.passportErrors}" var="passportErr">
+					<li>• {!passportErr}</li>		    	
+					</aura:iteration>
+				</ul>
+				<p><strong><span enter-class="errorText">*</span>Upload Passport</strong></p>
+				<c:gDisplayContent uniqueContentValue="EpicBioIdentityInfoNote4">
+				            </c:gDisplayContent>
+				<c:cloudDocumentUploadWrapper aura:id="passport" payLoad="{!v.payloadPassport}"
+							maxAllowedFileSize="{!v.maxsize}" acceptedFileFormats=".jpeg,.jpg"
+							enableAnnotation="false" enableRedaction="false" assetType="PASSPORT"
+							onuploadcompleted="{!c.handleUploadFinishedPassport}" />
+							<c:gDisplayContent uniqueContentValue="upload_msg_jpeg_jpg">
+						</c:gDisplayContent>
+				<c:gDisplayContent uniqueContentValue="PleaseNoteOfPassportPreview">
+				    </c:gDisplayContent>
+				<lightning:input type="radio" label="Yes" name="isExp" value="true" disabled="{!v.readOnlyMode}" onchange="{!c.handleExpirationChecked}"/>
+				<aura:if isTrue="{!v.passportExpirationDoneNewInitialLoading == 'Yes'}">
+					<lightning:input type="radio" label="No"  name="isExp" value="false" disabled="{!v.readOnlyMode}" checked="{!v.passportExpirationDoneNewInitialLoading == 'Yes'}"  onchange="{!c.handleExpirationChecked}"/>
+									
+					<c:cloudDocumentUploadWrapper aura:id="newPassportExpiration"
+						payLoad="{!v.payloadPassportExpiration}" maxAllowedFileSize="{!v.maxsize}"
+						acceptedFileFormats=".jpeg,.pdf,.tiff" enableAnnotation="false"
+						enableRedaction="false"
+						onuploadcompleted="{!c.handleUploadFinishedPassportExpiration}" />
+					<aura:set attribute="else">
+						<lightning:input type="radio" label="No"  name="isExp" value="false" disabled="{!v.readOnlyMode}" onchange="{!c.handleExpirationChecked}"/>	
+						<aura:if isTrue="{!v.passport_Photo_Includes_Expiration_Date == 'false'}">
+							<p><strong><span enter-class="errorText">*</span>Upload Passport Expiration</strong></p>
+							<p><span class="errorText">If the image of the page with your name and photo does not include the expiration date, you must upload an image of the page that includes your passport expiration date.</span></p>
+							<c:cloudDocumentUploadWrapper aura:id="newPassportExpiration"
+							payLoad="{!v.payloadPassportExpiration}" maxAllowedFileSize="{!v.maxsize}"
+							acceptedFileFormats=".jpeg,.pdf,.tiff" enableAnnotation="false"
+							enableRedaction="false"
+							onuploadcompleted="{!c.handleUploadFinishedPassportExpiration}" />
+							<c:gDisplayContent uniqueContentValue="upload_msg_jpeg_jpg">
+						</c:gDisplayContent>
+						</aura:if>			
+					</aura:set>							
+			    </aura:if>				
+				<c:gDisplayContent uniqueContentValue="CommunityBiographicExpirationNote">
+						</c:gDisplayContent>
+				<lightning:input type="radio" label="Yes" name="isEng" value="true" disabled="{!v.readOnlyMode}" onchange="{!c.handleEnglishChecked}"/>
+				<aura:if isTrue="{!v.passportTranslationDoneNewInitialLoading == 'Yes'}">
+					<lightning:input type="radio" label="No"  name="isEng" value="false" checked="{!v.passportTranslationDoneNewInitialLoading == 'Yes'}" disabled="{!v.readOnlyMode}" onchange="{!c.handleEnglishChecked}"/>
+					<c:cloudDocumentUploadWrapper aura:id="passportTranslation"	payLoad="{!v.payloadPassportTranslation}" maxAllowedFileSize="{!v.maxsize}"
+						acceptedFileFormats=".jpeg,.pdf,.tiff" enableAnnotation="false"	enableRedaction="false"	onuploadcompleted="{!c.handleUploadFinishedPassportTranslation}"/>
+						<c:gDisplayContent uniqueContentValue="upload_msg_jpeg_jpg">
+						</c:gDisplayContent>
+					<aura:set attribute="else">						
+						<lightning:input type="radio" label="No"  name="isEng" value="false" disabled="{!v.readOnlyMode}" onchange="{!c.handleEnglishChecked}"/>
+						<aura:if isTrue="{!v.Passport_Photo_Is_In_English == 'false'}">
+							<p><strong><span enter-class="errorText">*</span>Upload Passport Translation</strong></p>
+							<c:gDisplayContent uniqueContentValue="latin_char_desc">
+				            </c:gDisplayContent>
+							<c:cloudDocumentUploadWrapper aura:id="passportTranslation"
+								payLoad="{!v.payloadPassportTranslation}" maxAllowedFileSize="{!v.maxsize}"
+								acceptedFileFormats=".jpeg,.pdf,.tiff" enableAnnotation="false"
+								enableRedaction="false"
+								onuploadcompleted="{!c.handleUploadFinishedPassportTranslation}" />
+								<c:gDisplayContent uniqueContentValue="upload_msg_jpeg_jpg">
+						</c:gDisplayContent>
+							
+						</aura:if>
+					</aura:set>
+				</aura:if>				
+			    <br/>
+			</aura:if>						
+			<aura:if isTrue="{!v.passportUploaded == 'Yes'}">
+					<br /><strong>Previously Submitted Passport</strong><br />
+					<c:cloudDocumentUploadWrapper aura:id="prepassport" payLoad="{!v.payloadPassportExisting}"
+									maxAllowedFileSize="{!v.maxsize}" acceptedFileFormats=".jpeg,.jpg" 
+									hideUpload="{!v.upload}" enableAnnotation="false" enableRedaction="false" assetType="PASSPORT" />
+			</aura:if>
+			 <aura:if isTrue="{!v.passportExpirationDone == 'Yes'}">
+				<br /><strong>Previously Submitted Passport Expiration</strong><br />
+				 <c:cloudDocumentUploadWrapper aura:id="prepassportExpiration"
+								payLoad="{!v.payloadPassportExpirationExisting}" maxAllowedFileSize="{!v.maxsize}"
+								acceptedFileFormats=".jpeg,.pdf,.tiff" enableAnnotation="false"
+								enableRedaction="false"
+								hideUpload="{!v.upload}"/>
+			</aura:if>			 
+		 	<aura:if isTrue="{!v.passportTranslationDone == 'Yes'}">
+				<br /><strong>Previously Submitted Passport Translation</strong><br />
+				 <c:cloudDocumentUploadWrapper aura:id="prepassportTranslation"
+								payLoad="{!v.payloadPassportTranslationExisting}" maxAllowedFileSize="{!v.maxsize}"
+								acceptedFileFormats=".jpeg,.pdf,.tiff" enableAnnotation="false"
+								enableRedaction="false"
+								hideUpload="{!v.upload}"/>
+			 </aura:if>
+		</span></div>
+		</aura:if>
+	</div><br/>
+	<aura:if isTrue="{!v.showPassportError}">
+		<div class="slds-grid slds-align_absolute-center">
+			<h2>Identity Information</h2>
+		</div>
+		<div class="slds-grid slds-size_12-of-12">
+			<c:gDisplayContent uniqueContentValue="id_info_inst" />
+		</div>
+		<div class="slds-grid slds-gutters">
+			<div class="slds-col slds-size_1-of-2"><span>
+				<lightning:input name="lastName" value="{!v.contact.LastName}" placeholder="" label="Last Name/Surname" aura:id="fieldToValidate" required="true"  disabled="{!v.readOnlyMode}" />
+				<lightning:input type="checkbox" label="My legal name consists of one name only" aura:id="lastOnly" name="lastOnly" checked="{!v.contact.legal_name_consists_of_one_name_only__c}"  disabled="{!v.readOnlyMode}" onchange="{!c.lastOnlyChange}" />
+				<aura:if isTrue="{!!v.contact.legal_name_consists_of_one_name_only__c}">
+					<lightning:input name="firstName" value="{!v.contact.FirstName}" placeholder="" label="Rest of Name"  aura:id="fieldToValidate" required="{!!v.contact.legal_name_consists_of_one_name_only__c}"  disabled="{!v.readOnlyMode}" onblur="{!c.handleInputOnBlur}" />
+				</aura:if>
+				<lightning:select name="generationalSuffix" label="Generational Suffix" value="{!v.contact.Generational_Suffix__c}" disabled="{!v.readOnlyMode}" >
+					<aura:iteration items="{!v.generationalSuffix}" var="genSuf">
+						<option text="{!genSuf}"></option>
+					</aura:iteration>
+				</lightning:select>		   
+				<lightning:select name="gender" label="Gender" aura:id="fieldToValidate" required="true"  value="{!v.contact.Gender__c}" disabled="{!v.readOnlyMode}" >
+					<aura:iteration items="{!v.gender}" var="gen">
+						<option text="{!gen}"></option>
+					</aura:iteration>
+				</lightning:select>
+				<c:gDisplayContent uniqueContentValue="third_gender_note" />
+				</span></div><br/>
+				<div class="slds-col slds-size_1-of-2"><span>
+				<lightning:input name="dateOfBirth" type="date" value="{!v.contact.Birthdate}" placeholder="" label="Date of Birth" aura:id="fieldToValidate" required="true"  disabled="{!v.readOnlyMode}" onchange="{!c.checkDOBDateValid}"/>
+				<aura:if isTrue="{!v.pageReady}">
+					<lightning:select name="passportCountry" label="Passport Country"  messageWhenValueMissing="Choose one!" value="{!v.contact.Passport_Country__c}" aura:id="fieldToValidate" required="true">
+						<aura:iteration items="{!v.currentCitizenshipCountry}" var="co">
+							<option text="{!co}" selected="{!co == v.contact.Passport_Country__c}"></option>
+						</aura:iteration>
+					</lightning:select>
+				</aura:if>
+				<lightning:input name="passportNumber" value="{!v.contact.Passport_Number__c}" placeholder="" label="Passport Number" aura:id="fieldToValidate" required="true"  disabled="{!v.readOnlyMode}" onblur="{!c.handleInputOnBlur}"/>
+				<lightning:input name="passportIssueDate"  type="date" value="{!v.contact.Passport_Issue_Date__c}" placeholder="" label="Passport Issue Date" aura:id="fieldToValidate" required="true"  disabled="{!v.readOnlyMode}" onchange="{!c.checkPPIssueDateValid}"/>
+				<lightning:input name="passportExpiration"  type="date" value="{!v.contact.Passport_Expiration__c}" placeholder="" label="Passport Expiration Date"  aura:id="fieldToValidate" required="true"  disabled="{!v.readOnlyMode}" onchange="{!c.checkPPExpDateValid}"/>
+			</span></div>
+		</div><br/>
+	</aura:if>
+	<div style="text-align:center">
+		
+		<lightning:button variant="brand" name="next" label="Return Home" onclick="{!c.handleNext}" />
+		&nbsp;
+		<lightning:button disabled="{!!v.actionRequired}" variant="brand" name="save" label="Submit" onclick="{!c.handleSave}" />
+	</div>		
+	<aura:if isTrue="{!v.showCompleteModal}">
+		<div class="demo-only" style="height: 640px;">
+			<section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+				<div class="slds-modal__container">
+					<header class="slds-modal__header">
+						<h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Resubmission Complete!</h2>
+					</header>
+					<div class="slds-modal__content">
+						<p>
+							<aura:if isTrue="{!v.caseNumber == null}">
+								You have successfully submitted your identification documentation. ECFMG will update the status of your case as soon as your request has been processed.
+							</aura:if>
+							<aura:if isTrue="{!v.caseNumber != null}">
+								You have successfully submitted your identification documentation. For reference, your case number for this request is {!v.caseNumber}. ECFMG will update the status of your case as soon as your request has been processed.
+							</aura:if>
+						</p>
+                        <p>
+							 Please contact ECFMG if you have any questions.
+						</p>    
+					</div>
+					<footer class="slds-modal__footer">
+						<lightning:button aura:id="okButton" class="slds-button slds-button_brand" onclick="{!c.redirectHome}">Ok</lightning:button>
+					</footer>
+				</div>
+			</section>
+			<div class="slds-backdrop slds-backdrop_open"></div>
+		</div>
+	</aura:if>	
+</aura:component>

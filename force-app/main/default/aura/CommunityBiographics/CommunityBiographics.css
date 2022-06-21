@@ -1,0 +1,35 @@
+.THIS {
+}
+
+
+.THIS .singleLine {
+    overflow: hidden !important;
+    white-space: nowrap !important;
+}
+
+
+.THIS .errorText {
+    color: red !important;
+}
+
+.THIS section.slds-modal.slds-fade-in-open {
+    max-width: 90rem!important;
+    width: 90%!important;
+    margin: 0 auto;
+}
+
+.THIS .slds-modal__close {
+    margin-right: 10px;
+}
+
+.THIS h1 {
+    font-size: 32px
+}
+
+.THIS p {
+    margin: 20px 0 20px
+}
+
+.THIS .redText {
+    color: red
+}

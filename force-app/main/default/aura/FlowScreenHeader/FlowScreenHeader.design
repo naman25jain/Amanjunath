@@ -1,0 +1,5 @@
+<design:component label="Flow Screen Header">
+
+    <design:attribute name="title" label="Header Text" default="Header Text" />
+
+</design:component>

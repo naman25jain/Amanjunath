@@ -1,0 +1,1322 @@
+<template>
+    <div class="slds-is-relative">
+        <template if:true={spinner}>
+            <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+        </template>
+            <div class="padding">
+                <h2 class="stepHeader">
+                    <c-g-display-content unique-content-value="app_for_cert_graduate_only_heading"></c-g-display-content>
+                </h2> 
+                <c-g-display-content unique-content-value="grad_only_cert_desc"></c-g-display-content>
+            </div>
+            <div class="padding">
+                <template if:true={isSucMsg}>
+                    <span class="isSucMsg"><c-g-display-content unique-content-value="app_for_cert_graduate_only_success"></c-g-display-content></span>
+                </template>
+            </div>
+            <div class="formMargin">               
+                <div class="slds-grid slds-wrap">
+                    <div class="slds-col slds-p-top_medium slds-size_1-of-2 gridPadding">
+                        <span>I have graduated from medical school, but my diploma has not been issued yet.</span>
+                    </div>        
+                    <template if:true={resubAppAddDiploma}>
+                        <template if:true={showCheckboxVisible}>
+                            <div class="slds-col slds-size_1-of-2 slds-p-top_medium gridPadding">
+                                <lightning-input type="checkbox" data-id="deanLet1" variant="label-hidden" name="isDeanLetter"
+                                label="I have graduated from medical school, but my diploma has not been issued yet." onchange={handleChangeDeanLetter1} value={isDeanLetter}>
+                                </lightning-input>
+                            </div>
+                        </template>
+                        <template if:false={showCheckboxVisible}>
+                            <div class="slds-col slds-size_1-of-2 slds-p-top_medium gridPadding">
+                                <template if:true={isDeanLet}>
+                                    <lightning-input type="checkbox" data-id="deanLet1" checked variant="label-hidden" name="isDeanLetter"
+                                    label="I have graduated from medical school, but my diploma has not been issued yet." onchange={handleChangeDeanLetter1} value={isDeanLetter}>
+                                    </lightning-input>
+                                </template>
+                                <template if:false={isDeanLet}>
+                                    <lightning-input type="checkbox" data-id="deanLet2" variant="label-hidden" name="isDeanLetter"
+                                    label="I have graduated from medical school, but my diploma has not been issued yet." disabled value={isDeanLetter}>
+                                    </lightning-input>
+                                </template>
+                            </div>
+                        </template>
+                    </template>
+                    <template if:false={resubAppAddDiploma}><!-- by default, this checkbox is shown -->                        
+                        <template if:true={showCheckboxVisible}>
+                            <div class="slds-col slds-size_1-of-2 slds-p-top_medium gridPadding">
+                                <lightning-input type="checkbox" data-id="deanLet" variant="label-hidden" name="isDeanLetter"
+                                label="I have graduated from medical school, but my diploma has not been issued yet." onchange={handleChangeDeanLetter} value={isDeanLetter}>
+                                </lightning-input>
+                            </div>
+                        </template>
+                        <template if:false={showCheckboxVisible}>
+                            <div class="slds-col slds-size_1-of-2 slds-p-top_medium gridPadding">
+                                <template if:true={isDeanLet}>
+                                    <lightning-input type="checkbox" data-id="deanLet1" checked variant="label-hidden" name="isDeanLetter"
+                                    label="I have graduated from medical school, but my diploma has not been issued yet." onchange={handleChangeDeanLetter1} value={isDeanLetter}>
+                                    </lightning-input>
+                                </template>
+                                <template if:false={isDeanLet}>
+                                    <lightning-input type="checkbox" data-id="deanLet2" variant="label-hidden" name="isDeanLetter"
+                                    label="I have graduated from medical school, but my diploma has not been issued yet." disabled value={isDeanLetter}>
+                                    </lightning-input>
+                                </template>
+                            </div>
+                        </template>
+                    </template>
+                    <!-- FINAL MEDICAL DIPLOMA (FMD) -->
+                    <template if:false={isDeanLetter}>
+                        <div class="slds-col slds-size_1-of-1">
+                            <div class="slds-section slds-is-open">
+                                <h3 class="slds-section__title headerbackground">
+                                    <span class="slds-truncate slds-p-horizontal_small"
+                                        title="Section Title">{label.diplomaDocumentUpload}</span>
+                                </h3>
+                            </div>
+                        </div>
+                        <!-- Final Medical Diploma (FMD) - Editable Section -->
+                        <template if:false={showFMDReadOnly}>
+                            <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                <span class="required">*</span>
+                                <span>Upload Diploma</span>
+                            </div>
+                            <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                <template if:true={showDipUploadButton}>
+                                    <c-cloud-document-upload-wrapper label="Upload Diploma" pay-load={payloadFinalMedDiploma} max-allowed-file-size=10 accepted-file-formats=".jpeg,.jpg,.pdf,.tiff" 
+                                    enable-annotation="false" enable-redaction="false" ongeneratedurl={handleOnDiploma}
+                                    class="cloudFMDDoc" azure-doc-url={fmdAzureUrl}>
+                                </c-cloud-document-upload-wrapper>
+                                    <c-g-display-content unique-content-value="upload_msg_jpeg_tiff_pdf"></c-g-display-content>
+                                </template>
+                            </div>
+                            <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                <span></span>
+                            </div>
+                            <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                <template if:true={isErrMsgDipDetails}>
+                                    <span class="errormsg">{label.diplomaisMandatory}</span>
+                                </template>
+                            </div>
+                            <template if:true={isPrimaryDiplomaUploaded}>
+                                <template if:true={isPortal}><br/>            
+                                    <lightning-layout-item padding="around-small" size="12"> 
+                                        <span>              
+                                            <c-g-display-content unique-content-value="app_for_cert_graduate_only_portal"></c-g-display-content>
+                                    </span> 
+                                    </lightning-layout-item>
+                                </template>
+                                <template if:true={isNonPortalWeb}><br />
+                                    <lightning-layout-item padding="around-small" size="12">
+                                        <span>
+                                            <c-g-display-content unique-content-value="app_for_cert_graduate_only_non_portal"></c-g-display-content>
+                                        </span>
+                                    </lightning-layout-item>
+                                </template>
+                                <template if:true={isNonPortalPaper}><br />
+                                    <div class="slds-col slds-size_1-of-1">
+                                        <div class="slds-grid slds-wrap gridMargin">
+                                            <lightning-layout-item padding="around-small" size="4">
+                                                <span>                                                    
+                                                    <c-g-display-content unique-content-value="app_for_cert_graduate_only_note_fee"></c-g-display-content>
+                                                </span>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item padding="around-small" size="8">
+                                                <template if:true={sendViaCourier}>
+                                                    <lightning-input checked variant="label-hidden" type="checkbox" name="courier"
+                                                        onchange={handleVerReqCourier}></lightning-input>
+                                                </template>
+                                                <template if:false={sendViaCourier}>
+                                                    <lightning-input variant="label-hidden" type="checkbox" name="courier"
+                                                        onchange={handleVerReqCourier}></lightning-input>
+                                                </template>
+                                            </lightning-layout-item>
+                                        </div>
+                                    </div>
+                                </template>
+                                <div class="slds-col slds-p-top_medium slds-size_1-of-1">
+                                    <div class="slds-grid slds-border_bottom slds-p-bottom_xx-small">
+                                        <div class="slds-col">
+                                            <h2 class="gridHeader">{label.diplomaDocumentUploadNameDocumentation}</h2>
+                                        </div>
+                                    </div>
+                                </div>
+                                <c-g-display-content unique-content-value="grad_only_name_doc_desc"></c-g-display-content>
+                                <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                    <span>Name in Intealth Profile</span>
+                                </div>
+                                <div class="slds-col slds-size_1-of-2 slds-p-top_medium ">
+                                    <lightning-input type="text" name="nameonSystem" variant="label-hidden" value={contactName} label="Name on System" disabled></lightning-input>
+                                </div>
+                                <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                    <p><span class="required">*</span> Name on Document</p>
+                                </div>
+                                <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+                                    <lightning-input class="diplomaName" type="text" name="nameonDiplomaDocument" 
+                                        variant="label-hidden" label="Name on Document" value={nameonDiplomaDocumentVal}
+                                        onchange={handleChangeForInputFields}></lightning-input>
+                                </div>
+                                <div class="slds-col slds-p-top_medium slds-size_1-of-2 errorMsgAlignment">
+                                    <span></span>
+                                </div>
+                                <div class="slds-col slds-p-top_medium slds-size_1-of-2 errorMsgAlignment">
+                                    <template if:true={isErrMsgDipName}>
+                                        <p class="errormsg">{label.graduateScreenNameonDocMessage}</p>
+                                    </template>
+                                </div>
+                                <template if:true={isDiplomaNameDifferent}>
+                                </template>
+                                <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                    <p>Is the name on your document different from your current name in your Intealth profile? If yes, check the box. If no, leave it blank.</p>
+                                </div>
+                                <div class="slds-col slds-size--1-of-2 slds-p-top_medium ">
+                                    <lightning-input type="checkbox" data-id="diplomaDiff" name="isDiplomaNameDifferent"
+                                        variant="label-hidden" label="Is the name on your document different from your current name in your Intealth profile? If yes, check the box. If no, leave it blank."
+                                        onchange={handleChangeDiplomaNameDifferent}>
+                                    </lightning-input>
+                                </div>
+                            </template>   
+                            <template if:true={isDiplomaNameDifferent}>
+                                <!--Diploma Name Document-->
+                                <template if:true={isPrimaryDiplomaUploaded}>                                
+                                    <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                        <span>Upload Name Documentation</span>
+                                    </div>
+                                    <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                        <template if:true={showDipNameDocButton}>
+                                            <c-cloud-document-upload-wrapper class="cloudFMDNameDoc" label="Upload Name Documentation" pay-load={payloadFMDNameDoc} max-allowed-file-size=10 accepted-file-formats=".jpeg,.jpg,.pdf,.tiff" 
+                                            enable-annotation="false" enable-redaction="false" show-delete-button="true" ongeneratedurl={handleOnDiplomaNameDoc} azure-doc-url={fmdNameAzureUrl}></c-cloud-document-upload-wrapper>
+                                            <c-g-display-content unique-content-value="upload_msg_jpeg_tiff_pdf"></c-g-display-content>
+                                        </template>
+                                    </div>
+                                </template>
+                            </template>
+                            <template if:true={isPrimaryDiplomaUploaded}>
+                                <div class="slds-col slds-size_1-of-1 slds-p-top_medium">
+                                    <div class="slds-grid slds-border_bottom slds-p-bottom_xx-small">
+                                        <div class="slds-col">
+                                            <h2 class="gridHeader">{label.diplomaDocumentUploadTranslation}</h2>
+                                            <c-g-display-content unique-content-value="grad_only_diploma_desc"></c-g-display-content>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                    <span>Is your diploma in a language other than English? If yes, check the box. If no, leave it blank.</span>
+                                </div>
+                                <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+                                    <lightning-input type="checkbox" data-id="diplomaEng" variant="label-hidden"
+                                        name="isDiplomaNameinEnglish" label="Is your diploma in a language other than English? If yes, check the box. If no, leave it blank." value={isDiplomaNameinEnglish}
+                                        onclick={handleChangeDiplomaNameinEnglish}>
+                                    </lightning-input>
+                                </div>
+                            </template>
+                            <template if:true={isDiplomaNameinEnglish}>
+                                <template if:true={isPrimaryDiplomaUploaded}>
+                                    <!--Translation Document-->                                
+                                    <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                        <p>Upload a Translation of Your Diploma (if not in English).</p>
+                                    </div>
+                                    <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                        <template if:true={showDipTransDocButton}> 
+                                            <c-cloud-document-upload-wrapper class="cloudFMDTranDoc" label="Upload a Translation of Your Diploma (if not in English)." pay-load={payloadFMDTransDoc} max-allowed-file-size=10 accepted-file-formats=".jpeg,.jpg,.pdf,.tiff" 
+                                            enable-annotation="false" enable-redaction="false" ongeneratedurl={handleOnDiplomaEnglish} azure-doc-url={fmdTranAzureUrl}>
+                                            </c-cloud-document-upload-wrapper>
+                                            <c-g-display-content unique-content-value="upload_msg_jpeg_tiff_pdf"></c-g-display-content>
+                                        </template>
+                                    </div>
+                                    <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                        <span></span>
+                                    </div>
+                                    <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                        <template if:true={isErrMsgDipTransDetails}>
+                                            <span class="errormsg">{label.diplomaDocumentTranslationMandatory}</span>
+                                        </template>
+                                    </div>
+                                </template>
+                            </template>                                
+                        </template>
+                        <!-- Final Medical Diploma (FMD) - Read Only Section -->
+                        <template if:true={showFMDReadOnly}>
+                            <template if:true={showfmdFile}>
+                                <lightning-layout-item padding="around-small" size="6">
+                                    <div class="">Diploma</div>
+                                </lightning-layout-item>
+                                <lightning-layout-item padding="around-small" size="6">
+                                    <div>
+                                        <template if:true={showUploadedDiploma}>
+                                            <span>Note: this document was previously accepted.</span><br />
+                                            <c-cloud-document-upload-wrapper label="Show Diploma" pay-load={payloadFMDiplomaAccepted} max-allowed-file-size=10 accepted-file-formats=".jpeg,.jpg,.pdf,.tiff" 
+                                            hide-upload={upload} enable-annotation="false" enable-redaction="false" >
+                                            </c-cloud-document-upload-wrapper>
+                                            <c-g-display-content unique-content-value="upload_msg_jpeg_tiff_pdf"></c-g-display-content>
+                                        </template>
+                                    </div>
+                                </lightning-layout-item>
+                                <template if:true={isPortal}><br/>            
+                                    <lightning-layout-item padding="around-small" size="12"> 
+                                        <span>              
+                                            <c-g-display-content unique-content-value="app_for_cert_graduate_only_portal"></c-g-display-content>
+                                    </span> 
+                                    </lightning-layout-item>
+                                </template>
+                                <template if:true={isNonPortalWeb}><br />
+                                    <lightning-layout-item padding="around-small" size="12">
+                                        <span>
+                                            <c-g-display-content unique-content-value="app_for_cert_graduate_only_non_portal"></c-g-display-content>
+                                        </span>
+                                    </lightning-layout-item>
+                                </template>
+                                <template if:true={isNonPortalPaper}><br />
+                                    <div class="slds-col slds-size_1-of-1">
+                                        <div class="slds-grid slds-wrap gridMargin">
+                                            <lightning-layout-item padding="around-small" size="4">
+                                                <span>                                                    
+                                                    <c-g-display-content unique-content-value="app_for_cert_graduate_only_note_fee"></c-g-display-content>
+                                                </span>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item padding="around-small" size="8">
+                                                <template if:true={sendViaCourier}>
+                                                    <lightning-input checked disabled variant="label-hidden" type="checkbox" name="courier"></lightning-input>
+                                                </template>
+                                                <template if:false={sendViaCourier}>
+                                                    <lightning-input disabled variant="label-hidden" type="checkbox" name="courier"></lightning-input>
+                                                </template>
+                                            </lightning-layout-item>
+                                        </div>
+                                    </div>
+                                </template>
+                                <div class="slds-col slds-p-top_medium slds-size_1-of-1">
+                                    <div class="slds-grid slds-border_bottom slds-p-bottom_xx-small">
+                                        <div class="slds-col">
+                                            <h1 class="gridHeader">{label.diplomaDocumentUploadNameDocumentation}</h1>
+                                        </div>
+                                    </div>
+                                </div>
+                                <lightning-layout-item padding="around-small" size="6">
+                                    <div class="">Name on Document</div>
+                                </lightning-layout-item>
+                                <lightning-layout-item padding="around-small" size="6">
+                                    <div>
+                                        {gradAssetsList.fmdName}
+                                    </div>
+                                </lightning-layout-item>
+                                <lightning-layout-item padding="around-small" size="6">
+                                    <div class="">Is Name on the Document different?</div>
+                                </lightning-layout-item>
+                                <lightning-layout-item padding="around-small" size="6">
+                                    <div>
+                                        {gradAssetsList.fmdNameDiff}
+                                    </div>
+                                </lightning-layout-item>
+                                <template if:true={fmdNameCond}>
+                                    <lightning-layout-item padding="around-small" size="6">
+                                        <div class="">Diploma Name Documentation</div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small" size="6">
+                                        <div>
+                                            <template if:true={showAcceptdDiplomaNameDoc}>
+                                                <span>Note: this document was previously accepted.</span><br />
+                                                <c-cloud-document-upload-wrapper label="Show Diploma Name Documentation" pay-load={payloadFMDNameDocAccepted} max-allowed-file-size=10 accepted-file-formats=".jpeg,.jpg,.pdf,.tiff" 
+                                                hide-upload={upload} enable-annotation="false" enable-redaction="false">
+                                                </c-cloud-document-upload-wrapper>
+                                                <c-g-display-content unique-content-value="upload_msg_jpeg_tiff_pdf"></c-g-display-content>
+                                            </template>
+                                        </div>
+                                    </lightning-layout-item>
+                                </template>
+                                <div class="slds-col slds-size_1-of-1 slds-p-top_medium">
+                                    <div class="slds-grid slds-border_bottom slds-p-bottom_xx-small">
+                                        <div class="slds-col">
+                                            <h1 class="gridHeader">{label.diplomaDocumentUploadTranslation}</h1>
+                                        </div>
+                                    </div>
+                                </div>
+                                <lightning-layout-item padding="around-small" size="6">
+                                    <div class="">Is Diploma in a language other than English?</div>
+                                </lightning-layout-item>
+                                <lightning-layout-item padding="around-small" size="6">
+                                    <div>
+                                        {gradAssetsList.fmdTrans}
+                                    </div>
+                                </lightning-layout-item>
+                                <template if:true={fmdTransCond}>
+                                    <lightning-layout-item padding="around-small" size="6">
+                                        <div class="">Upload Diploma Translation</div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small" size="6">
+                                        <div>
+                                            <template if:true={showAcceptdDiplomaTransDoc}>
+                                                <span>Note: this document was previously accepted.</span><br />
+                                                <c-cloud-document-upload-wrapper label="Show Diploma Translation Documentation" pay-load={payloadFMDTransDocAccepted} max-allowed-file-size=10 accepted-file-formats=".jpeg,.jpg,.pdf,.tiff" 
+                                                hide-upload={upload} enable-annotation="false" enable-redaction="false">
+                                                </c-cloud-document-upload-wrapper>
+                                                <c-g-display-content unique-content-value="upload_msg_jpeg_tiff_pdf"></c-g-display-content>
+                                            </template>
+                                        </div>
+                                    </lightning-layout-item>
+                                </template>
+                            </template>
+                        </template>
+                        <!-- FINAL MEDICAL SCHOOL TRANSCRIPT (FMST) -->                                
+                        <template if:true={isFinalTranscriptRequired}>
+                            <div class="separatorborderbottom"></div>
+                            <div class="slds-grid slds-wrap gridFinalTranscript">
+                                <div class="slds-col slds-size_1-of-1 ">
+                                    <div class="slds-section slds-is-open">
+                                        <h3 class="slds-section__title headerbackground">
+                                            <span class="slds-truncate slds-p-horizontal_small"
+                                                title="Section Title">{label.transcriptUpload}</span>
+                                        </h3>
+                                        <c-g-display-content unique-content-value="grad_final_transcript"></c-g-display-content>  
+                                    </div>
+                                </div>
+                                <!-- Final Medical School Transcript (FMST) - Editable Section -->
+                                <template if:false={showFMSTReadOnly}>
+                                    <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                        <span class="required">*</span>
+                                        <span>Upload Final Transcript</span>
+                                    </div>
+                                    <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                        <template if:true={showMedSchoolTranscriptUploadButton}>
+                                            <c-cloud-document-upload-wrapper label="Upload Final Transcript" pay-load={payloadFinalMedSchoolTranscript} max-allowed-file-size=10 accepted-file-formats=".jpeg,.jpg,.pdf,.tiff" 
+                                                enable-annotation="false" enable-redaction="false" ongeneratedurl={handleOnTranscript}
+                                                class="cloudFMSTDoc" azure-doc-url={fmstAzureUrl}>
+                                            </c-cloud-document-upload-wrapper>
+                                            <c-g-display-content unique-content-value="upload_msg_jpeg_tiff_pdf"></c-g-display-content>
+                                        </template>
+                                    </div>
+                                    <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                        <span></span>
+                                    </div>
+                                    <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                        <template if:true={isErrMsgTransDetails}>
+                                            <span class="errormsg">Please upload Final Transcript Details</span>
+                                        </template>
+                                    </div>        
+                                    <template if:true={isPrimaryTranscriptUploaded}>
+                                        <template if:true={isNonPortalPaperFMST}><br />
+                                            <div class="slds-col slds-size_1-of-1">
+                                                <div class="slds-grid slds-wrap gridMargin">
+                                                    <lightning-layout-item padding="around-small" size="4">
+                                                        <span>                                                    
+                                                            <c-g-display-content unique-content-value="app_for_cert_graduate_only_note_fee"></c-g-display-content>
+                                                        </span>
+                                                    </lightning-layout-item>
+                                                    <lightning-layout-item padding="around-small" size="8">
+                                                        <template if:true={sendViaCourierFMST}>
+                                                            <lightning-input checked variant="label-hidden" type="checkbox" onchange={handleVerReqCourierFMST} name="courierboxupdateflow"></lightning-input>                                                                                           
+                                                        </template>
+                                                        <template if:false={sendViaCourierFMST}>
+                                                            <lightning-input variant="label-hidden" type="checkbox" onchange={handleVerReqCourierFMST} name="courierboxupdateflow"></lightning-input>
+                                                        </template>
+                                                    </lightning-layout-item>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </template>                              
+                                    <template if:true={isPrimaryTranscriptUploaded}>
+                                        <div class="slds-col slds-p-top_medium slds-size_1-of-1">
+                                            <div class="slds-grid slds-border_bottom slds-p-bottom_xx-small">
+                                                <div class="slds-col">
+                                                    <h2 class="gridHeader">{label.diplomaDocumentUploadNameDocumentation}</h2>
+                                                    <c-g-display-content unique-content-value="grad_final_name_doc"></c-g-display-content> 
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                            <p>Name in Intealth Profile</p>
+                                        </div>
+                                        <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+                                            <lightning-input type="text" label="Name in Intealth Profile" variant="label-hidden"
+                                                value={contactName} name="nameonSystem" disabled></lightning-input>
+                                        </div>
+                                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                            <span class="required">*</span>
+                                            <span>Name on Document</span>
+                                        </div>
+                                        <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+                                            <lightning-input class="finalName" type="text" label="Name on Document"
+                                                variant="label-hidden" name="nameonFinalTranscriptDocument"
+                                                value={nameonFinalDocumentVal} onchange={handleChangeForInputFields}>
+                                            </lightning-input>
+                                        </div>
+                                        <div class="slds-col slds-p-top_medium slds-size_1-of-2 errorMsgAlignment">
+                                            <span></span>
+                                        </div>
+                                        <div class="slds-col slds-p-top_medium slds-size_1-of-2 errorMsgAlignment">
+                                            <template if:true={isErrMsgFinName}>
+                                                <span class="errormsg">{label.graduateScreenNameonDocMessage}</span>
+                                            </template>
+                                        </div>
+                                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                            <span>Is the name on your document different from your current name in your Intealth profile? If yes, check the box. If no, leave it blank.</span>
+                                        </div>
+                                        <div class="slds-col slds-size--1-of-2 slds-p-top_medium">
+                                            <lightning-input type="checkbox" data-id="finalDiff" variant="label-hidden"
+                                            label="Is the name on your document different from your current name in your Intealth profile? If yes, check the box. If no, leave it blank."
+                                                name="isFinalMedicalTranscriptDifferent"
+                                                onchange={handleChangeFinalMedicalTranscriptDifferent}>
+                                            </lightning-input>
+                                        </div>
+                                    </template>
+                                    <template if:true={isFinalMedicalTranscriptDifferent}>
+                                        <template if:true={isPrimaryTranscriptUploaded}>
+                                            <!--Final Medical Transcript Name Document-->
+                                            <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                                <span>Upload Name Documentation</span>
+                                            </div>
+                                            <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                                <template if:true={showTranscriptNameDocButton}>
+                                                    <c-cloud-document-upload-wrapper class="cloudFMSTNameDoc" label="Upload Name Documentation" pay-load={payloadFMTranscriptNameDoc} max-allowed-file-size=10 accepted-file-formats=".jpeg,.jpg,.pdf,.tiff" 
+                                                        enable-annotation="false" enable-redaction="false" show-delete-button="true" ongeneratedurl={handleOnTranscriptNameDoc} azure-doc-url={fmstNameAzureUrl}>
+                                                    </c-cloud-document-upload-wrapper>
+                                                    <c-g-display-content unique-content-value="upload_msg_jpeg_tiff_pdf"></c-g-display-content>
+                                                </template>
+                                            </div>
+                                        </template>
+                                    </template>
+                                    <template if:true={isPrimaryTranscriptUploaded}>
+                                        <div class="slds-col slds-size_1-of-1 slds-p-top_medium">
+                                            <div class="slds-grid slds-border_bottom slds-p-bottom_xx-small">
+                                                <div class="slds-col">
+                                                    <h1 class="gridHeader">{label.transcriptTranslationUpload}</h1>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                            <span>Is your final transcript in a language other than English? If yes, check the box. If no, leave it blank.</span>
+                                        </div>
+                                        <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+                                            <lightning-input type="checkbox" data-id="finalEng" variant="label-hidden"
+                                                label="Is your final transcript in a language other than English? If yes, check the box. If no, leave it blank."
+                                                name="isFinalMedicalTranscriptinEnglish"
+                                                onchange={handleChangeFinalMedicalTranscriptinEnglish}>
+                                            </lightning-input>
+                                        </div>
+                                        <template if:true={isFinalMedicalTranscriptinEnglish}>
+                                            <!--Translation Document-->                                        
+                                            <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                                <span>Upload a Translation of Your Final Transcript (if not in English)</span>
+                                            </div>
+                                            <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                                <template if:true={showFMTranscriptTransDocButton}> 
+                                                    <c-cloud-document-upload-wrapper class="cloudFMSTTranDoc" label="Upload a Translation of Your Final Transcript (if not in English)" pay-load={payloadFMTranscriptTransDoc} max-allowed-file-size=10 accepted-file-formats=".jpeg,.jpg,.pdf,.tiff" 
+                                                    enable-annotation="false" enable-redaction="false" ongeneratedurl={handleOnTranscriptEnglish} azure-doc-url={fmstTranAzureUrl}>
+                                                    </c-cloud-document-upload-wrapper>
+                                                    <c-g-display-content unique-content-value="upload_msg_jpeg_tiff_pdf"></c-g-display-content>
+                                                </template>
+                                            </div>
+                                            <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                                <span></span>
+                                            </div>
+                                            <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                                <template if:true={isErrMsgFinalMedTransDetails}>
+                                                    <span class="errormsg">{label.finalMedicalSchoolTranscriptTranslationMandatory}</span>
+                                                </template>
+                                            </div>
+                                        </template>
+                                    </template>
+                                </template>
+                                <!-- Final Medical School Transcript (FMST) - Read Only Section -->
+                                <template if:true={showFMSTReadOnly}>
+                                    <template if:true={ftReqdCond}>
+                                        <template if:true={showFtFile}>
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <div class="">Final Transcript</div>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <div>
+                                                    <template if:true={showUploadedFMSchoolTranscript}>
+                                                        <span>Note: this document was previously accepted.</span><br />
+                                                        <c-cloud-document-upload-wrapper label="Show Final Transcript" pay-load={payloadFMSchoolTranscriptAccepted} max-allowed-file-size=10 accepted-file-formats=".jpeg,.jpg,.pdf,.tiff" 
+                                                        hide-upload={uploadFMSchoolTranscript} enable-annotation="false" enable-redaction="false" >
+                                                        </c-cloud-document-upload-wrapper>
+                                                        <c-g-display-content unique-content-value="upload_msg_jpeg_tiff_pdf"></c-g-display-content>
+                                                    </template>
+                                                </div>
+                                            </lightning-layout-item>
+                                            <template if:true={isNonPortalPaperFMST}><br />
+                                                <div class="slds-col slds-size_1-of-1">
+                                                    <div class="slds-grid slds-wrap gridMargin">
+                                                        <lightning-layout-item padding="around-small" size="4">
+                                                            <span>                                                    
+                                                                <c-g-display-content unique-content-value="app_for_cert_graduate_only_note_fee"></c-g-display-content>
+                                                            </span>
+                                                        </lightning-layout-item>
+                                                        <lightning-layout-item padding="around-small" size="8">
+                                                            <template if:true={sendViaCourierFMST}>
+                                                                <lightning-input disabled checked variant="label-hidden" type="checkbox" onchange={handleVerReqCourierFMST} name="courierboxupdateflow"></lightning-input>                                                                                           
+                                                            </template>
+                                                            <template if:false={sendViaCourierFMST}>
+                                                                <lightning-input disabled variant="label-hidden" type="checkbox" onchange={handleVerReqCourierFMST} name="courierboxupdateflow"></lightning-input>
+                                                            </template>
+                                                        </lightning-layout-item>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <div class="">Name on Document</div>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <div>
+                                                    {gradFMSTAssetsList.ftName}
+                                                </div>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <div class="">Is Name on the Document different?</div>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <div>
+                                                    {gradFMSTAssetsList.ftNameDiff}
+                                                </div>
+                                            </lightning-layout-item>
+                                            <template if:true={ftNameCond}>
+                                                <lightning-layout-item padding="around-small" size="6">
+                                                    <div class="">Final Transcript Name Documentation</div>
+                                                </lightning-layout-item>
+                                                <lightning-layout-item padding="around-small" size="6">
+                                                    <div>
+                                                        <template if:true={showAcceptdTranscriptNameDoc}>
+                                                            <span>Note: this document was previously accepted.</span><br />
+                                                            <c-cloud-document-upload-wrapper label="Show Final Transcript Name Documentation" pay-load={payloadFMTranscriptNameDocAccepted} max-allowed-file-size=10 accepted-file-formats=".jpeg,.jpg,.pdf,.tiff" 
+                                                            hide-upload={uploadFMSchoolTranscript} enable-annotation="false" enable-redaction="false">
+                                                            </c-cloud-document-upload-wrapper>
+                                                            <c-g-display-content unique-content-value="upload_msg_jpeg_tiff_pdf"></c-g-display-content>
+                                                        </template>
+                                                    </div>
+                                                </lightning-layout-item>
+                                            </template>
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <div class="">Is Final Transcript in a language other than English?
+                                                </div>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <div>
+                                                    {gradFMSTAssetsList.ftTrans}
+                                                </div>
+                                            </lightning-layout-item>
+                                            <template if:true={ftTransCond}>
+                                                <lightning-layout-item padding="around-small" size="6">
+                                                    <div class="">Upload Final Transcript Translation</div>
+                                                </lightning-layout-item>
+                                                <lightning-layout-item padding="around-small" size="6">
+                                                    <div>
+                                                        <template if:true={showAcceptdFMTranscriptTransDoc}>
+                                                            <span>Note: this document was previously accepted.</span><br />
+                                                            <c-cloud-document-upload-wrapper label="Show Transcript Translation Documentation" pay-load={payloadFMTranscriptTransDocAccepted} max-allowed-file-size=10 accepted-file-formats=".jpeg,.jpg,.pdf,.tiff" 
+                                                            hide-upload={uploadFMSchoolTranscript} enable-annotation="false" enable-redaction="false">
+                                                            </c-cloud-document-upload-wrapper>
+                                                            <c-g-display-content unique-content-value="upload_msg_jpeg_tiff_pdf"></c-g-display-content>
+                                                        </template>
+                                                        
+                                                    </div>
+                                                </lightning-layout-item>
+                                            </template>
+                                        </template>
+                                    </template>
+                                </template>
+                            </div>
+                        </template>                                
+                    </template>                            
+                    <!-- LETTER FROM DEAN -->
+                    <template if:true={isDeanLetter}>
+                        <div class="slds-grid slds-wrap">
+                            <div class="slds-col slds-size_1-of-1">
+                                <div class="slds-section slds-is-open">
+                                    <h3 class="slds-section__title headerbackground">
+                                        <span class="slds-truncate slds-p-horizontal_small"
+                                            title="Section Title">{label.deanUpload}</span>
+                                    </h3>
+                                    <c-g-display-content unique-content-value="auth_letter_desc"></c-g-display-content>
+                                </div>
+                            </div>
+                            <!-- Letter from Dean - Editable Section -->
+                            <template if:false={showDeanLetterReadOnly}>
+                                <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                    <p><span class="required">*</span> Upload Letter from Authorized Official</p>
+                                </div>
+                                <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                    <template if:true={showDeanLetUploadButton}>
+                                        <c-cloud-document-upload-wrapper label="Upload Letter from Authorized Official" pay-load={payloadDeanLetterDoc} max-allowed-file-size=10 accepted-file-formats=".jpeg,.jpg,.pdf,.tiff" 
+                                            enable-annotation="false" enable-redaction="false" ongeneratedurl={handleOnDean} class="cloudDeanLetDoc" azure-doc-url={deanLetUrl}>
+                                        </c-cloud-document-upload-wrapper>
+                                        <c-g-display-content unique-content-value="upload_msg_jpeg_tiff_pdf"></c-g-display-content>
+                                    </template>
+                                </div>
+                                <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                    <span></span>
+                                </div>
+                                <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                    <template if:true={isErrMsg}>
+                                        <span class="errormsg">{label.graduateScreenErrorMessage}</span>
+                                    </template>
+                                </div>
+                                <template if:true={isPrimaryDeanUploaded}>
+                                    <template if:true={isPortal}><br/>            
+                                        <lightning-layout-item padding="around-small" size="12"> 
+                                            <span>              
+                                                <c-g-display-content unique-content-value="app_for_cert_graduate_only_portal"></c-g-display-content>
+                                        </span> 
+                                        </lightning-layout-item>
+                                    </template>
+                                    <template if:true={isNonPortalWeb}><br />
+                                        <lightning-layout-item padding="around-small" size="12">
+                                            <span>
+                                                <c-g-display-content unique-content-value="app_for_cert_graduate_only_non_portal"></c-g-display-content>
+                                            </span>
+                                        </lightning-layout-item>
+                                    </template>
+                                    <template if:true={isNonPortalPaper}><br />
+                                        <div class="slds-col slds-size_1-of-1">
+                                            <div class="slds-grid slds-wrap gridMargin">
+                                                <lightning-layout-item padding="around-small" size="4">
+                                                    <span>                                                    
+                                                        <c-g-display-content unique-content-value="app_for_cert_graduate_only_note_fee"></c-g-display-content>
+                                                    </span>
+                                                </lightning-layout-item>
+                                                <lightning-layout-item padding="around-small" size="8">
+                                                    <template if:true={sendViaCourier}>
+                                                        <lightning-input checked variant="label-hidden" type="checkbox" name="courier"
+                                                            onchange={handleVerReqCourier}></lightning-input>
+                                                    </template>
+                                                    <template if:false={sendViaCourier}>
+                                                        <lightning-input variant="label-hidden" type="checkbox" name="courier"
+                                                            onchange={handleVerReqCourier}></lightning-input>
+                                                    </template>
+                                                </lightning-layout-item>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                        <span class="required">*</span>
+                                        <span>Expected Diploma Issue Date</span>
+                                    </div>
+                                    <div class="slds-col slds-size--1-of-2 slds-p-top_medium">
+                                        <lightning-input class="deanDateName" type="Date" label="Expected Diploma Issue Date"
+                                            variant="label-hidden" value={deanLetterDateVal} name="dateonDeanLetterDocument" 
+                                            onchange={handleChangeForInputFields}>
+                                        </lightning-input>
+                                    </div>
+                                    <div class="slds-col slds-p-top_medium slds-size_1-of-2 errorMsgAlignment">
+                                        <span></span>
+                                    </div>
+                                    <div class="slds-col slds-p-top_medium slds-size_1-of-2 errorMsgAlignment">
+                                        <template if:true={isErrMsgDeanLetDate}>
+                                            <span class="errormsg">{label.graduateScreenDeanLetDateMessage}</span>
+                                        </template>
+                                        <template if:true={isErrMsgDeanLetDatePast}>
+                                            <span class="errormsg">{label.graduateScreenDeanDegreeDateMessage}</span>
+                                        </template>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-1 slds-p-top_medium">
+                                        <div class="slds-grid slds-border_bottom slds-p-bottom_xx-small">
+                                            <div class="slds-col">
+                                                <h2 class="gridHeader">{label.diplomaDocumentUploadNameDocumentation}</h2>
+                                                <c-g-display-content unique-content-value="grad_only_no_diploma_name_doc"></c-g-display-content>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                        <span>Name in Intealth Profile</span>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+                                        <lightning-input type="text" label="Name in Intealth Profile" name="nameonSystem"
+                                            variant="label-hidden" value={contactName} disabled></lightning-input>
+                                    </div>
+                                    <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                        <span class="required">*</span>
+                                        <span>Name on Document</span>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+                                        <lightning-input class="deanName" type="text" label="Name on Document"
+                                            name="nameonDeanLetterDocument" variant="label-hidden"
+                                            value={nameonDeanLetterDocumentVal} onchange={handleChangeForInputFields}>
+                                        </lightning-input>
+                                    </div>
+                                    <div class="slds-col slds-p-top_medium slds-size_1-of-2 errorMsgAlignment">
+                                        <span></span>
+                                    </div>
+                                    <div class="slds-col slds-p-top_medium slds-size_1-of-2 errorMsgAlignment">
+                                        <template if:true={isErrMsgDeanName}>
+                                            <span class="errormsg">{label.graduateScreenNameonDocMessage}</span>
+                                        </template>
+                                    </div>
+                                    <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                        <span>Is the name on your document different from your current name in your Intealth profile? If yes, check the box. If no, leave it blank.</span>
+                                    </div>
+                                    <div class="slds-col slds-size--1-of-2 slds-p-top_medium">
+                                        <template if:true={deanlettervalueassigned}>
+                                            <lightning-input checked type="checkbox" data-id="deanletterDiff"
+                                                variant="label-hidden" label="Is the name on your document different from your current name in your Intealth profile? If yes, check the box. If no, leave it blank."
+                                                name="isDeanLetterDifferent" onchange={handleChangeDeanLetterDifferent}>
+                                            </lightning-input>
+                                        </template>
+                                        <template if:false={deanlettervalueassigned}>
+                                            <lightning-input type="checkbox" data-id="deanletterDiff" variant="label-hidden"
+                                                label="Name on Document is different" name="isDeanLetterDifferent"
+                                                onchange={handleChangeDeanLetterDifferent}>
+                                            </lightning-input>
+                                        </template>
+                                    </div>
+                                </template>
+                                <template if:true={isDeanLetterDifferent}>
+                                    <template if:true={isPrimaryDeanUploaded}>
+                                        <!--Dean Letter Name Document-->                               
+                                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                            <span>Upload Name Documentation</span>
+                                        </div>
+                                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                            <template if:true={showDeanLetNameDiffButton}>
+                                                <c-cloud-document-upload-wrapper label="Upload Name Documentation" pay-load={payloadDeanLetterNameDiffDoc} max-allowed-file-size=10 accepted-file-formats=".jpeg,.jpg,.pdf,.tiff" 
+                                                    enable-annotation="false" enable-redaction="false"  show-delete-button="true" class="cloudDLNameDOc" ongeneratedurl={handleOnDeanLetNameDiff} azure-doc-url={deanLetNameAzureUrl}>
+                                                </c-cloud-document-upload-wrapper>
+                                                <c-g-display-content unique-content-value="upload_msg_jpeg_tiff_pdf"></c-g-display-content>
+                                            </template>
+                                        </div>
+                                    </template>
+                                </template>
+                                <template if:true={isPrimaryDeanUploaded}>
+                                    <div class="slds-col slds-size_1-of-1 slds-p-top_medium">
+                                        <div class="slds-grid slds-border_bottom slds-p-bottom_xx-small">
+                                            <div class="slds-col">
+                                                <h1 class="gridHeader">{label.deanTranslationUpload}</h1>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                        <span>Is the letter from the authorized official of your medical school in a language other than English? If yes, check the box. If no, leave it blank.</span>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+                                        <template if:true={deanletterEngvalueassigned}>
+                                            <lightning-input type="checkbox" checked data-id="deanletterEng"
+                                                variant="label-hidden" label="Is the letter from the authorized official of your medical school in a language other than English? If yes, check the box. If no, leave it blank."
+                                                name="isDeanLetterNameinEnglish" onclick={handleChangeDeanLetterinEnglish}>
+                                            </lightning-input>
+                                        </template>
+                                        <template if:false={deanletterEngvalueassigned}>
+                                            <lightning-input type="checkbox" data-id="deanletterEng" variant="label-hidden"
+                                            label="Is the letter from the authorized official of your medical school in a language other than English? If yes, check the box. If no, leave it blank." name="isDeanLetterNameinEnglish"
+                                                onclick={handleChangeDeanLetterinEnglish}>
+                                            </lightning-input>
+                                        </template>
+                                    </div>
+                                </template>
+                                <template if:true={isDeanLetterNameinEnglish}>
+                                    <template if:true={isPrimaryDeanUploaded}>
+                                        <!--Translation Document-->                                
+                                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                            <span>Upload a Translation of Your Letter from an Authorized Medical School Official (if not in English)</span>
+                                        </div>
+                                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                            <template if:true={showDeanLetEnglishButton}>
+                                                <c-cloud-document-upload-wrapper label="Upload a Translation of Your Letter from an Authorized Medical School Official (if not in English)" pay-load={payloadDeanLetterEnglishDoc} max-allowed-file-size=10 accepted-file-formats=".jpeg,.jpg,.pdf,.tiff" 
+                                                    enable-annotation="false" enable-redaction="false" class="cloudDLTransDoc" ongeneratedurl={handleOnDeanEnglish} azure-doc-url={deanLetTranAzureUrl}>
+                                                </c-cloud-document-upload-wrapper>
+                                                <c-g-display-content unique-content-value="upload_msg_jpeg_tiff_pdf"></c-g-display-content>
+                                            </template>
+                                        </div>
+                                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                            <span></span>
+                                        </div>
+                                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                            <template if:true={isErrMsgDeanLetTransDetails}>
+                                                <span class="errormsg">{label.deanLetterTranslationMandatory}</span>
+                                            </template>
+                                        </div>
+                                    </template>
+                                </template>
+                            </template>
+                            <!-- Letter From Dean - Read Only Section -->
+                            <template if:true={showDeanLetterReadOnly}>
+                                <template if:true={showdlFile}>
+                                    <lightning-layout-item padding="around-small" size="6">
+                                        <div class="">Letter From Dean</div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small" size="6">
+                                        <div>
+                                            <template if:true={showUploadedDean}>
+                                                <span>Note: this document was previously accepted.</span><br />
+                                                <c-cloud-document-upload-wrapper label="Show Dean Letter" pay-load={payloadDeanExpiredOrAccepted} max-allowed-file-size=10 accepted-file-formats=".jpeg,.jpg,.pdf,.tiff" 
+                                                hide-upload={upload} enable-annotation="false" enable-redaction="false" >
+                                                </c-cloud-document-upload-wrapper>
+                                                <c-g-display-content unique-content-value="upload_msg_jpeg_tiff_pdf"></c-g-display-content>
+                                            </template>
+                                        </div>
+                                    </lightning-layout-item>
+                                    <template if:true={isPortal}><br/>            
+                                        <lightning-layout-item padding="around-small" size="12"> 
+                                            <span>              
+                                                <c-g-display-content unique-content-value="app_for_cert_graduate_only_portal"></c-g-display-content>
+                                        </span> 
+                                        </lightning-layout-item>
+                                    </template>
+                                    <template if:true={isNonPortalWeb}><br />
+                                        <lightning-layout-item padding="around-small" size="12">
+                                            <span>
+                                                <c-g-display-content unique-content-value="app_for_cert_graduate_only_non_portal"></c-g-display-content>
+                                            </span>
+                                        </lightning-layout-item>
+                                    </template>
+                                    <template if:true={isNonPortalPaper}><br />
+                                        <div class="slds-col slds-size_1-of-1">
+                                            <div class="slds-grid slds-wrap gridMargin">
+                                                <lightning-layout-item padding="around-small" size="4">
+                                                    <span>                                                    
+                                                        <c-g-display-content unique-content-value="app_for_cert_graduate_only_note_fee"></c-g-display-content>
+                                                    </span>
+                                                </lightning-layout-item>
+                                                <lightning-layout-item padding="around-small" size="8">
+                                                    <template if:true={sendViaCourierUpdateFlow}>
+                                                        <lightning-input checked disabled variant="label-hidden" type="checkbox" name="courierboxupdateflow"></lightning-input>
+                                                    </template>
+                                                    <template if:false={sendViaCourierUpdateFlow}>
+                                                        <lightning-input disabled variant="label-hidden" type="checkbox" name="courierboxupdateflow"></lightning-input>
+                                                    </template>
+                                                </lightning-layout-item>
+                                            </div>
+                                        </div>
+                                    </template>
+                                    <lightning-layout-item padding="around-small" size="6">
+                                        <div class="">Expected Degree Issue Date</div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small" size="6">
+                                        <div>
+                                            <lightning-formatted-date-time value={dlDate} time-zone="UTC"></lightning-formatted-date-time>
+                                        </div>
+                                    </lightning-layout-item>
+                                    <div class="slds-col slds-size_1-of-1 slds-p-top_medium">
+                                        <div class="slds-grid slds-border_bottom slds-p-bottom_xx-small">
+                                            <div class="slds-col">
+                                                <h1 class="gridHeader">{label.diplomaDocumentUploadNameDocumentation}</h1>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <lightning-layout-item padding="around-small" size="6">
+                                        <div class="">Name on Document</div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small" size="6">
+                                        <div>
+                                            {gradAssetsList.dlName}
+                                        </div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small" size="6">
+                                        <div class="">Is Name on the Document different?</div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small" size="6">
+                                        <div>
+                                            {gradAssetsList.dlNameDiff}
+                                        </div>
+                                    </lightning-layout-item>
+                                    <template if:true={dlNameCond}>
+                                        <lightning-layout-item padding="around-small" size="6">
+                                            <div class="">Dean's Letter Name Documentation</div>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item padding="around-small" size="6">
+                                            <div>
+                                                <template if:true={showUploadedDeanLetNameDiff}>
+                                                    <span>Note: this document was previously accepted.</span><br />
+                                                    <c-cloud-document-upload-wrapper label="Show Dean Letter Name Doc" pay-load={payloadDeanLetNameDiffExpiredOrAccepted} max-allowed-file-size=10 accepted-file-formats=".jpeg,.jpg,.pdf,.tiff" 
+                                                    hide-upload={upload} enable-annotation="false" enable-redaction="false" >
+                                                    </c-cloud-document-upload-wrapper>
+                                                    <c-g-display-content unique-content-value="upload_msg_jpeg_tiff_pdf"></c-g-display-content>
+                                                </template>
+                                            </div>
+                                        </lightning-layout-item>
+                                    </template>
+                                    <div class="slds-col slds-size_1-of-1 slds-p-top_medium">
+                                        <div class="slds-grid slds-border_bottom slds-p-bottom_xx-small">
+                                            <div class="slds-col">
+                                                <h1 class="gridHeader">{label.deanTranslationUpload}</h1>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <lightning-layout-item padding="around-small" size="6">
+                                        <div class="">Is Dean Letter in a language other than English?</div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small" size="6">
+                                        <div>
+                                            {gradAssetsList.dlTrans}
+                                        </div>
+                                    </lightning-layout-item>
+                                    <template if:true={dlTransCond}>
+                                        <lightning-layout-item padding="around-small" size="6">
+                                            <div class="">Dean's Letter Translation</div>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item padding="around-small" size="6">
+                                            <div>
+                                                <template if:true={showUploadedDeanLetEnglishDoc}>
+                                                    <span>Note: this document was previously accepted.</span><br />
+                                                    <c-cloud-document-upload-wrapper label="Show Dean Letter Name Doc" pay-load={payloadDeanLetEnglishExpiredOrAccepted} max-allowed-file-size=10 accepted-file-formats=".jpeg,.jpg,.pdf,.tiff" 
+                                                    hide-upload={upload} enable-annotation="false" enable-redaction="false" >
+                                                    </c-cloud-document-upload-wrapper>
+                                                    <c-g-display-content unique-content-value="upload_msg_jpeg_tiff_pdf"></c-g-display-content>
+                                                </template>
+                                            </div>
+                                        </lightning-layout-item>
+                                    </template>
+                                </template>
+                            </template>
+                        </div>
+                    </template>                            
+                </div>
+            </div>
+            <div class="formMargin slds-p-top_medium">
+                <template if:true={isDeanLetterAddition}>
+                    <div class="slds-grid slds-wrap">
+                        <div class="slds-col slds-size_1-of-1">
+                            <!--Dean Letter Document-->
+                            <div class="slds-section slds-is-open">
+                                <h3 class="slds-section__title headerbackground">
+                                    <span class="slds-truncate slds-p-horizontal_small"
+                                        title="Section Title">{label.deanUpload}</span>
+                                </h3>
+                            </div>
+                        </div>
+                        <template if:true={isDeanLetterMandatoryUpload}>
+                            <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                <span class="required">*</span>
+                                <span>Upload new Letter from Dean</span>
+                            </div>
+                        </template>
+                        <template if:false={isDeanLetterMandatoryUpload}>
+                            <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                <span class=""></span>
+                                <span>Upload new Letter from Dean</span>
+                            </div>
+                        </template>                        
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                            <template if:true={showDeanLetUploadButton}>
+                                <c-cloud-document-upload-wrapper label="Upload Letter From Dean" pay-load={payloadDeanLetterDoc} max-allowed-file-size=10 accepted-file-formats=".jpeg,.jpg,.pdf,.tiff" 
+                                    enable-annotation="false" enable-redaction="false" ongeneratedurl={handleOnDean} class="cloudDeanLetDoc" azure-doc-url={deanLetUrl}>
+                                </c-cloud-document-upload-wrapper>
+                                <c-g-display-content unique-content-value="upload_msg_jpeg_tiff_pdf"></c-g-display-content>
+                            </template>
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                            <span></span>
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                            <template if:true={isErrMsg}>
+                                <span class="errormsg">{label.graduateScreenErrorMessage}</span>
+                            </template>
+                        </div>
+                        <template if:true={isPrimaryDeanUploaded}>
+                            <template if:true={isPortal}><br/>            
+                                <lightning-layout-item padding="around-small" size="12"> 
+                                    <span>              
+                                        <c-g-display-content unique-content-value="app_for_cert_graduate_only_portal"></c-g-display-content>
+                                  </span> 
+                                </lightning-layout-item>
+                            </template>
+                            <template if:true={isNonPortalWeb}><br />
+                                <lightning-layout-item padding="around-small" size="12">
+                                    <span>
+                                        <c-g-display-content unique-content-value="app_for_cert_graduate_only_non_portal"></c-g-display-content>
+                                    </span>
+                                </lightning-layout-item>
+                            </template>
+                            <template if:true={isNonPortalPaper}><br />
+                                <div class="slds-col slds-size_1-of-1">
+                                    <div class="slds-grid slds-wrap gridMargin">
+                                        <lightning-layout-item padding="around-small" size="4">
+                                            <span>                                                    
+                                                <c-g-display-content unique-content-value="app_for_cert_graduate_only_note_fee"></c-g-display-content>
+                                            </span>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item padding="around-small" size="8">
+                                            <template if:true={sendViaCourier}>
+                                                <lightning-input checked variant="label-hidden" type="checkbox" name="courier"
+                                                    onchange={handleVerReqCourier}></lightning-input>
+                                            </template>
+                                            <template if:false={sendViaCourier}>
+                                                <lightning-input variant="label-hidden" type="checkbox" name="courier"
+                                                    onchange={handleVerReqCourier}></lightning-input>
+                                            </template>
+                                        </lightning-layout-item>
+                                    </div>
+                                </div>
+                            </template>
+                            <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                <span class="required">*</span>
+                                <span>Expected Degree Issue Date</span>
+                            </div>
+                            <div class="slds-col slds-size--1-of-2 slds-p-top_medium">
+                                <lightning-input class="deanDateName" type="Date" label="Expected Degree Issue Date"
+                                    variant="label-hidden" value={deanLetterDateVal} name="dateonDeanLetterDocument"
+                                    onchange={handleChangeForInputFields}>
+                                </lightning-input>
+                            </div>
+                            <div class="slds-col slds-p-top_medium slds-size_1-of-2 errorMsgAlignment">
+                                <span></span>
+                            </div>
+                            <div class="slds-col slds-p-top_medium slds-size_1-of-2 errorMsgAlignment">
+                                <template if:true={isErrMsgDeanLetDate}>
+                                    <span class="errormsg">{label.graduateScreenDeanLetDateMessage}</span>
+                                </template>
+                                <template if:true={isErrMsgDeanLetDatePast}>
+                                    <span class="errormsg">{label.graduateScreenDeanDegreeDateMessage}</span>
+                                </template>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-p-top_medium">
+                                <div class="slds-grid slds-border_bottom slds-p-bottom_xx-small">
+                                    <div class="slds-col">
+                                        <h1 class="gridHeader">{label.diplomaDocumentUploadNameDocumentation}</h1>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                <span>Name on System</span>
+                            </div>
+                            <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+                                <lightning-input type="text" label="Name on System" name="nameonSystem"
+                                    variant="label-hidden" value={contactName} disabled></lightning-input>
+                            </div>
+                            <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                <span class="required">*</span>
+                                <span>Name on Document</span>
+                            </div>
+                            <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+                                <lightning-input class="deanName" type="text" label="Name on Document"
+                                    name="nameonDeanLetterDocument" variant="label-hidden"
+                                    value={nameonDeanLetterDocumentVal} onchange={handleChangeForInputFields}>
+                                </lightning-input>
+                            </div>
+                            <div class="slds-col slds-p-top_medium slds-size_1-of-2 errorMsgAlignment">
+                                <span></span>
+                            </div>
+                            <div class="slds-col slds-p-top_medium slds-size_1-of-2 errorMsgAlignment">
+                                <template if:true={isErrMsgDeanName}>
+                                    <span class="errormsg">{label.graduateScreenNameonDocMessage}</span>
+                                </template>
+                            </div>
+                            <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                <span>Name on Document is different</span>
+                            </div>
+                            <div class="slds-col slds-size--1-of-2 slds-p-top_medium">
+                                <template if:true={deanlettervalueassigned}>
+                                    <lightning-input checked type="checkbox" data-id="deanletterDiff"
+                                        variant="label-hidden" label="Name on Document is different"
+                                        name="isDeanLetterDifferent" onchange={handleChangeDeanLetterDifferentNewly}>
+                                    </lightning-input>
+                                </template>
+                                <template if:false={deanlettervalueassigned}>
+                                    <lightning-input type="checkbox" data-id="deanletterDiff" variant="label-hidden"
+                                        label="Name on Document is different" name="isDeanLetterDifferent"
+                                        onchange={handleChangeDeanLetterDifferentNewly}>
+                                    </lightning-input>
+                                </template>
+                            </div>
+                        </template>
+                        <template if:true={isDeanLetterDifferent}>
+                            <template if:true={isPrimaryDeanUploaded}>
+                                <!--Dean Letter Name Document-->                               
+                                <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                    <span>Upload Name Documentation</span>
+                                </div>
+                                <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                    <template if:true={showDeanLetNameDiffButton}>
+                                        <c-cloud-document-upload-wrapper label="Upload Name Documentation" pay-load={payloadDeanLetterNameDiffDoc} max-allowed-file-size=10 accepted-file-formats=".jpeg,.jpg,.pdf,.tiff" 
+                                            enable-annotation="false" enable-redaction="false"  show-delete-button="true" ongeneratedurl={handleOnDeanLetNameDiff} azure-doc-url={deanLetNameAzureUrl}>
+                                        </c-cloud-document-upload-wrapper>
+                                        <c-g-display-content unique-content-value="upload_msg_jpeg_tiff_pdf"></c-g-display-content>
+                                    </template>
+                                </div>
+                            </template>
+                        </template>
+                        <template if:true={isPrimaryDeanUploaded}>
+                            <div class="slds-col slds-size_1-of-1 slds-p-top_medium">
+                                <div class="slds-grid slds-border_bottom slds-p-bottom_xx-small">
+                                    <div class="slds-col">
+                                        <h1 class="gridHeader">{label.deanTranslationUpload}</h1>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                <span>Letter is not in English</span>
+                            </div>
+                            <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+                                <template if:true={deanletterEngvalueassigned}>
+                                    <lightning-input type="checkbox" checked data-id="deanletterEng"
+                                        variant="label-hidden" label="Letter is not in English"
+                                        name="isDeanLetterNameinEnglish" onclick={handleChangeDeanLetterinEnglishNewly}>
+                                    </lightning-input>
+                                </template>
+
+                                <template if:false={deanletterEngvalueassigned}>
+                                    <lightning-input type="checkbox" data-id="deanletterEng" variant="label-hidden"
+                                        label="Letter is not in English" name="isDeanLetterNameinEnglish"
+                                        onclick={handleChangeDeanLetterinEnglishNewly}>
+                                    </lightning-input>
+                                </template>
+                            </div>
+                        </template>
+                        <template if:true={isDeanLetterNameinEnglish}>
+                            <template if:true={isPrimaryDeanUploaded}>
+                                <!--Translation Document-->                                
+                                <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                    <span>Upload Letter Translation</span>
+                                </div>
+                                <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                    <template if:true={showDeanLetEnglishButton}>
+                                        <c-cloud-document-upload-wrapper label="Upload Letter Transalation" pay-load={payloadDeanLetterEnglishDoc} max-allowed-file-size=10 accepted-file-formats=".jpeg,.jpg,.pdf,.tiff" 
+                                            enable-annotation="false" enable-redaction="false" ongeneratedurl={handleOnDeanEnglish} azure-doc-url={deanLetTranAzureUrl}>
+                                        </c-cloud-document-upload-wrapper>
+                                        <c-g-display-content unique-content-value="upload_msg_jpeg_tiff_pdf"></c-g-display-content>
+                                    </template>
+                                </div>
+                                <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                    <span></span>
+                                </div>
+                                <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                    <template if:true={isErrMsgDeanLetTransDetails}>
+                                        <span class="errormsg">{label.deanLetterTranslationMandatory}</span>
+                                    </template>
+                                </div>
+                        </template>
+                        </template>
+                    </div>
+                </template>
+            </div>
+ 
+        <div class="formMargin">
+            <div class="slds-grid slds-wrap">
+            <template if:true={showRejectedSection}>
+                <div class="slds-col slds-size_1-of-1">
+                    <div class="slds-section slds-is-open">
+                        <h3 class="slds-section__title headerbackground">
+                            <span class="slds-truncate slds-p-horizontal_small"
+                                title="Section Title">{rejOrCancel} Documents</span>
+                        </h3>
+                    </div>
+                </div>
+                <template if:true={showRejFmd}>
+                    <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                        <span>{rejOrCancelFMD} Final Medical Diploma</span>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+                        <c-cloud-document-upload-wrapper label="Show Rejected FMDiploma" pay-load={rejFMDPayload} max-allowed-file-size=10 accepted-file-formats=".jpeg,.jpg,.pdf,.tiff" 
+                        hide-upload={upload} enable-annotation="false" enable-redaction="false" >
+                        </c-cloud-document-upload-wrapper>
+                        <c-g-display-content unique-content-value="upload_msg_jpeg_tiff_pdf"></c-g-display-content>
+                    </div>
+                </template>    
+                <template if:true={showRejFmdName}>
+                    <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                        <span>{rejOrCancelFMD} Final Medical Diploma Name Document</span>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+                        <c-cloud-document-upload-wrapper label="Show Rejected FMDiploma Name" pay-load={rejFMDNamePayload} max-allowed-file-size=10 accepted-file-formats=".jpeg,.jpg,.pdf,.tiff" 
+                        hide-upload={upload} enable-annotation="false" enable-redaction="false" >
+                        </c-cloud-document-upload-wrapper>
+                        <c-g-display-content unique-content-value="upload_msg_jpeg_tiff_pdf"></c-g-display-content>
+                    </div>
+                </template>   
+                <template if:true={showRejFmdTrans}>
+                    <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                        <span>{rejOrCancelFMD} Final Medical Diploma Translation Document</span> 
+                    </div>
+                    <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                        <c-cloud-document-upload-wrapper label="Show Rejected FMDiploma Trans" pay-load={rejFMDTransPayload} max-allowed-file-size=10 accepted-file-formats=".jpeg,.jpg,.pdf,.tiff" 
+                        hide-upload={upload} enable-annotation="false" enable-redaction="false" >
+                        </c-cloud-document-upload-wrapper>
+                        <c-g-display-content unique-content-value="upload_msg_jpeg_tiff_pdf"></c-g-display-content>
+                    </div>
+                </template>   
+                <template if:true={showRejTranscript}>
+                    <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                        <span>{rejOrCancelFMST} Final Medical School Transcript</span> 
+                    </div>
+                    <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                        <c-cloud-document-upload-wrapper label="Show Rejected" pay-load={rejTranscriptPayload} max-allowed-file-size=10 accepted-file-formats=".jpeg,.jpg,.pdf,.tiff" 
+                        hide-upload={upload} enable-annotation="false" enable-redaction="false" >
+                        </c-cloud-document-upload-wrapper>
+                        <c-g-display-content unique-content-value="upload_msg_jpeg_tiff_pdf"></c-g-display-content>
+                    </div>
+                </template> 
+                <template if:true={showRejTranscriptName}>
+                    <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                        <span>{rejOrCancelFMST} Final Medical School Transcript Name Document</span> 
+                    </div>
+                    <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                        <c-cloud-document-upload-wrapper label="Show Rejected" pay-load={rejTranscriptNamePayload} max-allowed-file-size=10 accepted-file-formats=".jpeg,.jpg,.pdf,.tiff" 
+                        hide-upload={upload} enable-annotation="false" enable-redaction="false" >
+                        </c-cloud-document-upload-wrapper>
+                        <c-g-display-content unique-content-value="upload_msg_jpeg_tiff_pdf"></c-g-display-content>
+                    </div>
+                </template>
+                <template if:true={showRejTranscriptTrans}>
+                    <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                        <span>{rejOrCancelFMST} Final Medical School Transcript Translation Document</span> 
+                    </div>
+                    <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                        <c-cloud-document-upload-wrapper label="Show Rejected" pay-load={rejTranscriptTransPayload} max-allowed-file-size=10 accepted-file-formats=".jpeg,.jpg,.pdf,.tiff" 
+                        hide-upload={upload} enable-annotation="false" enable-redaction="false" >
+                        </c-cloud-document-upload-wrapper>
+                        <c-g-display-content unique-content-value="upload_msg_jpeg_tiff_pdf"></c-g-display-content>
+                    </div>
+                </template>
+                <template if:true={showRejDean}>
+                    <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                        <span>{rejOrCancelFMD} Dean Letter Document</span> 
+                    </div>
+                    <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                        <c-cloud-document-upload-wrapper label="Show Rejected" pay-load={rejDeanPayload} max-allowed-file-size=10 accepted-file-formats=".jpeg,.jpg,.pdf,.tiff" 
+                        hide-upload={upload} enable-annotation="false" enable-redaction="false" >
+                        </c-cloud-document-upload-wrapper>
+                        <c-g-display-content unique-content-value="upload_msg_jpeg_tiff_pdf"></c-g-display-content>
+                    </div>
+                </template> 
+                <template if:true={showRejDeanName}>
+                    <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                        <span>{rejOrCancelFMD} Dean Letter Name Document</span> 
+                    </div>
+                    <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                        <c-cloud-document-upload-wrapper label="Show Rejected" pay-load={rejDeanNamePayload} max-allowed-file-size=10 accepted-file-formats=".jpeg,.jpg,.pdf,.tiff" 
+                        hide-upload={upload} enable-annotation="false" enable-redaction="false" >
+                        </c-cloud-document-upload-wrapper>
+                        <c-g-display-content unique-content-value="upload_msg_jpeg_tiff_pdf"></c-g-display-content>
+                    </div>
+                </template>
+                <template if:true={showRejDeanTrans}>
+                    <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                        <span>{rejOrCancelFMD} Dean Letter Translation Document</span> 
+                    </div>
+                    <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                        <c-cloud-document-upload-wrapper label="Show Rejected" pay-load={rejDeanTransPayload} max-allowed-file-size=10 accepted-file-formats=".jpeg,.jpg,.pdf,.tiff" 
+                        hide-upload={upload} enable-annotation="false" enable-redaction="false" >
+                        </c-cloud-document-upload-wrapper>
+                        <c-g-display-content unique-content-value="upload_msg_jpeg_tiff_pdf"></c-g-display-content>
+                    </div>
+                </template>
+            </template>
+            </div>
+        </div>
+        <div class="formMargin">
+            <template if:false={showExamRegActionButton}>
+                <div class="buttonAlignment">
+                    <lightning-button variant="brand" label="Save" title="Save" onclick={saveButton}
+                        class="slds-m-left_x-small"></lightning-button>
+                    <lightning-button variant="brand" label="Previous" title="Previous" onclick={prevButton}
+                        class="slds-m-left_x-small"></lightning-button>
+                    <lightning-button variant="brand" label="Next" title="Next" onclick={nextButton}
+                        class="slds-m-left_x-small"></lightning-button>
+                    <lightning-button variant="brand" label="Cancel" title="Cancel" onclick={cancelButton}
+                        class="slds-m-left_x-small"></lightning-button>
+                </div>
+            </template>
+            <template if:true={showExamRegActionButton}>
+                <div class="buttonAlignment">
+                    <lightning-button variant="brand" label="Discard Changes and Exit" title="Discard Changes and Exit"
+                        onclick={discardButton} class="slds-m-left_x-small"></lightning-button>
+                    <lightning-button variant="brand" label="Previous" title="Previous" onclick={prevButton}
+                        class="slds-m-left_x-small"></lightning-button>
+                    <lightning-button variant="brand" label="Next" title="Next" onclick={nextButton}
+                        class="slds-m-left_x-small"></lightning-button>
+                </div>
+            </template>
+        </div>
+    </div>
+    <c-modal-component class="exceptionModal" title={modalTitle} message={modalContent} show-primary-button="true" primary-button-text="OK"
+    onprimarybuttonclick={handleYesClick} show-secondary-button="true" secondary-button-text="Cancel" >
+    </c-modal-component>
+</template>

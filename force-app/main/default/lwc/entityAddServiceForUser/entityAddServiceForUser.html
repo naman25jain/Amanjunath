@@ -1,0 +1,181 @@
+<template>
+    <div class="formMargin">
+        <template if:true={spinner}>
+			<lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+		</template>
+        <div class="slds-grid slds-wrap gridMargin">
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-1">
+                <span class="headerText">Add Service to an Existing User</span>
+                <p>As a service Coordinator, you can select an existing MyIntealth User at your entity and request they be given access to that service. </p>
+            </div>
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-4 slds-p-left_medium">
+                <span class="modContHdr">Select the User you want to have service access:</span>
+            </div>
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                <lightning-combobox
+                class= "entityServices"
+                label=""
+                variant="label-hidden"
+                placeholder="-Select-"
+                options={contactList}
+                onchange={changeListOfContacts}
+                value={userName}>
+                </lightning-combobox>
+            </div>
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+            <template if:true={showRestofDom}>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    <span>Last Name/Surname</span>
+                </div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    <lightning-input class="entityLastName" disabled name="lastName" variant="label-hidden" value={lastName}></lightning-input>
+                </div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    <span>Rest of Name</span>
+                </div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    <lightning-input class="entityLastName" disabled name="restOfName" variant="label-hidden" value={restOfName}></lightning-input>
+                </div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+                <div class="slds-col slds-p-left_medium slds-p-top_medium slds-grid slds-wrap">
+                    <div class="slds-col">
+                        <div class="checkboxPadding">
+                            <template if:false={checkBoxValue}>
+                                <lightning-input type="checkbox" disabled variant="label-hidden" name="checkBoxValue"></lightning-input>
+                            </template>
+                            <template if:true={checkBoxValue}>
+                                <lightning-input type="checkbox" disabled variant="label-hidden" name="checkBoxValue" checked></lightning-input>
+                            </template>
+                        </div>
+                        <div class="checkboxPaddingTranscript">
+                            <span>The User’s legal name consists of one name only.</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    <span>Generational Suffix</span>
+                </div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    <lightning-input class="entityGenerationalSuffix" disabled name="generationalSuffix" variant="label-hidden" value={generationalSuffix} ></lightning-input>
+                </div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    <span>Email Address</span>
+                </div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    <lightning-input class="entityEmailAddress" disabled name="emailAddress" variant="label-hidden" value={emailAddress}></lightning-input>
+                </div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    <span>Phone Number</span>
+                </div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    <lightning-input class="entityPhoneNumber" disabled name="phoneNumber" variant="label-hidden" value={phoneNumber} ></lightning-input>
+                </div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    <span>Department</span>
+                </div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    <lightning-input class="entityDepartment" disabled name="department" variant="label-hidden" value={department}></lightning-input>
+                </div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    <span>Job Title</span>
+                </div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    <lightning-input class="entityJobTitle" name="jobTitle" disabled variant="label-hidden" value={jobTitle}></lightning-input>
+                </div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+                <div class="slds-col slds-var-p-around_medium slds-size_2-of-4">
+                    <template if:false={showServiceRoleTable}>
+                        <span>
+                            <c-g-display-content unique-content-value="ManageUsersAddSevice"></c-g-display-content>                        </span>
+                    </template>
+                    <template if:true={showServiceRoleTable}>
+                        <table class="slds-table">
+                            <caption>Select the service(s) you would like this User to be able to access through MyIntealth.</caption>
+                            <thead>
+                                <tr class="slds-line-height_reset">
+                                    <th class="" scope="col" style="width: 276px;padding-left: 60px;">
+                                        <div class="slds-truncate" title="Service">Service</div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={servicesList} for:item="service" for:index="serviceIndex">
+                                    <tr key={service.serviceId} class="slds-line-height_reset">
+                                        <td  class="slds-col"  style="padding-left: 60px;">
+                                            <div class="checkboxPadding">
+
+                                                <lightning-input type="checkbox" value={checkBox} class="servicecheckbox" onclick={handleCheckboxChange} label="" name={service.serviceId} unchecked></lightning-input>
+                                        </div>
+                                        <div class="checkboxPaddingTranscript">
+                                            <span>{service.serviceName}</span>
+                                        </div>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </template>
+                </div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                </div>
+                <template if:true={showUploadSignature}>
+                    <div class="slds-col slds-var-p-around_x-small slds-size_4-of-4">
+                        <span>
+                            <c-g-display-content unique-content-value="showuploadsignature"></c-g-display-content>
+                        </span>
+                    </div>
+                    <div class="slds-col slds-var-p-around_x-small slds-size_4-of-4">
+                        <span>If needed, you can find the signature form <span> <u> <a href={fileURL}>here</a></u></span></span>
+                    </div>
+                    <div class="slds-col slds-var-p-around_medium slds-size_1-of-4" style="width: 132px; padding-left: 8px; padding-top: 25px;">
+                        <span>Upload Signature</span>
+                    </div>
+                    <div class="slds-col slds-var-p-around_medium slds-size_3-of-4 cloudDocumentUploadSection" data-asset-url={contactSignAssetAzureDocUrl} style="padding-top: 0px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px;">
+                        <template if:true={showSignUploadButton}>
+                            <c-cloud-document-upload-wrapper label="Upload" class="cloudDocumentUpload"
+                                pay-load={payloadSignedSignatureForm} max-allowed-file-size=10
+                                accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" enable-annotation="false"
+                                enable-redaction="false"
+                                azure-doc-url={contactSignAssetAzureDocUrl}
+                                ongeneratedurl={handleOnAssetInserted}>
+                            </c-cloud-document-upload-wrapper>
+                        </template>
+                    </div>
+                    <template if:true={errorMessage}>
+                        <div class="slds-col slds-var-p-around_x-small slds-size_1-of-4">
+                            <span class="errormsgName"> Please upload the signed signature form.</span>
+                        </div>
+                    </template>
+                </template>
+                <template if:false={showUploadSignature}> </template>
+            </template>
+        </div>
+    </div>
+    <c-modal-component class="exceptionModal" title={modalTitle} message={modalContent} show-primary-button="true" primary-button-text="Yes"
+        onprimarybuttonclick={handleYesClick} show-secondary-button="true" secondary-button-text="No" >
+    </c-modal-component>
+    <div class="buttonAlignment" ><br/>
+        <template if:true={sbmtButtonEnabled}>
+            <lightning-button variant="brand" label="Submit" title="Next" onclick={nextButton} class="slds-m-left_x-small"></lightning-button>
+        </template>
+        <template if:false={sbmtButtonEnabled}>
+            <lightning-button variant="brand" label="Submit" disabled title="Next" onclick={nextButton} class="slds-m-left_x-small"></lightning-button>
+        </template>
+        <lightning-button variant="brand" label="Cancel" title="Cancel" onclick={openModal} class="slds-m-left_x-small"></lightning-button>
+    </div>
+</template>

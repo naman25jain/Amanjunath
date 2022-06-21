@@ -1,0 +1,1021 @@
+<template>
+    <div>
+        <template if:true={spinner}>
+            <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+        </template>
+        <div class="padding">
+            <h2>Other Institutions Attended</h2>
+        </div>
+        <div class="padding notificationMessage"></div>
+        <template if:true={showReadOnlySection}>
+            <div class="padding">
+                <h2 class="header"><span><c-g-display-content unique-content-value="app_for_cert_other_institution_read_only"></c-g-display-content></span></h2>
+            </div>
+        </template>
+        <div class="formMargin slds-grid slds-wrap  slds-p-top_medium">
+            <div class="slds-col slds-p-top_small slds-size_1-of-2">
+                <span><c-g-display-content unique-content-value="app_for_cert_other_institution_tc_label"></c-g-display-content></span>
+            </div>
+            <div class="slds-col slds-p-top_medium slds-p-left_large slds-size_1-of-2">
+                <template if:true={transferCreditsCheckboxMain}>
+                    <template if:false={showReadOnlySection}>
+                        <lightning-input type="checkbox" class="transferCreditsCheckbox"
+                            value={transferCreditsCheckboxMain} checked onclick={handleMainTransferCreditCheckboxClick}
+                            name="transferCreditsMain">
+                        </lightning-input>
+                    </template>
+                    <template if:true={showReadOnlySection}>
+                        <template if:true={showOtherInstiReadOnlySection}>
+                            <lightning-input type="checkbox" class="transferCreditsCheckbox"
+                                value={transferCreditsCheckboxMain} checked disabled name="transferCreditsMain">
+                            </lightning-input>
+                        </template>
+                        <template if:false={showOtherInstiReadOnlySection}>
+                            <lightning-input type="checkbox" class="transferCreditsCheckbox"
+                                value={transferCreditsCheckboxMain} checked
+                                onclick={handleMainTransferCreditCheckboxClick} name="transferCreditsMain">
+                            </lightning-input>
+                        </template>
+                    </template>
+                </template>
+                <template if:false={transferCreditsCheckboxMain}>
+                    <lightning-input type="checkbox" class="transferCreditsCheckbox" value={transferCreditsCheckboxMain}
+                        onclick={handleMainTransferCreditCheckboxClick} name="transferCreditsMain"></lightning-input>
+                </template>
+            </div>
+        </div>
+        <!-- Add New Record Button -->
+        <template if:false={showReadOnlySection}>
+            <template if:true={transferCreditsCheckboxMain}>
+                <div class="slds-float_right slds-p-left_medium">
+                    <template if:true={showAddNew}>
+                        <lightning-button variant="brand" label="Add New Institution" title="Add New Institution"
+                            onclick={addNewRecord}></lightning-button>
+                    </template>
+                    <template if:true={showSaveAdd}>
+                        <lightning-button variant="brand" label="Save & Add New Institution"
+                            title="Add & New Institution" onclick={addNewRecord}></lightning-button>
+                    </template>
+                </div>
+            </template>
+        </template>
+        <template if:true={showReadOnlySection}>
+            <div class="slds-float_right slds-p-left_medium">
+                <template if:true={transferCreditsCheckboxMain}>
+                    <lightning-button variant="brand" label="Add New Institution" title="Add New Institution"
+                        onclick={addNewRecord}></lightning-button>
+                </template>
+            </div>
+        </template>
+        <!-- Data as Read Only when coming from Exam Registration-->
+        <template if:true={showReadOnlySection}>
+            <template if:true={showOtherInstiReadOnlySection}>
+                <div class="formMargin slds-p-top_medium">
+                    <template for:each={recordsListExamRegReadOnly} for:item='recordItem' for:index='index'>
+                        <lightning-record-view-form record-id={recordItem.recordIdVal} object-api-name={objectType}
+                            mode="readonly" key={recordItem.recordIdVal}>
+                            <div class="slds-col slds-size--1-of-1 gridColPadding slds-p-top_large">
+                                <div class="slds-grid slds-border_bottom slds-p-bottom_xx-small">
+                                    <div class="slds-col">
+                                        <h2 class="gridHeader">Other Institution {recordItem.sno}</h2>
+                                    </div>
+                                </div>
+                            </div>
+                            <lightning-layout multiple-rows="true">
+                                <lightning-layout-item padding="around-small" size="6">
+                                    <div class=""><span class="required">*</span>Other Institution Name</div>
+                                </lightning-layout-item>
+                                <lightning-layout-item padding="around-small" size="6">
+                                    <lightning-output-field field-name="Account_Name__c" variant="label-hidden">
+                                    </lightning-output-field>
+                                </lightning-layout-item>
+                                <!--Code Added below by Shailaja. Date Format stories-->
+                                 <lightning-layout-item padding="around-small" size="6">
+                                    <div class="">Attendance Start Month & Year</div>
+                                </lightning-layout-item>
+                                <lightning-layout-item padding="around-small" size="6">
+                                    <div class="readonly-startmonth">{recordItem.startMonth}
+                                    </div>
+                                    <div class="readonly-startyear">{recordItem.startYear}
+                                    </div>
+                                </lightning-layout-item>
+                                <lightning-layout-item padding="around-small" size="6">
+                                    <div class="">Attendance End Month & Year</div>
+                                </lightning-layout-item>
+                                <lightning-layout-item padding="around-small" size="6">
+                                    <div class="readonly-endmonth">{recordItem.endMonth}
+                                    </div>
+                                    <div class="readonly-endyear">{recordItem.endYear}
+                                    </div>
+                                </lightning-layout-item>
+                                <lightning-layout-item padding="around-small" size="6">
+                                    <div class="">Number of Years Attended</div>
+                                </lightning-layout-item>
+                                <lightning-layout-item padding="around-small" size="6">
+                                    <lightning-output-field field-name="Number_of_Years_Attended__c"
+                                        variant="label-hidden"></lightning-output-field>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                            <!-- Start of Transfer Credits Section -->
+                            <div
+                                class="slds-col slds-size--1-of-1 slds-p-top_large transferCreditSection tcMainSection transferCreditCourse">
+                                <div class="slds-section slds-is-open">
+                                    <h4 enter-class="gridHeader slds-section__title headerbackground">Transfer Credits Disclosure and Documentation</h4>
+                                    <c-g-display-content unique-content-value="xfer_cred_disc_desc"></c-g-display-content>
+                                </div>
+                            </div>
+                            
+                            <!--Transfer Credits Table to capture data of multiple courses -->
+                            <template for:each={recordItem.tcWrapperList} for:item='tcRecord' for:index='index'>
+                                <lightning-record-view-form record-id={tcRecord.Id} object-api-name="Transfer_Credit__c"
+                                    mode="readonly" key={tcRecord.Id}>
+                                    <lightning-layout multiple-rows="true">
+                                        <lightning-layout-item padding="around-small" size="6">
+                                            <div class="">Course Title</div>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item padding="around-small" size="6">
+                                            <div>{tcRecord.transferCreditCourse}</div>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item padding="around-small" size="6">
+                                            <div class="">Number of Credits</div>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item padding="around-small" size="6">
+                                            <div>{tcRecord.transferCreditGrade}</div>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item padding="around-small" size="6">
+                                            <div class="">What was the outcome of this course?</div>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item padding="around-small" size="6">
+                                            <div>{tcRecord.courseOutcome}</div>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item padding="around-small" size="6">
+                                            <div class="">Date Credits Earned</div>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item padding="around-small" size="6">
+                                            <div>{tcRecord.creditsEarnedMonth} {tcRecord.creditsEarnedYear}</div>
+                                        </lightning-layout-item>
+                                        <div class="separatorborderbottom"></div>
+                                    </lightning-layout>
+                                </lightning-record-view-form>
+                            </template>
+                            <!-- End of Transfer Credits Section -->
+                            <!-- Start of Transfer Credits Transcript Asset Section -->
+                            <lightning-layout multiple-rows="true">
+                                <lightning-layout-item padding="around-small" size="6">
+                                    <div class=""><span class="required">*</span>Upload Transcript to Document Transfer Credits</div>
+                                </lightning-layout-item>
+                                <lightning-layout-item padding="around-small" size="6">
+                                    <span>Note: this document was previously accepted.</span><br />
+                                    <c-cloud-document-upload-wrapper class="cloudDocumentUpload"
+                                        pay-load={recordItem.tctPayload} max-allowed-file-size={maxsize}
+                                        accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" enable-annotation="false"
+                                        enable-redaction="false" asset-type="Transfer Credit Transcript" hide-upload="true"
+                                        azure-doc-url={recordItem.tctUrl}>
+                                    </c-cloud-document-upload-wrapper>                                   
+                                </lightning-layout-item>
+                            </lightning-layout>
+                            <c-g-display-content unique-content-value="upload_msg_jpeg_tiff_pdf"></c-g-display-content>
+                            <!-- End of Transfer Credits Transcript Asset Section -->
+                            <!-- Start of Transfer Credits Transcript Name Asset Section -->
+                            <div
+                                class="slds-col slds-size--1-of-1 slds-border_bottom transferCreditSection tcNameSection slds-p-top_large">
+                                <h4 class="gridHeader">Name Documentation</h4>
+                                <c-g-display-content unique-content-value="other_int_xfer_name_doc"></c-g-display-content>
+                            </div>
+                            
+                            <lightning-layout multiple-rows="true">
+                                <lightning-layout-item padding="around-small" size="6">
+                                    <div class="">Name in Intealth Profile</div>
+                                </lightning-layout-item>
+                                <lightning-layout-item padding="around-small" size="6">
+                                    <div>{contactName}</div>
+                                </lightning-layout-item>
+                                <lightning-layout-item padding="around-small" size="6">
+                                    <div class=""><span class="required">*</span>Name on Document</div>
+                                </lightning-layout-item>
+                                <lightning-layout-item padding="around-small" size="6">
+                                    <div>{recordItem.tctName}</div>
+                                </lightning-layout-item>
+                                <lightning-layout-item padding="around-small" size="6">
+                                    <p>Is the name on your document different from your current name in your Intealth profile? If yes, check the box. If no, leave it blank.</p>
+                                </lightning-layout-item>
+                                <lightning-layout-item padding="around-small" size="6">
+                                    <div>
+                                        <template if:true={recordItem.nameOnTranscriptCheckbox}>
+                                            <lightning-input type="checkbox"
+                                                class="nameOnTranscriptCheckbox assetCheckbox checkboxClass"
+                                                value={recordItem.nameOnTranscriptCheckbox} checked
+                                                name="nameOnTranscript" disabled>
+                                            </lightning-input>
+                                        </template>
+                                        <template if:false={recordItem.nameOnTranscriptCheckbox}>
+                                            <lightning-input type="checkbox"
+                                                class="nameOnTranscriptCheckbox assetCheckbox checkboxClass"
+                                                value={recordItem.nameOnTranscriptCheckbox} name="nameOnTranscript"
+                                                disabled>
+                                            </lightning-input>
+                                        </template>
+                                    </div>
+                                </lightning-layout-item>
+                                <template if:true={recordItem.nameOnTranscriptCheckbox}>
+                                    <template if:true={recordItem.tctNameDocUrl}>
+                                        <lightning-layout-item padding="around-small" size="6">
+                                            <div class="">Upload Name Documentation</div>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item padding="around-small" size="6">
+                                            <span>Note: this document was previously accepted.</span><br />
+                                            <c-cloud-document-upload-wrapper class="cloudDocumentUpload"
+                                                pay-load={recordItem.tctNamePayload} max-allowed-file-size={maxsize}
+                                                accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" enable-annotation="false"
+                                                enable-redaction="false" hide-upload="true" 
+                                                azure-doc-url={recordItem.tctNameDocUrl}>
+                                            </c-cloud-document-upload-wrapper>
+                                        </lightning-layout-item>
+                                        <c-g-display-content unique-content-value="upload_msg_jpeg_tiff_pdf"></c-g-display-content>
+                                    </template>
+                                </template>
+                            </lightning-layout>
+                            <!-- End of Transfer Credits Transcript Name Asset Section -->
+                            <!-- Start of Transfer Credits Transcript Translation Asset Section -->
+                            <div
+                                class="slds-col slds-size--1-of-1 slds-border_bottom transferCreditSection tcTranslationSection slds-p-top_large">
+                                <h4 class="gridHeader ">Transcript Translation</h4>
+                            </div>
+                            <lightning-layout multiple-rows="true">
+                                <lightning-layout-item padding="around-small" size="6">
+                                    <p>Is your transcript to document transfer credits in a language other than English? If yes, check the box. If no, leave it blank</p>
+                                </lightning-layout-item>
+                                <lightning-layout-item padding="around-small" size="6">
+                                    <div>
+                                        <template if:true={recordItem.isTranscriptInEnglishCheckbox}>
+                                            <lightning-input type="checkbox" data-asset-id={recordItem.tctAssetId}
+                                                class="assetCheckbox checkboxClass"
+                                                value={recordItem.isTranscriptInEnglishCheckbox} checked disabled
+                                                name="isTranscriptEnglish">
+                                            </lightning-input>
+                                        </template>
+                                        <template if:false={recordItem.isTranscriptInEnglishCheckbox}>
+                                            <lightning-input type="checkbox" data-asset-id={recordItem.tctAssetId}
+                                                class="assetCheckbox checkboxClass"
+                                                value={recordItem.isTranscriptInEnglishCheckbox} disabled
+                                                name="isTranscriptEnglish">
+                                            </lightning-input>
+                                        </template>
+                                    </div>
+                                </lightning-layout-item>
+                                <template if:true={recordItem.isTranscriptInEnglishCheckbox}>
+                                    <lightning-layout-item padding="around-small" size="6">
+                                        <p>Upload Translation of Your Transcript  (if not in English)
+                                        </p>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small" size="6">
+                                        <div>
+                                            <span>Note: this document was previously accepted.</span><br />
+                                            <c-cloud-document-upload-wrapper class="cloudDocumentUpload"
+                                                pay-load={recordItem.tctTrnPayload} max-allowed-file-size={maxsize}
+                                                accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" enable-annotation="false"
+                                                enable-redaction="false" hide-upload="true"
+                                                azure-doc-url={recordItem.tctTranslationUrl}>
+                                            </c-cloud-document-upload-wrapper>
+                                            <c-g-display-content unique-content-value="upload_msg_jpeg_tiff_pdf"></c-g-display-content>
+                                        </div>
+                                    </lightning-layout-item>
+                                </template>
+                            </lightning-layout>
+                            <!-- End of Transfer Credits Transcript Translation Asset Section -->
+                            <!-- START - Pre-Med Letter -->
+                            <!-- Start of Pre-Med Letter Asset Section -->
+                            <div class="slds-col slds-size--1-of-1 slds-p-top_large ">
+                                <div class="slds-section slds-is-open">
+                                    <h3 class="slds-section__title headerbackground">
+                                        <span class="required">*</span>Pre-medical Letter Documentation</h3>
+                                        <c-g-display-content unique-content-value="premed_letter_documentation"></c-g-display-content>
+                                </div>
+                            </div>
+                            <lightning-layout multiple-rows="true">
+                                <lightning-layout-item padding="around-small" size="6">
+                                    <div class=""><span class="required">*</span>Upload Pre-Med Letter</div>
+                                </lightning-layout-item>
+                                <lightning-layout-item padding="around-small" size="6">
+                                    <div>
+                                        <span>Note: this document was previously accepted.</span><br />
+                                        <c-cloud-document-upload-wrapper class="cloudDocumentUpload" label="Upload Pre-Med Letter" 
+                                            pay-load={recordItem.pmlPayload} max-allowed-file-size=10 
+                                            accepted-file-formats=".jpeg,.jpg,.pdf,.tiff" 
+                                            enable-annotation="false" enable-redaction="false" hide-upload="true"
+                                            azure-doc-url={recordItem.pmlUrl}>
+                                        </c-cloud-document-upload-wrapper>
+                                    </div>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                            <c-g-display-content unique-content-value="upload_msg_jpeg_tiff_pdf"></c-g-display-content>
+                            <!-- End of Pre-Med Letter Asset Section -->
+                            <!-- Start of Pre-Med Letter Name Asset Section -->
+							<div
+								class="slds-col slds-size--1-of-1 preMedLetterSection pmlNameSection slds-border_bottom  slds-p-top_large">
+								<h4 class="gridHeader">Name Documentation</h4>
+                                <c-g-display-content unique-content-value="premed_letter_name_doc"></c-g-display-content>
+							</div>
+                            
+							<lightning-layout multiple-rows="true">
+								<lightning-layout-item padding="around-small" size="6">
+									<div class="">Name in Intealth Profile</div>
+								</lightning-layout-item>
+								<lightning-layout-item padding="around-small" size="6">
+									<div>{contactName}</div>
+								</lightning-layout-item>
+								<lightning-layout-item padding="around-small" size="6">
+									<div class=""><span class="required">*</span>Name on Document</div>
+								</lightning-layout-item>
+								<lightning-layout-item padding="around-small" size="6">
+									<div>{recordItem.pmlName}</div>
+								</lightning-layout-item>
+								<lightning-layout-item padding="around-small" size="6">
+									<div class="">Is the name on your document different from your current name in your Intealth profile? If yes, check the box. If no, leave it blank.</div>
+								</lightning-layout-item>
+								<lightning-layout-item padding="around-small" size="6">
+									<div>
+										<template if:true={recordItem.nameOnPreMedLetterCheckbox}>
+											<lightning-input data-asset-id={recordItem.pmlId} type="checkbox"
+												class="pmlNameDifferentCheckbox  checkboxClass"
+												value={recordItem.nameOnPreMedLetterCheckbox} checked disabled
+												name="nameOnTranslationDoc">
+											</lightning-input>
+										</template>
+										<template if:false={recordItem.nameOnPreMedLetterCheckbox}>
+											<lightning-input data-asset-id={recordItem.pmlId} type="checkbox"
+												class="pmlNameDifferentCheckbox  checkboxClass" disabled
+												value={recordItem.nameOnPreMedLetterCheckbox}
+												name="nameOnTranslationDoc">
+											</lightning-input>
+										</template>
+									</div>
+								</lightning-layout-item>
+								<template if:true={recordItem.nameOnPreMedLetterCheckbox}>
+									<template if:true={recordItem.pmlNameDocumenatationUrl}>
+										<lightning-layout-item padding="around-small" size="6">
+											<div class="">Upload Name Documentation</div>
+										</lightning-layout-item>
+										<lightning-layout-item padding="around-small" size="6">
+											<div>
+                                                <span>Note: this document was previously accepted.</span><br />
+												<c-cloud-document-upload-wrapper class="cloudDocumentUpload"
+													pay-load={recordItem.pmlNamePayload} max-allowed-file-size={maxsize}
+													accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" enable-annotation="false"
+													enable-redaction="false" hide-upload="true"
+													azure-doc-url={recordItem.pmlNameDocumenatationUrl}>
+												</c-cloud-document-upload-wrapper>
+                                                <c-g-display-content unique-content-value="upload_msg_jpeg_tiff_pdf"></c-g-display-content>
+											</div>
+										</lightning-layout-item>
+									</template>
+								</template>
+							</lightning-layout>
+                            <!-- End of Pre-Med Letter Name Asset Section -->
+                            <!-- Start of Pre-Med Letter Translation Asset Section -->
+                            <div
+                                class="slds-col slds-size--1-of-1 slds-border_bottom transferCreditSection tcTranslationSection slds-p-top_large">
+                                <h4 class="gridHeader">Pre-medical Letter Translation</h4>
+                            </div>
+                            <lightning-layout multiple-rows="true">
+                                <lightning-layout-item padding="around-small" size="6">
+                                    <div class="">Is the pre-medical letter in a language other than English?</div>
+                                </lightning-layout-item>
+                                <lightning-layout-item padding="around-small" size="6">
+                                    <div>
+                                        <template if:true={recordItem.isPreMedLetterInEnglishCheckbox}>
+                                            <lightning-input type="checkbox" class="checkboxClass"
+                                                value={recordItem.isPreMedLetterInEnglishCheckbox} checked disabled
+                                                name="isTranscriptEnglish">
+                                            </lightning-input>
+                                        </template>
+                                        <template if:false={recordItem.isPreMedLetterInEnglishCheckbox}>
+                                            <lightning-input type="checkbox" data-asset-id={recordItem.pmlId}
+                                                class="checkboxClass" disabled
+                                                value={recordItem.isPreMedLetterInEnglishCheckbox}
+                                                name="isTranscriptEnglish">
+                                            </lightning-input>
+                                        </template>
+                                    </div>
+                                </lightning-layout-item>
+                                <template if:true={recordItem.isPreMedLetterInEnglishCheckbox}>
+                                    <lightning-layout-item padding="around-small" size="6">
+                                        <div class="">Upload a translation of the pre-medical letter (if not in English).</div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small" size="6">
+                                        <div>
+                                            <span>Note: this document was previously accepted.</span><br />
+                                            <c-cloud-document-upload-wrapper class="cloudDocumentUpload"
+        	                                    pay-load={recordItem.pmlTrnPayload} max-allowed-file-size={maxsize}
+                	                            accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" enable-annotation="false"
+                        	                    enable-redaction="false" hide-upload="true"
+                                	            azure-doc-url={recordItem.pmlTranslationUrl}>
+	                                </c-cloud-document-upload-wrapper>
+                                        </div>
+                                    </lightning-layout-item>
+                                </template>
+                            </lightning-layout>
+                            <!-- End of Pre-Med Letter Translation Asset Section -->
+                            <!-- END - Pre-Med Letter -->
+                            <div class="slds-p-top_medium">
+                                =====================================================================================
+                            </div>
+                        </lightning-record-view-form>
+                    </template>
+                </div>
+            </template>
+        </template>
+        <!-- App For Cert - Editable Section -->
+        <template if:true={transferCreditsCheckboxMain}>
+            <template if:true={showOtherInstiEditSection}>
+                <div class="formMargin slds-p-top_medium">
+                    <template for:each={recordsList} for:item='recordItem' for:index='index'>
+                        <div key={recordItem.recordIdVal} data-record-id={recordItem.recordIdVal}
+                            data-record-index={recordItem.sno} class="slds-grid slds-wrap recordFieldsWrapper">
+                            <div class="slds-col slds-size--1-of-1 gridColPadding slds-p-top_large">
+                                <div class="slds-grid slds-border_bottom slds-p-bottom_xx-small">
+                                    <div class="slds-col">
+                                        <h2 class="gridHeader">Other Institution {recordItem.sno}</h2>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                <span><span class="required">*</span>Other Institution Name</span>
+                            </div>
+                            <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                <lightning-input name="inputOtherSchool" id={recordItem.recordIdVal}
+                                    onchange={handleChangeForSearch} data-otherschool-id={recordItem.otherSchoolId} variant="label-hidden"
+                                    value={recordItem.otherSchool} class="otherSchoolRecord">
+                                </lightning-input>
+                                <template if:true={entityRecordsList}>
+                                    <template for:each={entityRecordsList} for:item='rcd'>
+                                        <c-cred-intake-entity-list key={rcd.Id} record={rcd} onselect={handleSelect}
+                                        iconname={iconname} fieldname={searchfield}>
+                                        </c-cred-intake-entity-list>
+                                    </template>
+                                    <template if:true={recordsExistSubmitButton}>
+                                        <c-cred-intake-entity-list record=""
+                                            records-exist-submit-button={recordsExistSubmitButton}
+                                            onclearsearchbox={clearSearchBox} onsubmitedneworg={handleCreateNewAcc}
+                                            iconname={iconname} fieldname={searchfield}>
+                                        </c-cred-intake-entity-list>
+                                    </template>
+                                </template>
+                            </div>
+                        <!-- Code added by Shailaja. User Story#. Date format stories-->
+                        <div class="slds-col slds-p-top_small slds-size_1-of-2">
+                            <span><span class="required">*</span>Attendance Start Month & Year</span>
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2 slds-grid slds-gutters">                        
+                            <div class="slds-col">
+                                <label for="inputStartMonth">Month</label><br>
+                                <lightning-combobox name="startMonth" variant="label-hidden" value={recordItem.startMonth} placeholder="Select"
+                                                    options={startMonthPicklistOptions} class="startMonth" onchange={handleChangeForInputValue}></lightning-combobox>
+                            </div>
+                            
+                            <div class="slds-col">
+                                <label for="inputStartYear">Year</label><br>
+                                <lightning-combobox name="startYear" variant="label-hidden" value={recordItem.startYear} placeholder="Select"
+                                                    options={optionsYears} class="startYear" onchange={handleChangeForInputValue}></lightning-combobox>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2 start-date-error">
+                        </div>
+                        <div class="slds-col slds-p-top_small slds-size_1-of-2">
+                            <span><span class="required">*</span>Attendance End Month & Year</span>
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2 slds-grid slds-gutters">                        
+                            <div class="slds-col">
+                                <label for="inputEndMonth">Month</label><br>
+                                <lightning-combobox name="endMonth" variant="label-hidden" value={recordItem.endMonth} placeholder="Select"
+                                                    options={endMonthPicklistOptions} class="endMonth" onchange={handleChangeForInputValue}></lightning-combobox>
+                            </div>
+                            <div class="slds-col">
+                                <label for="inputEndYear">Year</label><br>
+                                <lightning-combobox name="endYear" variant="label-hidden" value={recordItem.endYear} placeholder="Select"
+                                                    options={optionsYears} class="endYear" onchange={handleChangeForInputValue}></lightning-combobox>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                        </div>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2 end-date-error">
+                        </div>
+                        <br>
+                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                <span><span class="required">*</span>Number of Years Attended</span>
+                            </div>
+                            <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                <lightning-input type="number" step="0.01" variant="label-hidden"
+                                    value={recordItem.numberOfYearsAttended} class="attendedYears"></lightning-input>
+                            </div>
+                            <!-- Start of Transfer Credits Section -->
+                            <div class="slds-col slds-size--1-of-1 slds-p-top_large ">
+                                <div class="slds-section slds-is-open">
+                                    <h2  style = 'background-color: #d8d8da;font-weight: bold; padding-right: 5px;padding-left: 5px;padding-top: 5px;padding-bottom: 5px;'>Transfer Credits Disclosure and Documentation</h2>
+                                    <c-g-display-content unique-content-value="xfer_cred_disc_desc"></c-g-display-content> 
+                                </div>
+                            </div>
+                            <!--Transfer Credits Table to capture data of multiple courses -->
+                            <div class="tcTableWrapper tcMainSection">
+                                <table
+                                    class="slds-table slds-no-cell-focus slds-table_bordered slds-table_edit slds-table_fixed-layout slds-table_resizable-cols tcMainSection tcTable tcid"
+                                    role="grid">
+                                    <thead>
+                                        <tr class="slds-line-height_reset">
+                                            <th aria-label="Course Title" aria-sort="none"
+                                                class="slds-is-resizable slds-is-sortable slds-text-align_center"
+                                                scope="col">
+                                                <span class="slds-truncate" title="Course Title">Course Title</span>
+                                            </th>
+                                            <th aria-label="Number of Credits" aria-sort="none"
+                                                class="slds-is-resizable slds-is-sortable slds-text-align_center"
+                                                scope="col">
+                                                <span class="slds-truncate" title="Number of Credits">Number of
+                                                    Credits</span>
+                                            </th>
+                                            <th aria-label="What was the outcome of this course?" aria-sort="none"
+                                                class="slds-is-resizable slds-is-sortable slds-text-align_center"
+                                                scope="col">
+                                                <span class="slds-truncate">
+                                                    Course Outcome
+                                                </span>
+                                            </th>
+                                            <th aria-label="Date Credits Earned" aria-sort="none"
+                                                class="slds-is-resizable slds-is-sortable slds-text-align_center"
+                                                scope="col">
+                                                <span class="slds-truncate" title="Date Credits Earned">Date Credits
+                                                    Earned</span>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <template for:each={recordItem.tcWrapperList} for:item="tc" for:index="tcIndex">
+
+                                            <tr key={tc.tcid} class="tcDetailsRow" data-tcid={tc.tcId}>
+                                                <td>
+                                                    <lightning-input type="text" class="transferCreditCourseInput"
+                                                        value={tc.transferCreditCourse} variant="label-hidden">
+                                                    </lightning-input>
+                                                </td>
+                                                <td>
+                                                    <lightning-input type="number" step="0.01"
+                                                        onkeydown={validateTransferCreditGradeInput}
+                                                        class="transferCreditGradeInput" value={tc.transferCreditGrade}
+                                                        variant="label-hidden">
+                                                    </lightning-input>
+                                                </td>
+                                                <td>
+                                                    <lightning-radio-group name={tc.tcid} label=""
+                                                        class="transferCreditCourseOutcomeInput" options={options}
+                                                        value={tc.courseOutcome} type="radio"></lightning-radio-group>
+                                                </td>
+                                                <td>
+                                                    <div
+                                                        class="slds-col slds-p-top_medium  tcMainSection creditsDate slds-grid slds-gutters">
+                                                        <div class="slds-col ">
+                                                            <label for="inputGradMonth">Month</label><br>
+                                                            <template if:true={monthPicklistOptions}>
+                                                                <select data-selected-month={tc.creditsEarnedMonth}
+                                                                    class="slds-select monthPicklist">
+                                                                    <option value=""></option>
+                                                                    <template for:each={monthPicklistOptions}
+                                                                        for:item="listViewItem">
+                                                                        <option key={listViewItem.value}
+                                                                            value={listViewItem.value}>
+                                                                            {listViewItem.label}</option>
+                                                                    </template>
+                                                                </select>
+                                                            </template>
+                                                        </div>
+                                                        <div class="slds-col ">
+                                                            <label for="inputCreditEarnedYear">Year</label><br>
+                                                            <lightning-combobox variant="label-hidden" value={tc.creditsEarnedYear} placeholder="Select"
+                                                    options={optionsYears} class="creditEarnedYearInput"></lightning-combobox>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="delete-icon" onclick={deleteTcRow}>
+                                                        <span
+                                                            class="slds-icon_container slds-icon-action-delete slds-icon_container--circle"
+                                                            title="Delete Course">
+                                                            <svg class="slds-icon slds-icon--x-small"
+                                                                aria-hidden="true">
+                                                                <use
+                                                                    xlink:href="/_slds/icons/action-sprite/svg/symbols.svg#delete">
+                                                                </use>
+                                                            </svg>
+                                                            <span class="slds-assistive-text">Delete Course</span>
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="add-icon" onclick={addTcRow}>
+                                                        <span
+                                                            class="slds-icon_container slds-icon-action-add-relationship slds-icon_container--circle"
+                                                            title="Add Course">
+                                                            <svg class="slds-icon slds-icon--x-small"
+                                                                aria-hidden="true">
+                                                                <use
+                                                                    xlink:href="/_slds/icons/action-sprite/svg/symbols.svg#add_relationship">
+                                                                </use>
+                                                            </svg>
+                                                            <span class="slds-assistive-text">Add Course</span>
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!-- End of Transfer Credits Section -->
+                            <!-- Start of Transfer Credits Transcript Asset Section -->
+                            <div class="slds-col slds-size_1-of-2 slds-p-top_medium transferCreditTranscript">
+                                <span><span class="required">*</span>Upload Transcript to Document Transfer Credits</span>
+                            </div>
+                            <div class="slds-col  slds-size_1-of-2 transferCreditTranscriptUpload">
+                                <template if:true={recordItem.tctAssetIdUpdated}>
+                                    <c-cloud-document-upload-wrapper class="cloudDocumentUpload cloudTransferCreditTranscript"
+                                        pay-load={recordItem.tctPayload} max-allowed-file-size={maxsize}
+                                        accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" enable-annotation="false"
+                                        enable-redaction="false" asset-type="Transfer Credit Transcript"
+                                        azure-doc-url={recordItem.tctUrl}
+                                        ongeneratedurl={handleOnAssetInserted}>
+                                    </c-cloud-document-upload-wrapper>
+                                    <c-g-display-content unique-content-value="upload_msg_jpeg_tiff_pdf"></c-g-display-content>
+                                </template>               
+                            </div>
+                            <!-- End of Transfer Credits Transcript Asset Section -->
+                            <!-- Start of Transfer Credits Transcript Name Asset Section -->
+                            <div data-showthissectiononload={recordItem.showNameSection} class="slds-col slds-size--1-of-1 slds-border_bottom transferCreditSection tcNameSection  slds-p-top_large">
+                                <h4 class="gridHeader">Name Documentation</h4>
+                                <c-g-display-content unique-content-value="app_for_cert_other_institution_name_doc"></c-g-display-content>
+                            </div>
+                            
+                            <div data-showthissectiononload={recordItem.showNameSection} class="slds-col transferCreditSection  tcNameSection slds-p-top_medium slds-size_1-of-2">
+                                <span class="">Name in Intealth Profile</span>
+                            </div>
+                            <div data-showthissectiononload={recordItem.showNameSection} class="slds-col transferCreditSection tcNameSection slds-p-top_medium slds-size_1-of-2">
+                                <input value={contactName} class="slds-input " type="text" disabled />
+                            </div>
+                            <div data-showthissectiononload={recordItem.showNameSection} class="slds-col slds-p-top_medium slds-size_1-of-2 transferCreditSection tcNameSection">
+                                <span><span class="required">*</span>Name on Document</span>
+                            </div>
+                            <div data-showthissectiononload={recordItem.showNameSection} class="slds-col transferCreditSection tcNameSection slds-p-top_medium slds-size_1-of-2">
+                                <input value={recordItem.tctName} data-asset-url={recordItem.tctUrl}
+                                    class="slds-input tctName" type="text" onchange={handleTctNameChange}/>
+                            </div>
+                            <div data-showthissectiononload={recordItem.showNameSection} class="slds-col slds-p-top_medium slds-size_1-of-2 transferCreditSection tcNameSection">
+                                <span>Is the name on your document different from your current name in your Intealth profile? If yes, check the box. If no, leave it blank.</span>
+                            </div>
+                            <div data-showthissectiononload={recordItem.showNameSection} class="slds-col transferCreditSection tcNameSection slds-p-top_medium slds-size_1-of-2">
+                                <template if:true={recordItem.nameOnTranscriptCheckbox}>
+                                    <lightning-input type="checkbox" data-asset-url={recordItem.tctNameDocUrl}
+                                        class="tctNameDifferentCheckbox checkboxClass"
+                                        value={recordItem.nameOnTranscriptCheckbox} checked
+                                        onclick={handleTransferCreditInnerCheckboxClick} name="nameOnTranscript">
+                                    </lightning-input>
+                                </template>
+                                <template if:false={recordItem.nameOnTranscriptCheckbox}>
+                                    <lightning-input type="checkbox" data-asset-url={recordItem.tctNameDocUrl}
+                                        class="tctNameDifferentCheckbox checkboxClass"
+                                        value={recordItem.nameOnTranscriptCheckbox}
+                                        onclick={handleTransferCreditInnerCheckboxClick} name="nameOnTranscript">
+                                    </lightning-input>
+                                </template>
+                            </div>
+                            <div data-showthissectiononload={recordItem.showNameSection} class="slds-col slds-p-top_medium slds-size_1-of-2 transferCreditSection tctNameDocumenatationSectionUpload transferCreditTranscriptNameOnDoc">
+                                <span>Upload Name Documentation</span>
+                            </div>
+                            <div data-showthissectiononload={recordItem.showNameSection} data-asset-url={recordItem.tctNameDocUrl} class="transferCreditSection tctNameDocumenatationSectionUploadId slds-col slds-size_1-of-2 tctNameDifferentSection tctNameDocumenatationSectionUpload">                    
+                                <template if:true={recordItem.tctNameAssetIdUpdated}>
+                                    <c-cloud-document-upload-wrapper class="cloudDocumentUpload cloudTCTNameDocumentation"
+                                        pay-load={recordItem.tctNamePayload} max-allowed-file-size={maxsize}
+                                        accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" enable-annotation="false"
+                                        enable-redaction="false" asset-type="Name Document"
+                                        azure-doc-url={recordItem.tctNameDocUrl}
+                                        ongeneratedurl={handleOnAssetInserted} show-delete-button="true"
+                                        onafterdelete={deleteNameAsset}>
+                                    </c-cloud-document-upload-wrapper>
+                                    <c-g-display-content unique-content-value="upload_msg_jpeg_tiff_pdf"></c-g-display-content>
+                                </template>
+                            </div>
+                            <!-- End of Transfer Credits Transcript Name Asset Section -->
+                            <!-- Start of Transfer Credits Transcript Translation Asset Section -->
+                            <div data-showthissectiononload={recordItem.showTranslationSection}
+                                class="slds-col slds-size--1-of-1 transferCreditSection slds-border_bottom tcTranslationSection  slds-p-top_large">
+                                <h4 class="gridHeader ">Transcript Translation</h4>
+                                <c-g-display-content unique-content-value="other_inst_transcript_translation_desc"></c-g-display-content>
+                            </div>
+                            
+                            <div data-showthissectiononload={recordItem.showTranslationSection}
+                                class="slds-col slds-p-top_small slds-size_1-of-2 transferCreditSection tcTranslationSection">
+                                <span>Is your transcript to document transfer credits in a language other than English? If yes, check the box. If no, leave it blank.</span>
+                            </div>
+                            <div data-showthissectiononload={recordItem.showTranslationSection}
+                                class="slds-col transferCreditSection tcTranslationSection slds-p-top_medium slds-size_1-of-2">
+                                <template if:true={recordItem.isTranscriptInEnglishCheckbox}>
+                                    <lightning-input type="checkbox" data-asset-url={recordItem.tctTranslationUrl}
+                                        class="isTranscriptInEnglishCheckbox checkboxClass"
+                                        value={recordItem.isTranscriptInEnglishCheckbox} checked
+                                        onclick={handleTransferCreditInnerCheckboxClick} name="isTranscriptEnglish">
+                                    </lightning-input>
+                                </template>
+                                <template if:false={recordItem.isTranscriptInEnglishCheckbox}>
+                                    <lightning-input type="checkbox" data-asset-url={recordItem.tctTranslationUrl}
+                                        class="isTranscriptInEnglishCheckbox checkboxClass"
+                                        value={recordItem.isTranscriptInEnglishCheckbox}
+                                        onclick={handleTransferCreditInnerCheckboxClick} name="isTranscriptEnglish">
+                                    </lightning-input>
+                                </template>
+                            </div>
+                            <div data-showthissectiononload={recordItem.showTranslationSection} class="slds-col slds-p-top_medium slds-size_1-of-2 transferCreditSection tcTranslationSectionUpload tctTranslationId"  data-asset-url={recordItem.tctTranslationUrl}>
+                                <span>Upload Translation of Your Transcript (if not in English)</span>
+                            </div>
+                            <div data-showthissectiononload={recordItem.showTranslationSection}
+                                class="slds-col transferCreditSection tcTranslationSectionUpload tctTranslationDoc slds-size_1-of-2">
+                                <template if:true={recordItem.tctTrnAssetIdUpdated}>
+                                    <c-cloud-document-upload-wrapper class="cloudDocumentUpload cloudTCTTransDoc"
+                                        pay-load={recordItem.tctTrnPayload} max-allowed-file-size={maxsize}
+                                        accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" enable-annotation="false"
+                                        enable-redaction="false" asset-type="Translation"
+                                        azure-doc-url={recordItem.tctTranslationUrl}
+                                        ongeneratedurl={handleOnAssetInserted}>
+                                    </c-cloud-document-upload-wrapper>
+                                    <c-g-display-content unique-content-value="upload_msg_jpeg_tiff_pdf"></c-g-display-content>
+                                </template>
+                            </div>
+                            <!-- End of Transfer Credits Transcript Translation Asset Section -->
+                            <!-- Start of Pre-Med Letter Asset Section -->
+                            <div class="slds-col slds-size--1-of-1 slds-p-top_large ">
+                                <div class="slds-section slds-is-open">
+                                    <h3 class="slds-section__title headerbackground">
+                                        <span class="slds-truncate " title="Section Title"><span
+                                                class="required">*</span>Pre-medical Letter Documentation</span>
+                                    </h3>
+                                    <c-g-display-content unique-content-value="premed_letter_documentation"></c-g-display-content>
+                                </div>
+                            </div>
+                            
+                            <div class="slds-col slds-p-top_medium slds-size_1-of-2  ">
+                                <span><span class="required">*</span>Upload Pre-Med Letter</span>
+                            </div>
+                            <div class="slds-col slds-size_1-of-2 preMedLetterUpload">
+                                <template if:true={recordItem.pmlAssetIdUpdated}>
+                                    <c-cloud-document-upload-wrapper class="cloudDocumentUpload cloudPML"
+                                        pay-load={recordItem.pmlPayload} max-allowed-file-size={maxsize}
+                                        accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" enable-annotation="false"
+                                        enable-redaction="false" asset-type="Pre-Med Letter"
+                                        azure-doc-url={recordItem.pmlUrl}
+                                        ongeneratedurl={handleOnAssetInserted}>
+                                    </c-cloud-document-upload-wrapper>
+                                    <c-g-display-content unique-content-value="upload_msg_jpeg_tiff_pdf"></c-g-display-content>
+                                </template>
+                            </div>
+                            <!-- End of Pre-Med Letter Asset Section -->
+                            <!-- Start of Pre-Med Letter Name Asset Section -->
+                            <div data-showthissectiononload={recordItem.showPmlNameSection}
+                                class="slds-col slds-size--1-of-1 preMedLetterSection pmlNameSection slds-border_bottom  slds-p-top_large">
+                                <h4 class="gridHeader ">Name Documentation</h4>
+                                <c-g-display-content unique-content-value="premed_letter_documentation_other_inst_name_doc_2"></c-g-display-content>
+                            </div>
+                            
+                            <div data-showthissectiononload={recordItem.showPmlNameSection}
+                                class="slds-col preMedLetterSection pmlNameSection slds-p-top_medium slds-size_1-of-2">
+                                <span class="">Name in Intealth Profile</span>
+                            </div>
+                            <div data-showthissectiononload={recordItem.showPmlNameSection}
+                                class="slds-col preMedLetterSection pmlNameSection slds-p-top_medium slds-size_1-of-2">
+                                <input value={contactName} class="slds-input " type="text" disabled />
+                            </div>
+                            <div data-showthissectiononload={recordItem.showPmlNameSection}
+                                class="slds-col slds-p-top_medium slds-size_1-of-2 preMedLetterSection pmlNameSection ">
+                                <span><span class="required">*</span>Name on Document</span>
+                            </div>
+                            <div data-showthissectiononload={recordItem.showPmlNameSection}
+                                class="slds-col preMedLetterSection pmlNameSection slds-p-top_medium slds-size_1-of-2 ">
+                                <input value={recordItem.pmlName} data-asset-url={recordItem.pmlUrl}
+                                    class="slds-input pmlName" type="text" onchange={handlePmlNameChange}/>
+                            </div>
+                            <div data-showthissectiononload={recordItem.showPmlNameSection}
+                                class="slds-col slds-p-top_small slds-size_1-of-2 preMedLetterSection pmlNameSection">
+                                <span>Is the name on your document different from your current name in your Intealth profile? If yes, check the box. If no, leave it blank.</span>
+                            </div>
+                            <div data-showthissectiononload={recordItem.showPmlNameSection}
+                                class="slds-col preMedLetterSection pmlNameSection slds-p-top_medium slds-size_1-of-2">
+                                <template if:true={recordItem.nameOnPreMedLetterCheckbox}>
+                                    <lightning-input data-asset-url={recordItem.pmlNameDocumenatationUrl} type="checkbox"
+                                        class="pmlNameDifferentCheckbox checkboxClass" 
+                                        value={recordItem.nameOnPreMedLetterCheckbox} checked
+                                        onclick={handleTransferCreditInnerCheckboxClick} name="nameOnTranslationDoc">
+                                    </lightning-input>
+                                </template>
+                                <template if:false={recordItem.nameOnPreMedLetterCheckbox}>
+                                    <lightning-input data-asset-url={recordItem.pmlNameDocumenatationUrl} type="checkbox"
+                                        class="pmlNameDifferentCheckbox checkboxClass"
+                                        value={recordItem.nameOnPreMedLetterCheckbox}
+                                        onclick={handleTransferCreditInnerCheckboxClick} name="nameOnTranslationDoc">
+                                    </lightning-input>
+                                </template>
+                            </div>
+                            <div data-showthissectiononload={recordItem.showPmlNameSection}
+                                class="slds-col slds-p-top_medium slds-size_1-of-2 preMedLetterSection pmlNameSectionUpload">
+                                <span>Upload Name Documentation</span>
+                            </div>
+                            <div data-showthissectiononload={recordItem.showPmlNameSection}
+                                data-asset-url={recordItem.pmlNameDocumenatationUrl}
+                                class="pmlNameSectionUploadId slds-col preMedLetterSection pmlNameSectionUpload slds-size_1-of-2">
+                                <template if:true={recordItem.pmlNameAssetIdUpdated}>
+                                    <c-cloud-document-upload-wrapper class="cloudDocumentUpload cloudPMLNameDocumentation"
+                                        pay-load={recordItem.pmlNamePayload} max-allowed-file-size={maxsize}
+                                        accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" enable-annotation="false"
+                                        enable-redaction="false" asset-type="Name Document"
+                                        azure-doc-url={recordItem.pmlNameDocumenatationUrl}
+                                        ongeneratedurl={handleOnAssetInserted} show-delete-button="true"
+                                        onafterdelete={deletePmlNameAsset}>
+                                    </c-cloud-document-upload-wrapper>
+                                    <c-g-display-content unique-content-value="upload_msg_jpeg_tiff_pdf"></c-g-display-content>
+                                </template>
+                            </div>
+                            <!-- End of Pre-Med Letter Name Asset Section -->
+                            <!-- Start of Pre-Med Letter Translation Asset Section -->
+                            <div data-showthissectiononload={recordItem.showPmlTranslationSection}
+                                class="slds-col slds-size--1-of-1 preMedLetterSection pmlTranslationSection slds-border_bottom  slds-p-top_large">
+                                <h4 class="gridHeader ">Pre-medical Letter Translation</h4>
+                            </div>
+                            <div data-showthissectiononload={recordItem.showPmlTranslationSection}
+                                class="slds-col slds-p-top_small slds-size_1-of-1 preMedLetterSection pmlTranslationSection">
+                                <p>The letter you submit to confirm that the credits were transferred to the pre-medical portion of the curriculum only must be in the original language. Documents that are not in English must be accompanied by an official English translation that meets ECFMG's translation requirements. ECFMG will not accept any document that is not in English without an official English translation. Likewise, ECFMG will not accept an English translation of a document without a copy of the original language document from which the English translation was prepared. For information on ECFMG's translation requirements and recommended translation vendor, see the applicable edition of the <a href="https://www.ecfmg.org/resources/publications.html#ib" target="_blank">ECFMG <i>Information Booklet</i></a>.</p>
+                            </div> 
+                            <div data-showthissectiononload={recordItem.showPmlTranslationSection}
+                                class="slds-col slds-p-top_small slds-size_1-of-2 preMedLetterSection pmlTranslationSection">
+                                <span>Is the pre-medical letter in a language other than English? If yes, check the box. If no, leave it blank.</span>
+                            </div>
+                            <div data-showthissectiononload={recordItem.showPmlTranslationSection}
+                                class="slds-col preMedLetterSection pmlTranslationSection slds-p-top_medium slds-size_1-of-2">
+                                <template if:true={recordItem.isPreMedLetterInEnglishCheckbox}>
+                                    <lightning-input type="checkbox" data-asset-url={recordItem.pmlTranslationUrl}
+                                        class="isPreMedLetterInEnglishCheckbox checkboxClass"
+                                        value={recordItem.isPreMedLetterInEnglishCheckbox} checked
+                                        onclick={handleTransferCreditInnerCheckboxClick} name="isTranscriptEnglish">
+                                    </lightning-input>
+                                </template>
+                                <template if:false={recordItem.isPreMedLetterInEnglishCheckbox}>
+                                    <lightning-input type="checkbox" data-asset-url={recordItem.pmlTranslationUrl}
+                                        class="isPreMedLetterInEnglishCheckbox checkboxClass"
+                                        value={recordItem.isPreMedLetterInEnglishCheckbox}
+                                        onclick={handleTransferCreditInnerCheckboxClick} name="isTranscriptEnglish">
+                                    </lightning-input>
+                                </template>
+                            </div>
+                            <div data-showthissectiononload={recordItem.showPmlTranslationSection}
+                                class="slds-col slds-p-top_medium slds-size_1-of-2 preMedLetterSection pmlTranslationSectionUpload pmlTranslationId"
+                                data-asset-url={recordItem.pmlTranslationUrl}>
+                                <span>Upload a Translation of the Pre-medical Letter (if not in English)</span>
+                            </div>
+                            <div data-showthissectiononload={recordItem.showPmlTranslationSection}
+                                class="slds-col preMedLetterSection pmlTranslationSectionUpload pmlTranslationDoc slds-size_1-of-2">
+                                <template if:true={recordItem.pmlTrnAssetIdUpdated}>
+                                    <c-cloud-document-upload-wrapper class="cloudDocumentUpload cloudPMLTransDoc"
+                                        pay-load={recordItem.pmlTrnPayload} max-allowed-file-size={maxsize}
+                                        accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" enable-annotation="false"
+                                        enable-redaction="false" asset-type="Pre-Med Letter Translation"
+                                        azure-doc-url={recordItem.pmlTranslationUrl}
+                                        ongeneratedurl={handleOnAssetInserted}>
+                                    </c-cloud-document-upload-wrapper>
+                                    <c-g-display-content unique-content-value="upload_msg_jpeg_tiff_pdf"></c-g-display-content>
+                                </template>
+
+                            </div>
+                            <template if:true={mandateUploadNewDoc}>
+                                <template if:true={recordItem.tctAssetIdUpdatedRej}>
+                                    <div class="slds-col slds-size--1-of-1 slds-p-top_large ">
+                                        <div class="slds-section slds-is-open">
+                                            <h3 class="slds-section__title headerbackground">
+                                                <span class="slds-truncate " title="Section Title">{rejOrCancel} Documents</span>
+                                            </h3>
+                                        </div>
+                                    </div>
+                                    <div class="slds-col slds-p-top_medium slds-size_1-of-2  ">
+                                        <span>{rejOrCancel} Transfer Credits Transcript</span>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 transferCreditTranscriptUpload">
+                                            <c-cloud-document-upload-wrapper class="cloudDocumentUpload"
+                                                pay-load={recordItem.tctPayloadRej} max-allowed-file-size={maxsize}
+                                                accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" enable-annotation="false"
+                                                enable-redaction="false" asset-type="Transfer Credit Transcript" hide-upload={upload}
+                                                azure-doc-url={recordItem.tctUrlRej}>
+                                            </c-cloud-document-upload-wrapper>
+                                    </div>
+                                    <div class="slds-col slds-p-top_medium slds-size_2-of-2"></div>
+                                    <template if:true={recordItem.tctNameAssetIdUpdatedRej}>
+                                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                            <span>{rejOrCancel} Transfer Credits Transcript Name Documentation</span>
+                                        </div>
+                                        <div class="slds-col slds-size_1-of-2">
+                                                <c-cloud-document-upload-wrapper
+                                                    pay-load={recordItem.tctNamePayloadRej} max-allowed-file-size={maxsize}
+                                                    accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" enable-annotation="false"
+                                                    enable-redaction="false" hide-upload={upload}
+                                                    azure-doc-url={recordItem.tctNameDocUrlRej}>
+                                                </c-cloud-document-upload-wrapper>
+                                        </div>
+                                    </template>
+                                    <div class="slds-col slds-p-top_medium slds-size_2-of-2"></div>
+                                    <template if:true={recordItem.tctTrnAssetIdUpdatedRej}>
+                                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                            <span>{rejOrCancel} Transfer Credits Transcript Translation</span>
+                                        </div>
+                                        <div class="slds-col slds-size_1-of-2">
+                                                <c-cloud-document-upload-wrapper
+                                                    pay-load={recordItem.tctTrnPayloadRej} max-allowed-file-size={maxsize}
+                                                    accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" enable-annotation="false"
+                                                    enable-redaction="false" hide-upload={upload}
+                                                    azure-doc-url={recordItem.tctTranslationUrlRej}>
+                                                </c-cloud-document-upload-wrapper>
+                                        </div>
+                                    </template>
+                                    <div class="slds-col slds-p-top_medium slds-size_2-of-2"></div>
+                                    <template if:true={recordItem.pmlAssetIdUpdatedRej}>
+                                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                            <span>{rejOrCancel} Pre-Med Letter</span>
+                                        </div>
+                                        <div class="slds-col slds-size_1-of-2 preMedLetterUpload">
+                                                <c-cloud-document-upload-wrapper class="cloudDocumentUpload"
+                                                    pay-load={recordItem.pmlPayloadRej} max-allowed-file-size={maxsize}
+                                                    accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" enable-annotation="false"
+                                                    enable-redaction="false" asset-type="Pre-Med Letter"
+                                                    hide-upload={upload}
+                                                    azure-doc-url={recordItem.pmlUrlRej}>
+                                                </c-cloud-document-upload-wrapper>
+                                        </div>
+                                    </template>
+                                    <div class="slds-col slds-p-top_medium slds-size_2-of-2"></div>
+                                    <template if:true={recordItem.pmlNameAssetIdUpdatedRej}>
+                                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                            <span>{rejOrCancel} Pre-Med Letter Name Documentation</span>
+                                        </div>
+                                        <div class="slds-col  slds-size_1-of-2">
+                                                <c-cloud-document-upload-wrapper
+                                                    pay-load={recordItem.pmlNamePayloadRej} max-allowed-file-size={maxsize}
+                                                    accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" enable-annotation="false"
+                                                    enable-redaction="false" hide-upload={upload}
+                                                    azure-doc-url={recordItem.pmlNameDocumenatationUrlRej}>
+                                                </c-cloud-document-upload-wrapper>
+                                        </div>
+                                    </template>
+                                    <div class="slds-col slds-p-top_medium slds-size_2-of-2"></div>
+                                    <template if:true={recordItem.pmlTrnAssetIdUpdatedRej}>
+                                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                            <span>{rejOrCancel} Pre-Med Letter Translation</span>
+                                        </div>
+                                        <div data-showthissectiononload={recordItem.showPmlTranslationSection}
+                                        class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                                <c-cloud-document-upload-wrapper class="cloudDocumentUpload"
+                                                    pay-load={recordItem.pmlTrnPayloadRej} max-allowed-file-size={maxsize}
+                                                    accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" enable-annotation="false"
+                                                    enable-redaction="false" hide-upload={upload}
+                                                    azure-doc-url={recordItem.pmlTranslationUrlRej}>
+                                                </c-cloud-document-upload-wrapper>
+                                        </div>
+                                    </template>
+                                </template>
+                            </template>
+                            <!-- End of Pre-Med Letter Translation Asset Section -->
+                            <div class="slds-p-top_medium">
+                                =====================================================================================
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </template>
+        </template>
+        <template if:false={showExamRegActionButton}>
+            <div class="buttonAlignment">
+                <template if:true={transferCreditsCheckboxMain}>
+                    <lightning-button variant="brand" label="Save" title="Save" onclick={saveButton}
+                        class="slds-m-left_x-small"></lightning-button>
+                </template>
+                <lightning-button variant="brand" label="Previous" title="Previous" onclick={prevButton}
+                    class="slds-m-left_x-small"></lightning-button>
+                <lightning-button variant="brand" label="Next" title="Next" onclick={nextButton}
+                    class="slds-m-left_x-small" disabled={hideNextButton}></lightning-button>
+                <lightning-button variant="brand" label="Cancel" title="Cancel" onclick={cancelButton}
+                    class="slds-m-left_x-small"></lightning-button>
+            </div>
+        </template>
+        <template if:true={showExamRegActionButton}>
+            <div class="buttonAlignment">
+                <lightning-button variant="brand" label="Discard Changes and Exit" title="Discard Changes and Exit"
+                    onclick={discardButton} class="slds-m-left_x-small"></lightning-button>
+                <lightning-button variant="brand" label="Previous" title="Previous" onclick={prevButton}
+                    class="slds-m-left_x-small"></lightning-button>
+                <lightning-button variant="brand" label="Next" title="Next" onclick={nextButton}
+                    class="slds-m-left_x-small"></lightning-button>
+            </div>
+        </template>
+    </div>
+</template>

@@ -1,0 +1,15 @@
+.errormsg{
+    color: red;
+}
+.marginSection{
+    margin-left: 5%;
+    margin-right: 5%;
+    padding-top: 2%;
+}
+.outer{
+    text-align: right;
+    width: 100%;
+}
+.inner{   
+    display: inline-block;
+}

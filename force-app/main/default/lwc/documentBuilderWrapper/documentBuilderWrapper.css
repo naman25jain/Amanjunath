@@ -1,0 +1,29 @@
+* {
+    box-sizing: border-box;
+  }
+  
+  /* Create three unequal columns that floats next to each other */
+  .column {
+    float: left;
+    padding: 1px;
+    /*height: 1000px;  Should be removed. Only for demonstration */
+  }
+  
+  .left {
+    width: 15%;
+  }
+  
+   .middle {
+    width: 42.5%;
+  }
+  
+  .right {
+    width: 42.5%;
+  }
+
+  /* Clear floats after the columns */
+  .row:after {
+    content: "";
+    display: table;
+    clear: both;
+  }

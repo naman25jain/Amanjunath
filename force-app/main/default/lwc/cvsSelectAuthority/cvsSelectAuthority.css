@@ -1,0 +1,59 @@
+.padding{
+  padding-top: 20px;
+}
+.buttonAlignment{
+  padding-left: 44%;
+  padding-top: 2%;
+}
+.formMargin{
+padding-top:20px;
+margin-left: 18%;
+margin-right: 22%;
+}
+.gridHeader{
+font-size: x-large;
+}
+.required{
+color: red;
+}
+.comboAlign{
+padding-right: 20%;
+}
+.errormsg{
+color:#ff0000;
+font-size: 13px;
+}
+.header{
+font-weight: bold;
+font-size: 13px;
+}
+.headerIns{    
+font-size: 12px;
+}
+.headerNote{
+color:#ff0000;
+font-size: 13px;
+}
+.credLabel{
+font-weight: bold;
+font-size: 13px;      
+}
+.docMsg{
+font-size: 12px; 
+}
+.centerAlign{
+text-align: center;
+}
+.errormsgAttribute{
+color:#ff0000;
+font-size: 13px;
+}
+.customAccountIcon{
+fill: white;
+width: 20px;
+height: 20px;
+top: 40%;
+}
+.hozField{
+padding-left:10%;  
+}

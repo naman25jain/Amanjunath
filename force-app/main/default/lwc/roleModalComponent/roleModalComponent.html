@@ -1,0 +1,59 @@
+<template>
+    <template if:true={showModal}>
+       <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+            aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                
+                <header class="slds-modal__header">
+                    <lightning-button-icon class="slds-modal__close" title="Close" icon-name="utility:close"
+                        icon-class="slds-button_icon-inverse" onclick={handleDialogClose}></lightning-button-icon>
+
+                    <template if:true={hasHeaderString}>
+                        <h2 class="slds-text-heading_medium slds-hyphenate header-string">
+                            {title}
+                        </h2>
+                    </template>
+                    <template if:false={hasHeaderString}>
+                        <h2 class="slds-text-heading_medium slds-hyphenate header-slot">
+                            <slot name="title"></slot>
+                        </h2>
+                    </template>
+                    <p>
+                        <template if:true={showErrorDetails}>
+                            <span class="errormsg">This is the last coordinator for this service. Please define a different coordinator before reassigning this user's role</span>
+                        </template>
+                    </p>
+                    <p  class="slds-m-top_x-small ">
+                        <lightning-formatted-rich-text  value="Choose Role for User :">
+                        </lightning-formatted-rich-text>
+                    </p>
+                    <p class="slds-m-top_x-small modalPicklist">
+                        <lightning-combobox
+                        label="Choose Role for User :"                    
+                        variant="label-hidden" 
+                        value={roleVal}
+                        placeholder="-Select-"
+                        options={monthoptions}                                                                             
+                        onchange={changeHandlerRole}
+                        >
+                        </lightning-combobox>
+                        <slot name="tagline" onslotchange={handleSlotTaglineChange}></slot>
+                    </p>
+                    <div class="buttonalignment">
+                    <template if:true={showSecondaryButtonPrivate}>
+                        <lightning-button variant="brand" label={secondaryButtonText} title={secondaryButtonText}
+                            onclick={handleDialogClose} class="slds-m-left_x-small modal-btn"></lightning-button>
+                    </template>
+                    <template if:true={showPrimaryButtonPrivate}>
+                        <lightning-button variant="brand" label={primaryButtonText} title={primaryButtonText}
+                            onclick={handlePrimaryButtonClick} class="slds-m-left_x-small modal-btn"></lightning-button>
+                    </template>
+                </div>
+                </header>
+        
+            </div>
+        </section>
+      
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+</template>

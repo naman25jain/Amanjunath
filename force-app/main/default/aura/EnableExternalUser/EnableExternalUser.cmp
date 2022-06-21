@@ -1,0 +1,84 @@
+<aura:component description="EnableExternalUser" implements="force:lightningQuickActionWithoutHeader,force:hasRecordId"
+                access="global" controller="UserController" extends="c:CommunityBase">
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:attribute name="details" type="String" default=""/>
+    <aura:attribute name="contactUserId" type="String" default=""/>
+    <aura:attribute name="isValid" type="Boolean" default="true"/>
+    <aura:attribute name="missingInfo" type="Boolean" default="false"/>
+    <aura:attribute name="pageReady" type="Boolean" default="false"/>
+    <aura:attribute name="contact" type="Object" default="{}"/>
+    <aura:attribute name="userDetails" type="Object" default="{}"/>
+    <aura:attribute name="disabledEntityUserBtn" type="Boolean" default="false"/>
+    <aura:attribute name="accountOwnerWithNoRole" type="Boolean" default="false"/>
+    <aura:attribute name="alreadyPortalUser" type="Boolean" default="false"/>
+    <!--  Body  -->
+    <aura:if isTrue="{!v.pageReady}">
+        <!--   alreadyPortalUser if     -->
+        <aura:if isTrue="{!or(v.alreadyPortalUser, v.accountOwnerWithNoRole)}">
+            <div class="slds-m-around_small">
+                <div class="existing-user-style">
+                    <aura:if isTrue="{!v.alreadyPortalUser}">
+                        <strong> You are already a(n) Portal User </strong>
+                    </aura:if>
+                    <aura:if isTrue="{!v.accountOwnerWithNoRole}">
+                        <strong> Portal account owner must have a role. Please contact your system
+                            administration. </strong>
+                    </aura:if>
+                </div>
+                <div class="slds-m-top_large">
+                    <center>
+                        <lightning:button class="slds-button slds-button_brand"
+                                          onclick="{!c.handleClose}">Close
+                        </lightning:button>
+                    </center>
+                </div>
+            </div>
+            <!--   alreadyPortalUser else     -->
+            <aura:set attribute="else">
+                <!--   missingInfo if     -->
+                <aura:if isTrue="{!v.missingInfo}">
+                    <center><h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Enabling Portal
+                            User</h2>
+                    </center>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <p>Contact Last Name, Email, and First Name (when legal name does not consist of one name only)
+                            are
+                            required before granting them ECFMG Portal access.</p>
+                    </div>
+                    <center>
+                        <div>
+                            <lightning:button aura:id="backButton" class="slds-button slds-button_brand"
+                                              onclick="{!c.handleClose}">Cancel
+                            </lightning:button>
+                        </div>
+                    </center>
+                    <!--   missingInfo else     -->
+                    <aura:set attribute="else">
+                        <center><h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">
+                                Enabling
+                                Portal User</h2></center>
+                        <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                            <p>The following action will grant the contact access to the ECFMG Portal.
+                                 Are
+                                you
+                                sure?</p>
+                        </div>
+                        <center>
+                            <div>
+                                <lightning:button aura:id="backButton" class="slds-button slds-button_brand"
+                                                  onclick="{!c.handleClose}">Cancel
+                                </lightning:button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <lightning:button aura:id="okButton" class="slds-button slds-button_brand"
+                                                  onclick="{!c.handleActivate}"
+                                                  disabled="{!v.disabledEntityUserBtn}">
+                                    Activate Portal User
+                                </lightning:button>
+                            </div>
+                        </center>
+                    </aura:set>
+                </aura:if>
+            </aura:set>
+        </aura:if>
+    </aura:if>
+
+</aura:component>

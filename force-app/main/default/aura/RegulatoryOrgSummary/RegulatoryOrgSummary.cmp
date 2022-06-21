@@ -1,0 +1,9 @@
+<!--
+ - Created by Matthew on 12/6/18.
+ -->
+
+<aura:component description="Regulatory Org Summary"  implements="lightning:availableForFlowScreens,forceCommunity:availableForAllPageTypes">
+
+    <c:MedicalOrganizationDoNotKnow disabled="true" />
+
+</aura:component>

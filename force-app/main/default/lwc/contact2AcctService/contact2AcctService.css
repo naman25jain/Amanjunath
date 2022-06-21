@@ -1,0 +1,33 @@
+.padding{
+    padding-top:20px;
+}
+.buttonAlignment{
+    padding-left: 44%;    
+    padding-top: 2%;    
+}
+.cancelButton{
+  margin-left:2%;
+}
+.heading{
+  background-color: #d8d8da;
+  font-weight: bold; 
+  padding-right: 5px;
+  padding-left: 5px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+.subheading{
+text-align: left;
+}
+.error{
+  color: #FF0000
+}
+.leftpanel{
+  width:30% !important;
+}
+.rightpanel .slds-form-element__label{
+  display: none !important;
+}
+.contactservicesec{
+  width: 250.59px;padding-left: 0px;padding-right: 0px;padding-bottom: 0px;padding-top: 0px;
+}

@@ -1,0 +1,262 @@
+<template>
+    <template if:true={spinner}>
+        <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+    </template>
+    <template if:true={showAdditionalDocSection}>
+        <div class="formMargin slds-p-top_medium">
+            <h2>
+                <c-g-display-content unique-content-value="entity_credential_add_doc_review"></c-g-display-content>
+            </h2>
+            <template for:each={additionalDocs} for:item='recordItem' for:index='index'>
+                <div key={recordItem.serialNumber}>
+                    <div class="slds-col slds-size--1-of-1 gridColPadding slds-p-top_large">
+                        <div class="slds-grid slds-border_bottom slds-p-bottom_xx-small">
+                            <div class="slds-col">
+                                <h2 class="gridHeader">Supporting Document: {recordItem.serialNumber}</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <lightning-layout multiple-rows="true">
+                        <lightning-layout-item padding="around-small" size="6">
+                            <div class="">Preview</div>
+                        </lightning-layout-item>
+                        <lightning-layout-item padding="around-small" size="6">                                   
+                            <div>                                
+                                <c-cloud-document-upload-wrapper class="cloudDocumentUpload"
+                                    pay-load={recordItem.payload} max-allowed-file-size= "10"
+                                    accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" enable-annotation="false"
+                                    enable-redaction="false" asset-type="Supporting Document"
+                                    azure-doc-url={recordItem.azureUrl}
+                                    hide-upload="true">
+                                </c-cloud-document-upload-wrapper>
+                            </div>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </div>
+            </template>
+            <lightning-layout multiple-rows="true">
+                <lightning-layout-item padding="around-small" size="6">
+                    <div class="">Additional information</div>
+                </lightning-layout-item>
+                <lightning-layout-item padding="around-small" size="6">
+                    <div>{additionalInfo}</div>
+                </lightning-layout-item>
+            </lightning-layout>
+        </div>
+    </template>
+    <div class="formMargin slds-p-top_medium">
+        <template if:true={showEntityQuestion}> 
+            <lightning-layout multiple-rows="true">
+                <lightning-layout-item padding="around-small" size="6">
+                    <div class="">ECFMG has requested the {credType}. <c-g-display-content unique-content-value="entity_credential_add_doc_entity_question"></c-g-display-content></div>
+                </lightning-layout-item>
+                <lightning-layout-item padding="around-small" size="6">                                   
+                    <div>                                
+                        <lightning-radio-group name="statusRadioGroup" class="statusRadioGroup" data-radiogroup  variant="label-hidden" value={selectedValue} options={options} type="radio" onchange={handleAnsChange}></lightning-radio-group>
+                    </div>
+                </lightning-layout-item>
+            </lightning-layout>
+            <template if:true={questionError}>
+                <lightning-layout multiple-rows="true">
+                    <lightning-layout-item padding="around-small" size="6">
+                        <div class=""></div>
+                    </lightning-layout-item>
+                    <lightning-layout-item padding="around-small" size="6">
+                        <div class=""><span class="required">Please select an option to proceed</span></div>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </template>
+        </template>
+        <template if:true={showUploadSection}> 
+            <lightning-layout multiple-rows="true">
+                <lightning-layout-item padding="around-small" size="6">
+                    <div class=""><span class="required">*</span>
+                        <span>Upload credential</span></div>
+                </lightning-layout-item>
+                <lightning-layout-item padding="around-small" size="6">                                   
+                    <c-cloud-document-upload-wrapper label="Upload Credential" class="cloudDocumentUpload" pay-load={payloadCredential} 
+                                    max-allowed-file-size= "10" accepted-file-formats=".jpeg,.jpg,.pdf,.tiff"
+                                    enable-annotation="false" enable-redaction="false" azure-doc-url={credUrl}
+                                    ongeneratedurl={handleOnCredentialUpload}>
+                                </c-cloud-document-upload-wrapper>
+                </lightning-layout-item>
+            </lightning-layout>
+            <template if:true={showUploadError}>
+                <lightning-layout multiple-rows="true">
+                    <lightning-layout-item padding="around-small" size="6">
+                        <div class=""></div>
+                    </lightning-layout-item>
+                    <lightning-layout-item padding="around-small" size="6">
+                        <div class=""><span class="required">Please upload the credential to proceed</span></div>                              
+                    </lightning-layout-item>
+                </lightning-layout>
+            </template>
+            <lightning-layout multiple-rows="true">
+                <lightning-layout-item padding="around-small" size="6">
+                    <div class=""></div>
+                </lightning-layout-item>
+                <span class="required" style="padding-top: 12px;">*</span>                          
+                <lightning-layout-item padding="around-small" size="5">
+                    <lightning-input label='I Certify This Document' type="checkbox" checked={checkbox} onchange={handleCheckbox}></lightning-input>
+                </lightning-layout-item>
+            </lightning-layout>
+            <template if:true={showCertifyError}>
+                <lightning-layout multiple-rows="true">
+                    <lightning-layout-item padding="around-small" size="6">
+                        <div class=""></div>
+                    </lightning-layout-item>
+                    <lightning-layout-item padding="around-small" size="6">
+                        <div class=""><span class="required">Please certify the credential to proceed</span></div>                              
+                    </lightning-layout-item>
+                </lightning-layout>
+            </template>
+            <div class="buttonAlignment"> 
+                <template if:true={disableButton}>
+                    <lightning-button variant="brand" label="Add Supporting Documentation" title="Add Supporting Documentation" onclick={addSupportingDoc} disabled class="slds-m-left_x-small"></lightning-button>
+                </template>
+                <template if:false={disableButton}>
+                    <lightning-button variant="brand" label="Add Supporting Documentation" title="Add Supporting Documentation" onclick={addSupportingDoc} class="slds-m-left_x-small"></lightning-button>
+                </template>
+            </div>
+            <br/>
+            <template if:true={showSupportUploadSection1}>
+                <br/>
+                <h2>Supporting Documents</h2>
+                <div class="slds-col slds-size--1-of-1 gridColPadding slds-p-top_large">
+                    <div class="slds-grid slds-border_bottom slds-p-bottom_xx-small">
+                        <div class="slds-col">
+                            <h2 class="gridHeader">Supporting Document: 1</h2>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: right;">
+                    <br/>
+                    <lightning-button variant="brand" label="Delete" title="Delete Supporting Document 1" onclick={deleteSupportDoc1} class="slds-m-left_x-small"></lightning-button>
+                </div>
+                <lightning-layout multiple-rows="true">
+                    <lightning-layout-item padding="around-small" size="6">
+                        <div class="">Upload document</div>
+                    </lightning-layout-item>
+                    <lightning-layout-item padding="around-small" size="6">                                   
+                        <div>      
+                            <c-cloud-document-upload-wrapper class="cloudDocumentUploadSupport"
+                                pay-load={supportPayload} max-allowed-file-size= "10"
+                                accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" enable-annotation="false"
+                                enable-redaction="false" asset-type="Supporting Document"
+                                azure-doc-url={supportUrl1} ongeneratedurl={handleOnSupportUpload1}>
+                            </c-cloud-document-upload-wrapper>
+                        </div>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </template>
+            <template if:true={showSupportUploadSection2}>
+                <div class="slds-col slds-size--1-of-1 gridColPadding slds-p-top_large">
+                    <div class="slds-grid slds-border_bottom slds-p-bottom_xx-small">
+                        <div class="slds-col">
+                            <h2 class="gridHeader">Supporting Document: 2</h2>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: right;">
+                    <br/>
+                    <lightning-button variant="brand" label="Delete" title="Delete Supporting Document 2" onclick={deleteSupportDoc2} class="slds-m-left_x-small"></lightning-button>
+                </div>
+                <lightning-layout multiple-rows="true">
+                    <lightning-layout-item padding="around-small" size="6">
+                        <div class="">Upload document</div>
+                    </lightning-layout-item>
+                    <lightning-layout-item padding="around-small" size="6">                                   
+                        <div>      
+                            <c-cloud-document-upload-wrapper class="cloudDocumentUploadSupport"
+                                pay-load={supportPayload} max-allowed-file-size= "10"
+                                accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" enable-annotation="false"
+                                enable-redaction="false" asset-type="Supporting Document"
+                                azure-doc-url={supportUrl2} ongeneratedurl={handleOnSupportUpload2}>
+                            </c-cloud-document-upload-wrapper>
+                        </div>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </template>
+            <template if:true={showSupportUploadSection3}>
+                <div class="slds-col slds-size--1-of-1 gridColPadding slds-p-top_large">
+                    <div class="slds-grid slds-border_bottom slds-p-bottom_xx-small">
+                        <div class="slds-col">
+                            <h2 class="gridHeader">Supporting Document: 3</h2>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: right;">
+                    <br/>
+                    <lightning-button variant="brand" label="Delete" title="Delete Supporting Document 3" onclick={deleteSupportDoc3} class="slds-m-left_x-small"></lightning-button>
+                </div>    
+                <lightning-layout multiple-rows="true">
+                    <lightning-layout-item padding="around-small" size="6">
+                        <div class="">Upload document</div>
+                    </lightning-layout-item>
+                    <lightning-layout-item padding="around-small" size="6">                                   
+                        <div>      
+                            <c-cloud-document-upload-wrapper class="cloudDocumentUploadSupport"
+                                pay-load={supportPayload} max-allowed-file-size= "10"
+                                accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" enable-annotation="false"
+                                enable-redaction="false" asset-type="Supporting Document"
+                                azure-doc-url={supportUrl3} ongeneratedurl={handleOnSupportUpload3}>
+                            </c-cloud-document-upload-wrapper>
+                        </div>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </template>
+        </template>
+        <template if:true={showReasonPicklist}>
+            <lightning-layout multiple-rows="true">
+                <lightning-layout-item padding="around-small" size="6">
+                    <div class=""><span class="required">*</span>
+                        <span>
+                            <c-g-display-content unique-content-value="entity_cred_add_doc_reason"></c-g-display-content>
+                        </span></div>
+                </lightning-layout-item>
+                <template if:true={havePicklistValues}>
+                    <lightning-layout-item padding="around-small" size="6">
+                        <lightning-combobox name="progress" label="Select reason" value={reason}
+                            options={picklistValues.values} onchange={handleChangeReason}>
+                        </lightning-combobox>
+                    </lightning-layout-item>
+                </template>
+                <template if:true={noReasonError}>
+                    <lightning-layout-item padding="around-small" size="6">
+                        <div class=""></div>
+                    </lightning-layout-item>
+                    <lightning-layout-item padding="around-small" size="6">
+                        <div class=""><span class="required">Please provide reason to proceed</span></div>                              
+                    </lightning-layout-item>
+                </template>
+                <template if:true={showReasonComment}>
+                    <lightning-layout-item padding="around-small" size="6">
+                        <div class=""><span class="required">*</span>
+                            <span>Reason comment</span></div>
+                    </lightning-layout-item>
+                    <lightning-layout-item padding="around-small" size="6">
+                        <lightning-textarea name="reasonComment" label="" value={reasonComment} maxlength="255" onchange={handleReasonComment}></lightning-textarea>
+                    </lightning-layout-item>
+                </template>
+            </lightning-layout>
+            <template if:true={reasonError}>
+                <lightning-layout multiple-rows="true">
+                    <lightning-layout-item padding="around-small" size="6">
+                        <div class=""></div>
+                    </lightning-layout-item>
+                    <lightning-layout-item padding="around-small" size="6">
+                        <div class=""><span class="required">Please provide comment to proceed</span></div>                              
+                    </lightning-layout-item>
+                </lightning-layout>
+            </template>
+        </template>
+        <div class="buttonAlignment">
+            <lightning-button variant="brand" label="Return to Credential Review List" title="Return to Credential Review List" class="slds-m-left_x-small" onclick={showCredRevLandPage}>
+            </lightning-button>
+            <lightning-button variant="brand" label="Back" title="Back" class="slds-m-left_x-small" onclick={showCredRevPrevPage}>
+            </lightning-button>
+            <lightning-button variant="brand" label="Next" title="Next" class="slds-m-left_x-small" onclick={submitInputs}>
+            </lightning-button>
+        </div>
+    </div>
+</template>

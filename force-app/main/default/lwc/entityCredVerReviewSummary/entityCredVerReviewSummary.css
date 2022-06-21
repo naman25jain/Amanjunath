@@ -1,0 +1,28 @@
+.formMargin {
+    margin-left: 20%;
+    margin-right: 20%;
+    padding-top: 20px;
+}
+.buttonAlignment{
+    text-align: right;
+    width: 100%;
+}
+.btnAlign{
+  padding-left: 15%;    
+  padding-top: 2%; 
+  position: relative;
+  top: 57px;
+  left: 43px;   
+  margin-bottom: 10px;
+}
+.padding {
+  padding-top: 40px;
+}
+.stepHeader{
+  font-size: 20px;
+  padding-bottom: 20px;
+}
+.label{
+  padding-left: 8%;
+  padding-right: 8%;
+}

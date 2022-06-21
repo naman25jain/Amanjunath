@@ -1,0 +1,8 @@
+<template>
+    <template if:true={mdtRecords}>
+        <template for:each={mdtRecords} for:item="mdt">
+            <c-affirmation-render child-and-parent-data={childAndParentData} map-a-p-i-key-and-record={mapAPIKeyAndRecord} render-data={mdt} 
+                populate-values={populateValues} initial-child-key={mdt.childKey} key={mdt}></c-affirmation-render>
+        </template>
+    </template>
+</template>

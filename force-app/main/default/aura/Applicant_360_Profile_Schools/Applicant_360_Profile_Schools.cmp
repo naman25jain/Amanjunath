@@ -1,0 +1,10 @@
+<aura:component >
+<!-- 
+attributes: 
+1)	
+
+Notes:
+Read only: same as existing summary page except doesn't have Edit button.
+
+-->
+</aura:component>

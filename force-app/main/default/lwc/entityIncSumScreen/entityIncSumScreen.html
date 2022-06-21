@@ -1,0 +1,21 @@
+<template>
+    <div class="formMargin">
+        <div class="slds-align_absolute-center slds-text-heading_medium slds-var-m-top_small slds-var-m-bottom_small"><strong>Incomplete Reasons</strong></div>
+        <div class="slds-var-m-top_small slds-var-m-bottom_small">
+            <div class="slds-text-body_regular"><strong>The following are reasons for Case being Incomplete:</strong></div>
+        </div>
+        <div class="slds-col slds-size_1-of-1 ">
+            <template for:each={incReasons} for:item="rea">
+                <ul class="subAffirmation" key={rea}>
+                    <li>
+                        <lightning-formatted-rich-text value={rea}></lightning-formatted-rich-text>
+                    </li>
+                </ul>
+            </template>
+        </div> 
+        <div class="slds-align_absolute-center slds-var-m-top_large">
+            <lightning-button variant="brand" label="Return to Credential Review List" title="Return to Credential Review List" onclick={returnCredRevList} class="slds-var-m-left_x-small"></lightning-button>
+            <lightning-button variant="brand" label="Next" title="Next" onclick={handlenextButton} class="slds-var-m-left_x-small"></lightning-button>
+        </div> 
+    </div>
+</template>

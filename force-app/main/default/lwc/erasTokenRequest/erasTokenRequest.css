@@ -1,0 +1,16 @@
+.padding{
+    padding-top:1%;
+}
+.buttonAlignment{
+    padding-left: 44%;    
+    padding-top: 2%;    
+}
+.gridHeader{
+    font-size: large; 
+    font-weight: bold;
+    color: grey;      
+}
+.errormsg{
+    color:#ff0000;
+    font-size: 13px;
+  }

@@ -1,0 +1,24 @@
+<template>
+    <template if:true={showCredIntakeLandingPage}>
+        <c-cred-intake-landing program={program} oncancelevent={cancelCredIntake} onaddcredential={addCredRedirect} oneditcredevent={showCredEditScreen} onshowsummaryevent={showSummaryScreen}></c-cred-intake-landing>
+    </template>
+    <template if:true={showCredentialIntake}>
+        <c-cred-intake-manage program={program} onshowscredintland={showCredIntakeLand}></c-cred-intake-manage>
+    </template>
+    <template if:true={showCredentialIntakeEdit}>
+        <c-cred-intake-manage onshowscredintland={showCredIntakeLand} program={program} record-id={catStagId} edit-mode="true"></c-cred-intake-manage>
+    </template>
+    <template if:true={showSummary}>
+        <c-cred-intake-summary onshowscredintland={showCredIntakeLand} onnextevent={showCredLegalScreen} oncancelevent={cancelCredIntake}></c-cred-intake-summary>
+    </template>
+    <template if:true={showCredLegal}>
+        <c-cred-intake-legal-lang onpreviousevent={showSummaryScreen} onnextevent={showPaymentScreen} oncancelevent={cancelCredIn} case-record-id={caseRecordId}></c-cred-intake-legal-lang>
+    </template>
+    <template if:true={showPayment}>
+        <!-- <c-cred-intake-payment onpreviousevent={showCredLegalScreen} onnextevent={showConfirmPage} case-record-id={caseRecordId}></c-cred-intake-payment> -->
+        <c-shopping-cart onpreviousevent={showCredLegalScreen} case-record-id={caseRecordId}></c-shopping-cart>
+    </template>
+    <template if:true={showConfirm}>
+        <c-cred-intake-confirm cases-list-conf-screen={casesListConfScreen} oncancelevent={cancelCredIn}></c-cred-intake-confirm>
+    </template>
+</template>

@@ -1,0 +1,134 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,forceCommunity:availableForAllPageTypes" access="global" controller="ApplicantMyProfileController" extends="c:CommunityBase">
+
+	<aura:attribute name="assets" type="List" default="" />
+	<aura:attribute name="pageReady" type="Boolean" default="false" />
+    <aura:attribute name="readOnlyMode" type="Boolean" default="false" />
+	<aura:attribute name="Status" type="String" />
+	<aura:attribute name="ProductFamily" type="String" />
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+	<aura:attribute name="photoUploadedAccepted" type="String" default="No" />
+	<aura:attribute name="payloadPhotoAccepted" type="String" />
+	<aura:attribute name="upload" type="Boolean" default="true" />
+	<aura:attribute name="maxsize" type="Integer" default="10" />
+	<aura:attribute name="contactId" type="String" />
+
+	<aura:attribute name="passportUploadedAccepted" type="String" default="No" />
+	<aura:attribute name="payloadPassportAccepted" type="String" />
+
+	<aura:attribute name="passportTranslationDone" type="String" default="No" />
+	<aura:attribute name="payloadPassportTranslationAccepted" type="String" />
+	
+	<aura:attribute name="passportExpirationDone" type="String" default="No" />
+	<aura:attribute name="payloadPassportExpirationAccepted" type="String" />
+
+	<aura:attribute name="notarizedForm" type="String" default="No" />
+	<aura:attribute name="payloadNotarizedId" type="String" />
+	<aura:attribute name="showNoResults" type="Boolean" default="false" />
+	
+	<aura:if isTrue="{!!v.pageReady}"><lightning:spinner variant="brand" alternativeText="Loading" size="large" /></aura:if>
+
+	<aura:if isTrue="{!v.pageReady}">
+		<table class="slds-table slds-table_cell-buffer slds-table_bordered">
+		  <tbody>
+		  	
+			<aura:if isTrue="{!v.photoUploadedAccepted == 'Yes'}"> 	
+			  <tr class="slds-hint-parent">
+			      <td data-label="Type">
+			        <div class="slds-truncate" title="Photo">Photo</div>
+			      </td>
+			      <td data-label="View">
+			        <div class="slds-truncate" title="View">
+						<c:cloudDocumentUploadWrapper aura:id="photo" payLoad="{!v.payloadPhotoAccepted}"
+							maxAllowedFileSize="{!v.maxsize}" acceptedFileFormats=".jpeg,.jpg" 
+							hideUpload="{!v.upload}" enableAnnotation="false" enableRedaction="false" assetType="PHOTO" />
+			        </div>
+			      </td>
+				</tr>
+			</aura:if>
+
+			<aura:if isTrue="{!v.passportUploadedAccepted == 'Yes'}"> 	
+			  <tr class="slds-hint-parent">
+			      <td data-label="Type">
+			        <div class="slds-truncate" title="Passport">Passport</div>
+			      </td>
+			      <td data-label="View">
+			        <div class="slds-truncate" title="View">
+						<c:cloudDocumentUploadWrapper aura:id="passport" payLoad="{!v.payloadPassportAccepted}"
+							maxAllowedFileSize="{!v.maxsize}" acceptedFileFormats=".jpeg,.jpg" hideUpload="{!v.upload}" 
+							enableAnnotation="false" enableRedaction="false" assetType="PASSPORT"/>
+						
+			        </div>
+			      </td>
+				</tr>
+			</aura:if>
+
+			<aura:if isTrue="{!v.passportExpirationDone == 'Yes'}"> 	
+				<tr class="slds-hint-parent">
+					<td data-label="Type">
+					  <div class="slds-truncate" title="Passport Translation">Passport Expiration</div>
+					</td>
+					<td data-label="View">
+					  <div class="slds-truncate" title="View">
+						  <c:cloudDocumentUploadWrapper aura:id="passportExpiration"
+						  payLoad="{!v.payloadPassportExpirationAccepted}" maxAllowedFileSize="{!v.maxsize}"
+						  acceptedFileFormats=".jpeg,.pdf,.tiff" enableAnnotation="false"
+						  enableRedaction="false"
+						  hideUpload="{!v.upload}"/>
+						  
+					  </div>
+					</td>
+				  </tr>
+			  </aura:if>
+
+			<aura:if isTrue="{!v.passportTranslationDone == 'Yes'}"> 	
+			  <tr class="slds-hint-parent">
+			      <td data-label="Type">
+			        <div class="slds-truncate" title="Passport Translation">Passport Translation</div>
+			      </td>
+			      <td data-label="View">
+			        <div class="slds-truncate" title="View">
+						<c:cloudDocumentUploadWrapper aura:id="passportTranslation"
+						payLoad="{!v.payloadPassportTranslationAccepted}" maxAllowedFileSize="{!v.maxsize}"
+						acceptedFileFormats=".jpeg,.pdf,.tiff" enableAnnotation="false"
+						enableRedaction="false"
+						hideUpload="{!v.upload}"/>
+						
+			        </div>
+			      </td>
+				</tr>
+			</aura:if>
+			
+			<aura:if isTrue="{!v.notarizedForm == 'Yes'}"> 	
+				<tr class="slds-hint-parent">
+					<td data-label="Type">
+					  <div class="slds-truncate" title="Notarized EIF">ID Form Notarized</div>
+					</td>
+					<td data-label="View">
+					  <div class="slds-truncate" title="View">
+						<c:cloudDocumentUploadWrapper aura:id="notarized"
+							payLoad="{!v.payloadNotarizedId}" maxAllowedFileSize="{!v.maxsize}"
+							acceptedFileFormats=".jpeg,.pdf,.tiff" enableAnnotation="false"
+							enableRedaction="false"
+							hideUpload="{!v.upload}" />
+						  
+					  </div>
+					</td>
+				  </tr>
+			  </aura:if>
+
+			<aura:if isTrue="{!v.showNoResults}">
+			    <tr class="slds-hint-parent">
+			      <td data-label="Type">
+			        <div class="slds-truncate" title="No Results">No Results</div>
+			      </td>
+			      <td data-label="View">
+			        <div class="slds-truncate" title="View">&nbsp;</div>
+			      </td>
+			    </tr>
+			</aura:if>	
+		  </tbody>
+		</table>
+	</aura:if>
+
+</aura:component>

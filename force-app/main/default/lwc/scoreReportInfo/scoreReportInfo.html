@@ -1,0 +1,349 @@
+<template>
+   <template if:true={spinner}>
+      <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+   </template>
+   <template if:true={showScoreReportInfoPage}>
+      <div class="paddingMainHeader">
+         <c-g-display-content unique-content-value="exam_results_h2"></c-g-display-content>
+         <c-g-display-content unique-content-value="score_report_info_no_scores"></c-g-display-content>
+      </div>
+      <template if:true={showusmleStep1Score}>
+         <div class="padding">
+            <h2 class="stepHeader"><c-g-display-content unique-content-value="score_report_info_usmle_step1_score"></c-g-display-content>
+           </h2>
+         </div>
+         <div class="formMargin">
+            <div class="slds-grid slds-wrap">
+               <template for:each={usmleStep1ScoreList} for:item="usmleStep1">
+                  <div key={usmleStep1.examId} class="slds-col">
+                     <div class="slds-grid slds-wrap scoreReportContent">
+                        <lightning-layout-item padding="around-small" size="6">
+                           <div class="">Exam Date:</div>
+                        </lightning-layout-item>
+                        <lightning-layout-item padding="around-small" size="6">
+                           <lightning-formatted-date-time value={usmleStep1.examDate} time-zone="UTC"></lightning-formatted-date-time>
+                        </lightning-layout-item>
+                        <template if:false={usmleStep1.withHeldScore}>
+                          <template if:true={usmleStep1.isAvailable}>
+                             <lightning-layout-item padding="around-small" size="6">
+                                <div class="">Available Until:</div>
+                             </lightning-layout-item>
+                             <lightning-layout-item padding="around-small" size="6">
+                                <lightning-formatted-date-time value={usmleStep1.availableUntil} time-zone="UTC"></lightning-formatted-date-time>
+                             </lightning-layout-item>
+                             <lightning-layout-item padding="around-small" size="6">
+                                <div class="">Score Report:</div>
+                             </lightning-layout-item>
+                             <lightning-layout-item padding="around-small" size="6">
+                                <div class='exam' id={usmleStep1.examId}>
+                                   <a  href="javascript:void(0)" download="USMLE Step 1 Score Report"  onclick={downloadScoreReport} >
+                                   <img src={scoreReportIcon} alt="Score Report Icon" class="scoreReportImage"/>
+                                   </a>
+                             </div>
+                             </lightning-layout-item>
+                          </template>
+                          <lightning-layout-item padding="around-small" size="6">
+                             <div class="">
+                                <c-g-display-content unique-content-value="score_withheld_from_medical_school"></c-g-display-content>
+                             </div>
+                          </lightning-layout-item>
+                          <lightning-layout-item padding="around-small" size="6">
+                             <lightning-formatted-rich-text value={usmleStep1.pdOptOutFlag}></lightning-formatted-rich-text>
+                          </lightning-layout-item>
+                       </template>
+                        <lightning-layout-item padding="around-small" size="12">
+                          <lightning-formatted-rich-text value={usmleStep1.withHeldReason}></lightning-formatted-rich-text>
+                        </lightning-layout-item>
+                        <div class="separatorborderbottom"></div>
+                     </div>
+                  </div>
+               </template>
+            </div>
+         </div>
+      </template>
+      <template if:true={showusmleStep2CKScore}>
+         <div class="padding">
+            <h2 class="stepHeader">
+              <c-g-display-content unique-content-value="score_report_usmle_step2_ck_score"></c-g-display-content>
+            </h2>
+         </div>
+         <div class="formMargin">
+            <div class="slds-grid slds-wrap">
+               <template for:each={usmleStep2CKScoreList} for:item="usmleStep2ck">
+                  <div key={usmleStep2ck.examId} class="slds-col">
+                     <div class="slds-grid slds-wrap scoreReportContent">
+                        <lightning-layout-item padding="around-small" size="6">
+                           <div class="">Exam Date:</div>
+                        </lightning-layout-item>
+                        <lightning-layout-item padding="around-small" size="6">
+                           <lightning-formatted-date-time value={usmleStep2ck.examDate} time-zone="UTC"></lightning-formatted-date-time>
+                        </lightning-layout-item>
+                        <template if:false={usmleStep2ck.withHeldScore}>
+                          <template if:true={usmleStep2ck.isAvailable}>
+                             <lightning-layout-item padding="around-small" size="6">
+                                <div class="">Available Until:</div>
+                             </lightning-layout-item>
+                             <lightning-layout-item padding="around-small" size="6">
+                                <lightning-formatted-date-time value={usmleStep2ck.availableUntil} time-zone="UTC"></lightning-formatted-date-time>
+                             </lightning-layout-item>
+                             <lightning-layout-item padding="around-small" size="6">
+                                <div class="">Score Report:</div>
+                             </lightning-layout-item>
+                             <lightning-layout-item padding="around-small" size="6">
+                                <div class='exam' id={usmleStep2ck.examId}>
+                                   <a  href="javascript:void(0)" download="USMLE Step 2 CK Score Report"  onclick={downloadScoreReport} >
+                                   <img src={scoreReportIcon} alt="Score Report Icon" class="scoreReportImage"/>
+                                   </a>
+                                </div>
+                             </lightning-layout-item>
+                          </template>
+                          <lightning-layout-item padding="around-small" size="6">
+                             <div class="">
+                                <c-g-display-content unique-content-value="score_withheld_from_medical_school"></c-g-display-content>
+                             </div>
+                          </lightning-layout-item>
+                          <lightning-layout-item padding="around-small" size="6">
+                             <lightning-formatted-rich-text value={usmleStep2ck.pdOptOutFlag}></lightning-formatted-rich-text>
+                          </lightning-layout-item>
+                       </template>
+                        <lightning-layout-item padding="around-small" size="12">
+                          <lightning-formatted-rich-text value={usmleStep2ck.withHeldReason}></lightning-formatted-rich-text>
+                        </lightning-layout-item>
+                        <div class="separatorborderbottom"></div>
+                     </div>
+                  </div>
+               </template>
+            </div>
+         </div>
+      </template>
+      <template if:true={showusmleStep2CSScore}>
+         <div class="padding">
+            <h2 class="stepHeader">
+              <c-g-display-content unique-content-value="score_report_usmle_step2_cs_score"></c-g-display-content>
+            </h2>
+         </div>
+         <div class="formMargin">
+            <div class="slds-grid slds-wrap">
+               <template for:each={usmleStep2CSScoreList} for:item="usmleStep2cs">
+                  <div key={usmleStep2cs.examId} class="slds-col">
+                     <div class="slds-grid slds-wrap scoreReportContent">
+                        <lightning-layout-item padding="around-small" size="6">
+                           <div class="">Exam Date:</div>
+                        </lightning-layout-item>
+                        <lightning-layout-item padding="around-small" size="6">
+                           <lightning-formatted-date-time value={usmleStep2cs.examDate} time-zone="UTC"></lightning-formatted-date-time>
+                        </lightning-layout-item>
+                        <template if:false={usmleStep2cs.withHeldScore}>
+                          <template if:true={usmleStep2cs.isAvailable}>
+                             <lightning-layout-item padding="around-small" size="6">
+                                <div class="">Available Until:</div>
+                             </lightning-layout-item>
+                             <lightning-layout-item padding="around-small" size="6">
+                                <lightning-formatted-date-time value={usmleStep2cs.availableUntil} time-zone="UTC"></lightning-formatted-date-time>
+                             </lightning-layout-item>
+                             <lightning-layout-item padding="around-small" size="6">
+                                <div class="">Score Report:</div>
+                             </lightning-layout-item>
+                             <lightning-layout-item padding="around-small" size="6">
+                                <div class='exam' id={usmleStep2cs.examId}>
+                                   <a  href="javascript:void(0)" download="USMLE Step 2 CS Score Report" onclick={downloadScoreReport}>
+                                   <img src={scoreReportIcon} alt="Score Report Icon" class="scoreReportImage"/>
+                                   </a>
+                                </div>
+                             </lightning-layout-item>
+                          </template>
+                          <lightning-layout-item padding="around-small" size="6">
+                             <div class="">
+                                <c-g-display-content unique-content-value="score_withheld_from_medical_school"></c-g-display-content>
+                             </div>
+                          </lightning-layout-item>
+                          <lightning-layout-item padding="around-small" size="6">
+                             <lightning-formatted-rich-text value={usmleStep2cs.pdOptOutFlag}></lightning-formatted-rich-text>
+                          </lightning-layout-item>
+                       </template>
+                          <lightning-layout-item padding="around-small" size="12">
+                          <lightning-formatted-rich-text value={usmleStep2cs.withHeldReason}></lightning-formatted-rich-text>
+                        </lightning-layout-item>
+                        <div class="separatorborderbottom"></div>
+                     </div>
+                  </div>
+               </template>
+            </div>
+         </div>
+      </template>
+      <template if:true={showScoreRecheckButton}>
+         <div class="padding">
+              <c-g-display-content unique-content-value="score_report_info_score_recheck"></c-g-display-content>
+            <lightning-button variant="brand" label="Request a Score Recheck" title="Request a Score Recheck" style="width: 134px;" onclick={showScoreRecheckForm} class=""></lightning-button>
+         </div>
+      </template>
+      <div class="padding">
+        <c-g-display-content unique-content-value="score_report_info_withhold"></c-g-display-content>
+        <template if:true={showWithholdErrorMessage}>
+            <span class="errormsgName">You either do not have any exam administrations for which you can withhold the result from your medical school or you have already withheld the result from your medical school.</span>
+      </template>
+         <lightning-button variant="brand" label="Request to Withhold Examination Results" title="Request to Withhold Examination Results" onclick={showApplicableExams} class=""></lightning-button>
+      </div>
+   <div class="padding">
+
+
+      <template if:false={showUSMLETranscriptCheck}>
+         <template if:false={CheckTranscriptReqButton}>
+            <div>
+               <c-g-display-content unique-content-value="score_report_info_usmle_transcript"></c-g-display-content>
+            </div>
+            <br>
+               <lightning-button variant="brand" label="Check USMLE Transcript Eligibility" title="Check USMLE Transcript Eligibility " onclick={checkEnableTranscriptLink}
+               ></lightning-button>
+         </template>
+         <template if:true={CheckTranscriptReqButton}>
+            <div></div>
+            <lightning-card class={USMLECssClass} if:true={eligibilityMsg}>
+               <div class="slds-align_absolute-center" style="font-size: large;">
+                  <lightning-formatted-rich-text value={eligibilityMsg}></lightning-formatted-rich-text>
+               </div>
+            </lightning-card>
+         </template>
+      </template>
+      <!-- show USMLE Transcript header and text -->
+      <template if:true={showTranscriptReqButton}>
+         <div>
+            <c-g-display-content unique-content-value="begin_usmle_transcript_request"></c-g-display-content>
+         </div>
+      </template>
+      <!-- place the Request a USMLE Transcript error message immediately above the button -->
+      <template if:true={showTranscriptReqError}>
+         <br>
+         <lightning-formatted-rich-text class='errormsgName' value={transcriptReqError}>
+         </lightning-formatted-rich-text>
+      </template>
+      <!-- show the Request a USMLE Transcript button -->
+      <template if:true={showTranscriptReqButton}>
+         <br>
+         <lightning-button variant="brand" label="Request a USMLE Transcript" title="Request a USMLE Transcript" onclick={transcriptReqlink}
+         ></lightning-button>
+      </template>
+      <!-- show the Request an ECFMG Exam History Transcript header and text -->
+      <template if:true={showNonUSMLETranscriptReqButton}>
+         <div>
+            <br>
+            <c-g-display-content unique-content-value="begin_ecfmg_exam_history_request"></c-g-display-content>
+            <br>
+         </div>
+      </template>
+      <!-- place the Request an ECFMG Exam History Transcript error just above the button -->
+      <template if:true={showNonUsmleTranscriptReqError}>
+         <br>
+         <lightning-formatted-rich-text class='errormsgName' value={nonUsmletranscriptReqError}>
+         </lightning-formatted-rich-text>
+      </template>
+      <!-- show the Request an ECFMG Exam History Transcript button -->
+      <template if:true={showNonUSMLETranscriptReqButton}>
+         <br>
+         <lightning-button variant="brand" label="Request an ECFMG Exam History Transcript" title="Request an ECFMG Exam History Transcript" onclick={nonUsmletranscriptReqlink}
+         ></lightning-button>
+      </template>
+   </div>
+   </template>
+   <template if:true={showWithholdExaminationResults}>
+      <div>
+         <h2 class="h1">Withhold Examination Results</h2>
+           <c-g-display-content unique-content-value="score_report_info_withhold2"></c-g-display-content>
+         <table class="slds-table" style="width: 1000px;">
+            <caption></caption>
+            <thead>
+               <tr class="slds-line-height_reset">
+                  <th class="" scope="col" style="width: 276px;">
+                     <div class="slds-truncate" title="Withhold Score">Withhold Score</div>
+                  </th>
+                  <th class="" scope="col" style="width: 276px;">
+                     <div class="slds-truncate" title="Exam Type">Exam Type</div>
+                  </th>
+                  <th class="" scope="col" style="width: 276px;">
+                     <div class="slds-truncate" title="Eligibility Period">Eligibility Period</div>
+                  </th>
+                  <th class="" scope="col" style="width: 276px;">
+                     <div class="slds-truncate" title="Testing Region">Testing Region</div>
+                  </th>
+                  <th class="" scope="col" style="width: 276px;">
+                     <div class="slds-truncate" title="Test Accomodations">Test Accommodations</div>
+                  </th>
+               </tr>
+            </thead>
+            <tbody>
+               <template for:each={examsList} for:item="examReg" for:index="serviceIndex">
+                  <tr key={examReg.examId} class="slds-line-height_reset">
+                     <td  class="slds-col">
+                        <div class="checkboxPadding">
+                           <lightning-input type="checkbox" value={checkBox} class="withholdcheckbox" onclick={handleCheckboxChange} label="" name={examReg.examId} unchecked></lightning-input>
+                        </div>
+                     </td>
+                     <td  class="slds-col">
+                        <div class="checkboxPaddingTranscript">
+                           <span>{examReg.examType}</span>
+                        </div>
+                     </td>
+                     <td  class="slds-col">
+                        <div class="checkboxPaddingTranscript">
+                           <span>{examReg.examDate}</span>
+                        </div>
+                     </td>
+                     <td  class="slds-col">
+                        <div class="checkboxPaddingTranscript">
+                           <span>{examReg.regionName}</span>
+                        </div>
+                     </td>
+                     <td  class="slds-col">
+                        <div class="checkboxPaddingTranscript">
+                           <span>{examReg.testAccomodation}</span>
+                        </div>
+                     </td>
+                  </tr>
+               </template>
+            </tbody>
+         </table>
+      </div>
+      <c-modal-component class="exceptionModal" title={modalTitle} message={modalContent} show-primary-button="true" primary-button-text="OK"
+         onprimarybuttonclick={handleYesClick} show-secondary-button="true" secondary-button-text="Cancel" >
+      </c-modal-component>
+      <div class="buttonAlignmentWithold">
+         <br/>
+         <template if:true={sbmtButtonEnabled}>
+            <lightning-button variant="brand" label="Submit" title="Next" onclick={nextButton} class="slds-m-left_x-small"></lightning-button>
+         </template>
+         <template if:false={sbmtButtonEnabled}>
+            <lightning-button variant="brand" label="Submit" disabled title="Next" onclick={nextButton} class="slds-m-left_x-small"></lightning-button>
+         </template>
+         <lightning-button variant="brand" label="Cancel" title="Cancel" onclick={openModal} class="slds-m-left_x-small"></lightning-button>
+      </div>
+   </template>
+   <template if:true={showScoreRecheckFormPage}>
+      <c-score-recheck-form oncancelevent={cancelScoreRecheck} onnextevent={showScoreRecheckLegalSignOff}></c-score-recheck-form>
+   </template>
+   <template if:true={showScoreRecheckLegalSignOffPage}>
+      <c-score-recheck-legal-sign-off oncancelevent={cancelScoreRecheck} onnextevent={showScoreRecheckPayment} onpreviousevent={showScoreRecheckForm}></c-score-recheck-legal-sign-off>
+   </template>
+   <template if:true={showScoreRecheckPaymentPage}>
+      <c-score-recheck-payment oncancelevent={cancelScoreRecheck} onnextevent={showScoreRecheckConfirmation} onpreviousevent={showScoreRecheckLegalSignOff} case-record-id={caseRecordId}></c-score-recheck-payment>
+   </template>
+   <template if:true={showScoreRecheckConfirmationPage}>
+      <c-score-recheck-confirmation oncancelevent={cancelScoreRecheck} case-number={caseNums}></c-score-recheck-confirmation>
+   </template>
+   <!--Transcript Request-->
+   <template if:true={showTranscriptRequestFormPage}>
+      <c-transcript-request-form prev-button-from-transcript-summary={showTranscriptRequestfromSummaryPage} onnextevent={showTranscriptRequestSummary} oncancelevent={cancelTranscriptRequest} link-source={linkSource}></c-transcript-request-form>
+   </template>
+   <template if:true={showTranscriptRequestSummaryPage}>
+      <c-transcript-request-summary onnextevent={showTranscriptRequestLegal} onpreviousevent={showTranscriptRequestForm} oncancelevent={cancelTranscriptRequest} link-source={linkSource}></c-transcript-request-summary>
+   </template>
+   <template if:true={showTranscriptRequestLegalPage}>
+      <c-transcript-request-legal-sign-off oncancelevent={cancelTranscriptRequest} onnextevent={showTranscriptRequestPayment} onpreviousevent={showTranscriptRequestSummary}></c-transcript-request-legal-sign-off>
+   </template>
+   <template if:true={showTranscriptRequestPaymentPage}>
+      <c-transcript-request-payment oncancelevent={cancelTranscriptRequest} onnextevent={showConfirmation} link-source={linkSource} onpreviousevent={showTranscriptRequestLegal} case-record-id={caserecordidtransreq}></c-transcript-request-payment>
+   </template>
+   <template if:true={showConfirmationPage}>
+      <c-app-for-cert-confirmation  cases-list-conf-screen={casesListConfScreen} transcript-case-numbers={transcriptCaseNumbers} link-source={linkSource} oncancelevent={confirmAndCancel}>
+      </c-app-for-cert-confirmation>
+   </template>
+</template>

@@ -1,0 +1,51 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" 
+                access="global" 
+                controller="CommunityIdentityVerificationController">
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+	<aura:attribute name="recordId" type="Id"/>
+	<aura:attribute name="completedIdentityVerification" type="Boolean" default="false" />
+	<aura:attribute name="displayLabel" type="String" />
+	<aura:attribute name="runningUser" type="String" />
+	<aura:attribute name="identityCheck" type="Boolean" default="false" />
+	<aura:attribute name="showModal" type="Boolean" />
+	<div aura:id="componentDiv">
+
+
+
+		<aura:if isTrue="{!v.completedIdentityVerification}">
+			<center>
+				<h2><b>You meet all of the requirements to begin the {!v.displayLabel} process!</b></h2><br/>
+				<lightning:button class="widebutton" variant="brand" label="Click Here to Proceed" title="Brand action" onclick="{!c.handleClickValidated}" />
+			</center>
+		<aura:set attribute="else">
+			<center>
+				<h2><b>You have not yet completed your ECFMG Identity Verification.<br/>This is required before beginning your {!v.displayLabel} process. </b></h2><br/>
+				<lightning:button class="widebutton" variant="brand" label="Click Here to Begin the Identity Verification Process" title="Brand action" onclick="{!c.handleClickNotValidated}" />
+			</center>
+		</aura:set>
+		</aura:if>
+		
+		
+		<br/><br/><br/>
+		
+		<aura:if isTrue="{!v.showModal}">
+			<div>
+				<section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open slds-modal_large">
+					<div class="slds-modal__container">
+						<header class="slds-modal__header">
+							<h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Identity Verification</h2>
+						</header>
+						<div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+							<lightning:flow aura:id="Identity_Verification_Wizard" />
+						</div>
+						<footer class="slds-modal__footer">
+							<lightning:button variant="brand" label="OK" onclick="{!c.closeModal}" />
+						</footer>
+					</div>
+				</section>
+				<div class="slds-backdrop slds-backdrop_open"></div>
+			</div>
+		</aura:if>
+		
+	</div>
+</aura:component>

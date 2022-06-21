@@ -1,0 +1,187 @@
+<!--
+ - Created by Matthew on 2019-07-05.
+ -->
+
+ <aura:component
+ implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,forceCommunity:availableForAllPageTypes,force:hasRecordId"
+ access="global"
+ controller="ApplicantCommunityController"
+ description="Applicant Match component to resolve potential applicant duplicates."
+ extends="c:CommunityBase">
+
+<aura:attribute name="disabled" type="Boolean" default="false"/>
+<aura:attribute name="pageReady" type="Boolean" default="false"/>
+
+<aura:attribute name="activeSections" type="List" default="['applicantMatches']" />
+
+
+<aura:attribute name="case" type="Object"/>
+<aura:attribute name="contact" type="Object" description="Either the existing contact or chosen contact."/>
+<aura:attribute name="existingContact" type="Object" description="The existing contact found on the Case record."/>
+<!--Shailaja Yerneni - July 303 2020 - User story#843 added following two attributes for contact association type -->
+<aura:attribute name="contactAssociationType" type="Object" access="public"/>
+<aura:attribute name="existingContactAssociationType" type="Object" access="public"/>
+
+<aura:attribute name="applicantData" type="Object"/>
+<aura:attribute name="applicantColumns" type="List"/>
+<aura:attribute name="applicantSelectedRows" type="List"/>
+<aura:attribute name="applicantMatchCount" type="String" default="…"/>
+<aura:attribute name="applicantSectionLabelTemplate" type="String" default="Potential Duplicates ({0})"/>
+<aura:attribute name="applicantSectionLabel" type="String" default="Potential Duplicates"/>
+<aura:attribute name="selectedApplicantId" type="String"/>
+<aura:attribute name="showChooseApplicantButton" type="Boolean" default="false"/>
+
+
+<aura:attribute name="linkedApplicant" type="Object" description="The linked applicant (contact)."/>
+<aura:attribute name="linkedPlaceholder" type="String" default="-"/>
+<aura:attribute name="linkedApplicantName" type="String" />
+
+<aura:attribute name="compareOptions" type="List" default="[{'label': 'None', 'value': 'none'}, {'label': 'Same', 'value': 'same'}, {'label': 'Difference', 'value': 'difference'}]"/>
+<aura:attribute name="compareOptionsValue" type="String" default="difference"/>
+<aura:attribute name="compareData" type="Object"/>
+<aura:attribute name="compareColumns" type="List"/>
+<aura:attribute name="compareSelectedRows" type="List"/>
+
+<aura:attribute name="showChooseApplicantModal" type="Boolean" default="false"/>
+<aura:attribute name="showCreateApplicantModal" type="Boolean" default="false"/>
+<aura:attribute name="showCompareModal" type="Boolean" default="false"/>
+<aura:attribute name="currentlyOpenCompareModal" type="String"/>
+<aura:attribute name="showCompareModalChooseButton" type="Boolean" default="false"/>
+<aura:attribute name="compareModalObjectId" type="String"/>
+<aura:attribute name="scoreNotAvailablePlaceholder" type="String" default="-"/>
+
+<aura:handler name="init" value="{! this }" action="{! c.init }"/>
+
+<aura:handler event="force:refreshView" action="{!c.init}"/>
+
+<aura:handler event="c:ApplicantMatchAE" action="{!c.handleApplicantMatchAE}"/>
+
+<div aura:id="main" class="slds-box slds-theme_default slds-hide">
+
+ <lightning:accordion aura:id="accordion" activeSectionName="{!v.activeSections}" allowMultipleSectionsOpen="true" >
+
+     <aura:if isTrue="{!!v.pageReady}"><lightning:spinner variant="brand" alternativeText="Loading" size="large" /></aura:if>
+     <lightning:accordionSection name="applicantMatches" label="{!v.applicantSectionLabel}">
+         <aura:set attribute="actions">
+             <lightning:buttonGroup>
+                 <aura:if isTrue="{!v.showChooseApplicantButton}">
+                     <lightning:button label="Confirm Match" onclick="{!c.applicantChooseButtonOnClick}" disabled="{!v.disabled}"/>
+                 </aura:if>
+             </lightning:buttonGroup>
+         </aura:set>
+         <aura:set attribute="body">
+             <lightning:datatable
+                     aura:id="applicantTable"
+                     data="{!v.applicantData }"
+                     columns="{!v.applicantColumns}"
+                     keyField="Id"
+                     selectedRows="{!v.applicantSelectedRows}"
+                     hideCheckboxColumn="true"
+                     maxRowSelection="1"
+                     onrowselection="{!c.applicantTableRowOnSelect}"
+                     onrowaction="{!c.onApplicantRowAction}"
+             />
+         </aura:set>
+     </lightning:accordionSection>
+ </lightning:accordion>
+
+
+ <aura:if isTrue="{!v.showChooseApplicantModal}">
+     <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+         <div class="slds-modal__container">
+             <!-- Modal/Popup Box Header Starts here-->
+             <header class="slds-modal__header">
+                 <lightning:buttonIcon iconName="utility:close"
+                                       onclick="{! c.closeModel }"
+                                       alternativeText="close"
+                                       variant="bare-inverse"
+                                       class="slds-modal__close"/>
+                 <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Choose Selected Applicant?</h2>
+             </header>
+             <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                 <p>You have identified a matching duplicate record to replace the existing case contact. Do you wish to proceed with this selection?</p>
+             </div>
+             <footer class="slds-modal__footer">
+                 <lightning:button variant="neutral"
+                                   label="Back"
+                                   title="Back"
+                                   onclick="{! c.chooseApplicantModalBackOnClick }"
+                                   disabled="{!v.disabled}"/>
+                 <lightning:button variant="brand"
+                                   label="Proceed"
+                                   title="Proceed"
+                                   onclick="{!c.chooseApplicantModalProceedOnClick}"
+                                   disabled="{!v.disabled}"/>
+             </footer>
+         </div>
+     </section>
+     <div class="slds-backdrop slds-backdrop_open"></div>
+ </aura:if>
+
+
+ <aura:if isTrue="{!v.showCompareModal}">
+     <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+         <div class="slds-modal__container">
+             <!-- Modal/Popup Box Header Starts here-->
+             <header class="slds-modal__header">
+                 <lightning:buttonIcon iconName="utility:close"
+                                       onclick="{! c.closeModel }"
+                                       alternativeText="close"
+                                       variant="bare-inverse"
+                                       class="slds-modal__close"/>
+                 <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Side-by-Side Compare</h2>
+             </header>
+             <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                 <div class="slds-grid slds-grid_vertical">
+                     <div class="slds-col">
+                         <div class="slds-grid slds-grid_align-center slds-p-vertical_small">
+                             <div class="slds-col slds-p-around_xxx-small">
+                                 <span>Highlight:&nbsp;&nbsp;</span>
+                             </div>
+                             <div class="slds-col slds-p-around_xxx-small">
+                                 <lightning:input type="radio" label="Same" name="compareOptions" value="same" checked="true" onclick="{!c.compareOptionsOnClick}"/>
+                             </div>
+                             <div class="slds-col slds-p-around_xxx-small">
+                                 <lightning:input type="radio" label="Differences" name="compareOptions" value="different" onclick="{!c.compareOptionsOnClick}"/>
+                             </div>
+                             <div class="slds-col slds-p-around_xxx-small">
+                                 <lightning:input type="radio" label="None" name="compareOptions" value="none" onclick="{!c.compareOptionsOnClick}"/>
+                             </div>
+                         </div>
+                     </div>
+                     <div class="slds-col">
+                         <lightning:datatable
+                                 aura:id="compareTable"
+                                 data="{!v.compareData }"
+                                 columns="{!v.compareColumns}"
+                                 selectedRows="{!v.compareSelectedRows}"
+                                 hideCheckboxColumn="true"
+                                 keyField="Id"
+                                 wrapTextMaxLines="10"
+                         />
+
+                     </div>
+                 </div>
+             </div>
+             <footer class="slds-modal__footer">
+                 <lightning:button variant="neutral"
+                                   label="Close"
+                                   title="Close"
+                                   onclick="{! c.compareModalCloseOnClick }"
+                                   disabled="{!v.disabled}"/>
+                 <aura:if isTrue="{!v.showCompareModalChooseButton}">
+                     <lightning:button variant="brand"
+                                       label="Choose"
+                                       title="Choose"
+                                       onclick="{! c.compareModalChooseOnClick }"
+                                       disabled="{!v.disabled}"/>
+                 </aura:if>
+             </footer>
+         </div>
+     </section>
+     <div class="slds-backdrop slds-backdrop_open"></div>
+ </aura:if>
+
+</div>
+
+</aura:component>

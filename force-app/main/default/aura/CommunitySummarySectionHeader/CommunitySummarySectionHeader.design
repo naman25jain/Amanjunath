@@ -1,0 +1,9 @@
+<design:component>
+	
+	<design:attribute name="title" default="The section title." />
+    <design:attribute name="editUrl" description="The url this returns when when edit button is clicked."/>
+    <design:attribute name="showHelpIcon" description="Display the ? help icon."/>
+    <design:attribute name="helpText" description="The help text to display for the ? icon."/>
+    <design:attribute name="hideEditButton" description="Check to hide the Edit button."/>
+    
+</design:component>

@@ -1,0 +1,74 @@
+<template>
+
+    <div class="formMargin">
+
+        <div class="slds-grid slds-wrap gridMargin">
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2 gridItemPadding">
+
+                <lightning-combobox name="optionSelect" label="Account Name" value={accountName}
+                    placeholder="Select Entity" options={entityOptions} onchange={changeHandler}>
+                </lightning-combobox>
+            </div>
+        </div>
+        <template if:true={showTabs}>
+            <template if:false={isCoordinator}>
+
+                <lightning-tabset>
+                    <lightning-tab label="Service Access" value="serviceAccess" onactive={tabselectUser}>
+                        <div>
+
+                            <c-entity-contact-service-access current-entity={accountName}>
+                            </c-entity-contact-service-access>
+
+                        </div>
+                    </lightning-tab>
+                    <lightning-tab label="My Requests" value="myRequests" onactive={tabselectUser}>
+                        <div>
+                            <c-entity-portal-my-requests class="userRequests" current-entity={accountName}>
+                            </c-entity-portal-my-requests>
+                        </div>
+                    </lightning-tab>
+                    <lightning-tab label="Manage Users" value="manageUsers" onactive={tabselectUser}>
+                        <div>
+                            <c-manage-users current-entity={accountName}></c-manage-users>
+                        </div>
+                    </lightning-tab>
+                </lightning-tabset>
+
+            </template>
+
+            <template if:true={isCoordinator}>
+                <lightning-tabset>
+                    <lightning-tab label="Service Access" value="serviceAccess" onactive={tabselectCoordinator}>
+                        <div>
+                            <c-entity-contact-service-access current-entity={accountName}>
+                            </c-entity-contact-service-access>
+                        </div>
+                    </lightning-tab>
+                    <lightning-tab label="My Requests" value="myRequests" onactive={tabselectCoordinator}>
+                        <div>
+                            <c-entity-portal-my-requests class="coordinatorRequests" current-entity={accountName}>
+                            </c-entity-portal-my-requests>
+                        </div>
+                    </lightning-tab>
+                    <lightning-tab label="Manage Users" value="manageUsers" onactive={tabselectCoordinator}>
+                        <div>
+                            <c-manage-users current-entity={accountName}></c-manage-users>
+                        </div>
+                    </lightning-tab>
+                    <lightning-tab label="Manage Requests" value="manageRequests" onactive={tabselectCoordinator}>
+                        <div>
+                            <c-entity-manage-requests current-entity={accountName}></c-entity-manage-requests>
+                        </div>
+                    </lightning-tab>
+                </lightning-tabset>
+            </template>
+        </template>
+        <template if:false={showTabs}>
+            <br/>
+            <div class="slds-col slds-size_1-of-1">
+                <c-g-display-content unique-content-value="PortalRestriction"></c-g-display-content>
+            </div>
+        </template>       
+    </div>
+</template>

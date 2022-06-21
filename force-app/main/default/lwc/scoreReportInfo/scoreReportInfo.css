@@ -1,0 +1,70 @@
+.formMargin{
+    margin-left: 25%;
+    margin-right: 25%;
+    padding-top: 20px;
+}
+.customCard {
+  --sds-c-card-color-background: #a1d6e4;
+}
+.customUSMLCard {
+  --sds-c-card-color-background: #e8b4c0;
+}
+.paddingHeader{
+    padding-top: 5%;
+    font-weight: bold;
+}
+.paddingValues{
+    padding-left: 10%;
+}
+.buttonAlignment{
+    padding-top: 5%;
+    
+}
+.padding {
+    padding-top: 20px;
+    margin-left: 25%;
+    margin-right: 25%;
+  }
+  .stepHeader{
+    font-size: 15px
+  }
+  .header {
+    line-height: 2;
+  }
+  .paddingMainHeader {
+    padding-top: 20px;
+    margin-left: 25%;
+    margin-right: 25%;
+  }
+  .stepMainHeader {
+    font-size: 20px
+  }
+  .scoreReportImage {
+    height: 40px;
+    width: 40px;
+  }
+  .scoreReportContent {
+    font-weight: bold;
+  }
+  .separatorborderbottom{
+    padding-top: 15px;
+    border-bottom:1px solid #d4d4d4;
+    border-bottom-style: dotted;
+    width:100%;
+  }
+  .errormsgName{
+    color:#ff0000;
+    font-size: 13px;
+  }
+  .buttonAlignmentWithold{
+    padding-left:42%;
+  }
+
+.headingExamDetails{
+  font-size: 20px;
+  background-color: #D3D3D3;
+  width: 1000px;
+}
+.headingh2{
+  padding-top: 25px;
+}

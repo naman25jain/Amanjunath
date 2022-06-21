@@ -1,0 +1,35 @@
+.formMargin{
+    margin-left: 35%;
+    margin-right: 20%;
+    padding-top:20px;
+}
+.paddingHeader{
+    padding-top: 5%;
+    font-weight: bold;
+}
+.paddingValues{
+    padding-left: 10%;
+}
+.buttonAlignment{
+    padding-top: 5%;
+    
+}
+.padding {
+    padding-top:20px;
+    margin-left: 25%;
+    margin-right: 15%;
+  }
+  .stepHeader{
+    font-size: 15px
+  }
+  .header {
+    line-height: 2;
+  }
+  .paddingMainHeader {
+    padding-top:20px;
+    margin-left: 25%;
+    margin-right: 15%;
+  }
+  .stepMainHeader {
+    font-size: 20px;
+  }

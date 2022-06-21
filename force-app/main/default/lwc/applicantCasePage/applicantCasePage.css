@@ -1,0 +1,15 @@
+.headertxt{
+    font-weight: bold;    
+}
+.headeralign{
+    padding-top: 5%;
+}
+.caseNumberTd button {
+    border: none !important;
+}
+.noRecordsSection {
+    padding:15px 0 10px 0;
+}
+.noteSec{
+    padding-top:30%;
+}

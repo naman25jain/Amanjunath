@@ -1,0 +1,27 @@
+<design:component label="Find Contact Duplicates">
+	<design:attribute name="RecordIdIsCase" label="This is a Case Page Layout" description="Indicate if this is in a Case layout" datasource="true,false" default="true"/>
+   <!--get inputs from flow-->
+    <design:attribute name="componentCaseId" label="componentCaseId" />
+    <design:attribute name="componentContactId" label="componentContactId" />
+    <design:attribute name="currentComponentContactIdOutput" label="currentComponentContactIdOutput" />
+    <design:attribute name="currentComponentContactFirstNameOutput" label="currentComponentContactFirstNameOutput" />
+    <design:attribute name="currentComponentContactLastNameOutput" label="currentComponentContactLastNameOutput" />
+    <design:attribute name="currentComponentContactEmailOutput" label="currentComponentContactEmailOutput" />
+    <!--end inputs-->
+    <design:attribute name="selectedComponentContactIdOutput" label="selectedComponentContactIdOutput" />
+    <design:attribute name="selectedComponentContactFirstNameOutput" label="selectedComponentContactFirstNameOutput" />
+    <design:attribute name="selectedComponentContactLastNameOutput" label="selectedComponentContactLastcontaNameOutput" />
+    <design:attribute name="selectedComponentContactEmailOutput" label="selectedComponentContactEmailOutput" />
+    <design:attribute name="duplicateContactRecordTypeId" label="duplicateContactRecordTypeId" />
+    <design:attribute name="selectedAccountId" label="selectedAccountId" />
+    <design:attribute name="duplicatesSelected" label="duplicatesSelected" />
+    <!--no longer in USE -->
+    <design:attribute name="sampleOutput" label="sampleOutput" />
+    <design:attribute name="componentContactIdOutput" label="componentContactIdOutput" />
+    <design:attribute name="componentContactNameOutput" label="componentContactNameOutput" />
+    <design:attribute name="componentContactEmailOutput" label="componentContactEmailOutput" />
+    <design:attribute name="currentComponentContactNameOutput" label="componentContactEmailOutput" />
+    <design:attribute name="selectedComponentContactNameOutput" label="componentContactNameOutput" />
+
+
+</design:component>

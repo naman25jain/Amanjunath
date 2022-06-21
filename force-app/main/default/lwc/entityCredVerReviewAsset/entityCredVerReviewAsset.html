@@ -1,0 +1,34 @@
+<template>
+    <div class="formMargin">
+        <template if:true={payLoadList}>
+            <template for:each={payLoadList} for:item="payLoad">
+                <dl class="slds-list_horizontal slds-wrap" key={payLoad.assetId}>
+                    <dt class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                        <span>{payLoad.assetName}</span>
+                    </dt>
+                    <dt class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                        <div title="View">
+                            <c-cloud-document-upload-wrapper class="cloudDocumentUpload" pay-load={payLoad.payLoad}
+                                max-allowed-file-size={maxsize} accepted-file-formats=".jpeg,.jpg,.tiff,.pdf"
+                                enable-annotation="false" enable-redaction="false" hide-upload="true">
+                            </c-cloud-document-upload-wrapper>
+                        </div>
+                    </dt>
+                </dl>
+            </template>
+        </template>
+        <lightning-layout-item padding="around-small" size="6">
+            <div class="slds-align_absolute-center">
+                <lightning-button variant="brand" label="Return to Credential Review List"
+                    title="Return to Credential Review List" onclick={returnCredRevList} class="slds-m-left_x-small">
+                </lightning-button>
+                <template if:true={showBackButton}>
+                    <lightning-button variant="brand" label="Back" title="Back" onclick={backButton}
+                        class="slds-var-m-left_x-small"></lightning-button>
+                </template>
+                <lightning-button variant="brand" label="Next" title="Next" onclick={nextButton}
+                    class="slds-m-left_x-small"></lightning-button>
+            </div>
+        </lightning-layout-item>
+    </div>
+</template>

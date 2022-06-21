@@ -1,0 +1,90 @@
+<template>
+    <lightning-record-edit-form record-id={getIdFromParent} object-api-name="Contact">
+        <template if:true={showError}>
+            <div class="slds-var-m-top_medium">
+                <strong>
+                    <span class="errormsg">
+                        An ERAS Token request cannot be submitted at this time. Please contact ERAS Support Services at ECFMG for assistance.
+                    </span>    
+                </strong>
+            </div>
+        </template>
+        <template if:true={contactInfo}>
+            <div class="formMargin">
+                <div class="slds-col slds-size_1-of-1 gridColPadding slds-var-p-top_large">
+                    <div class="slds-grid slds-border_bottom slds-var-p-bottom_xx-small">
+                        <div class="slds-col">
+                            <h1 class="gridHeader">{label.contactInformationMessage}</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="cred-header">
+                    <h1 class="headAlgn">
+                        <c-g-display-content unique-content-value="eras_contact_info"></c-g-display-content>
+                    </h1>
+                </div>
+                <div class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                    <span>Country</span>
+                </div>
+                <div class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                    <lightning-input-field field-name="MailingCountry" disabled variant="label-hidden"></lightning-input-field>
+                </div>
+                <div class="slds-col slds-var-p-top_medium slds-size_1-of-2">
+                    <span>Street</span>
+                </div>
+                <div class="slds-col slds-var-p-top_medium slds-size_1-of-2">
+                    <lightning-input-field field-name="MailingStreet" disabled variant="label-hidden"></lightning-input-field>
+                </div>
+                <div class="slds-col slds-var-p-top_medium slds-size_1-of-2">
+                    <span>City</span>
+                </div>
+                <div class="slds-col slds-var-p-top_medium slds-size_1-of-2">
+                    <lightning-input-field field-name="MailingCity" disabled variant="label-hidden"></lightning-input-field>
+                </div>
+                <div class="slds-col slds-var-p-top_medium slds-size_1-of-2">
+                    <span>State</span>
+                </div>
+                <div class="slds-col slds-var-p-top_medium slds-size_1-of-2">
+                    <lightning-input-field field-name="MailingState" disabled variant="label-hidden"></lightning-input-field>
+                </div>
+                <div class="slds-col slds-var-p-top_medium slds-size_1-of-2">
+                    <span>ZIP Code</span>
+                </div>
+                <div class="slds-col slds-var-p-top_medium slds-size_1-of-2">
+                    <lightning-input-field field-name="MailingPostalCode" disabled variant="label-hidden"></lightning-input-field>
+                </div>
+                <div class="slds-col slds-var-p-top_medium slds-size_1-of-2">
+                    <span>Email Address</span>
+                </div>
+                <div class="slds-col slds-var-p-top_medium slds-size_1-of-2">
+                    <lightning-input-field field-name="Email" disabled variant="label-hidden"></lightning-input-field>
+                </div>
+                <div class="slds-col slds-var-p-top_medium slds-size_1-of-2">
+                    <span>Telephone Number</span>
+                </div>
+                <div class="slds-col slds-var-p-top_medium slds-size_1-of-2">
+                    <lightning-input-field field-name="Phone" disabled variant="label-hidden"></lightning-input-field>
+                </div>
+            
+                <div class="slds-col slds-size_1-of-1 gridColPadding slds-var-p-top_large">
+                    <div class="slds-grid slds-border_bottom slds-var-p-bottom_xx-small">
+                        <div class="slds-col">
+                            <h1 class="gridHeader">Citizenship Status</h1>
+                        </div>
+                    </div>
+                </div>
+                <div class="cred-header">
+                    <h1 class="headAlgn">
+                        <c-g-display-content unique-content-value="eras_citizenship_status"></c-g-display-content>
+                    </h1>
+                </div>
+            </div>
+            <template if:false={showError}>            
+                <div class="slds-var-p-top_large pad btnAlign">
+                    <lightning-button variant="brand" label="Next" title="Next" onclick={handleNextClick} class="slds-var-m-left_x-small"></lightning-button>
+                    <lightning-button variant="brand" label="Back" title="Back" onclick={handleBackClick} class="slds-var-m-left_x-small"></lightning-button>
+                </div>
+            </template>
+        </template>
+    </lightning-record-edit-form>
+</template>

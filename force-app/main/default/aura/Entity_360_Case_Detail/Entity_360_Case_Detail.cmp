@@ -1,0 +1,86 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,forceCommunity:availableForAllPageTypes,force:hasRecordId" access="global" controller="ApplicantMyProfileController" extends="c:CommunityBase">
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:attribute name="case" type="Object" default="{}" />
+    <aura:attribute name="pageReady" type="Boolean" default="false" />
+
+    <aura:if isTrue="{!!v.pageReady}"><lightning:spinner variant="brand" alternativeText="Loading" size="large" /></aura:if>
+
+    <aura:if isTrue="{!v.pageReady}">
+        <div>
+            <c:CommunitySummarySectionHeader hideEditButton="true" title="Case Information" showHelpIcon="false" helpText="Case Information" />
+            <form class="slds-form">
+                <div class="slds-form-element slds-form-element_horizontal">
+                    <lightning:input name="caseNumber" value="{!v.case.CaseNumber}" placeholder="" label="Case Number" aura:id="fieldToValidate" required="false"  disabled="true" />
+                </div>
+                <div class="slds-form-element slds-form-element_horizontal">
+                    <lightning:input name="caseStatus" value="{!v.case.Case_Status__c}" placeholder="" label="Case Status" aura:id="fieldToValidate" required="false"  disabled="true" />
+                </div>
+                <aura:if isTrue="{!v.case.RecordType.DeveloperName =='Entity_Service_Request'}">
+                    <div class="slds-form-element slds-form-element_horizontal">
+                        <lightning:input name="caseType" value="{!v.case.Type}" placeholder="" label="Type" aura:id="fieldToValidate" required="false"  disabled="true" />
+                    </div>
+                </aura:if>
+                <aura:if isTrue="{!!v.case.RecordType.DeveloperName =='Entity_Service_Request'}">
+                    <div class="slds-form-element slds-form-element_horizontal">
+                        <lightning:input name="caseType" value="{!v.case.RecordType.Name}" placeholder="" label="Type" aura:id="fieldToValidate" required="false"  disabled="true" />
+                    </div>
+                </aura:if>
+
+                <aura:if isTrue="{!!v.case.RecordType.DeveloperName =='Entity_Service_Request'}">
+                    <div class="slds-form-element slds-form-element_horizontal">
+                        <lightning:input type="date" name="createdDate" value="{!v.case.CreatedDate}" placeholder="" label="Date Created" aura:id="fieldToValidate" required="false"  disabled="true" />
+                    </div>
+                    <div class="slds-form-element slds-form-element_horizontal">
+                        <lightning:input type="date" name="LastModifiedDate" value="{!v.case.LastModifiedDate}" placeholder="" label="Last Updated Date" aura:id="fieldToValidate" required="false"  disabled="true" />
+                    </div>
+                </aura:if>
+
+                <aura:if isTrue="{!v.case.RecordType.DeveloperName =='Entity_Service_Request'}">
+                    <div class="slds-form-element slds-form-element_horizontal">
+                        <lightning:input type="date" name="createdDate" value="{!v.case.CreatedDate}" placeholder="" label="Date Opened" aura:id="fieldToValidate" required="false"  disabled="true" />
+                    </div>
+                    <div class="slds-form-element slds-form-element_horizontal">
+                        <lightning:input type="date" name="LastModifiedDate" value="{!v.case.LastModifiedDate}" placeholder="" label="Last Modified Date" aura:id="fieldToValidate" required="false"  disabled="true" />
+                    </div>
+                </aura:if>
+                <aura:if isTrue="{!v.case.RecordType.DeveloperName =='Entity_Service_Request'}">
+                    <div class="slds-form-element slds-form-element_horizontal">
+                        <lightning:input name="name" value="{!v.case.Account.Name}" placeholder="" label="Organization Name" aura:id="fieldToValidate" required="false"  disabled="true" />
+                    </div>
+                    <div class="slds-form-element slds-form-element_horizontal">
+                        <lightning:input name="website" value="{!v.case.Account.Website}" placeholder="" label="Website" aura:id="fieldToValidate" required="false"  disabled="true" />
+                    </div>
+                    <div class="slds-form-element slds-form-element_horizontal">
+                        <lightning:input name="country" value="{!v.case.Account.BillingCountry}" placeholder="" label="Country" aura:id="fieldToValidate" required="false"  disabled="true" />
+                    </div>
+                    <div class="slds-form-element slds-form-element_horizontal">
+                        <lightning:textarea name="street" value="{!v.case.Account.BillingStreet}" placeholder="" label="Street" aura:id="fieldToValidate" required="false"  disabled="true" />
+                    </div>
+                    <div class="slds-form-element slds-form-element_horizontal">
+                        <lightning:input name="city" value="{!v.case.Account.BillingCity}" placeholder="" label="City" aura:id="fieldToValidate" required="false"  disabled="true" />
+                    </div>
+                    <div class="slds-form-element slds-form-element_horizontal">
+                        <lightning:input name="state" value="{!v.case.Account.BillingState}" placeholder="" label="State/Province" aura:id="fieldToValidate" required="false"  disabled="true" />
+                    </div>
+                    <div class="slds-form-element slds-form-element_horizontal">
+                        <lightning:input name="zip" value="{!v.case.Account.BillingPostalCode}" placeholder="" label="Zip/Postal Code" aura:id="fieldToValidate" required="false"  disabled="true" />
+                    </div>
+                </aura:if>
+
+                <aura:if isTrue="{!!v.case.RecordType.DeveloperName =='Entity_Service_Request'}">
+                    <div class="slds-form-element slds-form-element_horizontal">
+                        <label class="slds-form-element__label" for="form-element-01">Changes Requested</label>
+                        <lightning:textarea value="{!v.case.Description}" disabled="true" />
+                    </div>
+                </aura:if>
+                <aura:if isTrue="{!v.case.RecordType.DeveloperName =='Entity_Service_Request'}">
+                    <div class="slds-form-element slds-form-element_horizontal">
+                        <label class="slds-form-element__label" for="form-element-01">Requested Change</label>
+                        <lightning:textarea value="{!v.case.Description}" disabled="true" />
+                    </div>
+                </aura:if>
+            </form>
+        </div>
+    </aura:if>
+
+</aura:component>

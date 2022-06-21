@@ -1,0 +1,10 @@
+.formMargin{
+    margin-left: 1%;
+    padding-top: 20px;
+    padding-bottom: 10px;
+}
+ul.subAffirmation{
+    list-style-type: circle;
+    font-weight: bold;
+    padding-left: 20px;
+}

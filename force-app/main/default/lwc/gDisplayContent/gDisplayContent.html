@@ -1,0 +1,6 @@
+<template>
+    <template if:true={spinner}>
+        <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+    </template>
+    <lightning-formatted-rich-text value={displayContent}></lightning-formatted-rich-text>
+</template>

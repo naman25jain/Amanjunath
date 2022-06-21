@@ -1,0 +1,19 @@
+<apex:page standardController="Case" extensions="DocumentsPrintController" recordSetVar="cases" action="{!getSelectedCases}" standardStylesheets="true" sidebar="false" showHeader="false" wizard="true" >
+   <apex:includeLightning />
+    <div id="documentPrint" />
+    <script>
+    $Lightning.use("c:DocumentsBulkPrintApp", function() {
+        $Lightning.createComponent("c:documentsBulkPrint", {
+            //pass parameter values to lwc js controller
+            selectedRecords : "{!lstCases}",
+            returnURL : "{!$CurrentPage.parameters.vfRetURLInSFX}"
+        },
+        "documentPrint",
+            function(component) {
+             console.log("Lightning Web Component created Successfully!!");
+              // extend the functionality as per your requirement
+            }
+       );
+    });
+    </script>
+</apex:page>

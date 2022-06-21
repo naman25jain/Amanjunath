@@ -1,0 +1,357 @@
+<template>
+    <template if:true={spinner}>
+        <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+    </template>
+    <div class="padding">
+            <c-g-display-content unique-content-value="enrollment_verification"></c-g-display-content>   
+    </div>
+    <div class="formMargin">
+        <div class="slds-grid slds-wrap">
+            <template for:each={fetchedValues} for:item='recordItem' for:index='index'>
+                <div key={recordItem.recordIdVal} class="slds-col slds-p-top_small slds-size_2-of-3">
+                    <div class="slds-grid slds-wrap">
+                        <div class="slds-col slds-p-top_small slds-size_1-of-4">
+                            <span>Name on Record</span>
+                        </div>
+                        <div class="slds-col slds-p-top_small slds-size_3-of-4 grid slds-wrap">
+                            <div class="slds-col slds-size_3-of-4">
+                                <input type="text" class="slds-input" disabled value={recordItem.nameOnRecord}></input>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-p-top_small slds-size_1-of-4">
+                            <span>USMLE ID</span>
+                        </div>
+                        <div class="slds-col slds-p-top_small slds-size_3-of-4 grid slds-wrap">
+                            <div class="slds-col slds-size_3-of-4">
+                                <input type="text" class="slds-input" disabled value={recordItem.usmleId}></input>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-p-top_small slds-size_1-of-4">
+                            <span>Date of Birth</span>
+                        </div>
+                        <div class="slds-col slds-p-top_small slds-size_3-of-4 grid slds-wrap">
+                            <div class="slds-col slds-size_3-of-4">
+                                <input type="date" class="slds-input" disabled value={recordItem.dateOfBirth}></input>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-p-top_small slds-size_1-of-4">
+                            <span>Unique Medical School ID</span>
+                        </div>
+                        <div class="slds-col slds-p-top_small slds-size_3-of-4 grid slds-wrap">
+                            <div class="slds-col slds-size_3-of-4">
+                                <input type="text" class="slds-input" disabled
+                                    value={recordItem.uniqueMedicalSchoolId}></input>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-p-top_small slds-size_1-of-4">
+                            <span>Name on Diploma</span>
+                        </div>
+                        <div class="slds-col slds-p-top_small slds-size_3-of-4 grid slds-wrap">
+                            <div class="slds-col slds-size_3-of-4">
+                                <input type="text" class="slds-input" disabled value={recordItem.nameOnDiploma}></input>
+                            </div>
+                        </div>
+                        <template if:true={recordItem.showSchoolProgram}>
+                            <div class="slds-col slds-p-top_small slds-size_1-of-4">
+                                <span> School Program</span>
+                            </div>
+                            <div class="slds-col slds-p-top_small slds-size_3-of-4 grid slds-wrap">
+                                <div class="slds-col slds-size_3-of-4">
+                                    <input type="text" class="slds-input" disabled
+                                        value={recordItem.schoolProgram}></input>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </template>
+            <div class="slds-col slds-p-top_small slds-p-left_medium slds-size_1-of-3 ">
+                <span class="applicantText">Applicant Photo</span><br/>
+                <template if:true={displayPhoto}>
+                    <c-cloud-document-upload-wrapper
+                        pay-load={payloadPhotoAccepted}
+                        max-allowed-file-size={maxsize}
+                        accepted-file-formats=".jpeg,.jpg,.tiff,.pdf"
+                        enable-annotation="false" enable-redaction="false"
+                        asset-type="Identity"
+                        hide-upload="true">
+                    </c-cloud-document-upload-wrapper>
+                </template>
+            </div>
+            <template for:each={examDetails} for:item='exam' for:index='index'>
+                <div key={exam} class="slds-col slds-p-top_small slds-size_1-of-1">
+                    <div class="slds-grid slds-wrap">
+                        <div class="slds-col slds-p-top_small slds-size_1-of-7">
+                            <span>Exam Type</span>
+                        </div>
+                        <div class="slds-col slds-p-top_small slds-size_1-of-7">
+                            <input type="text" class="slds-input" disabled value={exam.examType}></input>
+                        </div>
+                        <div class="slds-col slds-p-top_small slds-p-left_medium slds-size_1-of-7">
+                            <span>Eligibility Period</span>
+                        </div>
+                        <div class="slds-col slds-p-top_small slds-size_2-of-7">
+                            <input type="text" class="slds-input" disabled value={exam.eligibilityPeriod}></input>
+                        </div>
+                        <div class="slds-col slds-p-top_small slds-p-left_medium slds-size_1-of-7">
+                            <span>Scheduled Test Date</span>
+                        </div>
+                        <div class="slds-col slds-p-top_small slds-size_1-of-7">
+                            <template if:true={exam.hasScheduledTestDate}>
+                                <input type="date" class="slds-input" disabled value={exam.scheduledTestDate}></input>
+                            </template>
+                            <template if:false={exam.hasScheduledTestDate}>
+                                <input type="text" class="slds-input" disabled value={exam.scheduledTestDate}></input>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </template>
+            <template for:each={fetchedValues} for:item='recordItem' for:index='index'>
+                <div key={recordItem.recordIdVal} class="slds-col slds-p-top_small slds-size_1-of-1">
+                    <div class="slds-grid slds-wrap">
+                        <div class="slds-col slds-p-top_small slds-size_1-of-1">
+                            <div class="slds-grid slds-wrap attendanceStartDateWrapper ">
+                                <div class="slds-col slds-p-top_small slds-size_1-of-6">
+                                    <span>Attendance Start Month</span>
+                                </div>
+                                <div class="slds-col slds-p-top_small slds-size_1-of-6">
+                                    <div class="attendanceMonthWrapper">
+                                        <select data-attendance-start-month={attendanceStartMonthVar} class="slds-select attendanceStartMonthPicklist" disabled={showDisabledAttendanceStartDate} >
+                                            <option value=""></option>
+                                            <template for:each={monthPicklistOptions} for:item="listViewItem">
+                                                <option key={listViewItem.value} value={listViewItem.value}>
+                                                    {listViewItem.label}</option>
+                                            </template>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-p-top_small slds-p-left_medium slds-size_1-of-6">
+                                    <span>Attendance Start Year</span>
+                                </div>
+                                <div class="slds-col slds-p-top_small slds-size_1-of-6">
+                                    <div class="attendanceStartYearWrapper">
+                                        <input type="text" data-inputted-year={attendanceStartYearVar} class="slds-input attendanceStartYear"  maxlength ="4" disabled={showDisabledAttendanceStartDate}></input>
+                                    </div>
+                                </div>                                
+                            </div>                           
+                        </div>
+                        <div class="slds-col slds-p-top_small attendanceStartDateMessage"> </div> 
+                    </div>
+                </div>
+                <div key={recordItem.recordIdVal} class="slds-col slds-p-top_small slds-size_1-of-1">
+                    <div class="slds-grid slds-wrap">
+                        <div class="slds-col slds-p-top_small slds-size_1-of-1">
+                            <div class="slds-grid slds-wrap ">
+                                <div class="slds-col slds-p-top_small slds-size_1-of-6">
+                                    <span>Attendance End Month</span>
+                                </div>
+                                <div class="slds-col slds-p-top_small slds-size_1-of-6">
+                                    <div class="attendanceEndMonthWrapper">
+                                        <select data-attendance-end-month={attendanceEndMonthVar} class="slds-select attendanceEndMonthPicklist">
+                                            <option value=""></option>
+                                            <template for:each={monthPicklistOptions} for:item="listViewItem">
+                                                <option key={listViewItem.value} value={listViewItem.value}>
+                                                    {listViewItem.label}</option>
+                                            </template>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-p-top_small slds-p-left_medium slds-size_1-of-6">
+                                    <span>Attendance End Year</span>
+                                </div>
+                                <div class="slds-col slds-p-top_small slds-size_1-of-6">
+                                    <div class="attendanceEndYearWrapper">
+                                        <input type="text" data-inputted-year={attendanceEndYearVar} class="slds-input attendanceEndYear" maxlength ="4"></input >
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-p-top_small attendanceEndDateMessage"> </div> 
+                            </div>                                                      
+                        </div>
+                    </div>    
+                </div>
+                <div key={recordItem.recordIdVal} class="slds-col slds-p-top_small slds-size_1-of-1">
+                    <div class="slds-grid slds-wrap">
+                        <div class="slds-col slds-p-top_small slds-size_1-of-1">
+                            <div class="slds-grid slds-wrap">
+                                <div class="slds-col slds-p-top_small slds-size_1-of-6">
+                                    <span>Graduation Month</span>
+                                    <lightning-helptext class="info-icon"
+                                        content="Graduation Month or Expected Graduation Month"></lightning-helptext>
+                                </div>
+                                <div class="slds-col slds-p-top_small slds-size_1-of-6">
+                                    <div class="gradMonthWrapper">
+                                        <select data-selected-month={gradMonth} class="slds-select monthPicklist">
+                                            <option value=""></option>
+                                            <template for:each={monthPicklistOptions} for:item="listViewItem">
+                                                <option key={listViewItem.value} value={listViewItem.value}>
+                                                    {listViewItem.label}</option>
+                                            </template>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-p-top_small slds-p-left_medium slds-size_1-of-6">
+                                    <span>Graduation Year</span>
+                                    <lightning-helptext class="info-icon"
+                                        content="Graduation Year or Expected Graduation Year">
+                                    </lightning-helptext>
+                                </div>
+                                <div class="slds-col slds-p-top_small slds-size_1-of-6">
+                                    <div class="gradYearWrapper">
+                                        <input type="text" data-inputted-year={gradYearVar} class="slds-input gradYear" maxlength ="4"></input>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-p-top_small graduationDateErrorMessage"> </div> 
+                    </div>
+                </div>
+                <div key={recordItem.recordIdVal} class="slds-col slds-p-top_small slds-size_1-of-1">
+                    <div class="slds-grid slds-wrap">
+                        <div class="slds-col slds-p-top_small slds-size_1-of-1">
+                            <div class="slds-grid slds-wrap">
+                                <div class="slds-col slds-p-top_small slds-size_1-of-6">
+                                    <span>Degree Issue Month</span>
+                                </div>
+                                <div class="slds-col slds-p-top_small slds-size_1-of-6">
+                                    <div class="degreeMonthWrapper">
+                                        <select data-degree-month={degreeMonthVar} class="slds-select degreeMonthPicklist">
+                                            <option value=""></option>
+                                            <template for:each={monthPicklistOptions} for:item="listViewItem">
+                                                <option key={listViewItem.value} value={listViewItem.value}>
+                                                    {listViewItem.label}</option>
+                                            </template>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="slds-col slds-p-top_small slds-p-left_medium slds-size_1-of-6">
+                                    <span>Degree Issue Year</span>
+                                </div>
+                                <div class="slds-col slds-p-top_small slds-size_1-of-6">
+                                    <div class="degreeYearWrapper">
+                                        <input type="text" data-inputted-year={degreeYearVar} class="slds-input degreeYear" maxlength ="4"></input>
+                                    </div>
+                                </div>                               
+                            </div>
+                            <div class="slds-col slds-p-top_small degreeErrorMessage"> </div> 
+                        </div>
+                    </div>
+                </div>
+                <div key={recordItem} class="slds-col slds-p-top_small slds-size_1-of-1">
+                    <div class="slds-grid slds-wrap">
+                        <div class="slds-col slds-p-top_small slds-size_2-of-3">
+                            <div class="slds-grid slds-wrap">
+                                <div class="slds-col slds-p-top_small slds-size_1-of-4">
+                                    <span>Number of Years Attended</span>
+                                </div>
+                                <div class="slds-col slds-p-top_small slds-size_3-of-4">
+                                    <div class="slds-grid slds-wrap">
+                                        <div class=" slds-col slds-size_3-of-4">
+                                            <div class="numOfYearsAttendedWrapper">
+                                                <input type="number" data-inputted-numofyear={numOfYearsAttendedVar} class="slds-input numOfYearsAttended"></input>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </div>
+    <div class="padding">
+        <h2 class="header">
+            <lightning-formatted-rich-text value="Verification Status"></lightning-formatted-rich-text>
+        </h2>
+    </div>
+    <div class="formMargin">
+        <div class="slds-grid slds-wrap">
+            <div class="slds-col slds-p-top_small slds-size_1-of-1">
+                <div class="slds-grid slds-wrap">
+                    <div class="slds-col slds-p-top_small slds-size_1-of-6">
+                        <span>Verification Status</span>
+                    </div>
+                    <div class="slds-col slds-p-top_small slds-size_1-of-6">
+                        <span class="verificationStatusSelectContainer">
+                            <select data-selected-status={verificationStatusSelected} onchange={handleStatusChange}
+                                class="slds-select verificationStatusPicklist">
+                                <option value=""></option>
+                                <template for:each={verificationStatustOptions} for:item="listViewItem">
+                                    <option key={listViewItem.value} value={listViewItem.value}>
+                                        {listViewItem.label}</option>
+                                </template>
+                            </select>
+                        </span>
+                    </div>
+                    <template if:true={showDateSection}>
+                        <div class="slds-col slds-p-top_small slds-p-left_medium slds-size_1-of-6">
+                            <span>Verification Status Date<span class="required">*</span></span>
+                        </div>
+                        <div class="slds-col slds-p-top_small slds-size_1-of-6">
+                            <template if:false={showFullDate}>
+                                <div class="slds-grid slds-wrap">
+                                    <div class="slds-col  slds-size_1-of-2">
+                                        <span>Month<span class="required">*</span></span><br />
+                                        <span class="monthSelectContainer">
+                                            <select data-verification-month = {verificationMonth} class="slds-select verificationStatusMonthPicklist"
+                                                onchange={removeErrorText}>
+                                                <option value=""></option>
+                                                <template for:each={monthPicklistOptions} for:item="listViewItem">
+                                                    <option key={listViewItem.value} value={listViewItem.value}>
+                                                        {listViewItem.label}</option>
+                                                </template>
+                                            </select>
+                                        </span>
+                                    </div>
+                                    <div class="slds-col slds-p-left_medium slds-size_1-of-2">
+                                        <span>Year<span class="required">*</span></span><br />
+                                        <lightning-input data-verification-year = {verificationYear} variant="label-hidden" type="text"
+                                            onkeydown={validateYearInput} class="verificationStatusYear">
+                                        </lightning-input>
+                                    </div>
+                                </div>
+                            </template>
+                            <template if:true={showFullDate}>
+                                <lightning-input data-verification-date = {verificationDate} variant="label-hidden" type="date" class="verificationStatusDate"
+                                    onchange={removeErrorText}>
+                                </lightning-input>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+            </div>
+            <template if:true={showPassedBasicScience}>
+                <div class="slds-col slds-p-top_small slds-size_1-of-1">
+                    <span><c-g-display-content unique-content-value="entity_enroll_verification"></c-g-display-content></span>
+                </div>
+                <div class="slds-col slds-p-top_small slds-size_1-of-4">
+                    <template if:true={disablePassedBasicScience}>
+                        <lightning-radio-group options={passedBasicSciencesCourseOptions} disabled
+                            value={passedBasicScience} class="passedBasicScience" type="radio" required="true"></lightning-radio-group>
+                    </template>
+                    <template if:false={disablePassedBasicScience}>
+                        <lightning-radio-group options={passedBasicSciencesCourseOptions} value={passedBasicScience}
+                            class="passedBasicScience" type="radio"></lightning-radio-group>
+                    </template>
+                </div>
+            </template>
+        </div>
+        <c-modal-component class="successModal" title={modalTitle} message={modalContent} show-primary-button="true"
+            primary-button-text="Ok" onprimarybuttonclick={handleOkClick} onclosedialog={handleOkClick}>
+        </c-modal-component>
+        <div class="buttonAlignment">
+            <lightning-button variant="brand" label="Back" title="Back" onclick={backButton}
+                class="slds-m-left_x-small">
+            </lightning-button>
+            <template if:true={showSubmitButton}>
+                <lightning-button variant="brand" label="Submit" title="Submit" onclick={submitButton}
+                    class="slds-m-left_x-small submitButton"></lightning-button>
+            </template>
+            <template if:false={showSubmitButton}>
+                <lightning-button variant="brand" label="Submit" disabled title="Submit" onclick={submitButton}
+                    class="slds-m-left_x-small submitButton"></lightning-button>
+            </template>
+        </div>
+    </div>
+</template>

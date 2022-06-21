@@ -1,0 +1,50 @@
+<template>
+    <template if:true={isLoading}>
+        <lightning-spinner alternative-text="Saving" variant="brand" size="medium"></lightning-spinner>
+   </template>
+    <template if:true={termsAndConditions}>
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col slds-size_1-of-1">
+                    <h2>Release of Identification Form to NotaryCam</h2>
+                    
+                    <p>Please review your Identification Form by clicking <lightning-button variant="base" label="view your Intealth Identification Form" title="ID Form Preview Link" onclick={handleIDFormPreview}></lightning-button> and ensure all information is correct. If you are unable to view the identification form or it contains incorrect information, please contact us.</p>
+            </div>
+        </div>
+        <div class="slds-is-relative">
+            <lightning-formatted-rich-text value={termsAndConditions.Copy__c}></lightning-formatted-rich-text>
+            <br/>
+            <lightning-input class="checkbox-float" type="checkbox" id={termsAndConditions.Id} value={termsAndConditions.Id} onchange={handleAffirmation}></lightning-input>
+            <lightning-formatted-rich-text value={termsAndConditions.Short_Copy__c}></lightning-formatted-rich-text>
+            <br/><br/>
+            <lightning-button disabled={disableSave} label="Release" variant="brand" title="Save" onclick={handleSave}></lightning-button>
+            &nbsp;
+            <lightning-button label="Cancel" variant="brand" title="Cancel" onclick={handleCancel}></lightning-button>
+        </div>
+    </template>
+    <c-modal header={header} onclosedialog={handleCloseModal}>
+        <span slot="content">
+            <c-document-viewer ondocviewer_ready={handleShowDocument} 
+                enable-redaction={enableRedaction} enable-annotation={enableAnnotation}>
+            </c-document-viewer>
+        </span>
+    </c-modal>
+    <template if:true={notaryTransactionEventPublished}>
+        <div class="demo-only" style="height: 640px;">
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Intealth Identification Form Sent to NotaryCam</h2>
+                    </header>
+                    <div class="slds-modal__content slds-var-p-around_medium" id="modal-content-id-1">
+                        <p class="slds-var-p-bottom_small">Your Intealth Identification Form has been transmitted to NotaryCam. Within 24 hours, NotaryCam will send an email to the email address in your Intealth profile that includes a link inviting you to initiate or schedule your online notary session. Once you receive the invitation email from NotaryCam, the link to initiate or schedule your online notary session also will be available in MyIntealth. Please follow the instructions at the link to initiate or schedule your Notarycam session as soon as you receive the invitation email.</p>
+                        <p class="slds-var-p-bottom_small">Please contact us if you have any questions.</p>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <lightning-button label="OK" variant="brand" title="OK" onclick={handleOK}></lightning-button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+    </template>
+</template>

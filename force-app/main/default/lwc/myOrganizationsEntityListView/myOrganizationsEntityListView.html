@@ -1,0 +1,43 @@
+<template>
+    <br/>
+    <div class="formMargin">
+        <div class="secContainer">
+            <!--My Organizations-->
+            <div class="headeralign">
+                <p>Below is a list of the primary entities for which you are a contact.<br><br></p> 
+                <h2>My Entities({data.length})</h2>
+            </div>
+            <template if:true={isMyOrgsFound}>
+                <c-paginator class="paginatorAR" records={myOrganizations} total-records={myOrganizations.length}
+                        show-search-box="true" onpaginatorchange={handleMyOrgPaginatorChange} attributes-to-avoid={attributesList}>
+                </c-paginator>
+                <lightning-datatable key-field="id" columns={myOrgColumns} data={recordsToDisplayMyOrg} hide-checkbox-column show-row-number-column
+                        default-sort-direction={defaultSortDirection} sorted-direction={sortDirection} sorted-by={sortedBy}
+                        onsort={onHandleSort} onrowaction={viewEntityRecord}>
+                </lightning-datatable>
+            </template>
+            <template if:false={isMyOrgsFound}>
+                <div class="noRecordsSection">--No Records Found--</div>
+            </template>
+        </div> <br/><br/>
+        <!--My Cases-->
+        <div class="secContainer">
+            <p>If you request a change to the information for your entity, a case will be created and listed below. You can click the <b>Case Number</b> to view the details of your request.</p><br>
+            <div class="headeralign">
+                <h2>My Cases({dataMyCases.length})</h2>
+            </div>
+            <template if:true={isMyCasesFound}>
+                <c-paginator class="paginatorCR" records={myCases} total-records={myCases.length}
+                        show-search-box="true" onpaginatorchange={handleMyCasesPaginatorChange} attributes-to-avoid={attributesList}>
+                </c-paginator>
+                <lightning-datatable key-field="id" columns={myCasesColumns} data={recordsToDisplayMyCases} hide-checkbox-column show-row-number-column
+                        default-sort-direction={defaultSortDirectionMyCases} sorted-direction={sortDirectionMyCases} sorted-by={sortedByMyCases}
+                        onsort={onHandleSortMyCases} onrowaction={viewCaseRecord}>
+                </lightning-datatable>
+            </template>
+            <template if:false={isMyCasesFound}>
+                <div class="noRecordsSection">--No Records Found--</div>
+            </template>
+        </div>
+    </div>
+</template>

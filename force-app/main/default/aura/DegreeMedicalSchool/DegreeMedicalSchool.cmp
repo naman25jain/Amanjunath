@@ -1,0 +1,4 @@
+<aura:component implements="flexipage:availableForAllPageTypes,force:hasRecordId,force:appHostable" access="global">
+	<aura:attribute name="selectedSearchRecord" type="sObject" default="{}"/>
+	<c:LightningSearch targetObject="Account" IconName="standard:account" label="Account" selectedRecord="{!v.selectedSearchRecord}" primaryDisplayField="Name" targetFields="BillingCity,BillingState,BillingCountry" targetFieldsDetail="BillingCity,BillingState,BillingCountry" SOQL_Filter="" SOQL_Limit="5"/>
+</aura:component>

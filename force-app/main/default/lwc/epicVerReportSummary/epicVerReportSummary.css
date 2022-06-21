@@ -1,0 +1,39 @@
+.pad{
+    padding-left: 25%;
+    padding-top: 3%;
+}
+.cred-header{
+    background-color: #cccccc;
+    line-height: 30px;
+}
+.labelsize{
+    font-size: 14px;
+    font-weight: bold;
+}
+.paddingleft{
+    padding-left: 25.5%;
+}
+.paddingleftMain{
+    padding-left: 24%;
+}
+.paddingleftName{
+    padding-left: 17.25%;
+}
+.paddingleftTranslation{
+    padding-left: 11%;
+}
+.cloudpaddingleft{
+    padding-right: 118px;
+}
+.paddingAuthority{
+    padding-left: 14.75%;
+}
+.paddingGoodStandCert{
+    padding-left: 1.75%;
+}
+.paddingGoodStandCertIssued{
+    padding-left: 6.1%;
+}
+.casHeader{
+    font-weight: bold;
+}

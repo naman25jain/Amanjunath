@@ -1,0 +1,134 @@
+.headerbackground{
+  background-color: #f3f2f2;
+}
+.formMargin{
+  margin-left: 20%;
+  margin-right: 22%;
+  padding-top: 5px;
+}
+
+.gridLeftBorder{
+padding-left:2%;
+padding-right:5%;
+}
+
+.gridRightBorder{
+padding-left:5%;
+padding-right:2%;  
+}
+
+.gridElementLeft{  
+padding-right:10%;
+}
+
+.gridElementRight{
+padding-left:10%;  
+}
+
+.gridMargin{
+width:100%;
+}
+
+.subHeader{
+font-style: italic;
+padding-top:10px;
+padding-bottom:10px;
+font-weight: bold;
+}
+.paddingScreenTitle {
+  padding-top:20px;
+  margin-left: 20%;
+  margin-right: 10%;
+  font-size: 17px;
+  font-weight: bold;
+}
+.paddingScreenDetails {
+  padding-top:20px;
+  margin-left: 20%;
+  margin-right: 10%;
+  color:#ff0000;
+  font-size: 13px;
+}
+.padding {
+  padding-top:15px;
+  margin-left: 30%;
+  margin-right: 10%;
+}
+.errormsg{
+  color:#ff0000;
+  font-size: 13px;
+  font-weight: bold;
+}
+.required
+{
+  color: red;
+  padding-bottom: 1px;
+  margin-bottom: 1px
+}
+.buttonAlignment{
+  padding-top: 25px;
+  padding-left:42%;
+}
+.tableCoursresult{
+  padding-left: 25%;
+}
+.tableCoursyearandmonth{
+  padding-left: 5px;
+}
+.displayblock{
+  display:block;
+}
+.displaynone{
+  display:none;
+}
+.paddingLeg {
+  padding-top:20px;
+}
+.tcLeftPad{
+  padding-left: 25%;
+}
+.headerLeg {
+  line-height: 2;
+  text-align: center;
+}
+.buttonAlignmentLeg{
+  padding-left: 44%;    
+  padding-top: 2%;    
+}
+
+.cancelButtonLeg{
+  margin-left:2%;
+}
+
+ul.subAffirmation {
+  list-style-type: circle;
+  padding-left: 5%;
+  font-weight: bold;
+}
+
+.checkbox-floatLeg {
+  float: left;
+}
+.errormsgName{
+  color:#ff0000;
+  font-size: 13px;
+}
+.errorMsgNameAlignment{
+  padding-top: 1px;
+  margin-top: 1px;
+}
+
+.tableHeader{
+  font-weight: bold;
+}
+
+.tcbutns{
+  padding-left: 7%;
+}
+.oldlabel{
+  font-weight: bold;
+}
+.THIS .slds-dropdown-trigger .slds-dropdown {
+  height: 250px;
+  overflow: auto;
+}

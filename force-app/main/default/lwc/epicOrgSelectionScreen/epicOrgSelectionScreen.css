@@ -1,0 +1,21 @@
+.formMargin{
+    margin-left: 25%;
+    margin-right: 25%;
+    padding-top:20px;
+}
+.buttonAlignment{
+    padding-top: 25px;
+    padding-left: 25%;
+}
+.padding{
+    padding-top: 20px;
+}
+.selectedRec{
+    font-weight: bold;
+}
+.paddingleft{
+    padding-left: 430px;
+}
+.lightningCard{
+    min-height: 225px;
+}

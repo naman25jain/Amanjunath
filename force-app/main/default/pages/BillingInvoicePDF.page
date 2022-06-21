@@ -1,0 +1,297 @@
+<apex:page standardController="AcctSeed__Billing__c" extensions="BillingInvoicePDFControllerExt" title="Raul's Title" renderAs="pdf" standardStylesheets="false" applyHtmlTag="false" showHeader="false">
+	<head>
+		<style type="text/css">
+			.full-width {
+				width: 100%;
+			}
+
+			body {
+				font-family: "Arial""Sans-Serif";
+				font-size: 12px;
+				margin: 0px;
+			}
+
+			.alignCenter {
+				text-align: center;
+			}
+
+			.alignLeft {
+				text-align: left;
+			}
+
+			.alignRight {
+				text-align: right;
+			}
+
+			.tableHeader {
+				font-weight: bold;
+				height: 20px;
+				padding: 6px;
+				vertical-align: top;               
+				border-top: 3px solid #000;
+			}
+
+			.columnHeader {
+				text-align: right;
+			}
+
+			.tableRow {
+				/*border-bottom: 1px solid #002b66;*/
+				padding: 6px;
+				vertical-align: text-top;
+			}
+
+			.topLine {
+				border-top: 1px solid #002b66;
+			}
+
+			.tableRowAmount {
+				background-color: #002b66;
+				color: white;
+			}
+
+			.tableRowAdress {
+				color: #002b66;
+			}
+
+
+			.dataLabelHeader {
+				font-weight: bold;
+				font-size: x-large;
+				height: 20px;
+				padding: 4px;
+				vertical-align: top;
+				color: #000000;
+			}
+
+			.dataLabel {
+				font-weight: bold;
+				font-size: small;
+				height: 20px;
+				padding: 4px;
+				vertical-align: top;
+				color: #000000;
+			}
+
+			.dataLabelNoBold {
+				font-weight: normal;
+				font-size: small;
+				height: 20px;
+				padding: 4px;
+				vertical-align: top;
+				color: #000000;
+			}
+
+			.dataWhiteLabel {
+				font-weight: bold;
+				font-size: small;
+				height: 20px;
+				padding: 4px;
+				vertical-align: top;
+				color: #ffffff;
+			}      
+		</style>
+	</head>
+
+	<!-- BODY -->
+	<body>
+		<div class="header">
+			<table style="width:100%">
+				<tr>
+					<td style="vertical-align:middle">
+						<table style="width:300px;border-collapse:collapse;" Border="0">
+							<tr>
+								<td style="vertical-align:top;text-align:right">
+									<apex:outputField value="{!AcctSeed__Billing__c.AcctSeed__Billing_Format__r.AcctSeed__Image__c}" rendered="{!!ISBLANK(AcctSeed__Billing__c.AcctSeed__Billing_Format__r.AcctSeed__Image__c)}" />                                    
+								</td>
+							</tr>
+							
+						</table>
+					</td>
+
+					<td style="width:350px;">&nbsp;</td>
+					<td style="vertical-align: bottom">
+						<table style="width:300px;border-collapse:collapse;" Border="0">
+							<tr>
+								<td ColSpan="2" class="dataLabelHeader alignRight">Invoice</td>
+							</tr>
+							<tr><td style="height:15px;"></td></tr>
+							<tr>
+								<td Style="align-content:center">
+									<table Style="width: 100%; background-color: black;"  CellPadding="1" CellSpacing="2" Border="0">
+										<tr>
+											<td class="dataWhiteLabel alignCenter">Invoice #</td>
+											<td class="dataWhiteLabel alignCenter">Date</td>                                            
+										</tr>
+										<tr>
+											<td Style="background-color:white;" class="dataLabel alignCenter"><apex:outputField value="{!AcctSeed__Billing__c.Name}" rendered="{!!ISBLANK(AcctSeed__Billing__c.Name)}" /></td>
+											<td Style="background-color:white;" class="dataLabel alignCenter"><apex:outputField value="{!AcctSeed__Billing__c.AcctSeed__Date__c}" rendered="{!!ISBLANK(AcctSeed__Billing__c.AcctSeed__Date__c)}" /></td>
+										</tr>                        
+									</table>
+								</td>
+							</tr>
+							<tr><td style="height:15px;"></td></tr>
+						</table>
+					</td>
+				</tr>
+
+								
+			</table>
+		</div>
+		
+		<!-- Bill to and Ship to Tables -->
+		<div class="content">
+			<table style="width:100%;border-collapse:collapse;margin-top:25px;margin-bottom:25px;" CellSpacing="0">
+				<tr>
+					<td style="vertical-align: top">
+						<table style="width: 300px; background-color: black;" Border="0" CellPadding="2" CellSpacing="0">
+							<tr><td Class="dataWhiteLabel">Bill To</td></tr>
+							<tr>
+								<td>
+									<table style="width: 100%; background-color: white;" Border="0" CellPadding="1" CellSpacing="0">
+										<tr><td><apex:outputField value="{!AcctSeed__Billing__c.AcctSeed__Customer__r.Name}" rendered="{!!ISBLANK(AcctSeed__Billing__c.AcctSeed__Customer__r.Name)}" /></td></tr>
+										<tr><td><apex:outputField value="{!AcctSeed__Billing__c.AcctSeed__Billing_Contact__r.Account.Name}" rendered="{!!ISBLANK(AcctSeed__Billing__c.AcctSeed__Billing_Contact__r.Account.Name)}" /></td></tr>
+										<tr><td><apex:outputField value="{!AcctSeed__Billing__c.AcctSeed__Billing_Contact__r.Name}" rendered="{!!ISBLANK(AcctSeed__Billing__c.AcctSeed__Billing_Contact__r.Name)}" /></td></tr>
+										<tr><td><apex:outputField value="{!AcctSeed__Billing__c.AcctSeed__Billing_Street__c}" rendered="{!!ISBLANK(AcctSeed__Billing__c.AcctSeed__Billing_Street__c)}" /></td></tr>
+										<tr><td><apex:outputField value="{!AcctSeed__Billing__c.AcctSeed__Billing_City__c}" rendered="{!!ISBLANK(AcctSeed__Billing__c.AcctSeed__Billing_City__c)}" />
+											<apex:outputText rendered="{!!ISBLANK(AcctSeed__Billing__c.AcctSeed__Billing_City__c)}">,</apex:outputText> 
+											<apex:outputField value="{!AcctSeed__Billing__c.AcctSeed__Billing_State__c}" rendered="{!!ISBLANK(AcctSeed__Billing__c.AcctSeed__Billing_State__c)}" />&nbsp; 
+											<apex:outputField value="{!AcctSeed__Billing__c.AcctSeed__Billing_PostalCode__c}" rendered="{!!ISBLANK(AcctSeed__Billing__c.AcctSeed__Billing_PostalCode__c)}" />
+										</td></tr>
+									</table>
+								</td>
+							</tr>
+						</table>
+					</td>
+					<!-- <td style="width:350px;">&nbsp;</td> -->
+				</tr>
+			</table>
+
+			<!-- I guess, table header for each line? -->
+			<table style="width:100%;border-collapse:collapse;">
+				<tr>
+					<td>
+						<table style="border-collapse: collapse; background-color: black; width:100%">
+							<colgroup span="5"></colgroup>
+							<thead class="rich-table-thead" style="background-color: black;">
+								<tr>
+									<th Class="tableHeader dataWhiteLabel alignCenter" style="width:90px">Line #</th>
+									<th Class="tableHeader dataWhiteLabel alignCenter" style="width:120px">Service</th>
+									<th Class="tableHeader dataWhiteLabel alignCenter" style="width:200px">Applicant Name</th>
+									<th Class="tableHeader dataWhiteLabel alignRight" style="width:50px">Quantity</th>
+									<th Class="tableHeader dataWhiteLabel alignRight" style="width:90px">Rate</th>
+									<th Class="tableHeader dataWhiteLabel alignRight" style="width:90px">Amount</th>
+								</tr>
+							</thead>
+						</table>
+					</td>
+				</tr>
+			</table>
+
+			<apex:variable value="{!1}" var="rowNum"/>
+
+			<!-- This is the actual table with the data -->
+			<table style="width:100%;border-collapse:collapse;">
+				<tr>
+					<td>
+						<table style="width: 100%; background-color:black;"  CellPadding="2" CellSpacing="0" Border="0">
+							<apex:repeat value="{!billingLines}" var="line">
+								<tr>
+									<td class="tableRow alignCenter" style="background-color: white; width: 90px">
+										<div class="overflowHidden">
+											<apex:outputText value="{!FLOOR(rowNum)}" />
+											<!-- <apex:outputField value="{!line.Name}" /> -->
+											<apex:variable var="rowNum" value="{!rowNum + 1}"/>
+										</div>
+									</td>
+									<td class="tableRow alignLeft" style="background-color: white; width: 120px;">
+										<div class="overflowHidden">
+											<apex:outputField value="{!line.AcctSeed__Product__r.Name}" />
+										</div>
+									</td>
+									<td class="tableRow alignRight" style="background-color: white; width: 200px">
+										<div class="overflowHidden">
+											<apex:outputField value="{!line.Invoiceable_Description__c}" />
+										</div>
+									</td>
+									<td class="tableRow alignRight" style="background-color: white; width: 50px">
+										<div class="overflowHidden">
+											<!-- <apex:outputField value="{!line.AcctSeed__Hours_Units__c}" /> -->
+											<apex:outputText value="{0, number, ##0}">
+												<apex:param value="{!line.AcctSeed__Hours_Units__c}"/>
+											</apex:outputText>
+										</div>
+									</td>                                    
+									<td class="tableRow alignRight" style="background-color: white; width: 90px">
+										<div class="overflowHidden">
+											<apex:outputText value="{0, number, $#,###,##0.00}">
+												<apex:param value="{!line.AcctSeed__Rate__c}"/>
+											</apex:outputText>
+										</div>
+									</td>                                    
+									<td class="tableRow alignRight" style="background-color: white; width: 90px">
+										<div class="overflowHidden">
+											<apex:outputText value="{0, number, $#,###,##0.00}">
+												<apex:param value="{!line.AcctSeed__Total__c}"/>
+											</apex:outputText>
+										</div>
+									</td>
+								</tr>
+							</apex:repeat>
+						</table>
+					</td>
+				</tr>
+			</table>
+
+			<table style="width:100%;border-collapse:collapse;">
+				<tr>
+					<td colspan="4" style="background-color: white; width:470px;"></td>                            
+					<td Style="vertical-align: top; background-color: white;" ColSpan="2">
+						<table style="width:300px;"  CellPadding="1" CellSpacing="2">
+							<tr>
+								<td Class="alignLeft dataLabel">Subtotal</td>
+								<td class="alignRight">
+									<div class="overflowHidden">
+										<!-- <apex:outputField value="{subTotal}" rendered="{!!isCurrencyFormat}"/> -->
+										<apex:outputText value="{0, Number, Currency}">
+											<apex:param value="{!subTotal}"/>
+										</apex:outputText>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td Class="alignLeft dataLabel">Sales Tax</td>
+								<td class="alignRight">
+									<div class="overflowHidden">
+										<apex:outputField value="{!AcctSeed__Billing__c.AcctSeed__Sales_Tax3__c}" rendered="{!!isCurrencyFormat}"/>
+										<apex:outputText value="{!CurrencyFormat}" rendered="{!isCurrencyFormat}">
+											<apex:param value="{!AcctSeed__Billing__c.AcctSeed__Sales_Tax3__c}"/>
+										</apex:outputText>
+									</div>
+								</td>
+							</tr>
+							<tr>
+								<td Class="alignLeft dataLabel">Total</td>
+								<td class="alignRight">
+									<div class="overflowHidden">
+										<!-- <apex:outputField value="{total}" rendered="{!!isCurrencyFormat}"/> -->
+										<apex:outputText value="{0, Number, Currency}">
+											<apex:param value="{!total}"/>
+										</apex:outputText>
+									</div>
+								</td>
+							</tr>
+								
+						</table>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<!-- End of Content div -->
+
+		<!-- <apex:outputPanel layout="block" style="width:100%;margin-top:100px" rendered="{!AcctSeed__Billing__c.Include_Disclaimer_and_Signature__c}">
+			<apex:outputField value="{!AcctSeed__Billing__c.AcctSeed__Billing_Format__r.Disclaimer_Statement__c}" />
+		</apex:outputPanel> -->
+
+	</body>
+</apex:page>

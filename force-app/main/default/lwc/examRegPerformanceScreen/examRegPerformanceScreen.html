@@ -1,0 +1,28 @@
+<template>
+    <div class="slds-is-relative">
+        <template if:true={spinner}>
+            <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+        </template>
+        <div class="padding">
+        </br>
+            <template if:true={showMsg}>
+                <div class="successMessage" style="color:#4BB543;font-size: 13px;">
+                    <lightning-formatted-rich-text  value={successMessageText}></lightning-formatted-rich-text>
+                    </br>
+                </div>
+            </template>
+            <h2 class="header" style="text-align:center;"><lightning-formatted-rich-text value='IMPORTANT INFORMATION REGARDING
+                ECFMG PROVISION OF PERFORMANCE DATA TO MEDICAL SCHOOLS'></lightning-formatted-rich-text></h2>
+        </div></br>
+        <div >
+            <c-g-display-content unique-content-value="Exam_Reg_Performance_Info"></c-g-display-content>
+            <lightning-input class="checkbox-float" label='Please check this box to indicate that you have read, understood, and agree to the above notice.' type="checkbox" checked={accepted} onchange={handleChange}></lightning-input>
+        </div></br></br>
+        <div class="buttonAlignment" style="padding-left: 35%;">
+            <lightning-button variant="brand" label="Save" title="Previous" onclick={handleClick} class="slds-m-left_x-small" disabled={btnDisabled}></lightning-button>
+            <lightning-button variant="brand" label="Previous" title="Previous" onclick={prevButton} class="slds-m-left_x-small"></lightning-button>
+            <lightning-button variant="brand" label="Next" title="Next" onclick={nextButton} class="slds-m-left_x-small" disabled={btnDisabled}></lightning-button>
+            <lightning-button variant="brand" label="Cancel" title="Cancel" onclick={cancelButton} class="slds-m-left_x-small"></lightning-button>
+        </div>
+    </div>
+</template>

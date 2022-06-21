@@ -1,0 +1,13 @@
+.padding {
+    padding-top:20px;
+    margin-left: 25%;
+    margin-right: 25%;
+  }
+  .checkbox-float,.checkbox-float-certification{
+    font-weight: bold;
+  }
+
+h2 {
+  font-size: 1.125rem;
+  font-weight: 700;
+}

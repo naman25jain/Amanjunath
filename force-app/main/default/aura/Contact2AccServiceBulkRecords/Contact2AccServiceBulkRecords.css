@@ -1,0 +1,8 @@
+.THIS .lwcWrapper{
+    overflow: hidden;
+    height: 400px;
+}
+.THIS .slds-dropdown_length-with-icon-7,
+.THIS .slds-dropdown--length-with-icon-7{
+    max-height: calc(((0.8125rem * 1.5) + 1rem) * 12) !important;
+}

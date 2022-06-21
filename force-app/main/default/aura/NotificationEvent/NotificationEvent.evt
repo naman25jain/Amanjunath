@@ -1,0 +1,7 @@
+<!--
+ - Created by Matthew on 9/17/18.
+ -->
+    <aura:event type="APPLICATION" description="NotificationEvent" access="global">
+        <aura:attribute name="successMessage" type="String"/>
+        <aura:attribute name="errorMessage" type="String"/>
+    </aura:event>

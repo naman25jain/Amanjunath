@@ -1,0 +1,110 @@
+<template>
+    <template if:true={spinner}>
+        <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+    </template>
+    <div></br></div>
+    <div class="heading">
+        <p class="subheading">
+            Document Upload
+        </p>
+    </div>
+    <template if:true={showLandingScreen}>
+        <template if:true={disableUpload}>
+            <div class="padding">
+                <lightning-button variant="Success" label="Upload Documents" title="Upload Documents" onclick={handleClick} disabled></lightning-button>
+            </div> 
+            <strong>
+                <span class="errormsg">
+                    Registration of the ERAS token must be completed through the AAMC <a href="https://myeras.aamc.org/myeras-web/#/landing"><span>MyERAS</span></a> before documents can be uploaded in support of the ERAS application
+                </span>    
+            </strong>
+        </template>
+        <template if:false={disableUpload}>
+            <template if:true={showUploadMain}>
+                <div class="padding">
+                    <lightning-button variant="Success" label="Upload Documents" title="Upload Documents" onclick={handleClick}></lightning-button>
+                </div>
+            </template>
+        </template>
+        <template if:true={showReqTransLink}>
+            <div class="padding">
+                <a href ="javascript:void(0)" onclick={handleReqClick}>Request Medical School Transcript Transfer from ECFMG Certification</a>
+            </div>
+        </template>
+    </template>
+    <template if:false={showUploadMain}>
+        <div class="padding">
+            <c-g-display-content unique-content-value="ERAS_Upload_Instr"></c-g-display-content>
+        </div>
+        <div class="padding">
+        </div>
+        <lightning-layout>
+            <span style="font-size:14px;"><strong>Upload Photograph</strong></span>
+        </lightning-layout>
+        <lightning-layout>
+            <lightning-layout-item padding="around-small" size="4">
+                <c-cloud-document-upload-wrapper label="Upload Photograph" pay-load={payloadPhoto} max-allowed-file-size={size} accepted-file-formats=".jpeg"
+                    warning-message = "" enable-annotation="false" enable-redaction="false" azure-doc-url={photoUrl} ongeneratedurl={handleOnPhotoUpload}>
+                </c-cloud-document-upload-wrapper>
+            </lightning-layout-item>
+        </lightning-layout>
+        <lightning-layout>
+            <lightning-layout-item padding="around-small" size="8">
+                <c-g-display-content unique-content-value="ERAS_Photo_Upload_Instr"></c-g-display-content>
+            </lightning-layout-item>
+        </lightning-layout>
+        <template if:true={portalAccess}>
+            <div class="padding">
+                <c-g-display-content unique-content-value="ERAS_Upload_Instr_Portal"></c-g-display-content>
+            </div>
+        </template>
+        <template if:false={portalAccess}>
+            <div class="padding">
+            </div>
+            <lightning-layout>
+                <span style="font-size:14px;"><strong>Upload Medical School Performance Evaluation</strong></span>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="4">
+                    <c-cloud-document-upload-wrapper label="Upload Medical School Performance Evaluation" pay-load={payloadMspe} max-allowed-file-size={mspeSize} accepted-file-formats=".pdf" 
+                        merge="applPortal" warning-message = "" enable-annotation="false" enable-redaction="false" azure-doc-url={mspeUrl} ongeneratedurl={handleOnMspeUpload}>
+                    </c-cloud-document-upload-wrapper>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="8">
+                    <c-g-display-content unique-content-value="ERAS_MSPE_Upload_Instr"></c-g-display-content>
+                </lightning-layout-item>
+            </lightning-layout>
+            <div class="padding">
+            </div>
+            <lightning-layout>
+                <span style="font-size:14px;"><strong>Upload Medical School Transcript</strong></span>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="4">
+                    <c-cloud-document-upload-wrapper label="Upload Medical School Transcript" pay-load={payloadFmst} max-allowed-file-size={mspeSize} accepted-file-formats=".pdf" 
+                        merge="applPortal" warning-message = "" enable-annotation="false" enable-redaction="false" azure-doc-url={fmstUrl} ongeneratedurl={handleOnFmstUpload}>
+                    </c-cloud-document-upload-wrapper>
+                </lightning-layout-item>
+            </lightning-layout>
+            <lightning-layout>
+                <lightning-layout-item padding="around-small" size="8">
+                    <c-g-display-content unique-content-value="ERAS_FMST_Upload_Instr"></c-g-display-content>
+                </lightning-layout-item>
+            </lightning-layout>
+        </template>
+        <div class="submitButton">
+            <lightning-button variant="brand" label="Submit" title="Submit" onclick={handleSubmit} class="slds-m-left_x-small"></lightning-button>
+        </div>
+    </template>   
+    <template if:true={showScreen1}>
+        <c-eras-trans-req-screen-1 case-id={caseId} onnextevent={showNextScreen} oncancelevent={showLandScreen}></c-eras-trans-req-screen-1>
+    </template>
+    <template if:true={showScreen2}>
+        <c-eras-trans-req-screen-2 case-id={caseId} onbackevent={showFirstScreen} oncancelevent={showLandScreen} oncompleteevent={showConfScreen}></c-eras-trans-req-screen-2>
+    </template>
+    <template if:true={showConfirmScreen}>
+        <c-eras-trans-req-confirm case-numbers={caseNumber} oncloseevent={showLandScreen}></c-eras-trans-req-confirm>
+    </template>
+</template>

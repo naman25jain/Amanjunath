@@ -1,0 +1,12 @@
+<template>
+    <lightning-card>
+			<h1 slot="title" class="slds-text-heading_medium slds-var-m-bottom_medium slds-text-align_center">
+				Account Balance
+			</h1>
+			<h1 class="slds-text-heading_medium slds-align_absolute-center slds-var-m-around_small">
+				<b>Total:</b>&nbsp;
+					<lightning-formatted-number class={styleClass} value={total} format-style="currency" currency-code="USD">
+				</lightning-formatted-number>
+			</h1>
+		</lightning-card>
+</template>

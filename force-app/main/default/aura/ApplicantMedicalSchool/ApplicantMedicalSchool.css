@@ -1,0 +1,8 @@
+/**
+ * Created by Matthew on 10/31/18.
+ */
+.THIS h2 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

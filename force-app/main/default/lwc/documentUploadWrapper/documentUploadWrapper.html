@@ -1,0 +1,38 @@
+<template>
+    <div class="slds-card slds-card_boundary">
+        <div class="slds-page-header slds-page-header_record-home">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__figure">
+                    <span class="slds-icon_container slds-icon-standard-drafts" title="Documents">
+                        <lightning-icon size="small" icon-name="standard:drafts"></lightning-icon>
+                    </span>
+                </div>
+                <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                        <span><strong>Documents</strong></span>
+                    </h2>
+                </div>
+            </header>
+        </div>
+        <c-document-upload onfileuploaded={handleFileUploaded} accepted-file-formats={acceptedFileFormats}
+            max-allowed-file-size={maxAllowedFileSize}></c-document-upload>
+
+        <template if:true={documents.length}>
+            <lightning-datatable key-field="id" data={documents} columns={columns} hide-checkbox-column
+                onrowaction={handleRowAction}>
+            </lightning-datatable>
+        </template>
+    </div>
+    <c-modal header={header} onclosedialog={handleCloseModal}><span slot="content">
+            <c-document-viewer 
+                ondocviewer_ready={handleMainDocument}
+                ondocviewer_save_document={handleSaveDocument} 
+                document={document} 
+                asset-type={assetType}
+                enable-redaction={enableRedaction} 
+                enable-annotation={enableAnnotation} 
+                enable-saving={enableSaving}>
+            </c-document-viewer>
+        </span>
+    </c-modal>
+</template>

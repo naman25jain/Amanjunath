@@ -1,0 +1,79 @@
+<template>
+    <div class="gridItemPadding">
+        <lightning-layout multiple-rows="true">
+            <lightning-layout-item padding="around-small" size="4">
+                <div class="">Report Recipient</div>
+            </lightning-layout-item>
+            <lightning-layout-item padding="around-small" size="6">
+                <div>{reportRecipient}</div>
+            </lightning-layout-item>
+            <lightning-layout-item padding="around-small" size="4">
+                <div class="">Report Recipient Country</div>
+            </lightning-layout-item>
+            <lightning-layout-item padding="around-small" size="6">
+                <div>{reportRcptCountry}</div>
+            </lightning-layout-item>
+            <template if:false={showAddress}>
+                <lightning-layout-item padding="around-small" size="4">
+                    <div class="">Report Recipient Address</div>
+                </lightning-layout-item>
+                <lightning-layout-item padding="around-small" size="6">
+                    <div>{reportRcptAddress}</div>
+                </lightning-layout-item>
+            </template>
+            <template if:true={showAddress}>
+                <lightning-layout-item padding="around-small" size="4">
+                    <div class="">Report Recipient Address</div>
+                </lightning-layout-item>
+                <lightning-layout-item padding="around-small" size="6">
+                    <div>
+                        <template if:true={reportRcptStreet}>
+                            {reportRcptStreet}<br>
+                        </template>
+                        <template if:true={reportRcptCity}>
+                            {reportRcptCity}<br>
+                        </template>
+                        <template if:true={reportRcptState}>
+                            {reportRcptState}<br>
+                        </template>
+                        <template if:true={reportRcptZip}>
+                            {reportRcptZip}
+                        </template>
+                    </div>
+                </lightning-layout-item>
+            </template>
+            <lightning-layout-item padding="around-small" size="4">
+                <div class="">Reference/identification number</div>
+            </lightning-layout-item>
+            <lightning-layout-item padding="around-small" size="6">
+                <div>{caseData.Reference_Number__c}</div>
+            </lightning-layout-item>
+            <!--Include the ‘Reject Reason’ to display in the summary.-->
+            <template if:true={caseData.Rejection_Reason__c}>
+                <lightning-layout-item padding="around-small" size="4">
+                    <div class="">Rejection Reason</div>
+                </lightning-layout-item>
+                <lightning-layout-item padding="around-small" size="6">
+                    <div>{caseData.Rejection_Reason__c} </div>
+                </lightning-layout-item>
+            </template>
+            <lightning-layout-item padding="around-small" size="4">
+                <div class="">Reported Credential</div>
+            </lightning-layout-item>
+            <lightning-layout-item size="3" >
+                <div>
+                    <c-cloud-document-upload-wrapper class="cloudDocumentUpload"
+                        pay-load={epicReportPayload}
+                        max-allowed-file-size=10
+                        accepted-file-formats=".jpeg,.jpg,.tiff,.pdf"
+                        enable-annotation="false" enable-redaction="false"
+                        azure-doc-url={epicAzureUrl}
+                        hide-upload="true">
+                    </c-cloud-document-upload-wrapper>
+                </div>
+            </lightning-layout-item>
+            
+        </lightning-layout>
+    </div>
+
+</template>

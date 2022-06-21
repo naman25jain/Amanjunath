@@ -1,0 +1,32 @@
+<template>
+    <div></br></div>
+    <div class="heading">
+    </div>
+    </br>
+    <div class="padding">
+<template if:true={showErrorEpicReportButton}> 
+     <c-g-display-content unique-content-value="PortalRestriction"></c-g-display-content>
+</template>
+<template if:true={showEpicReport}> 
+     <!-- <lightning-formatted-rich-text class='error' value={EpicRepReq}> </lightning-formatted-rich-text> -->
+   <template if:true={reqRepBtn}>
+          <c-epic-ver-Report onrequestrep={showRegRepDetails}></c-epic-ver-Report>
+      </template>
+      <template if:true={reqRepDtl}>
+          <c-epic-ver-report-details onbackevent={showRegRepBack} onnextevent={showRegRep}></c-epic-ver-report-details>
+      </template>
+      <template if:true={reqRepSum}>
+        <c-epic-ver-report-summary cas={cs} onbackevent={showReqDet} onnextevent={showReqLeg}></c-epic-ver-report-summary>
+    </template>
+    <template if:true={reqRepLeg}>
+        <c-epic-report-legal onpreviousevent={showRegRep} onnextevent={showReqPay} oncancelevent={showEpicRepMain} parent-cases={parentCVCases} epic-cases={cs}></c-epic-report-legal>
+    </template>
+    <template if:true={reqRepPayment}>
+        <c-epic-report-payment onpreviousevent={showReqLeg} onnextevent={showConfirm} parent-cv-cases={parentCVCases}></c-epic-report-payment>
+    </template>
+    <template if:true={reqRepConfirm}>
+        <c-epic-report-confirmation onbackevent={showReqPay} oncloseevent={showEpicRepMain} case-numbers={caseNumbers}></c-epic-report-confirmation>
+    </template>
+</template>
+     </div>           
+</template>

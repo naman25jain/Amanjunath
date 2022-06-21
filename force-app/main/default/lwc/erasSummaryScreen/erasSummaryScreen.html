@@ -1,0 +1,17 @@
+<template>
+    <div></br></div>    
+    <template if:true={showSummary}>
+        <div class="padding">
+            <h2>ERAS Token Request Summary</h2></br>            
+            You are about to request a {activeSeasonMonth} Token to apply via ERAS for a residency position to start in {seasonStartDate}. This Token will be valid for the {activeSeasonMonth} ERAS season only. Please note that the fee to request an ERAS Token is non-refundable, even if you do not use the Token. All other fees in connection with your ERAS application are payable to other organizations, such as the AAMC.
+        </div> 
+        <div></br></div>
+        <div class="buttonAlignment">
+            <lightning-button variant="brand" label="Next" title="Next" onclick={handleNextClick} class="slds-var-m-left_x-small"></lightning-button>
+            <lightning-button variant="brand" label="Back" title="Back" onclick={handleBackClick} class="slds-var-m-left_x-small"></lightning-button>
+        </div>        
+    </template>
+    <template if:true={showNextScreen}>
+        <c-shopping-cart onpreviousevent={showSummaryScreen} case-record-id={erasCaseRecordId}></c-shopping-cart>
+    </template> 
+</template>

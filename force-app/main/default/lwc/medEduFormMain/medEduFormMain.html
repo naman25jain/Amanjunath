@@ -1,0 +1,76 @@
+<template>
+    <template if:true={spinner}>
+        <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+    </template>
+    <lightning-accordion allow-multiple-sections-open>
+        <lightning-accordion-section name="A" label={activeCaseLabel}>
+            <c-credential-verification-data onnextevent={showCaseDet} onremovecomp={removeComp}
+                onactivecount={activecount} applicant-specific=true applicant-id={contactId} 
+                current-entity={accountId} curr-case-id={recordId}>
+            </c-credential-verification-data>
+        </lightning-accordion-section>
+    </lightning-accordion>
+    <div class="formMargin">
+        <div class="slds-col slds-size_1-of-1 slds-border_bottom slds-var-p-top_large">
+            <h3 class="gridHeader">
+                <c-g-display-content unique-content-value="entity_credential_heading"></c-g-display-content>
+            </h3>
+        </div>
+        <div class="slds-grid slds-wrap">
+            <div class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                <span>Name of Record</span>
+            </div>
+            <div class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                <lightning-input type="Text" value={contactName} variant="label-hidden" disabled></lightning-input>
+            </div>
+            <div class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                <span>DOB</span>
+            </div>
+            <div class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                <lightning-input type="Text" value={birthDate} variant="label-hidden" disabled></lightning-input>
+            </div>
+            <div class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                <span>Name on Document</span>
+            </div>
+            <div class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                <lightning-input type="Text" value={nameOnDoc} variant="label-hidden" disabled></lightning-input>
+            </div>
+            <div class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                <span>MyIntealth ID</span>
+            </div>
+            <div class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                <lightning-input type="Text" value={myIntealthId} variant="label-hidden" disabled></lightning-input>
+            </div>
+            <div class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                <span>Unique Medical School ID</span>
+            </div>
+            <div class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                <lightning-input type="Text" value={uniMedSchId} variant="label-hidden" disabled></lightning-input>
+            </div>
+        </div>
+        <hr/>
+        <div class="slds-grid slds-wrap">
+            <div class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                <span>Case Number</span>
+            </div>
+            <div class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                <lightning-input type="Text" value={caseNumber} variant="label-hidden" disabled></lightning-input>
+            </div>
+        </div>
+        <hr/>
+    </div>
+    <template if:true={entityMedFormReviewAsset}>
+        <c-entity-med-form-review-asset record-id={recordId} case-id={caseId} contact-id={contactId}
+            onshowquest={showQuestionnaire} onshowlist={showCredRevCaseList}>
+        </c-entity-med-form-review-asset>
+    </template>
+    <template if:true={showquest}>
+        <c-med-edu-questionnaire account-id={accountId} case-id={caseId} contact-id={contactId}
+            onreviewdocuments={showReviewDocuments} onshowlist={showCredRevCaseList} onshowsummary={showSummaryScreen}>
+        </c-med-edu-questionnaire>
+    </template>
+    <template if:true={showSummary}>
+        <c-med-edu-form-summary case-id={caseId} onshowquest={showQuestionnaire} current-entity={accountId} applicant-id={contactId} onactivecaseslist={handleactiveCaselist} onshowlist={showCredRevCaseList}>
+        </c-med-edu-form-summary>
+    </template>
+</template>

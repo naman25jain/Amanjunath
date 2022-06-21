@@ -1,0 +1,6 @@
+<!--
+ - Created by Matthew on 11/6/18.
+ -->
+<aura:event type="APPLICATION" description="LightningSearchNew">
+    <aura:attribute name="Data" type="Object" description="Use this to pass any data needed by subscriber(s)."/>
+</aura:event>

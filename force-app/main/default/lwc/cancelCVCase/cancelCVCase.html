@@ -1,0 +1,21 @@
+<template>
+    <div class="slds-modal__content slds-var-p-around_medium slds-is-relative">
+        <lightning-quick-action-panel>
+            <template if:true={spinner}>
+                <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+            </template>
+            <template if:true={showCancelSection}>
+                <lightning-radio-group name="cancelCaseOpt" variant="label-hidden" options={CancelByOpt} value={value} type="radio" onchange={handleSelection}></lightning-radio-group>
+                <template if:true={showReasonBox}>
+                    <lightning-textarea name="cancelReason" label="Reason for Cancellation" placeholder="Enter your comments" required="true" class="reasonforCancel" onchange={enableFinish} value={reasonForCancel}></lightning-textarea>
+                </template>
+            </template>
+            <template if:true={showCancelForEICS}>
+                <lightning-textarea name="cancelReasonEICS" label="Reason for Cancellation" placeholder="Enter your comments" required="true" class="reasonforCancelEICS" onchange={enableFinish} value={reasonForCancel}></lightning-textarea>
+            </template>
+            <div> 
+                <lightning-button variant="brand" label="Finish" disabled=true title="Finish" onclick={handleFinish} class="slds-var-m-left_x-small slds-float_right slds-var-p-around_small finButton"></lightning-button>
+            </div>
+        </lightning-quick-action-panel>
+    </div>
+</template>

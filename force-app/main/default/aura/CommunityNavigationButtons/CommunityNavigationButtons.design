@@ -1,0 +1,31 @@
+<!--
+ - Created by Matthew on 11/8/18.
+ -->
+
+<design:component label="Community Navigation Buttons">
+
+    <design:attribute name="previousUrl" label="Previous URL" description="The url to navigate to when the previous button is clicked."/>
+    <design:attribute name="nextUrl" label="Next URL" description="The url to navigate to when the next button is clicked." />
+
+    <design:attribute name="previousUrlForEPIC" label="Previous URL for EPIC" description="The url to navigate to when the previous button is clicked when in the EPIC service path."/>    
+	<design:attribute name="nextUrlForEPIC" label="Next URL for EPIC" description="The url to navigate to when the next button is clicked when in EPIC service path." />
+
+    <design:attribute name="previousUrlForGEMx" label="Previous URL for GEMx" description="The url to navigate to when the previous button is clicked when in the GEMx service path."/>    
+	<design:attribute name="nextUrlForGEMx" label="Next URL for GEMx" description="The url to navigate to when the next button is clicked when in GEMx service path." />
+
+    <design:attribute name="previousUrlForECFMGCert" label="Previous URL for ECFMG Cert" description="The url to navigate to when the previous button is clicked when in the ECFMG Cert service path."/>
+    <design:attribute name="nextUrlForECFMGCert" label="Next URL for ECFMG Cert" description="The url to navigate to when the next button is clicked when in ECFMG Cert service path." />
+
+    <design:attribute name="summaryUrlCert" label="ECFMG Certification Summary URL" description="The summary URL for ECFMG Certification" />
+    <design:attribute name="summaryUrlEPIC" label="EPIC Summary URL" description="The summary URL for EPIC service" />
+    <design:attribute name="summaryUrlGEMx" label="GEMx Summary URL" description="The summary URL for GEMx service" />
+    <design:attribute name="summaryUrlOther" label="Other Summary URL" description="The summary URL for all services but EPIC/ECFMG Certification" />
+
+    <design:attribute name="previousEnabledByDefault" label="Previous Button Enabled By Default?" description="Should the previous button be enabled by default?" />
+    <design:attribute name="nextEnabledByDefault" label="Next Button Enabled By Default?" description="Should the next button be enabled by default?" />
+
+    <design:attribute name="allowPreviousWhenInvalid" label="Previous Button Enabled When Invalid?" description="Should the previous button be enabled if there is a validation error?" />
+    <design:attribute name="allowNextWhenInvalid" label="Next Button Enabled When Invalid?" description="Should the next button be enabled if there is a validation error?" />
+
+
+</design:component>

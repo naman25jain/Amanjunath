@@ -1,0 +1,15 @@
+<aura:component implements="force:lightningQuickActionWithoutHeader,force:hasRecordId" controller="ScoreWithheldHelper">	    
+    
+    <div class="slds-col modal-header slds-modal__header">
+        <h2 class="title slds-text-heading--medium">Release Score</h2>
+    </div>
+    <div class="slds-col modal-body scrollable slds-p-around--medium" style="height: 80px; max-height: 400px; overflow-y: auto !important">
+        <div>
+            Are you sure you want to release the score data?
+        </div>
+        <br/>
+        <div style="text-align: right;">
+            <lightning:button variant="brand" label="Proceed" onclick="{! c.confirm }" />
+        </div>
+    </div>
+</aura:component>

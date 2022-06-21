@@ -1,0 +1,13 @@
+<!--
+ - Created by Matthew on 11/8/18.
+ -->
+
+<design:component label="Contact Association Types">
+
+    <design:attribute name="recordNameSingular" label="Singular Record Name" description="The name of the record in singular form, e.g. School."/>
+    <design:attribute name="recordNamePlural" label="Plural Record Name" description="The name of the record in plural form, e.g. Schools."/>
+    <design:attribute name="submittedRecordType" label="User Submitted Record Type Name" description="The name of the account record type for which to assign to an applicant submitted account, e.g. Unapproved Medical School."/>
+    <design:attribute name="associationRecordType" label="Associate Type Record Type Name" description="The name of the association type record type for which the list is filtered, e.g. Degree Medical School or Medical School." />
+    <design:attribute name="readOnly" label="Read Only Mode?" description="If checked, cards will not show Delete button." />
+    
+</design:component>

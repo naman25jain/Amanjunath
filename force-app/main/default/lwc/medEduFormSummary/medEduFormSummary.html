@@ -1,0 +1,44 @@
+<template>
+    <template if:true={spinner}>
+        <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+    </template>
+    <div class="formMargin">
+        <div class="slds-col slds-size_1-of-1 slds-border_bottom slds-var-p-top_large">
+            <h3 class="gridHeader">Summary Screen</h3>
+        </div>
+        <template if:true={showMedEduForm}>
+            <div class="slds-grid slds-wrap">
+                <div class="slds-col slds-var-p-top_small slds-size_1-of-4">
+                    <span>Medical Education Form</span>
+                </div>
+                <div class="slds-col slds-var-p-top_small slds-size_1-of-4">
+                    <div>                              
+                        <c-cloud-document-upload-wrapper class="cloudDocumentUpload"
+                            pay-load={finalPayload}
+                            max-allowed-file-size=10
+                            accepted-file-formats=".jpeg,.jpg,.tiff,.pdf"
+                            enable-annotation="false" enable-redaction="false"
+                            hide-upload="true" 
+                            azure-doc-url={azureDocUrl}>                                
+                        </c-cloud-document-upload-wrapper>
+                    </div>
+                </div>
+            </div>
+        </template>
+        <br/><br/>
+        <div class="padding">
+            <c-g-display-content unique-content-value="Med_Edu_Form_Summary"></c-g-display-content>
+        </div>
+        <lightning-layout-item padding="around-small" size="6">
+            <div class="slds-align_absolute-center">
+                <lightning-button variant="brand" label="Return to Credential Review List" title="Return to Credential Review List" class="slds-var-m-left_x-small" onclick={showCredReviewList}>
+                </lightning-button>
+                <lightning-button variant="brand" label="Back" title="Back" class="slds-var-m-left_x-small" onclick={showQuestionnaire}>
+                </lightning-button>
+                <lightning-button variant="brand" label="Submit to ECFMG" title="Submit to ECFMG" class="slds-var-m-left_x-small" onclick={showConfirmation}>
+                </lightning-button>
+            </div>
+        </lightning-layout-item>
+    </div>
+    <c-modal-component data-id = 'confirmationWindow' title='Confirm' message="Are you sure you want to submit?"  show-secondary-button='true' secondary-button-text='No' onclosedialog={cancelSubmit} show-primary-button='true' primary-button-text='Yes' onprimarybuttonclick={proceedSubmit}></c-modal-component>
+</template>

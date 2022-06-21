@@ -1,0 +1,81 @@
+<!--
+ - Created by Matthew on 11/5/18.
+ -->
+
+<aura:component
+        controller="ApplicantCommunityController"
+        description="Dynamic Address"
+        extends="c:CommunityBase"
+        implements="lightning:availableForFlowScreens,forceCommunity:availableForAllPageTypes">
+
+    <aura:attribute name="layout" type="String" default="Stacked" />
+
+    <aura:attribute name="formElementCssClass" type="String" default="slds-form-element slds-form-element_stacked" />
+
+    <aura:attribute name="showStateList" type="Boolean" default="false" description="Shows listing of states if true." />
+    <aura:attribute name="blockEntry" type="Boolean" default="false" description="Hides all fields except country." />
+
+    <aura:attribute name="prohibitedCountriesMap" type="Map" default="{}" description="A country ISO and message pair to specify prohibited countries."/>
+
+    <aura:attribute name="countryOptions" type="List" default="[]"/>
+    <aura:attribute name="stateOptions" type="List" default="[]"/>
+
+    <aura:attribute name="countryStateMap" type="Map" default="{}" description="A mapping of countries and related states."/>
+
+    <aura:attribute name="country" type="String" />
+    <aura:attribute name="street" type="String"  />
+    <aura:attribute name="city" type="String" />
+    <aura:attribute name="state" type="String" />
+    <aura:attribute name="postalCode" type="String"  />
+
+    <aura:attribute name="allFields" type="String" default="street,city,stateList,stateText,postalCode,country"/>
+    <aura:attribute name="requiredFields" type="String"/>
+
+    <aura:attribute name="hasAddressChanges" type="Boolean" default="false" />
+
+    <aura:attribute name="readOnly" type="Boolean" default="false" description="If true, all controls will be disabled" />
+    <aura:attribute name="disabled" type="Boolean" default="false" description="If true, all controls will be disabled. To be used internally for enabling/disabling component based on ready state." />
+
+    <aura:method name="validate" access="public" action="{!c.validate}" description="Validates the component fields and returns true if all fields are valid"/>
+    <aura:method name="reset" access="public" action="{!c.reset}" description="Clears out all the field values"/>
+
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}" />
+    <aura:handler name="change" value="{!v.country}" action="{!c.handleCountryOnChange}"/>
+
+    <aura:attribute name="initialLoad" type="Boolean" default="true" />
+
+    <div class="slds-form">
+
+        <div class="{!v.formElementCssClass}">
+            <lightning:combobox aura:id="country" name="country" label="Country" value="{!v.country}" placeholder="Select" options="{!v.countryOptions}" required="true" onchange="{!c.handleChange}" disabled="{!v.disabled || v.readOnly}" />
+        </div>
+
+        <aura:if isTrue="{!v.blockEntry == false}">
+
+            <div class="{!v.formElementCssClass}">
+                <lightning:textarea aura:id="street" name="street" label="Street" value="{!v.street}" onblur="{!c.handleInputOnBlur}" disabled="{!v.disabled || v.readOnly}" onchange="{!c.handleChange}" maxlength="255" />
+            </div>
+
+            <div class="{!v.formElementCssClass}">
+                <lightning:input aura:id="city" name="city" label="City" value="{!v.city}" onblur="{!c.handleInputOnBlur}" disabled="{!v.disabled || v.readOnly}" onchange="{!c.handleChange}" />
+            </div>
+
+            <div class="{!v.formElementCssClass}">
+                <aura:if isTrue="{!v.showStateList == true}">
+                    <lightning:combobox aura:id="stateList" name="stateList" label="State/Province" value="{!v.state}" placeholder="Select" options="{!v.stateOptions}" onchange="{!c.handleStateOnChange}" disabled="{!v.disabled || v.readOnly}" />
+                </aura:if>
+                
+                <aura:if isTrue="{!v.showStateList == false}">
+                    <lightning:input aura:id="stateText" name="stateText" label="State/Province" value="{!v.state}" onblur="{!c.handleInputOnBlur}" onchange="{!c.handleChange}" disabled="true" />
+                </aura:if>
+            </div>
+
+            <div class="{!v.formElementCssClass}">
+                <lightning:input aura:id="postalCode" name="postalCode" label="ZIP/Postal Code" value="{!v.postalCode}" onblur="{!c.handleInputOnBlur}" onchange="{!c.handleChange}" disabled="{!v.disabled || v.readOnly}" />
+            </div>
+
+        </aura:if>
+
+    </div>
+
+</aura:component>

@@ -1,0 +1,5 @@
+<apex:page standardController="Case_Line__c" extensions="BillingInvoiceBatchForceStart_Extension" action="{!forceStartBatch}">
+	<script>
+    window.history.back();
+	</script>
+</apex:page>

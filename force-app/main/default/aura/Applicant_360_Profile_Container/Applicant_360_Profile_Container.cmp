@@ -1,0 +1,6 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,forceCommunity:availableForAllPageTypes" access="global">
+	<lightning:unsavedChanges aura:id="unsaved" onsave="{!c.handleSave}" ondiscard="{!c.handleDiscard}" />
+    <lightning:button label="Make Unsaved Changes" onclick="{!c.makeUnsavedChanges}" />
+    <lightning:button label="Clear Unsaved Changes" onclick="{!c.clearUnsavedChanges}" />
+	<center>Unsaved Changes Test</center>
+</aura:component>

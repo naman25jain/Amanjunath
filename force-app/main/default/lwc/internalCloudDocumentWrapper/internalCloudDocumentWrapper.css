@@ -1,0 +1,82 @@
+* {
+  box-sizing: border-box;
+}
+
+/* Create three unequal columns that floats next to each other */
+.column {
+  float: left;
+  padding: 1px;
+  /*height: 1000px;  Should be removed. Only for demonstration */
+  background-color: rgb(235, 235, 235);
+}
+
+.left {
+  width: 100%;
+}
+
+.middle {
+  width: 49.5%;
+}
+
+.right {
+  width: 49.5%;
+}
+
+.center {
+  width: 100%;
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.wrapperDiv {
+  height: 220px; 
+  border: 1px solid #ccc;
+}
+
+.topSectionsWrapper {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+  height: 100%;  
+}
+
+.topSection {
+  display: table-cell;
+  border: 1px solid #ccc;
+}
+
+.attributesSelectionWrapper {
+  padding: 10px;
+}
+
+.slds-dropdown-trigger_click.slds-is-open .slds-dropdown,
+.slds-dropdown-trigger--click.slds-is-open .slds-dropdown {
+  overflow: initial;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.assetWrapperDiv {
+  height: 220px; 
+  overflow-y: scroll;
+  border: 1px solid #ccc;
+}
+
+.assetSectionWrapper {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+  height: 100%;  
+}
+
+.assetSection {
+  display: table-cell;
+  border: 1px solid #ccc;
+}

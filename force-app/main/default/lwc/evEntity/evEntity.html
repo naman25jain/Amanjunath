@@ -1,0 +1,9 @@
+<template>
+    <template if:true={showListView}>
+        <c-ev-entity-list-views current-entity={curEnt} onnextevent={showEVFormPage} refresh-list-onload={refreshList}></c-ev-entity-list-views>
+    </template>
+    <template if:false={showListView}>
+        <c-enrollment-verification-form onbackevent={showEVCasesList} onsubmitevent={showEVCasesList} selected-case-id={casDetValue} selected-applicant-id={conDetValue}>
+        </c-enrollment-verification-form>
+    </template>
+</template>

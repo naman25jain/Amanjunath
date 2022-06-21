@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    
+    <apiVersion>52.0</apiVersion>
+    
+    <isExposed>true</isExposed>
+    
+    <targets>
+        
+        <target>lightning__AppPage</target>
+        
+        <target>lightning__RecordPage</target>
+        
+        <target>lightning__FlowScreen</target>
+        
+        <target>lightningCommunity__Page</target>
+        
+        <target>lightningCommunity__Default</target>
+        
+    </targets>
+    
+    <targetConfigs>
+        
+        <targetConfig targets="lightning__FlowScreen">
+            
+            <property name="strScreenName" type="String" label="Screen Name" description="Current Screen Name"/>
+            
+            <property name="strScreenInstructions" type="String" label="Screen Instructions" description="Current Screen Instructions"/>
+            
+            <property name="strRecordId" type="String" label="Current Record Id" description="Id of the current record"/>
+            
+            <property name="affirmationCurentId" type="String" label="Current Affirmation Id" description="Current Affirmation Id"/>
+            
+            <property name="flowHeader" type="String" label="Header of the Flow" description="Header of the Flow"/>
+            
+            <property name="affirmationRecord" type="@salesforce/schema/Affirmation__c" label="Affirmation Record" description="Affirmation Record" role="outputOnly"/>
+            
+            <property name="afRecordTypeDevName" type="String" label="Affirmation Record Type Developer Name" description="Affirmation Record Type Developer Name"/>
+            
+            <property name="isPrevious" type="Boolean" label="Previous Screen" description="Previous Screen"/>
+            
+            <property name="isNext" type="Boolean" label="Next Screen" description="Next Screen"/>
+            
+            <property name="isFinish" type="Boolean" label="Finish Screen" description="Finish Screen"/>
+
+            <property name="flowVariables" type="String" label="Flow Variables" description="Flow Variables"/>
+
+            <property name="fieldsToUpdate" type="String" label="Fields to Update" description="Fields to Update"/>
+            
+        </targetConfig>
+        
+         
+    </targetConfigs>
+    
+</LightningComponentBundle>

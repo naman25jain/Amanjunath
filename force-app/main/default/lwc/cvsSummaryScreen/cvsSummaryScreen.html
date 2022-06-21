@@ -1,0 +1,50 @@
+<template>
+    <template if:true={spinner}>
+        <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+    </template>
+    <div>
+        <div class="padding">
+            <c-g-display-content unique-content-value="CVS_Sum_Screen"></c-g-display-content>
+        </div>
+        <div class="slds-var-p-top_large">
+            <template if:false={showNoRecs}>
+                <table class="slds-border_top slds-table slds-no-cell-focus slds-table_bordered slds-table_edit slds-table_fixed-layout slds-table_resizable-cols"
+                    role="grid" >
+                    <caption class="bold"></caption>
+                    <thead>
+                        <tr class="slds-line-height_reset">
+                            <th aria-label="Description" aria-sort="none"
+                                class="slds-is-resizable slds-is-sortable slds-text-align_center" scope="col">
+                                <span class="slds-truncate" title="Description">Description of Request</span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template for:each={pendCVSReqs} for:item="cvsReq" for:index="cvsIndex">
+                            <tr key={cvsReq.Id} data-record-id={cvsReq.Id} class="cvsRequest">
+                                <template if:true={isApplicant}>
+                                    <td class="slds-text-align_center whiteSpace">CVS request for {cvsReq.Alternate_Entity__r.Name}</td>
+                                </template>
+                                <template if:false={isApplicant}>
+                                    <td class="slds-text-align_center whiteSpace">CVS request for ECFMG# {cvsReq.Applicant__r.USMLE_ID__c} - {cvsReq.Alternate_Entity__r.Name}</td>
+                                </template>
+                                <td class="slds-text-align_center"><a href="javascript:void(0)" onclick={handleRemoval} data-recordid={cvsReq.Id}>Remove</a></td>
+                                <td class="slds-text-align_center"><a href="javascript:void(0)" onclick={handleEditReq} data-recordid={cvsReq.Id}>Edit</a></td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </template>
+            <template if:true={showNoRecs} style='padding-top:15px'>     
+                You don't have any CVS Report yet.
+            </template>
+        </div>
+        <div class="btnAlignment slds-align_absolute-center slds-var-p-top_large">
+            <lightning-button variant="brand" label="Cancel" title="Cancel" onclick={handleCancel} class="slds-var-m-left_x-small"></lightning-button> 
+            <lightning-button variant="brand" label="Add another Request" title="Add another Request" onclick={handleAnotherReq} class="slds-var-m-left_x-small"></lightning-button> 
+            <template if:false={showNoRecs}>
+            <lightning-button variant="brand" label="Next" title="Next" onclick={handleNext} class="slds-var-m-left_x-small"></lightning-button> 
+        </template>
+        </div>
+    </div>
+</template>

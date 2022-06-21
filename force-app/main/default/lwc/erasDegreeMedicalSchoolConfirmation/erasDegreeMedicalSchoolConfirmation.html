@@ -1,0 +1,54 @@
+<template> 
+    <lightning-record-edit-form record-id={objectId}  object-api-name={objectType}>       
+        <div class="slds-is-relative">
+            <template if:true={spinner}>
+                <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+            </template>
+            <template if:true={showMedSchool}>
+                <lightning-messages></lightning-messages>            
+                <div class="padding">      
+                    <h2>Degree Medical School Confirmation</h2></br>                                       
+                    <p>{label.degreeMedicalSchoolConfirmationLanguage}</p>
+                </div>                              
+                <template if:true={disabledMedSchoolDetails}>
+                    <div class="formMargin">
+                        <div class="slds-grid slds-wrap">                        
+                            <div class="slds-col slds-var-p-top_medium slds-size_1-of-2">
+                                <span>Degree Medical School</span>
+                                <lightning-helptext content="Shows your Degree Medical School that awarded or will award your medical degree."></lightning-helptext>
+                            </div>
+                            <div class="slds-col slds-var-p-top_medium slds-size_1-of-2">
+                                <input id="inputSchool1" name="inputSchool" disabled list="valueList" data-medicalschool placeholder={placeholder} value={medicalSchool} onchange={handleSchoolChange} class="slds-input schoolRecord" type="text"/>
+                                <datalist id="valueList1" class="schoolRecordDatalist">
+                                    <template for:each={schoolRecordValues.data} for:item='item'>
+                                        <option key={item.Id} data-entityid={item.Id} value={item.Name}>
+                                            {item.Name} 
+                                            <br>
+                                            <em>{item.BillingStreet}, {item.BillingCity}, {item.BillingState}, {item.BillingPostalCode}, {item.BillingCountry}</em>
+                                        </option>
+                                    </template>
+                                </datalist>
+                            </div>                            
+                            <div class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                                <span><span class="required">*</span>Is your Degree Medical School correct?</span>
+                            </div>
+                            <div class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                                <lightning-radio-group name="confirmDegreeMedicalSchool" class="confirmationRadioGroup" data-radiogroup variant="label-hidden" options={confirmDegreeMedicalSchool} value={value} type="radio" onchange={handleSelection}></lightning-radio-group>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+                <template if:true={showError}>
+                    <div class="padding">
+                        <lightning-formatted-rich-text class='errormsg' value={errorMessagesText}></lightning-formatted-rich-text>
+                    </div>
+                </template>
+                <div class="buttonAlignment">
+                    <lightning-button variant="brand" label="Next" title="Next" onclick={handleNextClick} class="slds-var-m-left_x-small"></lightning-button>
+                    <lightning-button variant="brand" label="Back" title="Back" onclick={handleBackClick} class="slds-var-m-left_x-small"></lightning-button>
+                </div>
+                <div class="footer">&nbsp;</div>
+            </template>     
+        </div>  
+    </lightning-record-edit-form>
+</template>

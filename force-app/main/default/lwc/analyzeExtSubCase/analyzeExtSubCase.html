@@ -1,0 +1,134 @@
+<template>
+    <template if:true={showCredDetail}>
+        <lightning-card title='Credential Details'>
+            <div class=formMargin>
+                <template if:true={spinner}>
+                    <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+                </template>
+                <div class="slds-col slds-var-p-top_small slds-size_3-of-3">
+                    <label class="slds-form-element__label" for="credType">
+                        <span class="required">*</span>
+                        <span class="credLabel">Credential</span>
+                    </label>
+                    <div class="slds-col slds-p-top_none slds-size_3-of-3">
+                        <lightning-combobox class="credAtt" id="credType" name="Credential" variant="label-hidden"
+                            label="Credential Attributes" placeholder="Choose a Credential Type" value={chosenAttrValue}
+                            onchange={handleChangeCredential} onkeydown={preventBackslash} options={credItems}>
+                        </lightning-combobox>
+                    </div>
+                    <template if:true={credAttError}>
+                        <div>
+                            <div class="slds-p-top_none slds-var-p-left_xx-small slds-p-bottom_none slds-p-right_none">
+                                <span class="errormsg">Select a credential</span>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+                <template if:true={showCredAttrFields}>
+                    <div class="slds-grid slds-wrap entityPadding">
+                        <div class="slds-col slds-var-p-top_small slds-size_3-of-3">
+                        <label class="slds-form-element__label" for="nameOnDoc">
+                            <span class="required">*</span>
+                            <span class="entLabel">Name on Document</span>
+                        </label></div>
+                        <div class="slds-col slds-p-top_none slds-size_3-of-3">
+                            <lightning-input type="text" class="nameOnDoc" label="Name on Document" name="nameonDocument"
+                                value={nameOnDoc} variant="label-hidden" onchange={handleChangeForInputFields}>
+                            </lightning-input>
+                        </div>
+                        <template if:true={nameOnDocErr}>
+                        <div>
+                            <lightning-layout-item  size="12">
+                                <span class="errormsg">Name on Document is required</span>
+                            </lightning-layout-item>
+                        </div>
+                        </template>
+                    </div>
+                    <lightning-record-edit-form record-id={recordIdEdit}
+                        object-api-name="Contact_Association_Type__c" onerror={preventDefaultMethod}>
+                        <template for:each={listOfFields} for:item="fieldName">
+                            <div key={fieldName.key} class="inputElement">
+                                <div class="slds-col slds-var-p-top_small slds-size_3-of-3">
+                                    <label class="slds-form-element__label" key={fieldName.key} for={fieldName.key}>
+                                        <template if:true={fieldName.required}>
+                                            <span class="required">*</span>
+                                        </template>
+                                        {fieldName.value}
+                                    </label>
+                                </div>
+                                <div key={fieldName.key}>
+                                    <div class="slds-col slds-p-top_none slds-size_3-of-3">
+                                        <lightning-input-field id={fieldName.key} key={fieldName.key} value={fieldName.fieldValue}
+                                            field-name={fieldName.key} variant="label-hidden" onkeydown={validateInputForDate}></lightning-input-field>
+                                        <div key={fieldName.key}>
+                                            <template if:true={fieldName.isReq}>
+                                                <div>
+                                                    <div class="slds-p-top_none slds-var-p-left_xx-small slds-p-bottom_none slds-p-right_none">
+                                                        <span class="errormsg">{fieldName.errMSg}</span>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div> 
+                            </div> 
+                        </template>
+                        <div class="slds-grid slds-wrap entityPadding">
+                            <div class="slds-col slds-var-p-top_small slds-size_3-of-3">
+                                <label class="slds-form-element__label">Date of Birth</label>
+                            </div>
+                            <div class="slds-col slds-p-top_none slds-size_3-of-3">
+                                <lightning-input-field field-name="DOB_on_Document__c" variant="label-hidden" onchange={validateDob} class="dob"></lightning-input-field>
+                            </div>
+                            <template if:true={dobErr}>
+                                <div>
+                                    <lightning-layout-item  size="12">
+                                        <span class="errormsg">Date of Birth cannot be in future</span>
+                                    </lightning-layout-item>
+                                </div>
+                            </template>
+                        </div>
+                    </lightning-record-edit-form>
+                </template>
+                <div class="slds-grid slds-wrap entityPadding">
+                    <div class="slds-col slds-var-p-top_small slds-size_3-of-3">
+                        <label class="slds-form-element__label" for="entType">
+                            <span class="required">*</span>
+                            <span class="entLabel">Entity</span>
+                        </label>
+                    </div>
+                    <div class="ui-large-icon-input slds-col slds-p-top_none slds-size_3-of-3">
+                        <input id="Entity" name="Entities" list="valueList" placeholder="Select an Entity" value={entityName} onchange={handleEntityChange} type="text" class="slds-form-element slds-input entityRecord"/>
+                        <datalist id="valueList" class="EntityList">
+                        <template for:each={EntityRecordValues.data} for:item='item'>
+                            <option key={item.Id} data-entityid={item.Id} value={item.Name}>
+                                {item.Name} 
+                            </option>
+                        </template>
+                        </datalist>
+                    </div>
+                    <template if:true={selectedEntErr}>
+                        <div>
+                            <div class="slds-p-top_none slds-var-p-left_xx-small slds-p-bottom_none slds-p-right_none">
+                                <span class="errormsg">Please select the Entity</span>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+                <div class="slds-grid slds-wrap verifPadding">
+                    <div class="slds-col slds-size_2-of-4">
+                        <label class="slds-form-element__label">
+                            <span>Verification Form Not Available</span>
+                        </label>
+                    </div>
+                    <div class="slds-col slds-size_1-of-4">
+                        <lightning-input type="checkbox" label="Verification Form Not Available" variant="label-hidden" name="VerNotAvail" class="verformNotAvail" onclick={handleCheckbox}></lightning-input>
+                    </div>
+                </div>
+            </div>
+            <div class="buttonAlignment"> 
+                <lightning-button variant="brand" label="Finish" title="Finish" onclick={handleSave} type="submit" class="slds-var-m-left_x-small"></lightning-button>
+            </div>
+        </lightning-card>  
+    </template>  
+</template>

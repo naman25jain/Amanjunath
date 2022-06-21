@@ -1,0 +1,1278 @@
+<template>
+    <template if:false={showConfirmation}>  
+    <template if:true={isOthIns}>
+        <template if:true={showAll}>
+         <div class={tabClass}>
+            <div class="paddingScreenTitle">  
+                {label.deficiencyForm}
+            </div>
+            <div class="paddingScreenDetails">  
+                {label.deficiencyFormSubHeader}
+            </div>   
+            <template if:true={showDegreeSchool}>  
+            <div class="padding">  
+                <div class="displayblock">
+                    <template if:true={showError}>
+                        <span class="errormsg">Please check Degree Medical School errors</span>                      
+                    </template>
+                </div>
+            </div>    
+        </template>   
+    <template if:true={showAllTCT}>
+        <div class="padding">  
+            <div class="displayblock">
+                <template if:true={isErrMsgMainFiles}>
+                    <span class="errormsg">{label.errorAllDocument}</span>
+                </template>
+            </div>
+            <div class="displayblock">
+            <template if:true={isErrMsgName}>               
+                <span class="errormsg">{label.errorNameDocument}</span>
+            </template>
+        </div>
+            <div class="displayblock">
+            <template if:true={isErrMsgDeanDate}>
+                <span class="errormsg">{label.errorDeanDate}</span>
+            </template>
+        </div>
+            <div class="displayblock">
+            <template if:true={isErrMsgTran}>
+                <span class="errormsg">{label.errorTranslationDocument}</span>
+            </template>
+        </div> </div>
+        <div class="formMargin"> 
+            <div class="slds-grid slds-wrap gridMargin">  
+                <template for:each={getOtherInstitutionData} for:item='otherInsRec' for:index='index'>                     
+                        <lightning-record-Edit-form record-id = {otherInsRec.Id} key={otherInsRec.Id} class="gridMargin recordFieldsWrapper" data-record-id={otherInsRec.Id}>                            
+                            <template if:true={otherInsRec.showHeader}>
+                                <div class="slds-col slds-p-top_medium slds-size_1-of-1">
+                                    <div class="slds-section slds-is-open">
+                                        <h3 class="slds-section__title headerbackground">
+                                            <span class="slds-truncate slds-p-horizontal_small otherSchoolRecord" title="Section Title"   data-otherschool-id={otherInsRec.Account__c}>{otherInsRec.Account_Name__c}</span>
+                                        </h3>
+                                    </div>
+                                </div>
+                                <template if:true = {otherInsRec.showCourse}>
+                                        <div class="slds-col slds-p-top_medium slds-size_1-of-1 ">
+                                            <span class="subHeader">
+                                                {label.unacceptableTCTCourses}
+                                            </span>
+                                        </div>
+                                </template>
+                            </template>
+                            <template if:true = {otherInsRec.showCourse}>                               
+                            <div class="slds-col">
+                                <div class="slds-grid slds-wrap">
+                                    <div class="slds-col slds-size_6-of-6 ">                                           
+                                        <template if:true={otherInsRec.tcCourseTitErrorFlag}>
+                                            <span class="errormsgName">{label.tcCourseTitMessage}</span>
+                                        </template>
+                                    </div>
+                                    <div class="slds-col slds-size_6-of-6 ">                                           
+                                        <template if:true={otherInsRec.tcCourseNumErrorFlag}>
+                                            <span class="errormsgName">{label.tcCourseNumMessage}</span>
+                                        </template>
+                                    </div>
+                                    <div class="slds-col slds-size_6-of-6 ">                                           
+                                        <template if:true={otherInsRec.tcCourseOutErrorFlag}>
+                                            <span class="errormsgName">{label.tcCourseOutMessage}</span>
+                                        </template>
+                                    </div>
+                                    <div class="slds-col slds-size_6-of-6 ">                                           
+                                        <template if:true={otherInsRec.tcCourseMonErrorFlag}>
+                                            <span class="errormsgName">{label.tcCourseMonMessage}</span>
+                                        </template>
+                                    </div>
+                                    <div class="slds-col slds-size_6-of-6 ">                                          
+                                        <template if:true={otherInsRec.tcCourseYrErrorFlag}>
+                                            <span class="errormsgName">{label.tcCourseYrMessage}</span>
+                                        </template>
+                                    </div>
+                                    <div class="slds-col">
+                                        <div class="slds-grid slds-wrap">
+                                            <div class="slds-col slds-p-top_medium slds-p-left_medium slds-p-right_medium slds-size_1-of-6 ">
+                                                <span class="slds-truncate tableHeader" title="Course Title">Course Title</span>
+                                            </div>
+                                            <div class="slds-col slds-p-top_medium slds-p-left_medium slds-p-right_medium slds-size_1-of-6 ">
+                                                <span class="slds-truncate tableHeader" title="Number of Credits">Number of
+                                                    Credits</span>
+                                            </div>
+                                            <div class="slds-col slds-p-top_medium slds-p-left_medium slds-p-right_medium slds-size_1-of-6 ">
+                                                <span class="slds-truncate tableHeader">
+                                                    Course Outcome
+                                                </span>
+                                            </div>
+                                            <div class="slds-col  slds-p-top_medium slds-p-left_medium  slds-size_1-of-6 ">
+                                                <span class="slds-truncate tableHeader" title="Date Credits Earned">Date Credits
+                                                    Earned</span>
+                                            </div>
+                                            <div class="slds-col slds-p-top_medium slds-p-left_medium  slds-size_1-of-6 ">                                            
+                                                
+                                            </div>
+                                            <div class="slds-col slds-p-top_medium slds-p-left_medium  slds-size_1-of-6 ">                                           
+                                            </div>   
+                                        </div>
+                                    </div>
+                                    <div class="slds-col slds-border_bottom   slds-size_6-of-6 ">                                           
+                                    </div>
+                                    <div class="slds-col ">
+                                        <div class="slds-grid slds-wrap">
+                                            <template for:each={otherInsRec.Transfer_Credits__r} for:item='tcRec' for:index='index'>
+                                                <div key={tcRec.Id} class="slds-col tcDetailsRow slds-border_bottom" data-tcid={tcRec.Id}>                                                    
+                                                 <div class="slds-grid slds-wrap">
+                                                     <div class="slds-col slds-p-right_medium slds-p-left_medium slds-p-top_medium slds-size_1-of-6 ">
+                                                         <span><lightning-input class="transferCreditCourseInput" type="text" variant="label-hidden" value={tcRec.Transfer_Credit_Course__c}></lightning-input>  </span>
+                                                     </div>
+                                                     <div class="slds-col slds-p-right_medium slds-p-left_medium slds-p-top_medium slds-size_1-of-6">
+                                                         <span><lightning-input class="transferCreditGradeInput" type="number" step="0.01" onkeydown={validateTransferCreditGradeInput} variant="label-hidden" value={tcRec.Transfer_Credit_Grade__c} ></lightning-input>        </span>
+                                                     </div>
+                                                     <div class="slds-col slds-p-right_medium slds-p-left_medium slds-p-top_medium slds-size_1-of-6">
+                                                         <span> <lightning-radio-group  label="" variant="label-hidden"
+                                                                 class="transferCreditCourseOutcomeInput tableCoursresult" options={options}
+                                                                 value={tcRec.Course_Outcome__c} type="radio">
+                                                             </lightning-radio-group>
+                                                         </span>
+                                                     </div> 
+                                                 <div class="slds-col  slds-p-left_small  slds-size_2-of-6 ">
+                                                 <div class="slds-grid slds-wrap">
+                                                    <div class="slds-col slds-size_1-of-2">
+                                                        <span class="tcLeftPad"> Month</span>
+                                                   <lightning-combobox
+                                                    label=""
+                                                    variant="label-hidden" 
+                                                    value={tcRec.Credits_Earned_Month__c}
+                                                    placeholder="Select"
+                                                    options={monthoptions}                                                        
+                                                    class="creditEarnedMonthInput" >
+                                                    </lightning-combobox> 
+                                                    </div>
+                                                <div class="slds-col  tableCoursyearandmonth slds-size_1-of-2 ">
+                                                    <span class="tcLeftPad"> Year</span>
+                                                    <lightning-input class="creditEarnedYearInput" type="text" variant="label-hidden" value={tcRec.Credits_Earned_Year__c}></lightning-input>        
+                                                </div> 
+                                                </div>
+                                                </div>   
+                                                <div class="slds-col slds-p-right_medium slds-p-left_medium slds-p-top_medium slds-size_1-of-6">
+                                                    <div class="slds-grid slds-wrap">
+                                                        <div class="slds-col slds-size_1-of-2">
+                                                            <template if:true={tcRec.showTCDel}>
+                                                            <div class="delete-icon" onclick={removeRow}  data-staging-id={otherInsRec.Id} data-tcid={tcRec.Id} data-tcindex={index}>
+                                                                <span
+                                                                    class="slds-icon_container slds-icon-action-delete slds-icon_container--circle"
+                                                                    title="Delete Course">
+                                                                    <svg class="slds-icon slds-icon--x-small" aria-hidden="true">
+                                                                        <use
+                                                                            xlink:href="/_slds/icons/action-sprite/svg/symbols.svg#delete">
+                                                                        </use>
+                                                                    </svg>
+                                                                    <span class="slds-assistive-text">Delete Course</span>
+                                                                </span>
+                                                            </div>
+                                                            </template>
+                                                        </div>
+                                                        <div class="slds-col slds-size_1-of-2">
+                                                            <template if:true={tcRec.showTCAdd}>
+                                                                <div class="add-icon" onclick={addRow} data-staging-id={otherInsRec.Id}>
+                                                                    <span
+                                                                        class="slds-icon_container slds-icon-action-add-relationship slds-icon_container--circle"
+                                                                        title="Add Course">
+                                                                        <svg class="slds-icon slds-icon--x-small" aria-hidden="true">
+                                                                            <use
+                                                                                xlink:href="/_slds/icons/action-sprite/svg/symbols.svg#add_relationship">
+                                                                            </use>
+                                                                        </svg>
+                                                                        <span class="slds-assistive-text">Add Course</span>
+                                                                    </span>
+                                                                </div>
+                                                            </template>
+                                                        </div>                                                   
+                                                </div>
+                                                </div>                                                
+                                                <div class="slds-col slds-p-right_medium slds-p-left_medium slds-size_1-of-6 "></div>
+                                                <div class="slds-col slds-p-right_medium slds-p-left_medium slds-size_1-of-6 "></div>
+                                                <div class="slds-col slds-p-right_medium slds-p-left_medium slds-size_1-of-6 "></div>
+                                                <div class="slds-col slds-var-p-left_medium slds-size_3-of-6 ">
+                                                    <template if:true = {tcRec.showErrorCourse}>
+                                                        <span class="errormsgName">
+                                                        {label.tcCoursefutureDate}
+                                                        </span>
+                                                    </template>
+                                                </div>                                              
+                                             </div>
+                                         </div>
+                                    </template>
+                                        </div>
+                                    </div>
+                                </div>                               
+                           </div> 
+                        </template>
+                            <lightning-layout multiple-rows="true">
+                                <template if:true={otherInsRec.showtctFile}>
+                                    <div class="slds-col subHeader slds-size_1-of-1">
+                                        <span>
+                                                {label.unacceptableTCT}
+                                        </span>
+                                    </div> 
+                            <template if:true={otherInsRec.tctLabAffr}>
+                                <ul class="subAffirmation">
+                                    <template if:true={otherInsRec.tctNameCondLabAffr}>
+                                        <li>
+                                        <div class="slds-col slds-size_1-of-1">
+                                            <span>
+                                                    {label.unacceptableTCTNameDocumentation}
+                                            </span>
+                                        </div>
+                                    </li>
+                                    </template>
+                                    <template if:true={otherInsRec.tctTranslationLabAffr}>
+                                        <li>
+                                        <div class="slds-col slds-size_1-of-1">
+                                            <span>
+                                                    {label.unacceptableTCTTranslation}
+                                            </span>
+                                        </div>
+                                    </li>
+                                    </template>
+                                </ul>
+                            </template>
+                                    <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">
+                                        <span class="required">*</span>
+                                            <span>Transfer Credits Transcript</span>    
+                                        </div>
+                                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-2"> 
+                                            <template if:true={otherInsRec.showtctFileDetails}>
+                                                <div>                                               
+                                                <lightning-formatted-text value="" class="value tctFileId" data-asset-id={otherInsRec.tctId}  data-asset-tran-id={otherInsRec.tctTransId}></lightning-formatted-text>
+                                            </div></template>                                                
+                                                <div> <c-cloud-document-upload-wrapper class="cloudDocumentUpload tctFileDetails"
+                                                    pay-load={otherInsRec.tctPayload} max-allowed-file-size={maxsize}
+                                                    accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" enable-annotation="false"
+                                                    enable-redaction="false" asset-type="Transfer Credit Transcript"
+                                                    onuploadcompleted={handleUploadTCT}
+                                                    data-staging-id={otherInsRec.Id} 
+                                                    data-asset-id={otherInsRec.tctId}>
+                                                </c-cloud-document-upload-wrapper>
+                                                </div>
+                                                <div>        
+                                                    <template if:true={otherInsRec.tctFileErrorFlag}>
+                                                        <span class="errormsgName">{label.Pleaseuploadfile}</span>
+                                                    </template>
+                                                </div>
+                                                <div>
+                                                    <template if:true={otherInsRec.oldtctFileFlag}>
+                                                        <Span class="oldlabel">Old File : </Span>
+                                                       <c-cloud-document-upload-wrapper class="cloudDocumentUpload"
+                                                                pay-load={otherInsRec.oldtctFilePayload}
+                                                                max-allowed-file-size={maxsize}
+                                                                accepted-file-formats=".jpeg,.jpg,.tiff,.pdf"
+                                                                enable-annotation="false" enable-redaction="false"
+                                                                asset-type="Transfer Credit Transcript"
+                                                                hide-upload="true">
+                                                            </c-cloud-document-upload-wrapper>
+                                                    </template>
+                                                </div>                                           
+                                            </div>                                           
+                                            <template if:true={otherInsRec.showtctFileDetails}>
+                                            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">
+                                                <span class="required">*</span>
+                                                <span>Name on TCT Document</span>
+                                            </div>
+                                     <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">
+                                            <lightning-input class="tctName" type="text" variant="label-hidden" value={otherInsRec.tctName}></lightning-input>        
+                                        </div>
+                                         <div class="slds-col slds-size_1-of-2 errorMsgNameAlignment">
+                                            <span></span>
+                                        </div>
+                                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-2 errorMsgNameAlignment">
+                                            <template if:true={otherInsRec.tctNameErrorFlag}>
+                                                <span class="errormsgName">{label.graduateScreenNameonDocMessage}</span>
+                                            </template>
+                                        </div>                                    
+                                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">Is Name on the Document different?</div>
+                                    <div class="slds-col slds-var-p-around_medium slds-size_1-of-2"> 
+                                            <template if:true={otherInsRec.isTctNameDiff}>
+                                                    <lightning-input class="tctNameDifferentCheckbox" checked type="checkbox" variant="label-hidden" value={otherInsRec.isTctNameDiff} onclick={handleChangeTCTName} data-staging-id={otherInsRec.Id} name="tctNameDiffCheckbox"></lightning-input>        
+                                            </template>
+                                            <template if:false={otherInsRec.isTctNameDiff}>
+                                                    <lightning-input class="tctNameDifferentCheckbox" type="checkbox" variant="label-hidden" value={otherInsRec.isTctNameDiff} onclick={handleChangeTCTName} data-staging-id={otherInsRec.Id} name="tctNameDiffCheckbox"></lightning-input>        
+                                            </template>                                          
+                                        </div>
+                                            </template>
+                                </template>
+                                    <template if:true={otherInsRec.tctNameCond}>
+                                            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">
+                                                <div>
+                                                <template if:false={otherInsRec.showtctFile}>
+                                                <span class="required">*</span>
+                                                </template>
+                                                    <span>TCT Name Documentation</span>
+                                            </div>
+                                            </div>
+                                             <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">
+                                                <div>
+                                            <c-cloud-document-upload-wrapper class="cloudDocumentUpload tctNameDocumentFileDetails"
+                                            pay-load={otherInsRec.tctNamePayload} max-allowed-file-size={maxsize}
+                                            accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" enable-annotation="false"
+                                            enable-redaction="false"
+                                            onuploadcompleted={handleUploadTCTName}>
+                                        </c-cloud-document-upload-wrapper>
+                                        <template if:true={otherInsRec.showtctNameDocDetails}>
+                                            <lightning-formatted-text value="" class="value tctNameDocumenatationSectionUploadId" data-asset-id={otherInsRec.tctNameId} data-parentasset-id={otherInsRec.tctId}></lightning-formatted-text>
+                                        </template>
+                                            <div>
+                                                <template if:true={otherInsRec.oldtctNameDocFlag}>                                                        
+                                                    <Span class="oldlabel">Old File : </Span>
+                                                   <c-cloud-document-upload-wrapper class="cloudDocumentUpload"
+                                                            pay-load={otherInsRec.oldtctNamePayload}
+                                                            max-allowed-file-size={maxsize}
+                                                            accepted-file-formats=".jpeg,.jpg,.tiff,.pdf"
+                                                            enable-annotation="false" enable-redaction="false"
+                                                            asset-type="Name Document"
+                                                            hide-upload="true">
+                                                        </c-cloud-document-upload-wrapper>
+                                                </template>                                                    
+                                            </div>
+                                                </div>                                                                                            
+                                            </div>                                        
+                                    </template>
+                                    <template if:true={otherInsRec.showtctFileDetails}>
+                                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">Is your Transfer Credit Transcript in a language other than English?</div>
+                                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">
+                                                <template if:true={otherInsRec.isTctTrans}>
+                                                        <lightning-input class="isTranscriptInEnglishCheckbox" checked type="checkbox" variant="label-hidden" value={otherInsRec.isTctTrans} onclick={handleChangeTCTTrans} data-staging-id={otherInsRec.Id} name="tctTransCheckbox"></lightning-input>        
+                                                </template>
+                                                <template if:false={otherInsRec.isTctTrans}>
+                                                        <lightning-input class="isTranscriptInEnglishCheckbox" type="checkbox" variant="label-hidden" value={otherInsRec.isTctTrans} onclick={handleChangeTCTTrans} data-staging-id={otherInsRec.Id} name="tctTransCheckbox"></lightning-input>        
+                                                </template>
+                                        </div>
+                                    </template>
+                                    <template if:true={otherInsRec.tctTransCond}>                                        
+                                            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">                                                
+                                                <div>
+                                                    <span class="required">*</span>
+                                                    <span>Transfer Credit Transcript Translation</span>
+                                                </div>                                                    
+                                            </div>                                                                               
+                                            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">
+                                                <div>
+                                            <c-cloud-document-upload-wrapper
+                                        pay-load={otherInsRec.tctTrnPayload} max-allowed-file-size={maxsize}
+                                        accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" enable-annotation="false"
+                                        enable-redaction="false" class="cloudDocumentUpload tctTranslationFileDetails"
+                                        onuploadcompleted={handleUploadTCTTrans}>
+                                         </c-cloud-document-upload-wrapper>
+                                         <template if:true={otherInsRec.showtctTransFileDetails}>
+                                            <lightning-formatted-text value="" class="value tctTranslationClassId" data-asset-id={otherInsRec.tctTransId} data-parentasset-id={otherInsRec.tctId}></lightning-formatted-text>                                                   
+                                         </template>
+                                                </div>
+                                                <div>        
+                                                </div>
+                                                <div>        
+                                                    <template if:true={otherInsRec.tctTransFileErrorFlag}>
+                                                        <span class="errormsgName">{label.Pleaseuploadfile}</span>
+                                                    </template>
+                                                </div>
+                                                <div>
+                                                    <template if:true={otherInsRec.oldtctTransFileFlag}>
+                                                        <Span class="oldlabel">Old File : </Span>
+                                                        <c-cloud-document-upload-wrapper
+                                                        pay-load={otherInsRec.oldtctTrnPayload} max-allowed-file-size={maxsize}
+                                                        accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" enable-annotation="false"
+                                                        enable-redaction="false" class="cloudDocumentUpload"
+                                                        hide-upload="true">
+                                                         </c-cloud-document-upload-wrapper>
+                                                    </template>
+                                                </div>                                           
+                                            </div>
+                                    </template>
+                                     <template if:true={otherInsRec.showpmlFile}>
+                                            <div class="slds-col subHeader slds-size_1-of-1">
+                                                    <span >
+                                                            {label.unacceptablePreMedLetter}
+                                                    </span>
+                                            </div>
+                                            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">
+                                                    <div>
+                                                        <span class="required">*</span>
+                                                        <span>Pre-Med Letter</span>
+                                                    </div> 
+                                            </div>                                  
+                                         <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">
+                                            <template if:true={otherInsRec.showpmlFileDetails}>
+                                                <div>                                               
+                                                    <lightning-formatted-text value="" class="value pmlFileId" data-asset-id={otherInsRec.pmlId}  data-asset-tran-id={otherInsRec.pmlTransId}></lightning-formatted-text>
+                                                 </div></template>                                                
+                                                <div> <c-cloud-document-upload-wrapper class="cloudDocumentUpload pmlFileDetails"
+                                                                                                  pay-load={otherInsRec.pmlPayload} max-allowed-file-size={maxsize}
+                                                                                                  accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" enable-annotation="false"
+                                                                                                  enable-redaction="false"
+                                                                                                  onuploadcompleted={handleUploadPremed}
+                                                                                                  data-staging-id={otherInsRec.Id} 
+                                                                                                  data-asset-id={otherInsRec.pmlId}>
+                                                </c-cloud-document-upload-wrapper>
+                                            </div>
+                                            <div>        
+                                                <template if:true={otherInsRec.pmlFileErrorFlag}>
+                                                    <span class="errormsgName">{label.Pleaseuploadfile}</span>
+                                                </template>
+                                            </div>
+                                            <div>
+                                                <template if:true={otherInsRec.oldpmlFileFlag}>
+                                                    <Span class="oldlabel">Old File : </Span>
+                                                    <c-cloud-document-upload-wrapper class="cloudDocumentUpload"
+                                                             pay-load={otherInsRec.oldpmlFilePayload}
+                                                             max-allowed-file-size={maxsize}
+                                                             accepted-file-formats=".jpeg,.jpg,.tiff,.pdf"
+                                                             enable-annotation="false" enable-redaction="false"
+                                                             asset-type="Transfer Credit Transcript"
+                                                             hide-upload="true">
+                                                         </c-cloud-document-upload-wrapper>
+                                                </template>
+                                            </div>                                       
+                                            </div>
+                                            <template if:true = {otherInsRec.showpmlFileDetails}>
+                                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">
+                                           <span>Name on Pre-Med Letter Document</span>
+                                        </div>
+                                    <div class="slds-col slds-var-p-around_medium slds-size_1-of-2"> 
+                                            <lightning-input class="pmlName" type="text" variant="label-hidden" value={otherInsRec.pmlName}></lightning-input>        
+                                        </div>
+                                        <div class="slds-col slds-size_1-of-2 errorMsgNameAlignment">
+                                            <span></span>
+                                        </div>
+                                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-2 errorMsgNameAlignment">
+                                            <template if:true={otherInsRec.pmlNameErrorFlag}>
+                                                <span class="errormsgName">{label.graduateScreenNameonDocMessage}</span>
+                                            </template>
+                                        </div>
+                                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">Is Name on the Document different?</div>
+                                    <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">
+                                                <template if:true={otherInsRec.ispmlNameDiff}>
+                                                        <lightning-input class="pmlNameDifferentCheckbox" checked type="checkbox" variant="label-hidden" value={otherInsRec.ispmlNameDiff}  onclick={handleChangePreName} data-staging-id={otherInsRec.Id} name="PreNameDiffCheckbox"></lightning-input>        
+                                                </template>
+                                                <template if:false={otherInsRec.ispmlNameDiff}>
+                                                        <lightning-input class="pmlNameDifferentCheckbox" type="checkbox" variant="label-hidden" value={otherInsRec.ispmlNameDiff} onclick={handleChangePreName} data-staging-id={otherInsRec.Id} name="PreNameDiffCheckbox"></lightning-input>        
+                                                </template>                                            
+                                            </div>                                    
+                                    <template if:true={otherInsRec.pmlNameCond}>
+                                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">Pre-Med Letter Name Documentation</div>
+                                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">
+                                                <div>
+                                                    <c-cloud-document-upload-wrapper class="cloudDocumentUpload pmlNameDocumentFileDetails"
+                                            pay-load={otherInsRec.pmlNamePayload} max-allowed-file-size={maxsize}
+                                            accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" enable-annotation="false"
+                                            enable-redaction="false"
+                                            onuploadcompleted={handleUploadPremedName}>
+                                        </c-cloud-document-upload-wrapper>
+                                        <template if:true={otherInsRec.showpmlNameDocDetails}>
+                                            <lightning-formatted-text value="" class="value pmlNameDocumentUploadId" data-asset-id={otherInsRec.pmlNameId} data-parentasset-id={otherInsRec.pmlId}></lightning-formatted-text>
+                                        </template>														
+                                                </div>
+                                                <div>
+                                                    <template if:true={otherInsRec.oldpmlNameDocFlag}>
+                                                        <Span class="oldlabel">Old File : </Span>
+                                                        <c-cloud-document-upload-wrapper class="cloudDocumentUpload"
+                                                                 pay-load={otherInsRec.oldpmlNamePayload}
+                                                                 max-allowed-file-size={maxsize}
+                                                                 accepted-file-formats=".jpeg,.jpg,.tiff,.pdf"
+                                                                 enable-annotation="false" enable-redaction="false"
+                                                                 asset-type="Name Document"
+                                                                 hide-upload="true">
+                                                             </c-cloud-document-upload-wrapper>
+                                                    </template>
+                                                </div>                                                
+                                        </div>                                        
+                                    </template>
+                                    <template if:true={otherInsRec.showpmlFile}>
+                                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">Is your Pre-Med Letter in a language other than English?</div>                                   
+                                            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">
+                                                <template if:true={otherInsRec.ispmlTrans}>
+                                                        <lightning-input class="isPreMedLetterInEnglishCheckbox" checked type="checkbox" variant="label-hidden" value={otherInsRec.ispmlTrans} onclick={handleChangePreTrans} data-staging-id={otherInsRec.Id} name="PreTransDiffCheckbox"></lightning-input>        
+                                                </template>
+                                                <template if:false={otherInsRec.ispmlTrans}>
+                                                        <lightning-input class="isPreMedLetterInEnglishCheckbox" type="checkbox" variant="label-hidden" value={otherInsRec.ispmlTrans} onclick={handleChangePreTrans} data-staging-id={otherInsRec.Id} name="PreTransDiffCheckbox"></lightning-input>        
+                                                </template>                                           
+                                        </div>
+                                    </template>
+                                    <template if:true={otherInsRec.pmlTransCond}>
+                                            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">
+                                            <div>
+                                                <span class="required">*</span>
+                                                <span>Pre-Med Letter Translation</span>
+                                            </div> 
+                                            </div>
+                                             <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">
+                                                <div>
+                                                    <c-cloud-document-upload-wrapper
+                                                    pay-load={otherInsRec.pmlTrnPayload} max-allowed-file-size={maxsize}
+                                                    accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" enable-annotation="false"
+                                                    enable-redaction="false" class="cloudDocumentUpload pmlTranslationFileDetails"
+                                                    onuploadcompleted={handleUploadPremedTrans}>
+                                                     </c-cloud-document-upload-wrapper>
+                                                     <template if:true={otherInsRec.showpmlTransFileDetails}>
+                                                        <lightning-formatted-text value="" class="value pmlTranslationNameId" data-asset-id={otherInsRec.pmlTransId} data-parentasset-id={otherInsRec.pmlId}></lightning-formatted-text>                                                   
+                                                     </template>
+                                                </div>
+                                                <div>        
+                                                    <template if:true={otherInsRec.pmlTransFileErrorFlag}>
+                                                        <span class="errormsgName">{label.Pleaseuploadfile}</span>
+                                                    </template>
+                                                </div>
+                                                <div>
+                                                    <template if:true={otherInsRec.oldpmlTransFileFlag}>
+                                                        <Span class="oldlabel">Old File : </Span>
+                                                            <c-cloud-document-upload-wrapper
+                                                                pay-load={otherInsRec.oldpmlTrnPayload} max-allowed-file-size={maxsize}
+                                                                accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" enable-annotation="false"
+                                                                enable-redaction="false" class="cloudDocumentUpload"
+                                                                hide-upload="true">
+                                                            </c-cloud-document-upload-wrapper>										 
+                                                    </template>
+                                                </div>
+                                        </div>
+                                    </template>
+                                    </template>
+                                    </template>
+                                <template if:true={otherInsRec.isGraduate}>
+                                    <div class="slds-col subHeader slds-size_1-of-1">
+                                        <span >
+                                            {label.unacceptableGraduate}
+                                        </span>
+                                </div>
+                                <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">I do not have a Final Medical Diploma</div>                                
+                                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">
+                                            <template if:true={otherInsRec.isDeanLet}>
+                                                    <lightning-input checked type="checkbox" disabled variant="label-hidden" value={otherInsRec.isDeanLet}></lightning-input>        
+                                            </template>
+                                            <template if:false={otherInsRec.isDeanLet}>
+                                                    <lightning-input type="checkbox" disabled variant="label-hidden" value={otherInsRec.isDeanLet}></lightning-input>        
+                                            </template>                                           
+                                    </div>
+                                    <template if:false = {otherInsRec.isDeanLet}>                                                                            
+                                            <div class="slds-col subHeader slds-size_1-of-1">
+                                                    <span >
+                                                        {label.unacceptableDiploma}
+                                                    </span>
+                                            </div>
+                                            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">                                                 
+                                                <div>
+                                                    <span class="required">*</span>
+                                                    <span>   Diploma</span>
+                                                </div>  
+                                            </div>
+                                            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">
+                                                <template if:true={otherInsRec.showfmdFileDetails}>
+                                                    <div>
+                                                        <lightning-formatted-text value="" class="value fmdFileId" data-asset-id={otherInsRec.fmdId}  data-asset-tran-id={otherInsRec.fmdTransId}></lightning-formatted-text>
+                                                    </div>
+                                                </template>
+                                                <div>
+                                                    <c-cloud-document-upload-wrapper class="cloudDocumentUpload fmdFileDetails"
+                                                    pay-load={otherInsRec.fmdPayload} max-allowed-file-size={maxsize}
+                                                    accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" enable-annotation="false"
+                                                    enable-redaction="false"
+                                                    onuploadcompleted={handleUploadfmd}
+                                                    data-staging-id={otherInsRec.Id} 
+                                                    data-asset-id={otherInsRec.fmdId}>
+                                                    </c-cloud-document-upload-wrapper>
+                                                </div>
+                                            <div>
+                                                <template if:true={otherInsRec.fmdFileErrorFlag}>
+                                                    <span class="errormsgName">{label.Pleaseuploadfile}</span>
+                                                </template>
+                                            </div>
+                                            <div>
+                                                <template if:true={otherInsRec.oldfmdFileFlag}>
+                                                    <Span class="oldlabel">Old File : </Span>
+                                                    <c-cloud-document-upload-wrapper class="cloudDocumentUpload"
+                                                             pay-load={otherInsRec.oldfmdFilePayload}
+                                                             max-allowed-file-size={maxsize}
+                                                             accepted-file-formats=".jpeg,.jpg,.tiff,.pdf"
+                                                             enable-annotation="false" enable-redaction="false"
+                                                             asset-type="Final Medical Diploma"
+                                                             hide-upload="true">
+                                                    </c-cloud-document-upload-wrapper>
+                                                </template>
+                                            </div>
+                                        </div>
+                                        <template if:true = {otherInsRec.showfmdFileDetails}>
+                                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">
+                                            <span class="required">*</span>
+                                            <span>Name on Diploma Document</span>
+                                        </div>
+                                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-2"> 
+                                            <lightning-input class="fmdName" type="text" variant="label-hidden" value={otherInsRec.fmdName}></lightning-input>        
+                                        </div>
+                                        <div class="slds-col slds-size_1-of-2 errorMsgNameAlignment">
+                                            <span></span>
+                                        </div>
+                                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-2 errorMsgNameAlignment">            
+                                            <template if:true={otherInsRec.fmdNameErrorFlag}>
+                                                <span class="errormsgName">{label.graduateScreenNameonDocMessage}</span>
+                                            </template>
+                                        </div>
+                                            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">Is Name on the Document different?</div>
+                                    <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">
+                                                <template if:true={otherInsRec.isFmdNameDiff}>
+                                                        <lightning-input class="fmdNameDifferentCheckbox" checked type="checkbox" variant="label-hidden" value={otherInsRec.isFmdNameDiff}  onclick={handleChangefmdName} data-staging-id={otherInsRec.Id} name="fmdNameDiffCheckbox"></lightning-input>        
+                                                </template>
+                                                <template if:false={otherInsRec.isFmdNameDiff}>
+                                                        <lightning-input class="fmdNameDifferentCheckbox" type="checkbox" variant="label-hidden" value={otherInsRec.isFmdNameDiff} onclick={handleChangefmdName} data-staging-id={otherInsRec.Id} name="fmdNameDiffCheckbox"></lightning-input>        
+                                                </template>
+                                        </div>                                    
+                                    <template if:true={otherInsRec.fmdNameCond}>
+                                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">Diploma Name Documentation</div>
+                                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">
+                                                <div>
+                                                    <c-cloud-document-upload-wrapper class="cloudDocumentUpload fmdNameDocumentFileDetails"
+                                                    pay-load={otherInsRec.fmdNamePayload} max-allowed-file-size={maxsize}
+                                                    accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" enable-annotation="false"
+                                                    enable-redaction="false"
+                                                    onuploadcompleted={handleUploadfmdName}>
+                                                    </c-cloud-document-upload-wrapper>
+                                                    <template if:true={otherInsRec.showfmdNameDocDetails}>
+                                                        <lightning-formatted-text value="" class="value fmdNameDocumenatationSectionUploadId" data-asset-id={otherInsRec.fmdNameId} data-parentasset-id={otherInsRec.fmdId}></lightning-formatted-text>
+                                                    </template>	
+                                                </div>
+                                                <div>
+                                                    <template if:true={otherInsRec.oldfmdNameDocFlag}>
+                                                        <Span class="oldlabel">Old File : </Span>
+                                                        <c-cloud-document-upload-wrapper class="cloudDocumentUpload"
+                                                                 pay-load={otherInsRec.oldfmdNamePayload}
+                                                                 max-allowed-file-size={maxsize}
+                                                                 accepted-file-formats=".jpeg,.jpg,.tiff,.pdf"
+                                                                 enable-annotation="false" enable-redaction="false"
+                                                                 asset-type="Diploma Name Document"
+                                                                 hide-upload="true">
+                                                             </c-cloud-document-upload-wrapper>
+                                                    </template>
+                                                </div>
+                                        </div>                                        
+                                    </template>                                    
+                                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">Is your Diploma in a language other than English?</div>
+                                            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">
+                                                <template if:true={otherInsRec.isFmdTrans}>
+                                                        <lightning-input class="isfmdInEnglishCheckbox" checked type="checkbox" variant="label-hidden" value={otherInsRec.isFmdTrans} onclick={handleChangefmdTrans} data-staging-id={otherInsRec.Id} name="fmdTransDiffCheckbox"></lightning-input>        
+                                                </template>
+                                                <template if:false={otherInsRec.isFmdTrans}>
+                                                        <lightning-input class="isfmdInEnglishCheckbox" type="checkbox" variant="label-hidden" value={otherInsRec.isFmdTrans} onclick={handleChangefmdTrans} data-staging-id={otherInsRec.Id} name="fmdTransDiffCheckbox"></lightning-input>        
+                                                </template>                                           
+                                        </div>                                                     
+                                    <template if:true={otherInsRec.fmdTransCond}>                                        
+                                            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">
+                                                <div>
+                                                    <span class="required">*</span>
+                                                    <span>    Diploma Translation</span>
+                                                </div>
+                                            </div>                                     
+                                            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">
+                                                <div>
+                                                    <c-cloud-document-upload-wrapper
+                                                    pay-load={otherInsRec.fmdTrnPayload} max-allowed-file-size={maxsize}
+                                                    accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" enable-annotation="false"
+                                                    enable-redaction="false" class="cloudDocumentUpload fmdTranslationFileDetails"
+                                                    onuploadcompleted={handleUploadfmdTrans}>
+                                                     </c-cloud-document-upload-wrapper>
+                                                     <template if:true={otherInsRec.showfmdTransFileDetails}>
+                                                        <lightning-formatted-text value="" class="value fmdTranslationClassId" data-asset-id={otherInsRec.fmdTransId} data-parentasset-id={otherInsRec.fmdId}></lightning-formatted-text>                                                   
+                                                     </template>
+                                                </div>
+                                                <div>
+                                                    <template if:true={otherInsRec.fmdTransFileErrorFlag}>
+                                                        <span class="errormsgName">{label.Pleaseuploadfile}</span>
+                                                    </template>
+                                                </div>
+                                                <div>
+                                                    <template if:true={otherInsRec.oldfmdTransFileFlag}>
+                                                        <Span class="oldlabel">Old File : </Span>
+                                                            <c-cloud-document-upload-wrapper
+                                                                pay-load={otherInsRec.oldfmdTrnPayload} max-allowed-file-size={maxsize}
+                                                                accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" enable-annotation="false"
+                                                                enable-redaction="false" class="cloudDocumentUpload"
+                                                                hide-upload="true">
+                                                            </c-cloud-document-upload-wrapper>										 
+                                                    </template>
+                                                </div>
+                                        </div>
+                                    </template>
+                                </template>
+                                <template if:true = {otherInsRec.ftReqdCond}>
+                                    <div class="slds-col subHeader slds-size_1-of-1">
+                                        <span>
+                                            {label.unacceptableTranscript}
+                                        </span>
+                                    </div>
+                                    <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">
+                                        <div>
+                                            <span>Final Medical Transcript</span>
+                                        </div>
+                                    </div>
+                                    <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">
+                                        <template if:true={otherInsRec.showftFileDetails}>
+                                            <div>
+                                                <lightning-formatted-text value=""
+                                                                            class="value ftFileId"
+                                                                            data-asset-id={otherInsRec.ftId}  data-asset-tran-id={otherInsRec.ftTransId}></lightning-formatted-text>
+                                            </div>
+                                        </template>
+                                        <div>
+                                            <c-cloud-document-upload-wrapper class="cloudDocumentUpload ftFileDetails"
+                                                                               pay-load={otherInsRec.ftPayload} max-allowed-file-size={maxsize}
+                                                                               accepted-file-formats=".jpeg,.jpg,.tiff,.pdf"
+                                                                               enable-annotation="false"
+                                                                               enable-redaction="false"
+                                                                               onuploadcompleted={handleUploadFt}
+                                                                               data-staging-id={otherInsRec.Id}
+                                                                               data-asset-id={otherInsRec.ftId}>
+                                            </c-cloud-document-upload-wrapper>
+                                        </div>
+                                        <div>
+                                            <template if:true={otherInsRec.ftFileErrorFlag}>
+                                                <span class="errormsgName">{label.Pleaseuploadfile}</span>
+                                            </template>
+                                        </div>
+                                        <div>
+                                            <template if:true={otherInsRec.oldftFileFlag}>
+                                                <Span class="oldlabel">Old File : </Span>
+                                                <c-cloud-document-upload-wrapper class="cloudDocumentUpload"
+                                                                                   pay-load={otherInsRec.oldftFilePayload}
+                                                                                   max-allowed-file-size={maxsize}
+                                                                                   accepted-file-formats=".jpeg,.jpg,.tiff,.pdf"
+                                                                                   enable-annotation="false"
+                                                                                   enable-redaction="false"
+                                                                                   asset-type="Final Medical Transcript"
+                                                                                   hide-upload="true">
+                                                </c-cloud-document-upload-wrapper>
+                                            </template>
+                                        </div>
+                                    </div>
+                                    <template if:true={otherInsRec.showftFileDetails}>
+                                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">
+                                            <span class="required">*</span>
+                                            <span>Name on Transcript Document</span>
+                                        </div>
+                                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">
+                                            <lightning-input class="ftName"
+                                                               type="text"
+                                                               variant="label-hidden"
+                                                               value={otherInsRec.ftName}></lightning-input>
+                                        </div>
+                                        <div class="slds-col slds-size_1-of-2 errorMsgNameAlignment">
+                                            <span></span>
+                                        </div>
+                                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-2 errorMsgNameAlignment">
+                                            <template if:true={otherInsRec.ftNameErrorFlag}>
+                                                <span class="errormsgName">{label.graduateScreenNameonDocMessage}</span>
+                                            </template>
+                                        </div>
+                                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">Is Name on the Document different?</div>
+                                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">
+                                            <template if:true={otherInsRec.isFtNameDiff}>
+                                                <lightning-input class="ftNameDifferentCheckbox"
+                                                                   checked type="checkbox"
+                                                                   variant="label-hidden"
+                                                                   value={otherInsRec.isFtNameDiff}  onclick={handleChangeftName} data-staging-id={otherInsRec.Id} name="ftNameDiffCheckbox"></lightning-input>
+                                            </template>
+                                            <template if:false={otherInsRec.isFtNameDiff}>
+                                                <lightning-input class="ftNameDifferentCheckbox"
+                                                                   type="checkbox"
+                                                                   variant="label-hidden"
+                                                                   value={otherInsRec.isFtNameDiff} onclick={handleChangeftName} data-staging-id={otherInsRec.Id} name="ftNameDiffCheckbox"></lightning-input>
+                                            </template>
+                                        </div>
+                                        <template if:true={otherInsRec.ftNameCond}>
+                                            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">Name Documentation</div>
+                                            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">
+                                                <div>
+                                                    <c-cloud-document-upload-wrapper class="cloudDocumentUpload ftNameDocumentFileDetails"
+                                                                                       pay-load={otherInsRec.ftNamePayload} max-allowed-file-size={maxsize}
+                                                                                       accepted-file-formats=".jpeg,.jpg,.tiff,.pdf"
+                                                                                       enable-annotation="false"
+                                                                                       enable-redaction="false"
+                                                                                       onuploadcompleted={handleUploadftName}>
+                                                    </c-cloud-document-upload-wrapper>
+                                                    <template if:true={otherInsRec.showftNameDocDetails}>
+                                                        <lightning-formatted-text value=""
+                                                                                    class="value ftNameDocumenatationSectionUploadId"
+                                                                                    data-asset-id={otherInsRec.ftNameId} data-parentasset-id={otherInsRec.ftId}></lightning-formatted-text>
+                                                    </template>
+                                                </div>
+                                                <div>
+                                                    <template if:true={otherInsRec.oldftNameDocFlag}>
+                                                        <Span class="oldlabel">Old File : </Span>
+                                                        <c-cloud-document-upload-wrapper class="cloudDocumentUpload"
+                                                                                           pay-load={otherInsRec.oldftNamePayload}
+                                                                                           max-allowed-file-size={maxsize}
+                                                                                           accepted-file-formats=".jpeg,.jpg,.tiff,.pdf"
+                                                                                           enable-annotation="false"
+                                                                                           enable-redaction="false"
+                                                                                           asset-type="Name Document"
+                                                                                           hide-upload="true">
+                                                        </c-cloud-document-upload-wrapper>
+                                                    </template>
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">Is your Transcript in a language other than English?</div>
+                                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">
+                                            <template if:true={otherInsRec.isFtTrans}>
+                                                <lightning-input class="isftInEnglishCheckbox"
+                                                                   checked type="checkbox"
+                                                                   variant="label-hidden"
+                                                                   value={otherInsRec.isFtTrans} onclick={handleChangeftTrans} data-staging-id={otherInsRec.Id} name="ftTransDiffCheckbox"></lightning-input>
+                                            </template>
+                                            <template if:false={otherInsRec.isFtTrans}>
+                                                <lightning-input class="isftInEnglishCheckbox"
+                                                                   type="checkbox"
+                                                                   variant="label-hidden"
+                                                                   value={otherInsRec.isFtTrans} onclick={handleChangeftTrans} data-staging-id={otherInsRec.Id} name="ftTransDiffCheckbox"></lightning-input>
+                                            </template>
+                                        </div>
+                                        <template if:true={otherInsRec.ftTransCond}>
+                                            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">
+                                                <div>
+                                                    <span class="required">*</span>
+                                                    <span>Transcript Translation</span>
+                                                </div>
+                                            </div>
+                                            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">
+                                                <div>
+                                                    <c-cloud-document-upload-wrapper pay-load={otherInsRec.ftTrnPayload} max-allowed-file-size={maxsize}
+                                                                                       accepted-file-formats=".jpeg,.jpg,.tiff,.pdf"
+                                                                                       enable-annotation="false"
+                                                                                       enable-redaction="false"
+                                                                                       class="cloudDocumentUpload ftTranslationFileDetails"
+                                                                                       onuploadcompleted={handleUploadftTrans}>
+                                                    </c-cloud-document-upload-wrapper>
+                                                    <template if:true={otherInsRec.showftTransFileDetails}>
+                                                        <lightning-formatted-text value=""
+                                                                                    class="value ftTranslationClassId"
+                                                                                    data-asset-id={otherInsRec.ftTransId} data-parentasset-id={otherInsRec.ftId}></lightning-formatted-text>
+                                                    </template>
+                                                </div>
+                                                <div>
+                                                    <template if:true={otherInsRec.ftTransFileErrorFlag}>
+                                                        <span class="errormsgName">{label.Pleaseuploadfile}</span>
+                                                    </template>
+                                                </div>
+                                                <div>
+                                                    <template if:true={otherInsRec.oldftTransFileFlag}>
+                                                        <Span class="oldlabel">Old File : </Span>
+                                                        <c-cloud-document-upload-wrapper pay-load={otherInsRec.oldftTrnPayload} max-allowed-file-size={maxsize}
+                                                                                           accepted-file-formats=".jpeg,.jpg,.tiff,.pdf"
+                                                                                           enable-annotation="false"
+                                                                                           enable-redaction="false"
+                                                                                           class="cloudDocumentUpload"
+                                                                                           hide-upload="true">
+                                                        </c-cloud-document-upload-wrapper>
+                                                    </template>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </template>
+                                </template>
+                        </template>
+                            <template if:true = {otherInsRec.isDeanLet}>                                        
+                                        <div class="slds-col subHeader slds-size_1-of-1">
+                                                <span >
+                                                    {label.unacceptableDeanLetter}
+                                                </span>
+                                        </div>
+                                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">
+                                            <div>
+                                                <span class="required">*</span>
+                                                <span>Dean's Letter Document</span>
+                                            </div>                                                
+                                        </div>
+                                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">
+                                            <template if:true={otherInsRec.showdlFileDetails}>
+                                                <div>                                               
+                                                <lightning-formatted-text value="" class="value dlFileId" data-asset-id={otherInsRec.dlId}  data-asset-tran-id={otherInsRec.dlTransId}></lightning-formatted-text>
+                                                </div>
+                                            </template>                                                
+                                            <div> <c-cloud-document-upload-wrapper class="cloudDocumentUpload dlFileDetails"
+                                                    pay-load={otherInsRec.dlPayload} max-allowed-file-size={maxsize}
+                                                    accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" enable-annotation="false"
+                                                        enable-redaction="false" asset-type="Letter from Dean"
+                                                        onuploadcompleted={handleUploaddl}
+                                                        data-staging-id={otherInsRec.Id} 
+                                                        data-asset-id={otherInsRec.dlId}>
+                                                    </c-cloud-document-upload-wrapper>
+                                                                                        
+                                            </div>
+                                        <div>        
+                                            <template if:true={otherInsRec.dlFileErrorFlag}>
+                                                <span class="errormsgName">{label.Pleaseuploadfile}</span>
+                                            </template>
+                                        </div>
+                                        <div>
+                                            <template if:true={otherInsRec.olddlFileFlag}>
+                                                <Span class="oldlabel">Old File : </Span>
+                                                <c-cloud-document-upload-wrapper class="cloudDocumentUpload"
+                                                         pay-load={otherInsRec.olddlFilePayload}
+                                                         max-allowed-file-size={maxsize}
+                                                         accepted-file-formats=".jpeg,.jpg,.tiff,.pdf"
+                                                         enable-annotation="false" enable-redaction="false"
+                                                         asset-type="Letter from Dean"
+                                                         hide-upload="true">
+                                                     </c-cloud-document-upload-wrapper>
+                                            </template>
+                                        </div>
+                                    </div>                                    
+                                    <template if:true={otherInsRec.showdlFileDetails}>                                    
+                                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">
+                                            <span class="required">*</span>
+                                            <span>Dean's Letter Date</span>
+                                            </div>
+                                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-2"> 
+                                            <lightning-input class="dlDate" type="Date" variant="label-hidden" value={otherInsRec.dlDate} name={otherInsRec.dlDate} ></lightning-input>        
+                                        </div> 
+                                        <div class="slds-col slds-size_1-of-2 errorMsgNameAlignment">
+                                            <span></span>
+                                        </div>
+                                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-2 errorMsgNameAlignment">
+                                            <template if:true={otherInsRec.dlDateErrorFlag}>
+                                                <span class="errormsgName">{label.graduateScreenDeanLetDateMessage}</span>
+                                            </template>
+                                        </div>  
+                                    <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">
+                                        <span class="required">*</span>
+                                        <span>Name on Dean's Letter Document</span>
+                                    </div>
+                                    <div class="slds-col slds-var-p-around_medium slds-size_1-of-2"> 
+                                        <lightning-input class="dlName" type="text" variant="label-hidden" value={otherInsRec.dlName}></lightning-input>        
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 errorMsgNameAlignment">
+                                        <span></span>
+                                    </div>
+                                    <div class="slds-col slds-var-p-around_medium slds-size_1-of-2 errorMsgNameAlignment">
+                                        <template if:true={otherInsRec.dlNameErrorFlag}>
+                                            <span class="errormsgName">{label.graduateScreenNameonDocMessage}</span>
+                                        </template>
+                                    </div>                                
+                                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">Is Name on the Document different?</div>
+                                <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">
+                                            <template if:true={otherInsRec.isdlNameDiff}>
+                                                    <lightning-input class="dlNameDifferentCheckbox" checked type="checkbox" variant="label-hidden" value={otherInsRec.isdlNameDiff}  onclick={handleChangedlName} data-staging-id={otherInsRec.Id} name="dlNameDiffCheckbox"></lightning-input>        
+                                            </template>
+                                            <template if:false={otherInsRec.isdlNameDiff}>
+                                                    <lightning-input class="dlNameDifferentCheckbox" type="checkbox" variant="label-hidden" value={otherInsRec.isdlNameDiff} onclick={handleChangedlName} data-staging-id={otherInsRec.Id} name="dlNameDiffCheckbox"></lightning-input>        
+                                            </template>                                        
+                                    </div>                                    
+                                    <template if:true={otherInsRec.dlNameCond}>                                    
+                                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">
+                                            Name Documentation</div>                                  
+                                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">
+                                            <div>
+                                        <c-cloud-document-upload-wrapper class="cloudDocumentUpload dlNameDocumentFileDetails"
+                                            pay-load={otherInsRec.dlNamePayload} max-allowed-file-size={maxsize}
+                                            accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" enable-annotation="false"
+                                            enable-redaction="false"
+                                            onuploadcompleted={handleUploaddlName}>
+                                        </c-cloud-document-upload-wrapper>
+
+                                        <template if:true={otherInsRec.showdlNameDocDetails}>
+                                            <lightning-formatted-text value="" class="value dlNameDocumenatationSectionUploadId" data-asset-id={otherInsRec.dlNameId} data-parentasset-id={otherInsRec.dlId}></lightning-formatted-text>
+                                        </template>	
+                                            </div>
+                                            <div>
+                                                <template if:true={otherInsRec.olddlNameDocFlag}>
+                                                    <Span class="oldlabel">Old File : </Span>
+                                                    <c-cloud-document-upload-wrapper class="cloudDocumentUpload"
+                                                             pay-load={otherInsRec.olddlNamePayload}
+                                                             max-allowed-file-size={maxsize}
+                                                             accepted-file-formats=".jpeg,.jpg,.tiff,.pdf"
+                                                             enable-annotation="false" enable-redaction="false"
+                                                             asset-type="Name Document"
+                                                             hide-upload="true">
+                                                         </c-cloud-document-upload-wrapper>
+                                                </template>
+                                            </div>
+                                    </div>
+                                    </template>
+                                    <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">Is your Dean's Letter in a language other than English?</div>
+                                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">
+                                            <template if:true={otherInsRec.isdlTrans}>
+                                                    <lightning-input class="isdlInEnglishCheckbox" checked type="checkbox" variant="label-hidden" value={otherInsRec.isdlTrans} onclick={handleChangedlTrans} data-staging-id={otherInsRec.Id} name="dlTransDiffCheckbox"></lightning-input>        
+                                            </template>
+                                            <template if:false={otherInsRec.isdlTrans}>
+                                                    <lightning-input class="isdlInEnglishCheckbox" type="checkbox" variant="label-hidden" value={otherInsRec.isdlTrans} onclick={handleChangedlTrans} data-staging-id={otherInsRec.Id} name="dlTransDiffCheckbox"></lightning-input>        
+                                            </template>                                           
+                                    </div>                               
+                                    <template if:true={otherInsRec.dlTransCond}>
+                                    <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">
+                                        <div>
+                                            <span class="required">*</span>
+                                            <span>Dean's Letter Translation</span>
+                                        </div>
+                                        </div>                              
+                                    <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">
+                                        <div>                                                
+                                        <c-cloud-document-upload-wrapper
+                                        pay-load={otherInsRec.dlTrnPayload} max-allowed-file-size={maxsize}
+                                        accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" enable-annotation="false"
+                                        enable-redaction="false" class="cloudDocumentUpload dlTranslationFileDetails"
+                                        onuploadcompleted={handleUploaddlTrans}>
+                                         </c-cloud-document-upload-wrapper>
+                                         <template if:true={otherInsRec.showdlTransFileDetails}>
+                                            <lightning-formatted-text value="" class="value dlTranslationClassId" data-asset-id={otherInsRec.dlTransId} data-parentasset-id={otherInsRec.dlId}></lightning-formatted-text>                                                   
+                                         </template>
+                                        </div>
+                                        <div>
+                                            <template if:true={otherInsRec.dlTransFileErrorFlag}>
+                                                <span class="errormsgName">{label.Pleaseuploadfile}</span>
+                                            </template>
+                                        </div>
+                                        <div>
+                                            <template if:true={otherInsRec.olddlTransFileFlag}>
+                                                <Span class="oldlabel">Old File : </Span>
+                                                <c-cloud-document-upload-wrapper
+                                                pay-load={otherInsRec.olddlTrnPayload} max-allowed-file-size={maxsize}
+                                                accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" enable-annotation="false"
+                                                enable-redaction="false" class="cloudDocumentUpload"
+                                                hide-upload="true">
+                                                 </c-cloud-document-upload-wrapper>	
+                                            </template>
+                                        </div>                                        
+                                </div>
+                        </template>
+                                    </template>
+                            </template>
+                                </template>                            
+                            </lightning-layout>
+                           <template if:true={otherInsRec.showHeader}>
+                                <div class="slds-var-p-around_medium slds-border_bottom"></div>
+                            </template>
+                        </lightning-record-Edit-form>                  
+                    </template>        
+            </div>                  
+        </div>
+    </template> 
+    <template if:true = {showDegreeSchool}>
+        <div class="formMargin"> 
+            <div class="slds-grid slds-wrap gridMargin">                 
+                <div class="slds-col slds-p-top_medium slds-size_1-of-1">
+                    <div class="slds-section slds-is-open">
+                        <h3 class="slds-section__title headerbackground">
+                            <span class="slds-truncate slds-p-horizontal_small otherSchoolRecord" title="Section Title"  >{objectIdDegreeName}</span>
+                        </h3>
+                    </div>
+                </div>          
+                <ul class="subAffirmation">                                    
+                    <li>
+                    <div class="slds-col slds-size_1-of-1">
+                        <span>
+                                {degreeComment}
+                        </span>
+                    </div>
+                </li>               
+            </ul>                
+                <lightning-record-edit-form  class="deg" data-recedit record-id={objectIdDegree}  object-api-name="Contact_Association_Type_Staging__c" >   
+                        <div class="slds-is-relative">
+                                <template if:true={spinnerDeg}>
+                                    <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+                                </template>
+                            <lightning-messages></lightning-messages>                        
+                            <template if:false={disabledMedSchoolDetails}>                          
+              <div class="padding">
+                                    <template if:true={showError}>
+                                        <lightning-formatted-rich-text class='errormsg' value={errorMessagesText}></lightning-formatted-rich-text>
+                                        <lightning-formatted-rich-text class='successmsg' value={successMessageText}></lightning-formatted-rich-text>
+                                    </template>
+                                </div>
+                                <div class="formMargin">
+                                    <div class="slds-grid slds-wrap">
+                                        <div class="slds-col slds-p-top_small slds-size_1-of-2">
+                                            <span><span class="required">*</span>Medical Education Status</span>
+                                        </div>
+                                        <div class="slds-col slds-p-top_small slds-size_1-of-2">
+                                            <lightning-radio-group name="statusRadioGroup" disabled class="statusRadioGroup" data-radiogroup  variant="label-hidden" value={selectedValue} options={statusOptions} type="radio"></lightning-radio-group>
+                                        </div>
+                                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                            <span><span class="required">*</span>Degree Medical School</span>
+                                        </div>
+                                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                            <input id="inputSchool" name="inputSchool" list="valueList" data-medicalschool placeholder={placeholder} value={medicalSchool} onchange={handleSchoolChange} class="slds-input schoolRecord" type="text"  />
+                                            <datalist id="valueList" class="schoolRecordDatalist">
+                                                <template for:each={schoolRecordValues} for:item='item'>
+                                                    <option key={item.Id} data-entityid={item.Id} value={item.Name}>
+                                                        {item.Name} 
+                                                        <br>
+                                                        <em>{item.BillingStreet}, {item.BillingCity}, {item.BillingState}, {item.BillingPostalCode}, {item.BillingCountry}</em>
+                                                    </option>
+                                                </template>
+                                            </datalist>
+                                        </div>
+                                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                        </div>
+                                        <div class="slds-col slds-p-top_medium slds-size_1-of-2 attendance-date-error">
+                                        </div>                                        
+                                        <!-- Code added by Shailaja. User Story#. Date format stories-->
+                                        <div class="slds-col slds-p-top_small slds-size_1-of-2">
+                                            <span><span class="required">*</span>Attendance Start Month & Year</span>
+                                        </div>
+                                        <div class="slds-col slds-p-top_medium slds-size_1-of-2 slds-grid slds-gutters">                        
+                                            <div class="slds-col">
+                                                <label for="inputStartMonth">Month</label><br>                                                
+                                                <!--code fixed after other medical component is modified-->
+                                                <lightning-combobox name="startMonth" variant="label-hidden" value={startMonth} placeholder="Select"
+                                                                    options={startMonthPicklistOptions} class="startMonth" onchange={handleChangeForInputValue}></lightning-combobox>
+                                            </div>
+                                            <div class="slds-col">
+                                                <label for="inputStartYear">Year</label><br>
+                                                <lightning-input variant="label-hidden" type="text" class="startYear" maxlength ="4" name="startYear" value={selectedStartYear} pattern="[1-9][0-9]{3}" message-when-pattern-mismatch="Please enter valid year as 1234" onchange={handleChangeForInputValue} ></lightning-input>
+                                            </div>
+                                        </div>
+                                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                        </div>
+                                        <div class="slds-col slds-p-top_medium slds-size_1-of-2 start-date-error">
+                                        </div>
+                                        <div class="slds-col slds-p-top_small slds-size_1-of-2">
+                                            <span><span class="required">*</span>Attendance End Month & Year</span>
+                                        </div>
+                                        <div class="slds-col slds-p-top_medium slds-size_1-of-2 slds-grid slds-gutters">                        
+                                            <div class="slds-col">
+                                                <label for="inputEndMonth">Month</label><br>
+                                                <lightning-combobox name="endMonth" variant="label-hidden" value={endMonth} placeholder="Select"
+                                                                    options={endMonthPicklistOptions} class="endMonth" onchange={handleChangeForInputValue}></lightning-combobox>
+                                            </div>
+                                            <div class="slds-col">
+                                                <label for="inputEndYear">Year</label><br>
+                                                <lightning-input variant="label-hidden" type="text" class="endYear" maxlength ="4" name="endYear" value={selectedEndYear} pattern="[1-9][0-9]{3}" message-when-pattern-mismatch="Please enter valid year as 1234" onchange={handleChangeForInputValue}></lightning-input>
+                                            </div>
+                                        </div>
+                                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                        </div>
+                                        <div class="slds-col slds-p-top_medium slds-size_1-of-2 end-date-error">
+                                        </div>
+                                        <div class="slds-col slds-p-top_small slds-size_1-of-2">
+                                            <span><span class="required">*</span>Number of Years Attended</span>
+                                        </div>
+                                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                            <lightning-input-field field-name="Number_of_Years_Attended__c" variant="label-hidden" data-num value={numberOfYearsAttended} class="attendedYears"></lightning-input-field>
+                                        </div>
+                                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                            <span>School Program</span>
+                                        </div>
+                                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                            <lightning-input-field field-name="School_Program__c" data-sch variant="label-hidden" value={schoolprog}></lightning-input-field>
+                                        </div>
+                                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                            <span><span class="required">*</span>Graduation Month & Year</span>
+                                        </div>
+                                        <div class="slds-col slds-p-top_medium slds-size_1-of-2 slds-grid slds-gutters">                        
+                                            <div class="slds-col">
+                                                <label for="inputGradMonth">Month</label><br>
+                                                <lightning-input-field field-name="Graduation_Month__c" variant="label-hidden" data-gradmonth value={selectedGradMonth} disabled={gradYearDisabled} title={gradYearDisabledMessage} class="gradMonthRecord"></lightning-input-field>                        
+                                            </div>
+                                            <div class="slds-col">
+                                                <label for="inputGradYear">Year</label><br>
+                                                <input id="inputGradYear" name="inputGradYear" list="valueListGradYear" data-gradyear value={selectedGradYear} placeholder={placeholder} onchange={handleGradYearChange} disabled={gradYearDisabled} title={gradYearDisabledMessage} class="slds-input gradYearRecord" type="text" />
+                                                <datalist id="valueListGradYear" class="gradYearRecordDatalist">
+                                                    <template for:each={wiredParameters.data} for:item='item'>
+                                                        <option key={item} value={item}>{item}</option>
+                                                    </template>
+                                                </datalist>
+                                            </div>
+                                        </div>
+                                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                        </div>
+                                        <div class="slds-col slds-p-top_medium slds-size_1-of-2 grad-date-error">
+                                        </div>
+                                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                            <span><span class="required">*</span>Degree Title</span>
+                                        </div>
+                                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                            <input id="inputDegree" name="inputDegree" list="valueListDegree" data-degreetitle value={degreetitle} placeholder={placeholder} onchange={handleDegreeChange} disabled={degreeDisabled} title={degreeDisabledMessage} class="slds-input degreeRecord" type="text" />
+                                            <datalist id="valueListDegree" class="degreeRecordDatalist">
+                                                <template for:each={degreeRecordValues.data} for:item='item'>
+                                                    <option key={item.Id} value={item.Name}>{item.Name}</option>
+                                                </template>
+                                            </datalist>
+                                        </div>
+                                        <div class="slds-col slds-p-top_medium slds-size_1-of-2 ">
+                                            <span><span class="required">*</span>Degree Issue Month & Year</span>
+                                        </div>
+                                        <div class="slds-col slds-p-top_medium slds-size_1-of-2 slds-grid slds-gutters">
+                                            <div class="slds-col">
+                                                <label for="inputDegMonth">Month</label><br>
+                                                <lightning-combobox name="degreeMonth" variant="label-hidden" value={degreeMonth} placeholder="Select"
+                                                                    options={degreeIssueMonthPicklistOptions} class="degreeMonth" onchange={handleChangeForInputValue}></lightning-combobox>
+                                            </div>
+                                            <div class="slds-col">
+                                                <label for="inputDegreeYear">Year</label><br>
+                                                <lightning-input variant="label-hidden" type="text" class="degreeYear" maxlength ="4" name="degreeYear" value={selectedDegreeIssueYear} pattern="[1-9][0-9]{3}" message-when-pattern-mismatch="Please enter valid year as 1234" onchange={handleChangeForInputValue}></lightning-input>
+                                            </div>
+                                        </div>
+                                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                        </div>
+                                        <div class="slds-col slds-p-top_medium slds-size_1-of-2 degree-date-error">
+                                        </div>
+                                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                                <span>Student Id</span>
+                                        </div>
+                                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                            <lightning-input-field field-name="Student_ID__c" data-stu variant="label-hidden" value={studentid}></lightning-input-field>
+                                        </div>
+                                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                                <span>Specialty</span>
+                                        </div>
+                                        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                                            <lightning-input-field field-name="Specialty__c" data-spc variant="label-hidden" value={specialty}></lightning-input-field>
+                                        </div>
+                                    </div>
+                                </div>
+                            </template>                            
+                            <div class="footer">&nbsp;</div>                        
+                        </div>                          
+                    </lightning-record-edit-form>             
+            </div>
+        </div>    
+    </template>
+        <div class="buttonAlignment" >
+           <lightning-button variant="brand" label="Resubmit" title="Resubmit" onclick={nextButton} class="slds-m-left_x-small"></lightning-button>       
+            <lightning-button variant="brand" label="Cancel" title="Cancel" onclick={cancelButtonToOpen} class="slds-m-left_x-small"></lightning-button>            
+        </div>       
+    </div>        
+    <div class={tabnegClass}>        
+        <div>
+            <div class="slds-is-relative">
+                <template if:true={spinner}>
+                    <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+                </template>
+            <div class="paddingLeg">
+                <h2 class="headerLeg"><lightning-formatted-rich-text value={label.termsTitle}></lightning-formatted-rich-text></h2>
+            </div>
+            <template for:each={recordsList} for:item='recordItem' for:index='index'>
+                <div class="paddingLeg" key={recordItem.termsId}>
+                    <lightning-formatted-rich-text value={recordItem.termsContent}></lightning-formatted-rich-text><br /><br />
+                    <lightning-input class="checkbox-floatLeg" type="checkbox" id={recordItem.termsId} name={recordItem.termsId} onchange={handleChange}></lightning-input>
+                    <lightning-formatted-rich-text value={recordItem.termsCheckboxCont}></lightning-formatted-rich-text>
+                </div>  
+            </template>        
+            <template if:true={showErrorLeg}>
+                <div class="paddingLeg">
+                    <lightning-formatted-rich-text class="errormsgName" value={errorMessagesText}></lightning-formatted-rich-text>
+                </div>
+            </template>                   
+            </div>
+        </div>
+        <div class="buttonAlignmentLeg" > 
+            <lightning-button variant="brand" label="Previous" title="Previous" onclick={prevbtn} class="slds-m-left_x-small"></lightning-button>                        
+            <template if:true={btnNotDisabled}>
+                <lightning-button variant="brand" label="Next" title="Next" onclick={handleClick} class="slds-m-left_x-small"></lightning-button>
+            </template>   
+            <template if:false={btnNotDisabled}>
+                <lightning-button disabled variant="brand" label="Next" title="Next" onclick={handleClick} class="slds-m-left_x-small"></lightning-button>
+            </template>   
+            <lightning-button variant="brand" label="Discard Changes and Exit" title="Discard Changes and Exit" onclick={cancelButtonToOpen} class="slds-m-left_x-small"></lightning-button>     
+        </div>
+    </div> 
+</template>
+</template>   
+<c-modal-component data-id = 'newModalAlert' title='Alert' message='You are about to leave this page and lose any edits you have made.  Are you sure you want to continue?'  show-secondary-button='true' secondary-button-text='No' onsecondarybuttonclick={closeModal} show-primary-button='true' primary-button-text='Yes' onprimarybuttonclick={navigateToWebPage}></c-modal-component>
+</template>
+<template if:true={showConfirmation}>           
+    <c-app-for-cert-confirmation link-source="Application For Certification" oncancelevent={cancelAppForCert}></c-app-for-cert-confirmation>
+</template>
+</template>

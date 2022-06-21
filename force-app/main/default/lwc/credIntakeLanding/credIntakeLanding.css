@@ -1,0 +1,32 @@
+.cred-header{
+    background-color: #cccccc;
+    line-height: 30px;
+}
+.formMargin{
+    margin-right: 5%;
+}
+.bold{
+    font-weight: bold;
+    line-height: 2em;
+}
+table{
+    width: 95%;
+}
+.edit-icon,
+.remove-icon,
+.delete-icon{  
+  display: inline-flex;
+  width: 35%;
+}
+.edit-icon > span,
+.remove-icon > span,
+.delete-icon > span{
+    cursor: pointer;
+}
+.whiteSpace{
+    white-space: normal
+}
+.pad{
+    padding-left: 25%;
+    padding-top: 3%;
+}

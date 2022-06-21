@@ -1,0 +1,59 @@
+<template>
+    <div class="paddingMainHeader">
+        <h2 class="stepMainHeader">Score Recheck</h2>
+    </div>
+    <c-modal-component title='Alert' message='Are you sure you want to cancel? All changes will be lost.'  show-secondary-button='true' secondary-button-text='Cancel' onsecondarybuttonclick={closeModal} show-primary-button='true' primary-button-text='OK' onprimarybuttonclick={cancelButton}></c-modal-component>
+    <div class="padding">
+            <c-g-display-content unique-content-value="score_recheck_form_stepHeader2"></c-g-display-content>
+    </div>
+    <template if:true={spinner}>
+        <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+    </template>	
+    <div class="formMargin">
+        <div class="slds-wrap slds-gutters">
+                <template for:each={scoreRecheckList} for:item="examScore">
+                    <div key={examScore.Id} data-examidval={examScore.Id} class="scorerecheckloop">
+                        <div class="slds-col gridItemPadding">
+                            <lightning-layout multiple-rows="true">
+                                <lightning-layout-item padding="around-small" size="1">
+                                    <template if:true={examScore.Is_Score_Rechecked__c}>
+                                        <lightning-input type="checkbox" class="scorecheckbox"
+                                            value={examScore.Is_Score_Rechecked__c} checked
+                                            onchange={handleScoreRecheckChange} name="isScoreRecheck"></lightning-input>
+                                    </template>
+                                    <template if:false={examScore.Is_Score_Rechecked__c}>
+                                        <lightning-input type="checkbox" class="scorecheckbox"
+                                            value={examScore.Is_Score_Rechecked__c} onchange={handleScoreRecheckChange}
+                                            name="isScoreRecheck"></lightning-input>
+                                    </template>
+                                </lightning-layout-item>  
+                                <div class="slds-grid slds-wrap slds-size_11-of-12 scoreReportContent">
+                                    <lightning-layout-item padding="around-small" size="11">
+                                        <div class="">{examScore.Exam_Types__c}</div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small" size="3">
+                                        <div class="">Date Tested:</div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small" size="8">
+                                        <lightning-formatted-date-time value={examScore.Exam_taken_date__c} time-zone="UTC"></lightning-formatted-date-time>
+                                    </lightning-layout-item>  
+                                </div>                            
+                            </lightning-layout>                                               
+                        </div>
+                    </div>
+            </template>
+        </div>
+    </div>    
+    <div class="buttonAlignment">             
+        <template if:true={btnDisabled}>
+            <lightning-button variant="brand" label="Next" disabled title="Next" onclick={nextButton} type="submit"
+                class="slds-m-left_x-small next-btn"></lightning-button>
+        </template>
+        <template if:false={btnDisabled}>
+            <lightning-button variant="brand" label="Next" title="Next" onclick={nextButton} type="submit"
+                class="slds-m-left_x-small next-btn"></lightning-button>
+        </template>
+        
+        <lightning-button variant="brand" label="Cancel" title="Cancel" onclick={cancelButtonToOpen} class="slds-m-left_x-small"></lightning-button>
+    </div>
+</template>

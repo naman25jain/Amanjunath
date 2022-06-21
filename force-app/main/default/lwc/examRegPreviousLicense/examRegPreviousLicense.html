@@ -1,0 +1,61 @@
+<template>
+    <div class="formMargin">
+        <div class="slds-grid slds-wrap">
+            <c-g-display-content unique-content-value="Exam_Reg_Physician_License"></c-g-display-content>
+            <div><br />
+                <c-g-display-content unique-content-value="Exam_Reg_License_Note"></c-g-display-content>
+
+                <input type="radio" id="licenseYes" name="license" class="radio radioButton" value="option1" onclick={handleChange}><span> &nbsp;</span>
+                <label for="licenseYes">Yes, I have been granted a physician license by a U.S. medical licensing authority based on other licensure examinations.</label><br>
+                    <div class="padding headerSection1">
+                        <div class="slds-box " if:true={viewSection}>
+                            <c-g-display-content unique-content-value="Exam_Reg_USMLE_License_Policy"></c-g-display-content>
+                            <br /><br />
+                            <lightning-input type="checkbox" class="headerSection1 checkbox" variant='label-hidden'
+                                onchange={handleChangeCheckBox}>
+
+                            </lightning-input>
+                            <span>
+                                Please check this box to indicate that you have read and understood the above statements and
+                                plan to request an exception to the USMLE policy.
+                            </span>
+                        </div>
+                    </div>
+                <div>
+                    <input type="radio" id="licenseNo" class="radio radioButton" name="license" value="option2" onclick={handleChange}><span> &nbsp;</span>
+                    <label for="licenseNo">No, I have not been granted a physician license by a U.S. medical licensing authority based on other licensure examinations.</label><br>
+                </div>
+            </div>
+        </div>
+        <div class="buttonAlignment">
+            <template if:false={showBackToSummary}>
+            <lightning-button variant="brand" label="Previous" title="Previous" onclick={prevButton}
+                class="slds-m-left_x-small"></lightning-button>
+            <template if:true={btnNotDisabled}>
+                <lightning-button variant="brand" label="Next" title="Next" onclick={handleClick}
+                    class="slds-m-left_x-small"></lightning-button>
+            </template>
+            <template if:false={btnNotDisabled}>
+                <lightning-button variant="brand" disabled label="Next" title="Next" onclick={handleClick}
+                    class="slds-m-left_x-small"></lightning-button>
+            </template>
+            <lightning-button variant="brand" label="Cancel" title="Cancel" onclick={cancelButton}
+                class="slds-m-left_x-small"></lightning-button>
+            </template>
+
+        </div>
+
+    </div>
+    <template if:true={showBackToSummary}>
+        <div style="text-align: center;padding-top: 3%;">
+            <template if:false={btnNotDisabled}>
+                <lightning-button variant="brand" disabled label="Return To Summary" title="Back To Summary" onclick={backToSummary}
+                    class="slds-m-left_x-small"></lightning-button>
+            </template>
+            <template if:true={btnNotDisabled}>
+                <lightning-button variant="brand" label="Return To Summary" title="Back To Summary" onclick={backToSummary}
+                    class="slds-m-left_x-small"></lightning-button>
+            </template>
+        </div>
+    </template>
+</template>

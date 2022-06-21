@@ -1,0 +1,11 @@
+.THIS {
+}
+
+.THIS .slds-textarea {
+    height:100px !important;
+}
+
+.THIS.slds-spinner_container {
+  z-index: 10000;
+  position: fixed;
+}

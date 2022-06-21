@@ -1,0 +1,17 @@
+<template>
+    <lightning-spinner if:true={isSpinner} alternative-text="Loading" size="large"></lightning-spinner>
+    <lightning-quick-action-panel header="Select Documents to Print">
+        <div if:true={assetsData} style="min-height: 200px;" class="slds-scrollable">
+            <lightning-datatable key-field="Id" data={assetsData} columns={columns} selected-rows={preSelectedData}></lightning-datatable>
+        </div>
+        <div align="center">
+            <div class="message"></div>
+        </div>
+        <div slot="footer">
+            <lightning-button if:true={isValid} variant="brand" label="Print" onclick={handlePrintDocument} class="slds-m-left_x-small">
+            </lightning-button>
+            <lightning-button if:false={isValid}  variant="brand" label="Close" onclick={closeAction} class="slds-m-left_x-small">
+            </lightning-button>
+        </div>
+    </lightning-quick-action-panel>
+</template>

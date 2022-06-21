@@ -1,0 +1,22 @@
+<template>
+	<lightning-card title={flowHeader}>
+		<div if:true={isSpinner}>
+			<lightning-spinner alternative-text="Loading" size="large"></lightning-spinner>
+		</div>
+		<template if:true={parentData}>
+			<c-affirmation-holder populate-values={preLoadedValues} map-a-p-i-key-and-record={mapAPIKeyAndRecord}
+				selected-a-f-data-vales={selectedAFDataVales} child-and-parent-data={childAndParentData}
+				mdt-records={parentData} onfieldtocapture={fieldsToCheck} onselectedvalues={selectedAFData}>
+			</c-affirmation-holder>
+			<template if:true={strScreenInstructions}>
+				<lightning-formatted-rich-text value={strScreenInstructions}></lightning-formatted-rich-text><br/>
+			</template>
+		</template><br/>
+			<!--Navigation Buttons-->
+		<template if:true={showNavgButtons}>
+			<c-flow-navigation-buttons is-previous={isPrevious} is-next={isNext} is-finish={isFinish}
+				onnext={onNextButtonClick} onprevious={onPreviousButtonClick} onfinish={onFinishButtonClick}>
+			</c-flow-navigation-buttons>
+		</template>
+	</lightning-card><br/>
+</template>

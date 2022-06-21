@@ -1,0 +1,55 @@
+<template>
+    <div class="slds-card slds-card_boundary">
+        <template if:true={spinner}>
+            <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+        </template>
+        <div class="slds-page-header slds-page-header_record-home">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                <div class="slds-media__figure">
+                    <span class="slds-icon_container slds-icon-standard-drafts" title="Documents">
+                        <lightning-icon size="small" icon-name="standard:drafts"></lightning-icon>
+                    </span>
+                </div>
+                <div class="slds-media__body">
+                    <h2 class="slds-card__header-title">
+                        <span><strong>Documents</strong></span>
+                    </h2>
+                </div>
+            </header>
+        </div>
+        <div class="slds-col slds-p-top_medium slds-size_1-of-2" style="padding-left: 10px;">
+            <br />
+            <span class="required">*</span>
+            <span>Select Asset Type:</span>
+            <lightning-combobox name="type" value={type}
+                placeholder="Select" options={typePicklist} onchange={handleType}>
+            </lightning-combobox>
+            </br>
+        </div>
+        <template if:true={displayUpload}>
+            <c-document-upload onfileuploaded={handleFileUploaded} accepted-file-formats={acceptedFileFormats}
+            max-allowed-file-size={maxAllowedFileSize}></c-document-upload>
+        </template>
+        <template if:true={sealContent}>
+            <div style="text-align: center;">
+            Any modifications to the Seal or Signature will not be saved.</div>
+        </template>
+        <template if:true={documents.length}>
+            <lightning-datatable key-field="id" data={documents} columns={columns} hide-checkbox-column
+                onrowaction={handleRowAction}>
+            </lightning-datatable>
+        </template>
+    </div>
+    <c-modal header={header} class="documentViewerModal" onclosedialog={handleCloseModal}><span slot="content">
+        <c-document-viewer 
+            ondocviewer_ready={handleMainDocument}
+            ondocviewer_save_document={handleSaveDocument} 
+            document={document} 
+            asset-type={assetType}
+            enable-redaction={enableRedaction} 
+            enable-annotation={enableAnnotation} 
+            enable-saving={enableSaving}>
+        </c-document-viewer>
+    </span>
+    </c-modal>
+</template>

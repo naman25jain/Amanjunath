@@ -1,0 +1,49 @@
+<template>
+    <div class="paddingMainHeader">
+        <h2 class="stepMainHeader">Testing Region Change Request Summary</h2>
+    </div>
+    <div class="padding">
+        <c-g-display-content unique-content-value="Region_Change_Summary_Text"></c-g-display-content>
+    </div>
+    <div class="formMargin">
+        <template if:true = {showMedDetails}>
+            <div class="slds-grid slds-wrap">
+            <template if:true={examRegistrationsList}>
+                <template for:each={examRegistrationsList} for:item="exam">
+
+                    <div key={exam.caseId} class="slds-col">
+                        <div class="slds-grid slds-wrap">
+                            <div class="slds-col slds-p-top_small slds-size_1-of-1 paddingHeader">
+                                <span>Exam : {exam.examType}</span><br/>
+                            </div>
+                            <div class="slds-col slds-p-top_small slds-size_1-of-1 paddingValues">
+                                <span>Previous Region and Surcharge : {exam.oldRegionAndSurcharge} </span><br/>
+                            </div>
+                            <div class="slds-col slds-p-top_small slds-size_1-of-1 paddingValues">
+                                <span>New Region and Surcharge : {exam.newRegionAndSurcharge} </span><br/>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </template>
+            </template>
+            <div class="slds-col buttonAlignment">
+
+                <template if:true = {showbtn}>
+                    <lightning-button variant="brand" label="Previous" title="Previous" onclick={prevButton}
+                    class="slds-m-left_x-small" ></lightning-button>
+
+                    <lightning-button variant="brand" label="Next" title="Next" onclick={nextButton}
+                    class="slds-m-left_x-small"></lightning-button>
+
+                    <lightning-button variant="brand" label="Cancel" title="Cancel" onclick={cancelButton}
+                    class="slds-m-left_x-small"></lightning-button>
+                </template>
+
+
+            </div>
+            </div>
+        </template>
+        </div>
+</template>

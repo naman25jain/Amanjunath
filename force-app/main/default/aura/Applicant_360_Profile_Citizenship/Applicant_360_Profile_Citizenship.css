@@ -1,0 +1,27 @@
+/**
+ * Created by Matthew on 2019-03-04.
+ */
+.THIS .slds-listbox__item {
+    max-width: 165px;
+}
+
+.THIS .slds-dueling-list__column:last-child {
+	display: none;
+}
+
+.THIS .slds-form-element.actions {
+    margin-top: 30px;
+}
+
+.THIS .slds-spinner_container  {
+    background-color: rgb(255,255,255, 0.1);
+    /*margin-top: 200px;
+    margin-bottom: 200px;*/
+
+}
+
+@media (max-width: 600px) {
+	.THIS .slds-form-element.actions {
+	    margin-top: 0px;
+	}
+}

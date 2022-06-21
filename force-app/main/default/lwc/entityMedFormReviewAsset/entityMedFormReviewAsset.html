@@ -1,0 +1,64 @@
+<template>
+    <div class="formMargin">
+        <template if:true={payLoadList}>
+            <template for:each={payLoadList} for:item="payLoad">
+                <dl class="slds-list_horizontal slds-wrap" key={payLoad.assetId}>
+                    <dt class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                        <span>{payLoad.assetName}</span>
+                    </dt>
+                    <dt class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                        <div title="View">
+                            <c-cloud-document-upload-wrapper class="cloudDocumentUpload" pay-load={payLoad.payLoad}
+                                max-allowed-file-size={maxsize} accepted-file-formats=".jpeg,.jpg,.tiff,.pdf"
+                                enable-annotation="false" enable-redaction="false" hide-upload="true">
+                            </c-cloud-document-upload-wrapper>
+                        </div>
+                    </dt>
+                </dl>
+            </template>
+        </template>
+        <template if:true={payLoadFMD}>
+            <template for:each={payLoadFMD} for:item="payLoad">
+                <dl class="slds-list_horizontal slds-wrap" key={payLoad.assetId}>
+                    <dt class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                        <span>Verified Final Medical Diploma</span>
+                    </dt>
+                    <dt class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                        <div title="View">
+                            <c-cloud-document-upload-wrapper class="cloudDocumentUpload" pay-load={payLoad.payLoad}
+                                max-allowed-file-size={maxsize} accepted-file-formats=".jpeg,.jpg,.tiff,.pdf"
+                                enable-annotation="false" enable-redaction="false" hide-upload="true">
+                            </c-cloud-document-upload-wrapper>
+                        </div>
+                    </dt>
+                </dl>
+            </template>
+        </template>
+        <template if:true={payLoadFST}>
+            <template for:each={payLoadFST} for:item="payLoad">
+                <dl class="slds-list_horizontal slds-wrap" key={payLoad.assetId}>
+                    <dt class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                        <span>Verified Final School Transcript</span>
+                    </dt>
+                    <dt class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                        <div title="View">
+                            <c-cloud-document-upload-wrapper class="cloudDocumentUpload" pay-load={payLoad.payLoad}
+                                max-allowed-file-size={maxsize} accepted-file-formats=".jpeg,.jpg,.tiff,.pdf"
+                                enable-annotation="false" enable-redaction="false" hide-upload="true">
+                            </c-cloud-document-upload-wrapper>
+                        </div>
+                    </dt>
+                </dl>
+            </template>
+        </template>
+        <lightning-layout-item padding="around-small" size="6">
+            <div class="slds-align_absolute-center">
+                <lightning-button variant="brand" label="Return to Credential Review List"
+                    title="Return to Credential Review List" onclick={returnCredRevList} class="slds-m-left_x-small">
+                </lightning-button>
+                <lightning-button variant="brand" label="Next" title="Next" onclick={showQuestionnaire}
+                    class="slds-m-left_x-small"></lightning-button>
+            </div>
+        </lightning-layout-item>
+    </div>
+</template>

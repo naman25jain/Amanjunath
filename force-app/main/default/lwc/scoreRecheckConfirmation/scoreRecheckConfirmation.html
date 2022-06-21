@@ -1,0 +1,26 @@
+<template>
+    <template if:true={showMessage}>
+		<div class="slds-is-relative">
+			<template if:true={spinner}>
+				<lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+			</template>	
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col slds-size_1-of-1">
+                    <span>
+                        <br />
+                        <div style="text-align:center">
+                            <strong>{firstLine}<br />{secondLine}</strong>
+                            <br /><br />{thirdLine} {caseNumber}.<br />{fourthLine}
+                            <br /><br />{fifthLine}
+                        </div>
+                        <div style="text-align:center">
+                            <lightning-button variant="brand" label="Close" title="Close" onclick={cancelButton}
+                                class="slds-m-left_x-small"></lightning-button>
+                        </div>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </template>
+
+</template>

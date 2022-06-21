@@ -1,0 +1,20 @@
+.headertxt {
+    font-size: 1rem !important;
+    font-weight: bold !important;
+}
+.headeralign {
+    padding: 10px 0;
+}
+.secContainer{
+    padding:10px 0 20px 0;
+}
+.thHead {
+    padding:5px 0px;
+}
+.noRecordsSection {
+    padding:15px 0 10px 0;
+}
+.recordTd button {
+    border: none !important;
+    width:75px;
+}

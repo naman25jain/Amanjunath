@@ -1,0 +1,34 @@
+<template>
+    <template if:true={spinner}>
+        <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+    </template>
+        <div style="text-align: center; font-weight: bold; font-size: 15px">
+            <h1>Move Eligibility Period</h1></br>
+        </div>
+        <div class="slds-col slds-p-top_small slds-size_1-of-1">
+            <span>Current Period : {currentEligibilityPeriod}</span>
+        </div>
+        <div class="slds-col slds-p-top_medium slds-size_1-of-1" >
+            <br />
+            <span class="required">*</span>
+            <span>New Period :</span>
+            <lightning-combobox name="type" value={type}
+                placeholder="Select" options={eligibilityPeriods} onchange={handleType}>
+            </lightning-combobox>
+            </br>
+        </div>
+        <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+            <span>Reason :</span>
+            <lightning-textarea type="text" variant="label-hidden" value={reason}
+                class="reason" onchange={changeReason}></lightning-textarea></br></br>
+        </div>
+        <div style="text-align: center;">
+            <lightning-button variant="brand" label="Submit" title="Submit" onclick={submit}
+                class="slds-m-left_x-small" disabled={btnDisabled}></lightning-button>
+            <lightning-button variant="brand" label="Cancel" title="Cancel" onclick={cancel}
+                class="slds-m-left_x-small"></lightning-button>
+        </div>
+        
+    
+    
+</template>

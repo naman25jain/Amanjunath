@@ -1,0 +1,82 @@
+<!--
+ - Created by Matthew on 11/1/18.
+ -->
+
+<aura:component controller="ApplicantCommunityController" description="Applicant Medical School Card">
+
+    <aura:attribute name="school" type="ContactMedicalSchoolViewModel"/>
+    <aura:attribute name="showConfirmDelete" type="Boolean" default="false"/>
+    <aura:attribute name="disabled" type="Boolean" default="false"/>
+
+    <aura:registerEvent name="schoolDeletedEvent" type="c:ApplicantMedicalSchoolDeletedAE" />
+
+    <lightning:card footer="{!v.school.Status}" title="{!v.school.SchoolName}" class="card">
+        <aura:set attribute="actions">
+            <aura:if isTrue="{!v.disabled == false}">
+                <lightning:buttonIcon iconName="utility:delete" variant="border" onclick="{!c.handleDeleteOnClick}" alternativeText="Remove"/>
+            </aura:if>
+        </aura:set>
+        <div class="slds-grid slds-gutters slds-wrap">
+            <div class="slds-col">
+                <p class="slds-p-horizontal_small slds-p-bottom_small">
+                    {!v.school.Address1}<br/>
+                    {!v.school.Address2}<br/>
+                    {!v.school.Address3}<br/>
+                    {!v.school.Address4}
+                </p>
+            </div>
+            <div class="slds-col">
+                <p class="slds-p-horizontal_small slds-p-bottom_small">
+                    <strong>Degree Title</strong>: {!v.school.DegreeTitle}<br/>
+                    <strong>Student ID</strong>: {!v.school.StudentId}<br/>
+                </p>
+                <p class="slds-p-horizontal_small slds-p-bottom_small">
+                    <!--<strong>Start Date</strong>: {!v.school.StartDate}<br/>-->
+                    <strong>Start Month</strong>: {!v.school.StartMonth}<br/>
+                    <strong>Start Year</strong>: {!v.school.StartYear}<br/>
+                    <!--<strong>End Date</strong>: {!v.school.EndDate}<br/>-->
+                    <strong>End Month</strong>: {!v.school.EndMonth}<br/>
+                    <strong>End Year</strong>: {!v.school.EndYear}<br/>                    
+                    <!--<strong>Degree Issued Date</strong>: {!v.school.DegreeDate}-->
+                    <strong>Degree Issue Month</strong>: {!v.associationType.DegreeMonth}<br/>
+                    <strong>Degree Issue Year</strong>: {!v.associationType.DegreeYear}<br/>
+                </p>
+            </div>
+        </div>
+    </lightning:card>
+
+
+    <aura:if isTrue="{!v.showConfirmDelete}">
+        <div class="demo-only" style="height: 640px;">
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close">
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Remove this school?</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <p class="slds-p-horizontal_small slds-p-bottom_small">
+                            Are you sure you want to remove this school?
+                        </p>
+
+                        <p class="slds-p-horizontal_small slds-p-bottom_small">
+                            <b>{!v.school.SchoolName}</b><br/>
+                            {!v.school.Address1}<br/>
+                            {!v.school.Address2}<br/>
+                            {!v.school.Address3}<br/>
+                            {!v.school.Address4}
+                        </p>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <button class="slds-button slds-button_brand" onclick="{!c.handleConfirmYesOnClick}">Yes</button>
+                        <button class="slds-button slds-button_neutral" onclick="{!c.handleConfirmCancelOnClick}">Cancel</button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+    </aura:if>
+
+</aura:component>

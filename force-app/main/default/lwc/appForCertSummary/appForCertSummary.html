@@ -1,0 +1,1084 @@
+<!-- App For Cert Summary -->
+<template>
+    <div>
+        <template if:true={spinner}>
+            <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+        </template>
+        <lightning-accordion allow-multiple-sections-open={showMultiple} active-section-name={activeSections}>
+            <lightning-record-view-form record-id={getIdFromParent} object-api-name="Contact" mode="readonly">
+                <template if:false={showCaseDetail}>
+                    <div class="padding">
+                        <h2>Application for ECFMG Certification Summary</h2>
+                        <c-g-display-content unique-content-value="app_cert_summary_desc"></c-g-display-content>
+                    </div>
+                </template>
+                <div class={formMargin}>
+                    <div class="slds-grid slds-wrap">
+                        <!-- Bio Graphic Information -->
+                        <lightning-accordion-section name="contactSection"
+                            class="slds-col slds-size--1-of-1 gridColPadding" title={label.identityInformationMessage}
+                            label={label.identityInformationMessage}>
+                            <template if:true={showContactBtn}>
+                                <div class="slds-float_right">
+                                    <lightning-button variant="brand" label="Change Biographic Information"
+                                        title="Change Biographic Information" onclick={navigateToProfilePage}
+                                        class="slds-m-left_x-small">
+                                    </lightning-button>
+                                </div>
+                            </template>
+                            <div class="gridItemPadding">
+                                <lightning-layout multiple-rows="true">
+                                    <lightning-layout-item padding="around-small" size="6">
+                                        <div class="">Last Name/Surname</div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small" size="6">
+                                        <div>{contactData.LastName}</div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small" size="6">
+                                        <div class="">Rest of Name</div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small" size="6">
+                                        <div>{contactData.FirstName}</div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small" size="6">
+                                        <div class="">Generational Suffix</div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small" size="6">
+                                        <div>{contactData.Generational_Suffix__c}</div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small" size="6">
+                                        <div class="">Gender</div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small" size="6">
+                                        <div>{contactData.Gender__c}</div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small" size="6">
+                                        <div class="">Date of Birth</div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small" size="6">
+                                        <lightning-formatted-date-time value={birthDate} time-zone="UTC">
+                                        </lightning-formatted-date-time>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small" size="6">
+                                        <div class="">Citizenship Upon Entering Medical School</div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small" size="6">
+                                        <div>{contactData.Citizenship_Upon_Entering_Medical_School__c}</div>
+                                    </lightning-layout-item>
+                                </lightning-layout>
+                            </div>
+                        </lightning-accordion-section>
+                        <!-- Contact Information -->
+                        <lightning-accordion-section class="slds-col slds-size--1-of-1 gridColPadding"
+                            title={label.contactInformationMessage} label={label.contactInformationMessage}>
+                            <template if:true={showContactBtn}>
+                                <div class="slds-float_right">
+                                    <lightning-button variant="brand" label="Change Contact Information"
+                                        title="Change Contact Information" onclick={navigateToProfilePage}
+                                        class="slds-m-left_x-small"></lightning-button>
+                                </div>
+                            </template>
+                            <div class="gridItemPadding">
+                                <lightning-layout multiple-rows="true">
+                                    <lightning-layout-item padding="around-small" size="6">
+                                        <div class="">Country</div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small" size="6">
+                                        <div>{contactData.MailingCountry}</div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small" size="6">
+                                        <div class="">Street</div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small" size="6">
+                                        <div>{contactData.MailingStreet}</div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small" size="6">
+                                        <div class="">City</div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small" size="6">
+                                        <div>{contactData.MailingCity}</div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small" size="6">
+                                        <div class="">State</div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small" size="6">
+                                        <div>{contactData.MailingState}</div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small" size="6">
+                                        <div class="">ZIP Code</div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small" size="6">
+                                        <div>{contactData.MailingPostalCode}</div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small" size="6">
+                                        <div class="">Email Address</div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small" size="6">
+                                        <div>{contactData.Email}</div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small" size="6">
+                                        <div class="">Telephone Number</div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small" size="6">
+                                        <div>{contactData.Phone}</div>
+                                    </lightning-layout-item>
+                                </lightning-layout>
+                            </div>
+                        </lightning-accordion-section>
+                    </div>
+                </div>
+            </lightning-record-view-form>
+            <template if:true={showMedDetails}>
+                <lightning-record-view-form record-id={medSchoolId} object-api-name={medSchoolObject} mode="readonly">
+                    <div class={formMargin}>
+                        <div class="slds-grid slds-wrap">
+                            <!-- Medical School Information -->
+                            <lightning-accordion-section class="slds-col slds-size--1-of-1 gridColPadding"
+                                title="Medical School Information" label="Medical School Information">
+                                <template if:false={showCaseDetail}>
+                                    <div class="slds-float_right">
+                                        <lightning-button variant="brand" label="Change Medical School Information"
+                                            title="Change Medical School Information"
+                                            onclick={navigateToDegMedSchoolPage} class="slds-m-left_x-small">
+                                        </lightning-button>
+                                    </div>
+                                </template>
+                                <div class="gridItemPadding">
+                                    <lightning-layout multiple-rows="true">
+                                        <lightning-layout-item padding="around-small" size="6">
+                                            <div class="">Medical Education Status</div>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item padding="around-small" size="6">
+                                            <div>{degMedSchooData.Status__c}</div>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item padding="around-small" size="6">
+                                            <div class="">Degree Medical School</div>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item padding="around-small" size="6">
+                                            <div>{degMedSchooData.Account_Name__c}</div>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item padding="around-small" size="6">
+                                            <div class="">School Program</div>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item padding="around-small" size="6">
+                                            <div>{degMedSchooData.School_Program__c}</div>
+                                        </lightning-layout-item>
+                                        <!--Code added by Shailaja-->
+                                        <lightning-layout-item padding="around-small" size="6">
+                                            <div class="">Attendance Start Month & Year</div>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item padding="around-small" size="6">
+                                            <div class="summary-startmonth">{degMedSchooData.Start_Month__c}
+                                            </div>
+                                            <div class="summary-startyear">{degMedSchooData.Start_Year__c}
+                                            </div>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item padding="around-small" size="6">
+                                            <div class="">Attendance End Month & Year</div>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item padding="around-small" size="6">
+                                            <div class="summary-endmonth">{degMedSchooData.End_Month__c}
+                                            </div>
+                                            <div class="summary-endyear">{degMedSchooData.End_Year__c}
+                                            </div>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item padding="around-small" size="6">
+                                            <div class="">Number of Years Attended</div>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item padding="around-small" size="6">
+                                            <div>{degMedSchooData.Number_of_Years_Attended__c}</div>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item padding="around-small" size="6">
+                                            <div class="">Graduation Month & Year</div>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item padding="around-small" size="6">
+                                            <div class="summary-graduationmonth">{degMedSchooData.Graduation_Month__c}
+                                            </div>
+                                            <div class="summary-graduationyear">{degMedSchooData.Graduation_Year__c}
+                                            </div>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item padding="around-small" size="6">
+                                            <div class="">Degree Title</div>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item padding="around-small" size="6">
+                                            <div>{degMedSchooData.Degree_Title__c}</div>
+                                        </lightning-layout-item>
+                                        <!--Code added by Shailaja-->
+                                        <lightning-layout-item padding="around-small" size="6">
+                                            <div class="">Degree Issue Month & Year</div>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item padding="around-small" size="6">
+                                            <div class="summary-degreeissuemonth">
+                                                {degMedSchooData.Degree_Issue_Month__c}
+                                            </div>
+                                            <div class="summary-degreeissueyear">{degMedSchooData.Degree_Issue_Year__c}
+                                            </div>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item padding="around-small" size="6">
+                                            <div class="">Student Id</div>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item padding="around-small" size="6">
+                                            <div>{degMedSchooData.Student_ID__c}</div>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item padding="around-small" size="6">
+                                            <div class="">Speciality</div>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item padding="around-small" size="6">
+                                            <div>{degMedSchooData.Specialty__c}</div>
+                                        </lightning-layout-item>
+                                    </lightning-layout>
+                                </div>
+                            </lightning-accordion-section>
+                        </div>
+                    </div>
+                </lightning-record-view-form>
+            </template>
+            <!-- Other Med School Details -->
+            <template if:true={isOthMed}>
+                <div class={formMargin}>
+                    <div class="slds-grid slds-wrap">
+                        <!-- Other Medical Schools -->
+                        <lightning-accordion-section class="slds-col slds-size--1-of-1 gridColPadding"
+                            title="Other Medical Schools Information" label="Other Medical Schools Information">
+                            <template if:false={showCaseDetail}>
+                                <div class="slds-float_right">
+                                    <lightning-button variant="brand" label="Change Other Medical School Information"
+                                        title="Change Other Medical Schools Information"
+                                        onclick={navigateToOtherMedSchoolPage} class="slds-m-left_x-small">
+                                    </lightning-button>
+                                </div>
+                            </template>
+                            <div class="gridItemPadding">
+                                <template for:each={getOtherMedSchoolData} for:item='otherMedRec' for:index='index'>
+                                    <lightning-record-view-form record-id={otherMedRec.Id}
+                                        object-api-name={otherMedRec.objectApiName} mode="readonly"
+                                        key={otherMedRec.Id}>
+                                        <lightning-layout multiple-rows="true">
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <div class="">Medical School</div>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <div>{otherMedRec.Account_Name__c}</div>
+                                            </lightning-layout-item>
+                                            <!--Code added by Shailaja-->
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <div class="">Attendance Start Month & Year</div>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <div class="summary-startmonth">{otherMedRec.Start_Month__c}
+                                                </div>
+                                                <div class="summary-startyear">{otherMedRec.Start_Year__c}
+                                                </div>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <div class="">Attendance End Month & Year</div>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <div class="summary-endmonth">{otherMedRec.End_Month__c}
+                                                </div>
+                                                <div class="summary-endyear">{otherMedRec.End_Year__c}
+                                                </div>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <div class="">Number of Years Attended</div>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <div>{otherMedRec.Number_of_Years_Attended__c}</div>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <div class="">School Program</div>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <div>{otherMedRec.School_Program__c}</div>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <div class="">Student Id</div>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <div>{otherMedRec.Student_ID__c}</div>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <div class="">Speciality</div>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <div>{otherMedRec.Specialty__c}</div>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <div class="">Transfer Credits to Degree School</div>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <template if:false={otherMedRec.Transfer_Credit_to_Degree_School__c}>
+                                                    <input type="checkbox" disabled name="transferCredit"
+                                                        value={otherMedRec.Transfer_Credit_to_Degree_School__c}>
+                                                </template>
+                                                <template if:true={otherMedRec.Transfer_Credit_to_Degree_School__c}>
+                                                    <input type="checkbox" disabled name="transferCredit" checked
+                                                        value={otherMedRec.Transfer_Credit_to_Degree_School__c}>
+                                                </template>
+                                            </lightning-layout-item>
+                                            <div class="separatorborderbottom"></div>
+                                        </lightning-layout>
+                                        <template if:true={otherMedRec.Transfer_Credit_to_Degree_School__c}>
+                                            <template for:each={otherMedRec.Transfer_Credits__r} for:item='tcRecord'
+                                                for:index='index'>
+                                                <lightning-record-view-form record-id={tcRecord.Id}
+                                                    object-api-name="Transfer_Credit__c" mode="readonly"
+                                                    key={tcRecord.Id}>
+                                                    <lightning-layout multiple-rows="true">
+                                                        <lightning-layout-item padding="around-small" size="6">
+                                                            <div class="">Course Title (List course title exactly as it
+                                                                appears on official transcript issued by this school)
+                                                            </div>
+                                                        </lightning-layout-item>
+                                                        <lightning-layout-item padding="around-small" size="6">
+                                                            <div>{tcRecord.Transfer_Credit_Course__c}</div>
+                                                        </lightning-layout-item>
+                                                        <lightning-layout-item padding="around-small" size="6">
+                                                            <div class="">Number of Credits</div>
+                                                        </lightning-layout-item>
+                                                        <lightning-layout-item padding="around-small" size="6">
+                                                            <div>{tcRecord.Transfer_Credit_Grade__c}</div>
+                                                        </lightning-layout-item>
+                                                        <lightning-layout-item padding="around-small" size="6">
+                                                            <div class="">What was the outcome of this course?</div>
+                                                        </lightning-layout-item>
+                                                        <lightning-layout-item padding="around-small" size="6">
+                                                            <div>{tcRecord.Course_Outcome__c}</div>
+                                                        </lightning-layout-item>
+                                                        <lightning-layout-item padding="around-small" size="6">
+                                                            <div class="">Date Credits Earned</div>
+                                                        </lightning-layout-item>
+                                                        <lightning-layout-item padding="around-small" size="6">
+                                                            <div>{tcRecord.Credits_Earned_Month__c}
+                                                                {tcRecord.Credits_Earned_Year__c}</div>
+                                                        </lightning-layout-item>
+                                                        <div class="separatorborderbottom"></div>
+                                                    </lightning-layout>
+                                                </lightning-record-view-form>
+                                            </template>
+                                            <template if:true={showOtMedFile}>
+                                                <lightning-layout multiple-rows="true">
+                                                    <lightning-layout-item padding="around-small" size="6">
+                                                        <div class="">Transfer Credit Transcript</div>
+                                                    </lightning-layout-item>
+                                                    <lightning-layout-item padding="around-small" size="6">
+                                                        <div>
+                                                            <c-cloud-document-upload-wrapper class="cloudDocumentUpload"
+                                                                pay-load={assetsList.tctPayload}
+                                                                max-allowed-file-size={maxsize}
+                                                                accepted-file-formats=".jpeg,.jpg,.tiff,.pdf"
+                                                                enable-annotation="false" enable-redaction="false"
+                                                                asset-type="Transfer Credit Transcript"
+                                                                hide-upload="true">
+                                                            </c-cloud-document-upload-wrapper>
+                                                        </div>
+                                                    </lightning-layout-item>
+                                                    <lightning-layout-item padding="around-small" size="6">
+                                                        <div class="">Name on TCT Document</div>
+                                                    </lightning-layout-item>
+                                                    <lightning-layout-item padding="around-small" size="6">
+                                                        <div>
+                                                            {assetsList.tctName}
+                                                        </div>
+                                                    </lightning-layout-item>
+                                                    <lightning-layout-item padding="around-small" size="6">
+                                                        <div class="">Is Name on the Document different?</div>
+                                                    </lightning-layout-item>
+                                                    <lightning-layout-item padding="around-small" size="6">
+                                                        <div>
+                                                            {assetsList.tctNameDiff}
+                                                        </div>
+                                                    </lightning-layout-item>
+                                                    <template if:true={tctNameCond}>
+                                                        <lightning-layout-item padding="around-small" size="6">
+                                                            <div class="">TCT Name Documentation</div>
+                                                        </lightning-layout-item>
+                                                        <lightning-layout-item padding="around-small" size="6">
+                                                            <div>
+                                                                <c-cloud-document-upload-wrapper
+                                                                    class="cloudDocumentUpload"
+                                                                    pay-load={assetsList.nameDocPayload}
+                                                                    max-allowed-file-size={maxsize}
+                                                                    accepted-file-formats=".jpeg,.jpg,.tiff,.pdf"
+                                                                    enable-annotation="false" enable-redaction="false"
+                                                                    asset-type="Name Document" hide-upload="true">
+                                                                </c-cloud-document-upload-wrapper>
+                                                            </div>
+                                                        </lightning-layout-item>
+                                                    </template>
+                                                    <lightning-layout-item padding="around-small" size="6">
+                                                        <div class="">Is your Transfer Credit Transcript in a language
+                                                            other than English?</div>
+                                                    </lightning-layout-item>
+                                                    <lightning-layout-item padding="around-small" size="6">
+                                                        <div>
+                                                            {assetsList.tctTrans}
+                                                        </div>
+                                                    </lightning-layout-item>
+                                                    <template if:true={tctTransCond}>
+                                                        <lightning-layout-item padding="around-small" size="6">
+                                                            <div class="">Transfer Credit Transcript Translation</div>
+                                                        </lightning-layout-item>
+                                                        <lightning-layout-item padding="around-small" size="6">
+                                                            <div>
+                                                                <c-cloud-document-upload-wrapper
+                                                                    class="cloudDocumentUpload"
+                                                                    pay-load={assetsList.tctTranslationPayload}
+                                                                    max-allowed-file-size={maxsize}
+                                                                    accepted-file-formats=".jpeg,.jpg,.tiff,.pdf"
+                                                                    enable-annotation="false" enable-redaction="false"
+                                                                    asset-type="Translation" hide-upload="true">
+                                                                </c-cloud-document-upload-wrapper>
+                                                            </div>
+                                                        </lightning-layout-item>
+                                                    </template>
+                                                </lightning-layout>
+                                            </template>
+                                            <div class="slds-p-top_medium slds-border_bottom"></div>
+                                        </template>
+                                    </lightning-record-view-form>
+                                </template>
+                            </div>
+                        </lightning-accordion-section>
+                    </div>
+                </div>
+            </template>
+            <!-- Other Institutions Details -->
+            <template if:true={isOthIns}>
+                <div class={formMargin}>
+                    <div class="slds-grid slds-wrap">
+                        <!-- Other Institutions -->
+                        <lightning-accordion-section class="slds-col slds-size--1-of-1 gridColPadding"
+                            title="Other Institutions Information" label="Other Institutions Information">
+                            <template if:false={showCaseDetail}>
+                                <div class="slds-float_right">
+                                    <lightning-button variant="brand" label="Change Other Institutions Information"
+                                        title="Change Other Institutions Information"
+                                        onclick={navigateToOtherInstitutionPage} class="slds-m-left_x-small">
+                                    </lightning-button>
+                                </div>
+                            </template>
+                            <div class="gridItemPadding">
+                                <template for:each={getOtherInstitutionData} for:item='otherInsRec' for:index='index'>
+                                    <lightning-record-view-form record-id={otherInsRec.Id}
+                                        object-api-name={otherInsRec.objectApiName} mode="readonly"
+                                        key={otherInsRec.Id}>
+                                        <lightning-layout multiple-rows="true">
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <div class="">Institution Name</div>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <div>{otherInsRec.Account_Name__c}</div>
+                                            </lightning-layout-item>
+                                            <template if:true={otherInsRec.newEntity}>
+                                                <lightning-layout-item padding="around-small" size="6">
+                                                    <div class="">University Name</div>
+                                                </lightning-layout-item>
+                                                <lightning-layout-item padding="around-small" size="6">
+                                                    <div>{otherInsRec.Account__r.University_Name__c}</div>
+                                                </lightning-layout-item>
+                                                <lightning-layout-item padding="around-small" size="6">
+                                                    <div class="">Street Address</div>
+                                                </lightning-layout-item>
+                                                <lightning-layout-item padding="around-small" size="6">
+                                                    <div>{otherInsRec.Account__r.BillingStreet}</div>
+                                                </lightning-layout-item>
+                                                <lightning-layout-item padding="around-small" size="6">
+                                                    <div class="">City</div>
+                                                </lightning-layout-item>
+                                                <lightning-layout-item padding="around-small" size="6">
+                                                    <div>{otherInsRec.Account__r.BillingCity}</div>
+                                                </lightning-layout-item>
+                                                <lightning-layout-item padding="around-small" size="6">
+                                                    <div class="">State/Province</div>
+                                                </lightning-layout-item>
+                                                <lightning-layout-item padding="around-small" size="6">
+                                                    <div>{otherInsRec.Account__r.BillingState}</div>
+                                                </lightning-layout-item>
+                                                <lightning-layout-item padding="around-small" size="6">
+                                                    <div class="">Country</div>
+                                                </lightning-layout-item>
+                                                <lightning-layout-item padding="around-small" size="6">
+                                                    <div>{otherInsRec.Account__r.BillingCountry}</div>
+                                                </lightning-layout-item>
+                                                <lightning-layout-item padding="around-small" size="6">
+                                                    <div class="">Zip/Postal</div>
+                                                </lightning-layout-item>
+                                                <lightning-layout-item padding="around-small" size="6">
+                                                    <div>{otherInsRec.Account__r.BillingPostalCode
+                                                    }</div>
+                                                </lightning-layout-item>
+                                            </template>
+                                            <!--Code added by Shailaja-->
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <div class="">Attendance Start Month & Year</div>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <div class="summary-startmonth">{otherInsRec.Start_Month__c}
+                                                </div>
+                                                <div class="summary-startyear">{otherInsRec.Start_Year__c}
+                                                </div>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <div class="">Attendance End Month & Year</div>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <div class="summary-endmonth">{otherInsRec.End_Month__c}
+                                                </div>
+                                                <div class="summary-endyear">{otherInsRec.End_Year__c}
+                                                </div>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <div class="">Number of Years Attended</div>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <div>{otherInsRec.Number_of_Years_Attended__c}</div>
+                                            </lightning-layout-item>
+                                        </lightning-layout>
+                                        <template for:each={otherInsRec.Transfer_Credits__r} for:item='tcRec'
+                                            for:index='index'>
+                                            <lightning-record-view-form record-id={tcRec.Id}
+                                                object-api-name="Transfer_Credit__c" mode="readonly" key={tcRec.Id}>
+                                                <lightning-layout multiple-rows="true">
+                                                    <lightning-layout-item padding="around-small" size="6">
+                                                        <div class="">Course Title (List course title exactly as it
+                                                            appears on official transcript issued by this school)</div>
+                                                    </lightning-layout-item>
+                                                    <lightning-layout-item padding="around-small" size="6">
+                                                        <div>{tcRec.Transfer_Credit_Course__c}</div>
+                                                    </lightning-layout-item>
+                                                    <lightning-layout-item padding="around-small" size="6">
+                                                        <div class="">Number of Credits</div>
+                                                    </lightning-layout-item>
+                                                    <lightning-layout-item padding="around-small" size="6">
+                                                        <div>{tcRec.Transfer_Credit_Grade__c}</div>
+                                                    </lightning-layout-item>
+                                                    <lightning-layout-item padding="around-small" size="6">
+                                                        <div class="">What was the outcome of this course?</div>
+                                                    </lightning-layout-item>
+                                                    <lightning-layout-item padding="around-small" size="6">
+                                                        <div>{tcRec.Course_Outcome__c}</div>
+                                                    </lightning-layout-item>
+                                                    <lightning-layout-item padding="around-small" size="6">
+                                                        <div class="">Date Credits Earned</div>
+                                                    </lightning-layout-item>
+                                                    <lightning-layout-item padding="around-small" size="6">
+                                                        <div>{tcRec.Credits_Earned_Month__c}
+                                                            {tcRec.Credits_Earned_Year__c}</div>
+                                                    </lightning-layout-item>
+                                                    <div class="separatorborderbottom"></div>
+                                                </lightning-layout>
+                                            </lightning-record-view-form>
+                                        </template>
+                                        <lightning-layout multiple-rows="true">
+                                            <template if:true={otherInsRec.showtctFile}>
+                                                <lightning-layout-item padding="around-small" size="6">
+                                                    <div class="">Transfer Credit Transcript</div>
+                                                </lightning-layout-item>
+                                                <lightning-layout-item padding="around-small" size="6">
+                                                    <div>
+                                                        <c-cloud-document-upload-wrapper class="cloudDocumentUpload"
+                                                            pay-load={otherInsRec.tctPayload}
+                                                            max-allowed-file-size={maxsize}
+                                                            accepted-file-formats=".jpeg,.jpg,.tiff,.pdf"
+                                                            enable-annotation="false" enable-redaction="false"
+                                                            asset-type="Transfer Credit Transcript" hide-upload="true">
+                                                        </c-cloud-document-upload-wrapper>
+                                                    </div>
+                                                </lightning-layout-item>
+                                                <lightning-layout-item padding="around-small" size="6">
+                                                    <div class="">Name on TCT Document</div>
+                                                </lightning-layout-item>
+                                                <lightning-layout-item padding="around-small" size="6">
+                                                    <div>
+                                                        {otherInsRec.tctName}
+                                                    </div>
+                                                </lightning-layout-item>
+                                                <lightning-layout-item padding="around-small" size="6">
+                                                    <div class="">Is Name on the Document different?</div>
+                                                </lightning-layout-item>
+                                                <lightning-layout-item padding="around-small" size="6">
+                                                    <div>
+                                                        {otherInsRec.tctNameDiff}
+                                                    </div>
+                                                </lightning-layout-item>
+                                                <template if:true={otherInsRec.tctNameCond}>
+                                                    <lightning-layout-item padding="around-small" size="6">
+                                                        <div class="">TCT Name Documentation</div>
+                                                    </lightning-layout-item>
+                                                    <lightning-layout-item padding="around-small" size="6">
+                                                        <div>
+                                                            <c-cloud-document-upload-wrapper class="cloudDocumentUpload"
+                                                                pay-load={otherInsRec.nameDocPayload}
+                                                                max-allowed-file-size={maxsize}
+                                                                accepted-file-formats=".jpeg,.jpg,.tiff,.pdf"
+                                                                enable-annotation="false" enable-redaction="false"
+                                                                asset-type="Name Document" hide-upload="true">
+                                                            </c-cloud-document-upload-wrapper>
+                                                        </div>
+                                                    </lightning-layout-item>
+                                                </template>
+                                                <lightning-layout-item padding="around-small" size="6">
+                                                    <div class="">Is your Transfer Credit Transcript in a language other
+                                                        than English?</div>
+                                                </lightning-layout-item>
+                                                <lightning-layout-item padding="around-small" size="6">
+                                                    <div>
+                                                        {otherInsRec.tctTrans}
+                                                    </div>
+                                                </lightning-layout-item>
+                                                <template if:true={otherInsRec.tctTransCond}>
+                                                    <lightning-layout-item padding="around-small" size="6">
+                                                        <div class="">Transfer Credit Transcript Translation</div>
+                                                    </lightning-layout-item>
+                                                    <lightning-layout-item padding="around-small" size="6">
+                                                        <div>
+                                                            <c-cloud-document-upload-wrapper class="cloudDocumentUpload"
+                                                                pay-load={otherInsRec.tctTranslationPayload}
+                                                                max-allowed-file-size={maxsize}
+                                                                accepted-file-formats=".jpeg,.jpg,.tiff,.pdf"
+                                                                enable-annotation="false" enable-redaction="false"
+                                                                asset-type="Translation" hide-upload="true">
+                                                            </c-cloud-document-upload-wrapper>
+                                                        </div>
+                                                    </lightning-layout-item>
+                                                </template>
+                                            </template>
+                                            <template if:true={otherInsRec.showpmlFile}>
+                                                <lightning-layout-item padding="around-small" size="6">
+                                                    <div class="">Pre-Med Letter</div>
+                                                </lightning-layout-item>
+                                                <lightning-layout-item padding="around-small" size="6">
+                                                    <div>
+                                                        <c-cloud-document-upload-wrapper class="cloudDocumentUpload"
+                                                            pay-load={otherInsRec.pmlPayload}
+                                                            max-allowed-file-size={maxsize}
+                                                            accepted-file-formats=".jpeg,.jpg,.tiff,.pdf"
+                                                            enable-annotation="false" enable-redaction="false"
+                                                            asset-type="Pre-Med Letter" hide-upload="true">
+                                                        </c-cloud-document-upload-wrapper>
+                                                    </div>
+                                                </lightning-layout-item>
+                                                <lightning-layout-item padding="around-small" size="6">
+                                                    <div class="">Name on Pre-Med Letter Document</div>
+                                                </lightning-layout-item>
+                                                <lightning-layout-item padding="around-small" size="6">
+                                                    <div>
+                                                        {otherInsRec.pmlName}
+                                                    </div>
+                                                </lightning-layout-item>
+                                                <lightning-layout-item padding="around-small" size="6">
+                                                    <div class="">Is Name on the Document different?</div>
+                                                </lightning-layout-item>
+                                                <lightning-layout-item padding="around-small" size="6">
+                                                    <div>
+                                                        {otherInsRec.pmlNameDiff}
+                                                    </div>
+                                                </lightning-layout-item>
+                                                <template if:true={otherInsRec.pmlNameCond}>
+                                                    <lightning-layout-item padding="around-small" size="6">
+                                                        <div class="">Pre-Med Letter Name Documentation</div>
+                                                    </lightning-layout-item>
+                                                    <lightning-layout-item padding="around-small" size="6">
+                                                        <div>
+                                                            <c-cloud-document-upload-wrapper class="cloudDocumentUpload"
+                                                                pay-load={otherInsRec.pmlNameDocPayload}
+                                                                max-allowed-file-size={maxsize}
+                                                                accepted-file-formats=".jpeg,.jpg,.tiff,.pdf"
+                                                                enable-annotation="false" enable-redaction="false"
+                                                                asset-type="Name Document" hide-upload="true">
+                                                            </c-cloud-document-upload-wrapper>
+                                                        </div>
+                                                    </lightning-layout-item>
+                                                </template>
+                                                <lightning-layout-item padding="around-small" size="6">
+                                                    <div class="">Is your Pre-Med Letter in a language other than
+                                                        English?</div>
+                                                </lightning-layout-item>
+                                                <lightning-layout-item padding="around-small" size="6">
+                                                    <div>
+                                                        {otherInsRec.pmlTrans}
+                                                    </div>
+                                                </lightning-layout-item>
+                                                <template if:true={otherInsRec.pmlTransCond}>
+                                                    <lightning-layout-item padding="around-small" size="6">
+                                                        <div class="">Pre-Med Letter Translation</div>
+                                                    </lightning-layout-item>
+                                                    <lightning-layout-item padding="around-small" size="6">
+                                                        <div>
+                                                            <c-cloud-document-upload-wrapper class="cloudDocumentUpload"
+                                                                pay-load={otherInsRec.pmlTranslationPayload}
+                                                                max-allowed-file-size={maxsize}
+                                                                accepted-file-formats=".jpeg,.jpg,.tiff,.pdf"
+                                                                enable-annotation="false" enable-redaction="false"
+                                                                asset-type="Translation" hide-upload="true">
+                                                            </c-cloud-document-upload-wrapper>
+                                                        </div>
+                                                    </lightning-layout-item>
+                                                </template>
+                                            </template>
+                                        </lightning-layout>
+                                        <div class="slds-p-top_medium slds-border_bottom"></div>
+                                    </lightning-record-view-form>
+                                </template>
+                            </div>
+                        </lightning-accordion-section>
+                    </div>
+                </div>
+            </template>
+            <!-- Graduate Details -->
+            <template if:true={isGraduate}>
+                <div class={formMargin}>
+                    <div class="slds-grid slds-wrap">
+                        <lightning-accordion-section class="slds-col slds-size--1-of-1 gridColPadding"
+                            title="Graduation Information" label="Graduation Information">
+                            <template if:false={showCaseDetail}>
+                                <div class="slds-float_right">
+                                    <lightning-button variant="brand" label="Change Graduation Information"
+                                        title="Change Graduation Information" onclick={navigateToGradOnlyPage}
+                                        class="slds-m-left_x-small"></lightning-button>
+                                </div>
+                            </template>
+                            <div class="gridItemPadding">
+                                <lightning-layout multiple-rows="true">
+                                    <lightning-layout-item padding="around-small" size="6">
+                                        <div class="">I don't have a Diploma</div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small" size="6">
+                                        <div>
+                                            <template if:true={isDeanLet}>
+                                                <input type="checkbox" disabled name="isDeanLetter" checked
+                                                    value={isDeanLet}>
+                                            </template>
+                                            <template if:false={isDeanLet}>
+                                                <input type="checkbox" disabled name="isDeanLetter" value={isDeanLet}>
+                                            </template>
+                                        </div>
+                                    </lightning-layout-item>
+                                    <!--User story#15591 Add the courier option here-->
+                                    <template if:true={courierCheckbox}>
+                                        <lightning-layout-item padding="around-small" size="6">
+                                            <div class="">Courier service for an additional fee</div>
+                                        </lightning-layout-item>
+                                        <lightning-layout-item padding="around-small" size="6">
+                                            <div><input type="checkbox" disabled name="courierCheckbox" checked value={courierCheckbox}></div>
+                                        </lightning-layout-item>
+                                    </template>
+                                    <div class="separatorborderbottom"></div>
+                                    <template if:true={deanLetterCond}>
+                                        <template if:true={showdlFile}>
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <div class="">Letter From Dean</div>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <div>
+                                                    <c-cloud-document-upload-wrapper class="cloudDocumentUpload"
+                                                        pay-load={gradAssetsList.dlPayload}
+                                                        max-allowed-file-size={maxsize}
+                                                        accepted-file-formats=".jpeg,.jpg,.tiff,.pdf"
+                                                        enable-annotation="false" enable-redaction="false"
+                                                        asset-type="Dean Letter" hide-upload="true">
+                                                    </c-cloud-document-upload-wrapper>
+                                                </div>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <div class="">Expected Degree Issue Date</div>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <div>
+                                                    <lightning-formatted-date-time value={dlDate} time-zone="UTC">
+                                                    </lightning-formatted-date-time>
+                                                </div>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <div class="">Name on Document</div>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <div>
+                                                    {gradAssetsList.dlName}
+                                                </div>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <div class="">Is Name on the Document different?</div>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <div>
+                                                    {gradAssetsList.dlNameDiff}
+                                                </div>
+                                            </lightning-layout-item>
+                                            <template if:true={dlNameCond}>
+                                                <lightning-layout-item padding="around-small" size="6">
+                                                    <div class="">Dean's Letter Name Documentation</div>
+                                                </lightning-layout-item>
+                                                <lightning-layout-item padding="around-small" size="6">
+                                                    <div>
+                                                        <c-cloud-document-upload-wrapper class="cloudDocumentUpload"
+                                                            pay-load={gradAssetsList.dlNameDocPayload}
+                                                            max-allowed-file-size={maxsize}
+                                                            accepted-file-formats=".jpeg,.jpg,.tiff,.pdf"
+                                                            enable-annotation="false" enable-redaction="false"
+                                                            asset-type="Name Document" hide-upload="true">
+                                                        </c-cloud-document-upload-wrapper>
+                                                    </div>
+                                                </lightning-layout-item>
+                                            </template>
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <div class="">Is Dean Letter in a language other than English?</div>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <div>
+                                                    {gradAssetsList.dlTrans}
+                                                </div>
+                                            </lightning-layout-item>
+                                            <template if:true={dlTransCond}>
+                                                <lightning-layout-item padding="around-small" size="6">
+                                                    <div class="">Dean's Letter Translation</div>
+                                                </lightning-layout-item>
+                                                <lightning-layout-item padding="around-small" size="6">
+                                                    <div>
+                                                        <c-cloud-document-upload-wrapper class="cloudDocumentUpload"
+                                                            pay-load={gradAssetsList.dlTranslationPayload}
+                                                            max-allowed-file-size={maxsize}
+                                                            accepted-file-formats=".jpeg,.jpg,.tiff,.pdf"
+                                                            enable-annotation="false" enable-redaction="false"
+                                                            asset-type="Translation" hide-upload="true">
+                                                        </c-cloud-document-upload-wrapper>
+                                                    </div>
+                                                </lightning-layout-item>
+                                            </template>
+                                        </template>
+                                    </template>
+                                    <template if:false={deanLetterCond}>
+                                        <template if:true={showfmdFile}>
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <div class="">Diploma</div>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <div>
+                                                    <c-cloud-document-upload-wrapper class="cloudDocumentUpload"
+                                                        pay-load={gradAssetsList.fmdPayload}
+                                                        max-allowed-file-size={maxsize}
+                                                        accepted-file-formats=".jpeg,.jpg,.tiff,.pdf"
+                                                        enable-annotation="false" enable-redaction="false"
+                                                        asset-type="Final Medical Diploma" hide-upload="true">
+                                                    </c-cloud-document-upload-wrapper>
+                                                </div>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <div class="">Name on Document</div>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <div>
+                                                    {gradAssetsList.fmdName}
+                                                </div>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <div class="">Is Name on the Document different?</div>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <div>
+                                                    {gradAssetsList.fmdNameDiff}
+                                                </div>
+                                            </lightning-layout-item>
+                                            <template if:true={fmdNameCond}>
+                                                <lightning-layout-item padding="around-small" size="6">
+                                                    <div class="">Diploma Name Documentation</div>
+                                                </lightning-layout-item>
+                                                <lightning-layout-item padding="around-small" size="6">
+                                                    <div>
+                                                        <c-cloud-document-upload-wrapper class="cloudDocumentUpload"
+                                                            pay-load={gradAssetsList.fmdNameDocPayload}
+                                                            max-allowed-file-size={maxsize}
+                                                            accepted-file-formats=".jpeg,.jpg,.tiff,.pdf"
+                                                            enable-annotation="false" enable-redaction="false"
+                                                            asset-type="Name Document" hide-upload="true">
+                                                        </c-cloud-document-upload-wrapper>
+                                                    </div>
+                                                </lightning-layout-item>
+                                            </template>
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <div class="">Is Diploma in a language other than English?</div>
+                                            </lightning-layout-item>
+                                            <lightning-layout-item padding="around-small" size="6">
+                                                <div>
+                                                    {gradAssetsList.fmdTrans}
+                                                </div>
+                                            </lightning-layout-item>
+                                            <template if:true={fmdTransCond}>
+                                                <lightning-layout-item padding="around-small" size="6">
+                                                    <div class="">Diploma Translation</div>
+                                                </lightning-layout-item>
+                                                <lightning-layout-item padding="around-small" size="6">
+                                                    <div>
+                                                        <c-cloud-document-upload-wrapper class="cloudDocumentUpload"
+                                                            pay-load={gradAssetsList.fmdTranslationPayload}
+                                                            max-allowed-file-size={maxsize}
+                                                            accepted-file-formats=".jpeg,.jpg,.tiff,.pdf"
+                                                            enable-annotation="false" enable-redaction="false"
+                                                            asset-type="Translation" hide-upload="true">
+                                                        </c-cloud-document-upload-wrapper>
+                                                    </div>
+                                                </lightning-layout-item>
+                                            </template>
+                                        </template>
+                                        <template if:true={ftReqdCond}>
+                                            <template if:true={showFtFile}>
+                                                <div class="slds-p-top_medium slds-border_bottom fullwidth"></div>
+                                                <template if:true={courierCheckboxFMST}>
+                                                    <lightning-layout-item padding="around-small" size="6">
+                                                        <div class="">Courier service for an additional fee</div>
+                                                    </lightning-layout-item>
+                                                    <lightning-layout-item padding="around-small" size="6">
+                                                        <div><input type="checkbox" disabled name="courierCheckbox" checked value={courierCheckboxFMST}></div>
+                                                    </lightning-layout-item>
+                                                </template>
+                                                <lightning-layout-item padding="around-small" size="6">
+                                                    <div class="">Final Transcript</div>
+                                                </lightning-layout-item>
+                                                <lightning-layout-item padding="around-small" size="6">
+                                                    <div>
+                                                        <c-cloud-document-upload-wrapper class="cloudDocumentUpload"
+                                                            pay-load={gradAssetsList.ftPayload}
+                                                            max-allowed-file-size={maxsize}
+                                                            accepted-file-formats=".jpeg,.jpg,.tiff,.pdf"
+                                                            enable-annotation="false" enable-redaction="false"
+                                                            asset-type="Final Transcript" hide-upload="true">
+                                                        </c-cloud-document-upload-wrapper>
+                                                    </div>
+                                                </lightning-layout-item>
+                                                <lightning-layout-item padding="around-small" size="6">
+                                                    <div class="">Name on Document</div>
+                                                </lightning-layout-item>
+                                                <lightning-layout-item padding="around-small" size="6">
+                                                    <div>
+                                                        {gradAssetsList.ftName}
+                                                    </div>
+                                                </lightning-layout-item>
+                                                <lightning-layout-item padding="around-small" size="6">
+                                                    <div class="">Is Name on the Document different?</div>
+                                                </lightning-layout-item>
+                                                <lightning-layout-item padding="around-small" size="6">
+                                                    <div>
+                                                        {gradAssetsList.ftNameDiff}
+                                                    </div>
+                                                </lightning-layout-item>
+                                                <template if:true={ftNameCond}>
+                                                    <lightning-layout-item padding="around-small" size="6">
+                                                        <div class="">Final Transcript Name Documentation</div>
+                                                    </lightning-layout-item>
+                                                    <lightning-layout-item padding="around-small" size="6">
+                                                        <div>
+                                                            <c-cloud-document-upload-wrapper class="cloudDocumentUpload"
+                                                                pay-load={gradAssetsList.ftNameDocPayload}
+                                                                max-allowed-file-size={maxsize}
+                                                                accepted-file-formats=".jpeg,.jpg,.tiff,.pdf"
+                                                                enable-annotation="false" enable-redaction="false"
+                                                                asset-type="Name Document" hide-upload="true">
+                                                            </c-cloud-document-upload-wrapper>
+                                                        </div>
+                                                    </lightning-layout-item>
+                                                </template>
+                                                <lightning-layout-item padding="around-small" size="6">
+                                                    <div class="">Is Final Transcript in a language other than English?
+                                                    </div>
+                                                </lightning-layout-item>
+                                                <lightning-layout-item padding="around-small" size="6">
+                                                    <div>
+                                                        {gradAssetsList.ftTrans}
+                                                    </div>
+                                                </lightning-layout-item>
+                                                <template if:true={ftTransCond}>
+                                                    <lightning-layout-item padding="around-small" size="6">
+                                                        <div class="">Final Transcript Translation</div>
+                                                    </lightning-layout-item>
+                                                    <lightning-layout-item padding="around-small" size="6">
+                                                        <div>
+                                                            <c-cloud-document-upload-wrapper class="cloudDocumentUpload"
+                                                                pay-load={gradAssetsList.ftTranslationPayload}
+                                                                max-allowed-file-size={maxsize}
+                                                                accepted-file-formats=".jpeg,.jpg,.tiff,.pdf"
+                                                                enable-annotation="false" enable-redaction="false"
+                                                                asset-type="Translation" hide-upload="true">
+                                                            </c-cloud-document-upload-wrapper>
+                                                        </div>
+                                                    </lightning-layout-item>
+                                                </template>
+                                            </template>
+                                        </template>
+                                    </template>
+                                </lightning-layout>
+                            </div>
+                        </lightning-accordion-section>
+                    </div>
+                </div>
+            </template>
+            <!--Questions-->
+            <div class={formMargin}>
+                <div class="slds-grid slds-wrap">
+                    <lightning-accordion-section class="slds-col slds-size--1-of-1 gridColPadding"
+                        title="Reporter Question Information" label="Reporter Question Information">
+                        <lightning-record-view-form record-id={getIdFromParent} object-api-name="Contact">
+                            <template if:true={showContactBtn}>
+                                <div class="slds-float_right">
+                                    <lightning-button variant="brand" label="Change Reporter Question Information"
+                                        title="Change Reporter Question Information" onclick={prevButton}
+                                        class="slds-m-left_x-small"></lightning-button>
+                                </div>
+                            </template>
+                            <div class="gridItemPadding">
+                                <lightning-layout multiple-rows="true">
+                                    <lightning-layout-item padding="around-small" size="6">
+                                        <div class=""><c-g-display-content unique-content-value="app_for_cert_reporter_question"></c-g-display-content></div>
+                                    </lightning-layout-item>
+                                    <lightning-layout-item padding="around-small" size="6">
+                                        <template if:false={reporterQstn}>
+                                            <input type="checkbox" disabled name="reporterQstn" value={reporterQstn}>
+                                        </template>
+                                        <template if:true={reporterQstn}>
+                                            <input type="checkbox" disabled name="reporterQstn" checked
+                                                value={reporterQstn}>
+                                        </template>
+                                    </lightning-layout-item>
+                                </lightning-layout>
+                            </div>
+                        </lightning-record-view-form>
+                    </lightning-accordion-section>
+                </div>
+            </div>
+            <div class={formMargin}>
+                <div class="slds-grid slds-wrap">
+                    <template if:true={errorTrue}>
+                        <lightning-formatted-rich-text class='errormsg' value={validationMessage}>
+                        </lightning-formatted-rich-text>
+                    </template>
+                    <template if:true={errorSecTrue}>
+                        <lightning-formatted-rich-text class='errormsg' value={validationMessageGrad}>
+                        </lightning-formatted-rich-text>
+                    </template>
+                </div>
+            </div>
+        </lightning-accordion>
+        <template if:false={showCaseDetail}>
+            <template if:false={showExamRegActionButton}>
+                <div class="buttonAlignment">
+                    <lightning-button variant="brand" label="Previous" title="Previous" onclick={prevButton}
+                        class="slds-m-left_x-small"></lightning-button>
+                    <lightning-button variant="brand" label="Next" title="Next" onclick={nextButton} type="submit"
+                        class="slds-m-left_x-small"></lightning-button>
+                    <lightning-button variant="brand" label="Cancel" title="Cancel" onclick={cancelButton}
+                        class="slds-m-left_x-small"></lightning-button>
+                </div>
+            </template>
+            <template if:true={showExamRegActionButton}>
+                <div class="buttonAlignment">
+                    <lightning-button variant="brand" label="Discard Changes and Exit" title="Discard Changes and Exit"
+                        onclick={discardButton} class="slds-m-left_x-small"></lightning-button>
+                    <lightning-button variant="brand" label="Previous" title="Previous" onclick={prevButtonExamReg}
+                        class="slds-m-left_x-small"></lightning-button>
+                    <lightning-button variant="brand" label="Next" title="Next" onclick={nextButton} type="submit"
+                        class="slds-m-left_x-small"></lightning-button>
+                </div>
+            </template>
+        </template>
+    </div>
+</template>

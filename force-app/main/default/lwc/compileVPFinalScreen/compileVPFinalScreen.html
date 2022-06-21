@@ -1,0 +1,83 @@
+<template>
+    <template if:true={spinner}>
+        <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+    </template>
+    <div class="marginSection">
+        <template if:true={showCourierSelectedByApplicant}>
+            <lightning-formatted-text value="Please append any necessary supporting documentation to the verification packet by using the document upload component on the Related tab."></lightning-formatted-text>        
+        </template>
+        <template if:false={showCourierSelectedByApplicant}>
+            <lightning-formatted-text value="Click Finish to complete verification packet compilation"></lightning-formatted-text>        
+        </template>
+        <br/>
+        <br/>
+        <template if:true={showCourierSection}>
+            <template if:true={courierSelectedByApplicant}>
+                <lightning-input type="checkbox" label="Courier option selected by applicant" checked={courierSelectedByApplicant} disabled>
+                </lightning-input>
+                <lightning-input type="checkbox" label="Send request via courier" disabled>
+                </lightning-input>   
+            </template>
+            <template if:false={courierSelectedByApplicant}>
+                <br/>
+                <lightning-input type="checkbox" label="Courier option selected by applicant" disabled></lightning-input>
+                <lightning-input type="checkbox" label="Send request via courier" onchange={handleSendRequest}>
+                </lightning-input>
+                <br/>
+            </template>
+            <template if:true={showCourierFeeSection}>
+                <div class="slds-form-element slds-form-element_horizontal">
+                    <label class="slds-form-element__label" for="procCredVer">
+                        <span class="required">*</span>
+                        <span class="credLabel">Courier Fee Paid by</span>
+                    </label>
+                    <div class="slds-form-element__control">
+                        <lightning-combobox class="courierFee" id="courierFeePaidBy" name="courierFeePaidBy" variant="label-hidden" label="Courier Fee Paid by" 
+                         value={selectedValue} placeholder="Select an option" options={picklistOptions} onchange={handlePicklistChange} onkeydown={preventBackslash}>
+                        </lightning-combobox>
+                        <template if:true={isErrProceed}>
+                            <span class="errormsg">Please select an option to proceed</span>
+                        </template>
+                    </div>
+                </div>
+            </template>
+            <template if:true={showCourierAccountSection}>
+                <br/>
+                <div class="slds-form-element slds-form-element_horizontal">
+                    <label class="slds-form-element__label" for="courAcc">
+                        <span>Courier Account</span>
+                    </label>
+                    <div class="slds-form-element__control">
+                        <lightning-input type="text" class="courAcc" label="Courier Account" name="courierAccount"
+                            value={courierAccount} variant="label-hidden" onchange={handleChangeCourierAccount}>
+                        </lightning-input>
+                    </div>
+                </div>
+            </template>
+            <template if:true={showCourierTypeSection}>      
+                <div class="slds-form-element slds-form-element_horizontal">
+                    <label class="slds-form-element__label" for="courAcc">
+                        <span class="required">*</span>
+                        <span>Courier Type</span>
+                    </label>
+                    <div class="slds-form-element__control">
+                        <lightning-combobox class="courTyp" id="courTyp" name="courierType" variant="label-hidden" label="Courier Type" 
+                        value={courierType} placeholder="FedEx" options={typeOptions} onchange={handleChangeCourierType} onkeydown={preventBackslash}></lightning-combobox>
+                    </div>
+                    <template if:true={isCourierTypeErr}>
+                        <span class="errormsg">Please select a Courier Type</span>
+                    </template>
+                </div>
+            </template>     
+        </template>
+        <br/>
+        <div class="outer">
+            <div class="inner">
+                <lightning-button variant="brand" label="Previous" title="Previous" onclick={previousButton} class="slds-var-m-right_x-small"></lightning-button>
+            </div>
+            <div class="inner">
+                <lightning-button variant="brand" label="Finish" title="Finish" onclick={finishButton} class="slds-var-m-right_x-small"></lightning-button>
+            </div>
+        </div>
+    </div>
+</template>

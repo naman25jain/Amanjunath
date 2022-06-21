@@ -1,0 +1,60 @@
+.padding {
+  padding-top:20px;
+  margin-left: 25%;
+  margin-right: 25%;
+}
+.stepHeader{
+  font-size: 20px
+}
+.header {
+  line-height: 2;
+}
+
+.gridSize{
+  width: 50%;
+  border: 0;
+}
+  
+.gridHeader{
+  font-size: large;       
+}
+
+.gridColPadding{
+padding-bottom: 20px;
+}
+
+.formMargin{
+  margin-left: 25%;
+  margin-right: 25%;
+  padding-top:20px;
+}
+
+.degree-issue-date .slds-form-element__icon{
+  position: absolute;
+  left: -64%;
+  bottom: 15px;
+}
+.buttonAlignment{
+  padding-left: 35%;    
+  padding-top: 2%; 
+  top: 57px;
+  left: 43px;
+}
+
+.errormsg{
+  color:#ff0000;
+  font-size: 13px;
+}
+
+.successmsg{
+  color:#4BB543;
+  font-size: 13px;
+}
+
+.footer {
+  height:100px !important;
+}
+.THIS .slds-dropdown-trigger .slds-dropdown {
+  height: 250px;
+  overflow: auto;
+}

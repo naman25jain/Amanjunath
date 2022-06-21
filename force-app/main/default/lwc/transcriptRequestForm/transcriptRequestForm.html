@@ -1,0 +1,637 @@
+<template>
+    <div class="formMargin">
+        <template if:true={spinner}>
+			<lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+        </template>
+        <c-modal-component title='Alert' message='Are you sure you want to cancel? All changes will be lost.'  show-secondary-button='true' secondary-button-text='Cancel' onsecondarybuttonclick={closeModal} show-primary-button='true' primary-button-text='OK' onprimarybuttonclick={cancelButton}></c-modal-component>
+        <div class="slds-grid slds-wrap gridMargin">   
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-1"> 
+                <span class="headerText">Transcript Request</span>
+                <br><br>
+                <span class="headerText">Transcript #1</span>
+                <p>You must provide either a Name of Recipient or Organization.</p>
+            </div>
+            <template if:false={primarySendToSelf}>
+                <template if:true={errprimaryNameOrOrg}>	
+                    <div class="slds-col slds-size_1-of-3 slds-p-left_medium">                  
+                        <span class="errormsgName">{label.errorOrganization}</span>   
+                    </div>           
+                    <div class="slds-col slds-size_1-of-3">
+                        
+                    </div>             
+                    <div class="slds-col slds-size_1-of-3">
+                        
+                    </div>
+                </template>
+            </template>
+            <template if:false ={primarySendToSelf}>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">                    
+                    <span>Name of Recipient</span>
+                </div>             
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    <lightning-input class="trPrimaryName" type="text" name="primaryNameOfReceipt" onchange={handleChangeForInputFields} variant="label-hidden" value={primaryNameOfReceipt} onfocus={handleFocus}></lightning-input>        
+                </div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    
+                </div>             
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    
+                </div>
+                <template if:true={errprimaryNameOfReceipt}>	
+                    <div class="slds-col slds-size_1-of-4">                  
+                    
+                    </div>             
+                    <div class="slds-col slds-p-left_medium slds-size_1-of-4">                    
+                            <span class="errormsgName">{label.errorNameofReceipt}</span>                    
+                    </div>
+                    <div class="slds-col slds-size_1-of-4">
+                        
+                    </div>             
+                    <div class="slds-col slds-size_1-of-4">
+                        
+                    </div>
+                </template>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">                
+                    <span>Organization</span>
+                </div>             
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    <lightning-input class="trPrimaryOrg" type="text" variant="label-hidden" value={primaryOrganization} name="primaryOrganization" onchange={handleChangeForInputFields} onfocus={handleFocus}></lightning-input>        
+                </div>
+            </template>
+
+            <template if:true ={primarySendToSelf}>
+             <div class="slds-col slds-var-p-around_medium slds-size_1-of-1">
+                        
+                        <span class="modContHdr">{label.sendToSelfMsg}</span>
+                    </div>            
+                
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    
+                    <span>Name of Recipient</span>
+                </div>             
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    <lightning-input disabled type="text" name="primaryNameOfReceipt" onchange={handleChangeForInputFields} variant="label-hidden" value={primaryNameOfReceipt}></lightning-input>        
+                </div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    
+                </div>             
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    
+                </div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">                
+                    <span>Organization</span>
+                </div>             
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    <lightning-input disabled type="text" variant="label-hidden" value={primaryOrganization} name="primaryOrganization" onchange={handleChangeForInputFields}></lightning-input>        
+                </div>
+            </template>
+            
+            <div class="slds-col slds-p-left_medium slds-p-top_medium slds-grid slds-wrap"> 
+                <div class="slds-col">
+                    <div class="checkboxPadding">
+                        <template if:true={primarySendToSelf}>
+                            <lightning-input checked type="checkbox" variant="label-hidden" value={primarySendToSelf} name="primarySendToSelf" onclick={handleChangeprimarySendToSelf} onfocus={handleFocus}></lightning-input>  
+                        </template>
+                        <template if:false={primarySendToSelf}>
+                            <lightning-input type="checkbox" variant="label-hidden" value={primarySendToSelf} name="primarySendToSelf" onclick={handleChangeprimarySendToSelf} onfocus={handleFocus}></lightning-input>  
+                        </template>
+                        
+                    </div>
+                    <div class="checkboxLabelPadding">
+                        <span>Send to Self</span>          
+                    </div>                  
+                </div> 
+            </div>
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">                
+                
+            </div> 
+
+            <template if:false ={primarySendToSelf}>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"> 
+                    <span class="required">*</span>               
+                    <span>Street Address</span>
+                </div>             
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    <lightning-input type="text" class="trPrimaryStreet" variant="label-hidden" value={primaryStreet} name="primaryStreet" onchange={handleChangeForInputFields} onfocus={handleFocus}></lightning-input>        
+                    <template if:true={showDropdown}>
+                        <div id="listbox-id-1" class="slds-dropdown slds-dropdown_length-with-icon-7 slds-dropdown_fluid address-typeahead" role="listbox" style="width:17%">
+                            <ul class="slds-listbox slds-listbox_vertical g-search" role="presentation">   
+                                <template for:each={addressList} for:index="index" for:item="prediction">
+                                    <c-vt-each-new-site-prediction class="item" onpredictionselect={handlePredictionSelect} site-prediction={prediction} key={prediction.place_id}></c-vt-each-new-site-prediction>
+                                </template>
+                            </ul>
+                        </div>
+                    </template>
+                </div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    <span class="required">*</span>
+                    <span>City</span>                
+                </div>             
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    <lightning-input type="text" class="trPrimaryCity" variant="label-hidden" value={primaryCity} name="primaryCity" onchange={handleChangeForInputFields} onfocus={handleFocus}></lightning-input>        
+                </div>
+                <!--Start of Error message-->
+                <div class="slds-col slds-size_1-of-4">                 
+                    
+                </div>             
+                <div class="slds-col slds-p-left_medium slds-size_1-of-4"> 
+                    <template if:true={errprimaryStreet}>						
+                        <span class="errormsgName">{label.errorStreet}</span>
+                    </template>
+                </div>
+                <div class="slds-col slds-size_1-of-4">
+                    
+                </div>             
+                <div class="slds-col slds-p-left_medium slds-size_1-of-4">
+                    <template if:true={errprimaryCity}>						
+                        <span class="errormsgName">{label.errorCity}</span>
+                    </template>                        
+                </div>
+                <!--End of Error message-->
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    <span>State/Province</span>                
+                </div>   
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    <lightning-input type="text" class="trPrimaryState" variant="label-hidden" value={primaryState} name="primaryState" onchange={handleChangeForInputFields} onfocus={handleFocus}></lightning-input>        
+                </div>          
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    <span>ZIP Code/Postal Code</span>                
+                </div>             
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+
+                    <lightning-input class="trPrimaryPostal" type="text" variant="label-hidden" value={primaryPostalCode} name="primaryPostalCode" onchange={handleChangeForInputFields} onfocus={handleFocus}></lightning-input>        
+                </div>
+                <!--Start of Error message-->
+                                <div class="slds-col slds-size_1-of-4">                 
+                    
+                                </div>             
+                                <div class="slds-col slds-p-left_medium slds-size_1-of-4"> 
+                                    
+                                </div>
+                                <div class="slds-col slds-size_1-of-4">
+                                    
+                                </div>             
+                                <div class="slds-col slds-p-left_medium slds-size_1-of-4">                        
+                                </div>
+                <!--End of Error message-->
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"> 
+                    <span class="required">*</span>               
+                    <span>Country</span>
+                </div>             
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    <lightning-combobox
+                    label=""
+                    class="trPrimaryCountry"
+                    variant="label-hidden" 
+                    value={primaryCountry}
+                    placeholder="-Select-"
+                    options={countryOptions}                                                                             
+                    onchange={onprimaryCountryValueSelection}
+                    onfocus={handleFocus}>
+                    </lightning-combobox> 
+                  </div>
+            </template>
+            <!--Disable primary details-->
+            <template if:true ={primarySendToSelf}>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">                
+                    <span>Street Address</span>
+                </div>             
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    <lightning-input disabled type="text" variant="label-hidden" value={primaryStreet} name="primaryStreet" onchange={handleChangeForInputFields}></lightning-input>        
+                </div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    <span>City</span>                
+                </div>             
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    <lightning-input disabled type="text" variant="label-hidden" value={primaryCity} name="primaryCity" onchange={handleChangeForInputFields}></lightning-input>        
+                </div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">                
+                    <span>State/Province</span>
+                </div>             
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    <lightning-input disabled type="text" variant="label-hidden" value={primaryState} name="primaryState" onchange={handleChangeForInputFields}></lightning-input>        
+                </div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    <span>ZIP Code/Postal Code</span>                
+                </div>             
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    <lightning-input disabled type="text" variant="label-hidden" value={primaryPostalCode} name="primaryPostalCode" onchange={handleChangeForInputFields}></lightning-input>        
+                </div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">                
+                    <span>Country</span>
+                </div>             
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    <lightning-input disabled type="text" variant="label-hidden" value={primaryCountry} name="primaryCountry" onchange={handleChangeForInputFields}></lightning-input>        
+                </div>
+            </template>
+            <template if:true= {showPrimaryTelephone}>            
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    <span class="required">*</span>
+                    <span>Telephone Number</span>                
+                </div>             
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    <lightning-input type="text" class="trPrimaryTelephone" variant="label-hidden" value={primaryTelephoneNumber} name="primaryTelephoneNumber" onchange={handleChangeForInputFields} onfocus={handleFocus}></lightning-input>        
+                </div>
+            </template>
+            <template if:false= {showPrimaryTelephone}>            
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                                  
+                </div>             
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    
+                </div>
+            </template>
+            
+				<!--Start of Error message-->
+                <div class="slds-col slds-size_1-of-4">                 
+                    
+                </div>             
+                <div class="slds-col slds-p-left_medium slds-size_1-of-4">
+                    <template if:false ={primarySendToSelf}> 
+                    <template if:true={errprimaryCountry}>						
+                        <span class="errormsgName">{label.errorCountry}</span>
+                    </template>
+                    </template>
+                    <template if:true={primaryCountryOFAC}>
+                        <span class="errormsgName">{label.OFACCountryValidation}</span>
+                    </template>
+                </div>
+                <div class="slds-col slds-size_1-of-4">
+                    
+                </div>             
+                <div class="slds-col slds-p-left_medium slds-size_1-of-4">
+                    <template if:true= {showPrimaryTelephone}>            
+                    <template if:true={errprimaryTelephoneNumber}>						
+                        <span class="errormsgName">{label.errorTelephone}</span>
+                    </template>   
+                    </template>                      
+                </div>
+                <!--End of Error message-->               
+           
+            <div class="slds-col slds-p-left_medium slds-size_1-of-4"> 
+                <span class="required">*</span>               
+                <span>Courier Required</span>              
+            </div>
+            <div class="slds-col slds-p-left_medium slds-size_1-of-1">          
+                <lightning-radio-group  class="trPrimaryCourier" label="" variant="label-hidden" options={options} value={primaryCourier} type="radio"
+                name="primaryCourier" onchange={handleChangeprimaryCourier} onfocus={handleFocus}></lightning-radio-group>               
+            </div>
+            <!--Start of Error Message-->
+            <div class="slds-col slds-p-left_medium slds-size_1-of-4">                 
+                <template if:true={errprimaryCourier}>						
+					<span class="errormsgName">{label.errorCourier}</span>
+                </template>   
+                </div>             
+                <div class="slds-col slds-p-left_medium slds-size_1-of-4"> 
+
+                </div>
+                <div class="slds-col slds-size_1-of-4">
+                    
+                </div>             
+                <div class="slds-col slds-p-left_medium slds-size_1-of-4">
+                                           
+                </div>
+            <!--End of Error Message-->
+            <div class="slds-col slds-p-left_medium slds-p-top_medium slds-grid slds-wrap"> 
+                <div class="slds-col">
+                    <div class="checkboxPadding">
+                        <template if:true={primaryRequestAnotherTranscript}>
+                            <lightning-input checked type="checkbox" variant="label-hidden" value={primaryRequestAnotherTranscript} name="primaryRequestAnotherTranscript" onclick={handleChangeprimaryRequestAnotherTranscript} onfocus={handleFocus}></lightning-input>  
+                        </template>
+                        <template if:false={primaryRequestAnotherTranscript}>
+                            <lightning-input type="checkbox" variant="label-hidden" value={primaryRequestAnotherTranscript} name="primaryRequestAnotherTranscript" onclick={handleChangeprimaryRequestAnotherTranscript} onfocus={handleFocus}></lightning-input>  
+                        </template>
+                        
+                    </div>
+                    <div class="checkboxPaddingTranscript">
+                        <span><c-g-display-content unique-content-value="transcript_request_form_checkboxPadding"></c-g-display-content></span>
+                    </div>                  
+                </div> 
+            </div>
+        </div>
+        <template if:true={primaryRequestAnotherTranscript}>
+            <div class="slds-grid slds-wrap gridMargin">   
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-1"> 
+                    <span class="headerText">Transcript #2</span>
+                    <p>You must provide either a Name of Recipient or Organization.</p>
+                </div>
+                 <!--Start of Error message-->
+                 <template if:false={secondarySendToSelf}>
+                    <template if:true={errsecondaryNameOrOrg}>	
+                        <div class="slds-col slds-size_1-of-3 slds-p-left_medium">                  
+                            <span class="errormsgName">{label.errorOrganization}</span>  
+                        </div>
+                        <div class="slds-col slds-size_1-of-3">
+                            
+                        </div>             
+                        <div class="slds-col slds-size_1-of-3">
+                            
+                        </div>
+                    </template>
+                </template>
+                <!--End of Error message--> 
+                <div class="slds-col slds-size_1-of-1 slds-p-left_medium slds-grid slds-wrap"> 
+                    <div class="slds-col ">
+                        <div class="checkboxPadding">
+                            <template if:true={primarySendToSameAddressTranscript}>
+                                <lightning-input checked type="checkbox" variant="label-hidden" value={primarySendToSameAddressTranscript} name="primarySendToSameAddressTranscript" onclick={handleChangeprimarySendToSameAddressTranscript} onfocus={handleFocus}></lightning-input>  
+                            </template>
+                            <template if:false={primarySendToSameAddressTranscript}>
+                                <lightning-input type="checkbox" variant="label-hidden" value={primarySendToSameAddressTranscript} name="primarySendToSameAddressTranscript" onclick={handleChangeprimarySendToSameAddressTranscript} onfocus={handleFocus}></lightning-input>  
+                            </template>
+                            
+                        </div>
+                        <div class="checkboxPaddingTranscript">
+                            <span><c-g-display-content unique-content-value="transcript_request_form_checkboxPadding2"></c-g-display-content></span>
+                        </div>                  
+                    </div> 
+                </div>
+                
+                <template if:false={primarySendToSameAddressTranscript}>
+                    <template if:false ={secondarySendToSelf}>
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                           
+                            <span>Name of Recipient</span>
+                        </div>             
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                            <lightning-input class="trSecondaryName" type="text" variant="label-hidden" value={secondaryNameOfReceipt} name="secondaryNameOfReceipt" onchange={handleChangeForInputFields} onfocus={handleFocus}></lightning-input>        
+                        </div>
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                            
+                        </div>             
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                            
+                        </div>
+                        <!--Start of Error Message-->
+                        <template if:true={errsecondaryNameOfReceipt}>	
+                            <div class="slds-col slds-size_1-of-4">                  
+                            
+                            </div>             
+                            <div class="slds-col slds-p-left_medium slds-size_1-of-4">                    
+                                    <span class="errormsgName">{label.errorNameofReceipt}</span>                    
+                            </div>
+                            <div class="slds-col slds-size_1-of-4">
+                                
+                            </div>             
+                            <div class="slds-col slds-size_1-of-4">
+                                
+                            </div>
+                        </template>
+                        <!--End of Error Message-->
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">                
+                            <span>Organization</span>
+                        </div>             
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                            <lightning-input class="trSecondaryOrg" type="text" variant="label-hidden" value={secondaryOrganization} name="secondaryOrganization" onchange={handleChangeForInputFields} onfocus={handleFocus}></lightning-input>        
+                        </div>
+                    </template>
+                    <template if:true ={secondarySendToSelf}>
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-1">
+                        
+                            <span class="modContHdr">{label.sendToSelfMsg}</span>
+                        </div>            
+                    
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                           
+                            <span>Name of Recipient</span>
+                        </div>             
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                            <lightning-input disabled type="text" variant="label-hidden" value={secondaryNameOfReceipt} name="secondaryNameOfReceipt" onchange={handleChangeForInputFields}></lightning-input>        
+                        </div>
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                            
+                        </div>             
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                            
+                        </div>
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">                
+                            <span>Organization</span>
+                        </div>             
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                            <lightning-input disabled type="text" variant="label-hidden" value={secondaryOrganization} name="secondaryOrganization" onchange={handleChangeForInputFields}></lightning-input>        
+                        </div>
+                    </template>
+                    <div class="slds-col slds-p-left_medium slds-p-top_medium slds-grid slds-wrap"> 
+                        <div class="slds-col">
+                            <div class="checkboxPadding">
+                                <template if:true={secondarySendToSelf}>
+                                    <lightning-input checked type="checkbox" variant="label-hidden" value={secondarySendToSelf} name="secondarySendToSelf" onclick={handleChangesecondarySendToSelf} onfocus={handleFocus}></lightning-input>  
+                                </template>
+                                <template if:false={secondarySendToSelf}>
+                                    <lightning-input type="checkbox" variant="label-hidden" value={secondarySendToSelf} name="secondarySendToSelf" onclick={handleChangesecondarySendToSelf} onfocus={handleFocus}></lightning-input>  
+                                </template>
+                                
+                            </div>
+                            <div class="checkboxLabelPadding">
+                                <span>Send to Self</span>          
+                            </div>                  
+                        </div> 
+                    </div>
+                    <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">                
+                        
+                    </div>
+                   
+                    <template if:false ={secondarySendToSelf}>
+
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                            <span class="required">*</span>                
+                            <span>Street Address</span>
+                        </div>             
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                            <lightning-input class="trSecondaryStreet" type="text" variant="label-hidden" value={secondaryStreet} name="secondaryStreet" onchange={handleChangeForInputFields} onfocus={handleFocus}></lightning-input>        
+                            <template if:true={showDropdownSec}>
+                                <div id="listbox-id-2" class="slds-dropdown slds-dropdown_length-with-icon-7 slds-dropdown_fluid address-typeahead" role="listbox" style="width:19%">
+                                    <ul class="slds-listbox slds-listbox_vertical g-search" role="presentation">   
+                                        <template for:each={addressList} for:index="index" for:item="prediction">
+                                            <c-vt-each-new-site-prediction class="item" onpredictionselect={handlePredictionSelectSec} site-prediction={prediction} key={prediction.place_id}></c-vt-each-new-site-prediction>
+                                        </template>
+                                    </ul>
+                                </div>
+                            </template>
+                        </div>
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                            <span class="required">*</span>
+                            <span>City</span>                
+                        </div>             
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                            <lightning-input class="trSecondaryCity" type="text" variant="label-hidden" value={secondaryCity} name="secondaryCity" onchange={handleChangeForInputFields} onfocus={handleFocus}></lightning-input>        
+                        </div>
+                        <!--Start of Error message-->
+                        <div class="slds-col slds-size_1-of-4">                 
+                            
+                        </div>             
+                        <div class="slds-col slds-p-left_medium slds-size_1-of-4"> 
+                            <template if:true={errsecondaryStreet}>						
+                                <span class="errormsgName">{label.errorStreet}</span>
+                            </template>
+                        </div>
+                        <div class="slds-col slds-size_1-of-4">
+                            
+                        </div>             
+                        <div class="slds-col slds-p-left_medium slds-size_1-of-4">
+                            <template if:true={errsecondaryCity}>						
+                                <span class="errormsgName">{label.errorCity}</span>
+                            </template>                        
+                        </div>
+                        <!--End of Error message-->
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                            <span>State/Province</span>                
+                        </div>   
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                            <lightning-input type="text" class="trSecondaryState" variant="label-hidden" value={secondaryState} name="secondaryState" onchange={handleChangeForInputFields} onfocus={handleFocus}></lightning-input>        
+                        </div>   
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                            <span>ZIP Code/Postal Code</span>                
+                        </div>             
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                            <lightning-input class="trSecondaryPostal" type="text" variant="label-hidden" value={secondaryPostalCode} name="secondaryPostalCode" onchange={handleChangeForInputFields} onfocus={handleFocus}></lightning-input>        
+                        </div>
+                        <!--Start of Error message-->
+                        <div class="slds-col slds-size_1-of-4">                 
+                            
+                        </div>             
+                        <div class="slds-col slds-p-left_medium slds-size_1-of-4"> 
+                        </div>
+                        <div class="slds-col slds-size_1-of-4">
+                            
+                        </div>             
+                        <div class="slds-col slds-p-left_medium slds-size_1-of-4">
+                        </div>
+                        <!--End of Error message-->
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">  
+                            <span class="required">*</span>              
+                            <span>Country</span>
+                        </div>             
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                            <lightning-combobox
+                            label=""
+                            class="trSecondaryCountry"
+                            variant="label-hidden" 
+                            value={secondaryCountry}
+                            placeholder="-Select-"
+                            options={countryOptions}                                                                                    
+                            onchange={onsecondaryCountryValueSelection}
+                            onfocus={handleFocus}>
+                            </lightning-combobox>
+                        </div>
+                    </template>
+                    <template if:true ={secondarySendToSelf}>
+
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">                
+                            <span>Street Address</span>
+                        </div>             
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                            <lightning-input disabled type="text" variant="label-hidden" value={secondaryStreet} name="secondaryStreet" onchange={handleChangeForInputFields}></lightning-input>        
+                        </div>
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                            <span>City</span>                
+                        </div>             
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                            <lightning-input disabled type="text" variant="label-hidden" value={secondaryCity} name="secondaryCity" onchange={handleChangeForInputFields}></lightning-input>        
+                        </div>
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">                
+                            <span>State/Province</span>
+                        </div>             
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                            <lightning-input disabled type="text" variant="label-hidden" value={secondaryState} name="secondaryState" onchange={handleChangeForInputFields}></lightning-input>                                
+                            
+                        </div>
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                            <span>ZIP Code/Postal Code</span>                
+                        </div>             
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                            <lightning-input disabled type="text" variant="label-hidden" value={secondaryPostalCode} name="secondaryPostalCode" onchange={handleChangeForInputFields}></lightning-input>        
+                        </div>
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">                
+                            <span>Country</span>
+                        </div>             
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                            <lightning-input disabled type="text" variant="label-hidden" value={secondaryCountry} name="secondaryCountry" onchange={handleChangeForInputFields}></lightning-input>                                
+                            
+                            
+                            
+                        </div>
+                    </template>
+                    <template if:true={showSecondaryTelephone}>
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                            <span class="required">*</span>
+                            <span>Telephone Number</span>                
+                        </div>             
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                            <lightning-input class="trSecondaryTelephone" type="text" variant="label-hidden" value={secondaryTelephoneNumber} name="secondaryTelephoneNumber" onchange={handleChangeForInputFields} onfocus={handleFocus}></lightning-input>        
+                        </div>
+                    </template>
+                    <template if:false={showSecondaryTelephone}>
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                                        
+                        </div>             
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                            
+                        </div>
+                    </template>
+				    <!--Start of Error message-->
+				    
+                    <div class="slds-col slds-size_1-of-4">                 
+                        
+                    </div>             
+                    <div class="slds-col slds-p-left_medium slds-size_1-of-4">
+                        <template if:false ={secondarySendToSelf}>
+                        <template if:true={errsecondaryCountry}>						
+                            <span class="errormsgName">{label.errorCountry}</span>
+                        </template>
+                    </template>
+                    <template if:true={secondaryCountryOFAC}>
+                        <span class="errormsgName">{label.OFACCountryValidation}</span>
+                    </template>
+                    </div>
+                    <div class="slds-col slds-size_1-of-4">
+                        
+                    </div>             
+                    <div class="slds-col slds-p-left_medium slds-size_1-of-4">
+                        <template if:true={showSecondaryTelephone}>
+                        <template if:true={errsecondaryTelephoneNumber}>						
+                            <span class="errormsgName">{label.errorTelephone}</span>
+                        </template>
+                        </template>                        
+                    </div>
+                   
+                    <!--End of Error message-->
+                    
+                    <div class="slds-col slds-p-left_medium slds-size_1-of-4">
+                        <span class="required">*</span>                
+                        <span>Courier Required</span>              
+                    </div>
+                    <div class="slds-col slds-p-left_medium slds-size_1-of-1">          
+                        <lightning-radio-group  class="trSecondaryCourier" label="" variant="label-hidden" options={options} value={secondaryCourier} type="radio"
+                        name="secondaryCourier" onchange={handleChangesecondaryCourier} onfocus={handleFocus}></lightning-radio-group>               
+                    </div>
+                    <!--Start of Error Message-->
+                    <div class="slds-col slds-p-left_medium slds-size_1-of-4">                 
+                        <template if:true={errsecondaryCourier}>						
+                            <span class="errormsgName">{label.errorCourier}</span>
+                        </template>   
+                        </div>             
+                        <div class="slds-col slds-p-left_medium slds-size_1-of-4"> 
+
+                        </div>
+                        <div class="slds-col slds-size_1-of-4">
+                            
+                        </div>             
+                        <div class="slds-col slds-p-left_medium slds-size_1-of-4">
+                                                
+                        </div>
+                    <!--End of Error Message-->
+                </template>
+
+               </div>
+        </template>
+
+    </div>
+    <div class="buttonAlignment" >
+        <lightning-button variant="brand" label="Next" title="Next" onclick={nextButton} class="slds-m-left_x-small"></lightning-button>                        
+
+        <lightning-button variant="brand" label="Cancel" title="Cancel" onclick={cancelButtonToOpen} class="slds-m-left_x-small"></lightning-button>
+        
+    </div>
+    
+</template>

@@ -1,0 +1,24 @@
+<template>
+    <template if:true={spinner}>
+        <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+    </template>
+    <template if:true={showServiceAccessError}>
+        <div>
+            <h2 class="stepHeader">{errorMessagesText}</h2>
+        </div>
+    </template>
+    <template if:true={showServiceAccess}>
+        <div>
+            <p class="mt-20 mb-20">Below are the services available for entities through MyIntealth, and information on whether your entity participates and whether you have access.</p>
+            <div>
+                <lightning-datatable key-field="id"
+                columns={columns}
+                data={entityServiceList}
+                hide-checkbox-column
+                onrowaction={displayModalClass}>
+                </lightning-datatable>
+            </div>
+        </div>
+        <c-modal-component message={instructionsContent}  show-primary-button='true' primary-button-text='Confirm' onprimarybuttonclick={handleConfirm} show-secondary-button='true' secondary-button-text='Cancel'></c-modal-component>
+    </template>
+</template>

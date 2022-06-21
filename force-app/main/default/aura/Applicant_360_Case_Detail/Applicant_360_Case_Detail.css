@@ -1,0 +1,51 @@
+.THIS {
+}
+
+.THIS .slds-textarea {
+    height:100px !important;
+}
+
+.THIS.slds-spinner_container {  
+  z-index: 10000;
+  position: fixed;   
+}
+
+.THIS .deficieny-Container {
+    margin-left: 33% !important;
+    background-color: rgb(233, 234, 236) !important;
+    padding: 0.5rem 0.75rem !important;
+    border-width: 1px !important;
+    border-style: solid !important;
+    border-color: rgb(212, 212, 212) !important;
+    border-radius: 0.25rem !important;
+}
+
+.THIS .back-Button {
+    margin-left: 15%;
+}
+.THIS .slds-text-title_bold{
+    font-size: .800rem;
+}
+.THIS .blank-Container {
+    margin-left: 33% !important;
+    padding: 0.5rem 0.75rem !important;
+    border-width: 0px !important;
+    border-style: solid !important;
+    border-color: rgb(212, 212, 212) !important;
+    border-radius: 0.25rem !important;
+}
+.THIS .paddingMainHeader {
+    padding-top: 20px;
+    margin-left: 0%;
+    margin-right: 25%;
+}
+.THIS .stepMainHeader {
+    font-size: 20px
+}
+.THIS .scoreReportImage {
+    height: 40px;
+    width: 40px;
+}
+.THIS .scoreReportContent {
+font-weight: bold;
+}

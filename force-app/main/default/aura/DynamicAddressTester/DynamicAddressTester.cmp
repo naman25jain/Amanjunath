@@ -1,0 +1,17 @@
+<!--
+ - Created by Matthew on 1/8/19.
+ -->
+
+<aura:component description="DynamicAddressTester" implements="forceCommunity:availableForAllPageTypes">
+
+    <c:DynamicAddress
+            aura:id="submitAddress"
+            street="123 Main Street"
+            city="Dallas"
+            state="TX"
+            postalCode="75001"
+            country="US"
+            readOnly="false"
+            requiredFields="country,city,street" />
+
+</aura:component>

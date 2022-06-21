@@ -1,0 +1,25 @@
+.padding{
+  padding-top:20px;
+  margin-left: 25%;
+  margin-right: 25%;
+}
+.marginSection{
+    margin-left: 20px;
+    margin-right: 20px;
+    padding-top: 10px;
+}
+.formMargin{
+  margin-left: 25px;
+  margin-right: 20px;
+  padding-top:10px;
+}
+.buttonAlignment{
+  padding-left: 35%;    
+  padding-top: 2%; 
+  top: 57px;
+  left: 43px;
+}
+.errormsg{
+  color:#ff0000;
+  font-size: 13px;
+}

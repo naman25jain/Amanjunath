@@ -1,0 +1,34 @@
+.padding {
+  padding-top:20px;
+  margin-left: 25%;
+  margin-right: 25%;
+}
+.stepHeader{
+  font-size: 20px
+}
+.header {
+  line-height: 2;
+}
+
+.gridSize{
+  width: 50%;
+  border: 0;
+}
+  
+.gridHeader{
+  font-size: large;       
+}
+
+.gridColPadding{
+padding-bottom: 20px;
+}
+
+.formMargin{
+  margin-left: 10%;
+  margin-right: 25%;
+  padding-top:20px;
+}
+.errormsg{
+color:#ff0000;
+font-size: 13px;
+}

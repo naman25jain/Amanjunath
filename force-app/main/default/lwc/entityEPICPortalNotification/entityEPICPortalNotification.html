@@ -1,0 +1,70 @@
+<template>
+    <!--Spinner-->
+    <template if:true={spinner}>
+        <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+    </template>
+    <div class="formMargin">
+        <div class="secContainer">
+            <!-- The export button -->
+            <div class="blocContainer" style="float:right">
+                <template if:true={isExptDataAvailable}>
+                    <a target="_self" class="slds-button slds-button_brand" download="EPICPortalNotifications.csv" href={hrefdata}
+                onclick={exportToCSV}>Export EPIC Notification</a><br /><br />
+                </template>
+            </div>                      
+            <div class="blocContainer">
+                <div class="bloc1"><h1>{notificationTitle}</h1></div>
+                <!-- Combobox to toggle New & Archived Notification -->
+                <div class="bloc2 slds-p-bottom_small">                      
+                    <lightning-combobox
+                        name="reportTypeSelection"
+                        label="reportStatus"
+                        value={reportStatus}
+                        options={options}
+                        onchange={handleReportStatusChange} 
+                        variant="label-hidden" class="comboBoxClass"></lightning-combobox>
+                </div>       
+            </div>
+            <template if:true={isActiveNotfnFound}> 
+                <c-paginator class="paginatorAR" records={epicNotfns} total-records={epicNotfns.length}
+                        show-search-box="true" onpaginatorchange={handleARPaginatorChange} 
+                        attributes-to-avoid={attributesList}>
+                </c-paginator> <br> </br>                   
+                <!--Datatable for EPIC Notifcation with New Status-->
+                <template if:true={isListOfUnArchivedRecords}>
+                    <lightning-datatable key-field="id" columns={newCol} data={recordsToDisplay} 
+                                        hide-checkbox-column sorted-direction={sortDirection} sorted-by={sortedBy}
+                                        onsort={onHandleSort}  onrowaction={handleRowActions}>
+                    </lightning-datatable> 
+                </template>
+                <!--Datatable for EPIC Notification with Archived Status-->
+                <template if:false={isListOfUnArchivedRecords}>
+                    <lightning-datatable key-field="id" columns={archiveCol} data={recordsToDisplay} 
+                                        hide-checkbox-column sorted-direction={sortDirection} sorted-by={sortedBy}
+                                        onsort={onHandleSort}  onrowaction={handleRowActions}>
+                    </lightning-datatable> 
+                </template>     
+            </template>
+            <!-- Message when no EPIC Notifcation found -->
+            <template if:false={isActiveNotfnFound}>
+                <div class="noRecordsSection">--No Records Found--</div>
+            </template>
+            <div class="slds-col slds-size_1-of-2">
+                <c-modal-component class="addAuthScreenModalAsset" title="Source Document" message="" show-primary-button="false"
+                primary-button-text="Add" onprimarybuttonclick={handleAuthYesClick} show-secondary-button="true"
+                secondary-button-text="Ok">
+                <slot>                
+                    <c-cloud-document-upload-wrapper class="cloudDocumentUpload"
+                                                    pay-load={assetIdToShow}
+                                                    max-allowed-file-size=10
+                                                    accepted-file-formats=".jpeg,.jpg,.tiff,.pdf"
+                                                    enable-annotation="false" enable-redaction="false"
+                                                    asset-type={docType}
+                                                    hide-upload="true">
+                    </c-cloud-document-upload-wrapper>
+                </slot>
+                </c-modal-component>  
+            </div>
+        </div> 
+    </div> 
+</template>

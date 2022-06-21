@@ -1,0 +1,61 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes"
+                access="global"
+                controller="Entity_360_Base_Controller" extends="c:CommunityBase">
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:attribute name="account" type="Object" default="{}" />
+    <aura:attribute name="details" type="String" default="" />
+    <aura:attribute name="pageReady" type="Boolean" default="false" />
+    <aura:attribute name="showChangeModal" type="Boolean" default="false"/>
+
+    <aura:if isTrue="{!v.pageReady}">
+        <c:CommunitySummarySectionHeader hideEditButton="true" title="Entity Information" showHelpIcon="false" helpText="Entity Information" />
+        <p>Below is the information in the Intealth profile for your entity. You must ensure that it remains correct and current. If you need to update or correct this information, please click <strong>Request Changes</strong>. The changes will not appear in the Intealth profile for your entity until they have been reviewed and approved.</p>
+            <p>&nbsp;</p>
+        <form class="slds-form">
+            <div class="slds-form-element slds-form-element_horizontal">
+                <lightning:input name="name" value="{!v.account.Name}" placeholder="" label="Entity Name" aura:id="fieldToValidate" required="false"  disabled="true" />
+            </div>
+            <div class="slds-form-element slds-form-element_horizontal">
+                <lightning:input name="website" value="{!v.account.Website}" placeholder="" label="Website" aura:id="fieldToValidate" required="false"  disabled="true" />
+            </div>
+            <div class="slds-form-element slds-form-element_horizontal">
+                <lightning:input name="country" value="{!v.account.BillingCountry}" placeholder="" label="Country" aura:id="fieldToValidate" required="false"  disabled="true" />
+            </div>
+            <div class="slds-form-element slds-form-element_horizontal">
+                <lightning:textarea name="street" value="{!v.account.BillingStreet}" placeholder="" label="Street" aura:id="fieldToValidate" required="false"  disabled="true" />
+            </div>
+            <div class="slds-form-element slds-form-element_horizontal">
+                <lightning:input name="city" value="{!v.account.BillingCity}" placeholder="" label="City" aura:id="fieldToValidate" required="false"  disabled="true" />
+            </div>
+            <div class="slds-form-element slds-form-element_horizontal">
+                <lightning:input name="state" value="{!v.account.BillingState}" placeholder="" label="State/Province" aura:id="fieldToValidate" required="false"  disabled="true" />
+            </div>
+            <div class="slds-form-element slds-form-element_horizontal">
+                <lightning:input name="zip" value="{!v.account.BillingPostalCode}" placeholder="" label="Zip/Postal Code" aura:id="fieldToValidate" required="false"  disabled="true" />
+            </div>
+            <div class="slds-form-showCancel slds-form-element_horizontal actions">
+                <label class="slds-form-element__label" for="form-element-01">&nbsp;</label>
+                <div class="slds-form-element__control"><lightning:button aura:id="cancelButton" variant="brand" name="Request Changes" label="Request Changes" onclick="{!c.handleChangeModal}" /></div>
+            </div>
+        </form>
+        <aura:if isTrue="{!v.showChangeModal}">
+            <div class="demo-only" style="height: 640px;">
+                <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                    <div class="slds-modal__container">
+                        <header class="slds-modal__header">
+                            <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Request Changes</h2>
+                        </header>
+                        <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                            <lightning:textarea value="{!v.details}" required="true" label="Please explain the change/update that needs to be made for your entity and provide the new information."/>
+                        </div>
+                        <footer class="slds-modal__footer">
+                            <lightning:button aura:id="backButton" class="slds-button slds-button_brand" onclick="{!c.handleBack}">Back</lightning:button>
+                            <lightning:button aura:id="okButton" class="slds-button slds-button_brand" onclick="{!c.handleChange}" disabled="{!or(v.details == null, v.details == '')}">Submit</lightning:button>
+                        </footer>
+                    </div>
+                </section>
+                <div class="slds-backdrop slds-backdrop_open"></div>
+            </div>
+        </aura:if>
+    </aura:if>
+</aura:component>

@@ -1,0 +1,172 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,forceCommunity:availableForAllPageTypes,force:hasRecordId" access="global"
+                description="CIBIS Duplicate Candidate Match component to resolve potential Candidate duplicates." controller="ApplicantCommunityController"  extends="c:CommunityBase">
+    <aura:attribute name="disabled" type="Boolean" default="false"/>
+     <aura:attribute name="showModal" type="Boolean" default="false"/>
+    <aura:attribute name="modalMessage" type="String" default=""/>
+    <aura:attribute name="allData" type="List" />
+    <aura:attribute name="filteredData" type="List" />
+    <aura:attribute name="tableData" type="List" />
+    <aura:attribute name="pageReady" type="Boolean" default="false"/>
+    <aura:attribute name="isCaseClaimed" type="Boolean" default="false"/>
+    <aura:attribute name="activeSections" type="List" default="['CandidateMatches']"/>
+    <aura:attribute name="case" type="Object"/>
+    <aura:attribute name="candidateData" type="List"/>
+    <aura:attribute name="candidateColumns" type="List"/>
+    <aura:attribute name="sortDirection" type="String" default="desc" />
+    <aura:attribute name="sortedBy" type="String" />
+    <aura:attribute name="selectedcandidateRows" type="List"/>
+    <aura:attribute name="candidateMatchCount" type="String" default="…"/>
+    <aura:attribute name="isCaseClaimedError" type="String" default="…"/>
+    <aura:attribute name="candidateSectionTemplate" type="String" default="Potential CIBIS Duplicates({0})"/>
+    <aura:attribute name="candidateSectionLabel" type="String" default="Potential Duplicates"/>
+    <aura:attribute name="showCandidateModal" type="Boolean" default="false"/>
+    <aura:attribute name="selectedCIBISDupCheckContact" type="Object"/>
+    <aura:attribute name="showCandidateButton" type="Boolean" default="false"/>
+    <aura:attribute name="buttonGroup" type="Boolean" default="True"/>
+    <aura:attribute name="linkedCandidate" type="Object" description="The linked Candidate(contact)."/>
+    <aura:attribute name="linkedPlaceholder" type="String" default="-"/>
+    <aura:attribute name="totalPages" type="Integer" default="1" />
+    <aura:attribute name="pageSize" type="Integer" default="10" />
+    <aura:attribute name="currentPageNumber" type="Integer" default="1" />
+    <aura:attribute name="isLastPage" type="Boolean" default="false"/>
+    <aura:attribute name="dataSize" type="Integer" default="0"/> 
+    <aura:attribute name="cibisCandidateSearch" type="Boolean" default="false"/>
+    <aura:attribute name="caseRecord" type="Object"/>
+    <aura:attribute name="contactData" type="Contact" />
+    <aura:handler name="init" value="{!this}" action="{!c.init}"/>
+    
+    <!--<force:recordData aura:id="recordLoader"
+                      recordId="{!v.recordId}"
+                      fields="OwnerId"
+                      targetFields="{!v.caseRecord}" recordUpdated="{!c.recordUpdate}" /> -->
+    
+    <div aura:id="main" class="slds-box slds-theme_default">
+        <aura:if isTrue="{!v.isCaseClaimed}">
+            <p style="padding-left:3%;font-weight:bold;font-size:20px;">
+                {!v.isCaseClaimedError}
+            </p>
+            <aura:set attribute="else">
+                <lightning:accordion aura:id="accordion" activeSectionName="{!v.activeSections}" allowMultipleSectionsOpen="true">
+                    <aura:if isTrue="{!!v.pageReady}">
+                        <lightning:spinner variant="brand" alternativeText="Loading" size="large" />
+                    </aura:if>
+                    <lightning:accordionSection name="CandidateMatches" label="{!v.candidateSectionLabel}">
+                        <aura:set attribute="actions">
+                            <lightning:buttonGroup aura:id="btnGrp" >
+                                <aura:if isTrue="{!v.showCandidateButton}">
+                                    <lightning:button label="Confirm Match" onclick="{!c.selectedCandidate}" disabled="{!v.disabled}"/>
+                                   <!-- <lightning:button label="Unselect Row" onclick="{!c.unSelect}" disabled="{!v.disabled}"/>-->
+                                    <aura:set attribute="else">
+                                        <lightning:button label="Confirm No Match" onclick="{!c.noConfirmProcess}" disabled="{!v.disabled}"/>
+                                    </aura:set>
+                                </aura:if>
+                            </lightning:buttonGroup>
+                        </aura:set>
+                        <aura:set attribute="body">
+                            <aura:if isTrue="{!v.candidateData}">
+                                <lightning:datatable
+                                                     aura:id="candidateTable"
+                                                     data="{!v.candidateData }"
+                                                     columns="{!v.candidateColumns}"
+                                                     keyField="Id"
+                                                     sortedDirection="{!v.sortDirection}"
+                                                     sortedBy="{!v.sortedBy}"
+                                                     selectedRows="{!v.selectedcandidateRows}"
+                                                     onsort="{!c.handleSort}"                                                    
+                                                    
+                                                     defaultSortDirection="desc"                                            
+                                                     onrowselection="{!c.candidateRowOnSelect}" />
+                                <div class="slds-p-around_small slds-grid slds-grid_align-spread slds-grid_vertical-align-start">
+                                    <div style="padding-left: 10%">
+                                        <lightning:button
+                                                          label="First"
+                                                          iconName="utility:left"
+                                                          iconPosition="left"
+                                                          onclick="{! c.onFirst }"
+                                                          disabled="{! v.currentPageNumber == 1 }" />
+                                        <lightning:button
+                                                          label="Previous"
+                                                          iconName="utility:chevronleft"
+                                                          iconPosition="left"
+                                                          onclick="{! c.onPrev }"
+                                                          disabled="{! v.currentPageNumber == 1 }" />
+                                        <span class="slds-var-p-horizontal_x-small">
+                                            Page {! (v.currentPageNumber) } of {! (v.totalPages) }
+                                        </span>
+                                        <span class="slds-var-p-horizontal_x-small">
+                                            Number of records: {! (v.filteredData.length) }
+                                        </span>
+                                        <lightning:button
+                                                          label="Next"
+                                                          iconName="utility:chevronright"
+                                                          iconPosition="right"
+                                                          onclick="{! c.onNext }"
+                                                          disabled="{! v.currentPageNumber == v.totalPages }" />
+                                        
+                                        <lightning:button
+                                                          label="Last"
+                                                          iconName="utility:right"
+                                                          iconPosition="right"
+                                                          onclick="{! c.onLast }"        
+                                                          disabled="{! v.currentPageNumber == v.totalPages }" />
+                                        
+                                    </div>
+                                </div>
+                            </aura:if>
+                        </aura:set>
+                    </lightning:accordionSection>
+                </lightning:accordion>
+                
+            </aura:set>
+        </aura:if>
+        
+        <aura:if isTrue="{!v.showModal}">
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <lightning:buttonIcon iconName="utility:close"
+                                              onclick="{! c.closeModel }"
+                                              alternativeText="close"
+                                              variant="bare-inverse"
+                                              class="slds-modal__close"/>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Choose Selected Candidate?</h2>
+                    </header>
+                    <c:cibisCompareRecords contactData="{!v.contactData}" selectedCIBISDupCheckContact="{!v.selectedCIBISDupCheckContact}" ></c:cibisCompareRecords>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <aura:if isTrue="{!v.showCandidateButton}">
+                        	<p>{!v.modalMessage}</p>
+                            <aura:set attribute="else">
+                            	<p>{!v.modalMessage}</p>
+                            </aura:set>
+                        </aura:if>
+                        
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <lightning:button variant="neutral"
+                                          label="Cancel"
+                                          title="Cancel"
+                                          onclick="{! c.closeModel}"
+                                          disabled="{!v.disabled}"/>
+                        <aura:if isTrue="{!v.showCandidateButton}">
+                            
+                            <lightning:button variant="brand"
+                                              label="Proceed"
+                                              title="Proceed"
+                                              onclick="{!c.proceedWithCibisDupCheck}"
+                                              disabled="{!v.disabled}"/>
+                            <aura:set attribute="else">
+                                <lightning:button variant="brand"
+                                                  label="Proceed"
+                                                  title="Proceed"
+                                                  onclick="{!c.procedNoConfirmProcess}"
+                                                  disabled="{!v.disabled}"/>
+                                
+                            </aura:set>
+                        </aura:if>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </aura:if> 
+    </div>
+</aura:component>

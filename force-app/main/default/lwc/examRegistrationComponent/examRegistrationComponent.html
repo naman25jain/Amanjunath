@@ -1,0 +1,297 @@
+<template>
+   <template if:true={showHeader}>
+      <div class="grayBG">
+         <h1>USMLE Application</h1>
+      </div>
+      <c-g-display-content unique-content-value="usmle_app_copy_top"></c-g-display-content>
+
+      <div class="padding">
+         <template if:true={showError}>
+            <lightning-formatted-rich-text class='errormsg' value={ofacError}>
+            </lightning-formatted-rich-text>
+         </template>
+         <template if:true={showExamRegButton}>
+            <lightning-button variant="Success" label="Apply for USMLE" title="Register" onclick={validateExamReglink}></lightning-button>
+            <template if:true={showLimitError}>
+               <span class="errormsg">
+                  <c-g-display-content unique-content-value="Exam_Reg_Limit_Attempt_Error"></c-g-display-content>
+               </span>
+            </template>
+         </template>
+         <template if:true={showAppForSertMsg}>
+         </template>
+         <div>
+            </br>
+            <template if:true={showExamRegList} style='padding-top:15px'>
+
+               <c-g-display-content unique-content-value="usmle_app_copy_bottom"></c-g-display-content>
+               <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered" role="grid">
+                  <caption></caption>
+                  <thead>
+                     <tr class="slds-line-height_reset">
+                        <th aria-label="Exam Type" aria-sort="none" class="slds-is-resizable slds-is-sortable slds-text-align_center" scope="col">
+                           <span class="slds-truncate" title="Exam Type">Exam Type</span>
+                        </th>
+                        <th aria-label="Eligibility Period" aria-sort="none" class="slds-is-resizable slds-is-sortable slds-text-align_center" scope="col">
+                           <span class="slds-truncate" title="Eligibility Period">Eligibility Period</span>
+                        </th>
+                        <th aria-label="Testing Region" aria-sort="none" class="slds-is-resizable slds-is-sortable slds-text-align_center" scope="col">
+                           <span class="slds-truncate" title="Testing Region">
+                              Testing Region
+                           </span>
+                        </th>
+                        <th aria-label="Test Accommodations" aria-sort="none" class="slds-is-resizable slds-is-sortable slds-text-align_center" scope="col">
+                           <span class="slds-truncate" title="Test Accommodations">Test
+                              Accommodations</span>
+                        </th>
+                        <th aria-label="Application Status" aria-sort="none" class="slds-is-resizable slds-is-sortable slds-text-align_center" scope="col">
+                           <span class="slds-truncate" title="Application Status">Application Status</span>
+                        </th>
+                        <th aria-label="Scheduling Permit" aria-sort="none" class="slds-is-resizable slds-is-sortable slds-text-align_center" scope="col">
+                           <span class="slds-truncate" title="Scheduling Permit">Scheduling Permit</span>
+                        </th>
+                        <th aria-label="Visa Letter" aria-sort="none" class="slds-is-resizable slds-is-sortable slds-text-align_center" scope="col">
+                           <span class="slds-truncate" title="Visa Letter">Visa Letter</span>
+                        </th>
+                        <th aria-label="Paper Enrollment Form" aria-sort="none" class="slds-is-resizable slds-is-sortable slds-text-align_center" scope="col">
+                           <span class="slds-truncate" title="Paper Enrollment Form">Paper Enrollment Form</span>
+                        </th>
+                     </tr>
+                  </thead>
+                  <tbody>
+                     <template for:each={examRegistrationsList} for:item="examReg" for:index="examRegIndex">
+                        <tr key={examReg.recordIdVal} data-record-id={examReg.recordIdVal} class="exam-reg-id">
+                           <td class="slds-text-align_center">
+                              {examReg.examType}
+                           </td>
+                           <td class="slds-text-align_center" style="white-space: normal;">
+                              {examReg.eligibilityPeriod}
+                           </td>
+                           <td class="slds-text-align_center" style="white-space: normal;">
+                              {examReg.testingRegion}
+                           </td>
+                           <td class="slds-text-align_center">
+                              {examReg.testAccomodations}
+                           </td>
+                           <td class="slds-text-align_center">
+                              {examReg.applicationStatus}
+                           </td>
+                           <td class="slds-text-align_center">
+                              <template if:true={examReg.hasPermit}>
+                                 <a href="javascript:void(0)" onclick={downloadEpermit}>
+                                    <lightning-icon icon-name="action:download" alternative-text="Download" title="Download" size="small"></lightning-icon>
+                                 </a>
+                              </template>
+                              <template if:false={examReg.hasPermit}>
+                                 Not Available
+                              </template>
+                           </td>
+                           <td class="slds-text-align_center">
+                              <template if:true={examReg.hasVisa}>
+                                 <a href={examReg.visaLetter}>
+                                    <lightning-icon icon-name="action:download" alternative-text="Download" title="Download" size="small"></lightning-icon>
+                                 </a>
+                              </template>
+                              <template if:false={examReg.hasVisa}>
+                                 Not Available
+                              </template>
+                           </td>
+                           <td class="slds-text-align_center">
+                              <template if:true={examReg.hasPaperForm}>
+                                 <a href="javascript:void(0)" data-key={examReg.peUrl} onclick={downloadPEForm} data-id="check">
+                                    <lightning-icon icon-name="action:download" alternative-text="Download" title="Download" size="small"></lightning-icon>
+                                 </a>
+                              </template>
+                              <template if:false={examReg.hasPaperForm}>
+                                 Not Required
+
+                              </template>
+                           </td>
+                        </tr>
+                     </template>
+                  </tbody>
+               </table>
+            </template>
+            </br>
+            <template if:true={showExamRegMsg}>
+
+               <h3>Current Exam Applications</h3>
+               <p>Active exam applications you have submitted will appear below. You can monitor the status of current exam applications, see your eligibility period, and access your scheduling permit once it is available. If you are a student whose school completes enrollment verification requests via the paper form, you will see an option to download the form and instructions. If you are a student whose school verifies enrollment through MyIntealth, you will see “Pending Enrollment Verification” as your exam application status; the paper form is not required.</p>
+            </template>
+         </div>
+      </div>
+      <div class="padding">
+         <template if:true={showEPeriodExtButton}>
+            <h3>Eligibility Period Extension Request</h3>
+            <p>If you are unable to take USMLE Step 1 and/or Step 2 CK during the eligibility period assigned to you, you may request a one-time extension. You may extend your eligibility period only once and only through the next eligibility period that does not overlap with your assigned eligibility period. There is a fee for this request that is due at the time of submission. To request an extension, click <strong>Request an Eligibility Period Extension</strong>.</p>
+         </template>
+         <div class="mb">
+            <template if:true={showEPeriodError}>
+               <lightning-formatted-rich-text class='errormsg mb' value={ePeriodExtError}>
+               </lightning-formatted-rich-text>
+            </template>
+            <template if:true={showEPeriodErrorVal}>
+               <lightning-formatted-rich-text class='errormsg mb' value={ePeriodExtErrorVal}>
+               </lightning-formatted-rich-text>
+            </template>
+         </div>
+         <template if:true={showEPeriodExtButton}>
+            <lightning-button variant="Success" label="Request an Eligibility Period Extension" title="Extention" onclick={ePeriodExtensionlink}></lightning-button>
+         </template>
+      </div>
+      <div class="padding">
+         <template if:true={showRegionChangeButton}>
+            <h3>Testing Region Change Request</h3>
+            <p>If you are registered for Step 1 and/or Step 2 CK and unable to take the exam in the testing region you selected, you may request to change your testing region. There is a fee for this request that is due at the time of submission. To request to change your testing region, click <b>Request a Testing Region Change</b>.</p>
+         </template>
+         <div class="mb">
+            <template if:true={showRegionError}>
+               <lightning-formatted-rich-text class='errormsg' value={regionChangeError}>
+               </lightning-formatted-rich-text>
+            </template>
+         </div>
+         <template if:true={showRegionChangeButton}>
+            <lightning-button variant="Success" label="Request a Testing Region Change" title="Region Change" onclick={regionChangelink}></lightning-button>
+         </template>
+      </div>
+   </template>
+   <template if:true={showContact}>
+      <c-app-for-cert-profile-review get-id-from-parent={contactId} get-link-source={linkSource}>
+      </c-app-for-cert-profile-review>
+      <div class="buttonAlignment">
+         <lightning-button variant="brand" label="Next" title="Next" onclick={showDegMedSchoolDetails} class="slds-var-m-left_x-small"></lightning-button>
+         <lightning-button variant="brand" label="Cancel" title="Cancel" onclick={cancelAppForCert} class="slds-var-m-left_x-small cancelButton"></lightning-button>
+      </div>
+   </template>
+   <template if:true={showMedicalDetails}>
+      <c-app-for-cert-component object-id={objectId} object-type={objectType} show-buttons-based-on-exam-reg={showButtonsBasedOnExamReg}>
+      </c-app-for-cert-component>
+   </template>
+   <template if:true={showAppForCertSummary}>
+      <c-exam-reg-app-for-cert-summary get-id-from-parent={contactId} object-id={objectId} object-type={objectType} oncancelevent={cancelAppForCert} onpreviousevent={showProfileReivew} onnextevent={showPerformanceDataScreen} oneditappforcert={showAppForCertSc2FrmExamReg}></c-exam-reg-app-for-cert-summary>
+   </template>
+   <template if:true={showPerformanceScreen}>
+      <c-exam-reg-performance-screen onpreviousevent={prevOfPerformaceDataScreen} oncancelevent={cancelAppForCert} onnextevent={showExamRegPreviousLicense}></c-exam-reg-performance-screen>
+   </template>
+   <template if:true={showPreviousLicense}>
+      <c-exam-reg-previous-license show-back-to-summary={showBackToSummary} oncancelevent={cancelAppForCert} onnextevent={showExamRegLandingPageHandler} onpreviousevent={showPerformanceDataScreen} onbacktosummary={showExamRegSummaryPageHandler}></c-exam-reg-previous-license>
+   </template>
+   <template if:true={showExamRegLandingPage}>
+      <c-exam-reg-landing-page show-back-to-summary={showBackToSummary} onaddevent={showManageExamScreenHandler} oneditexamregevent={showManageExamScreenHandler} onnextevent={showExamRegScreenSix} onpreviousevent={showExamRegPreviousLicense} onbacktosummary={showExamRegSummaryPageHandler} oncancelevent={cancelAppForCert}></c-exam-reg-landing-page>
+   </template>
+   <template if:true={showManageExamScreen}>
+      <c-exam-reg-manage-exam-screen exam-reg-id={examRegId} show-back-to-summary={showBackToSummary} onpreviousevent={showExamRegLandingPageHandler} onconfirmevent={showExamRegLandingPageHandler}></c-exam-reg-manage-exam-screen>
+   </template>
+   <template if:true={showSixthScreen}>
+      <c-exam-reg-ethnicity-and-other-ques show-back-to-summary={showBackToSummary} oncancelevent={cancelAppForCert} onnextevent={showExamRegSummaryPageHandler} onpreviousevent={showExamRegLandingPageHandler} onbacktosummary={showExamRegSummaryPageHandler}></c-exam-reg-ethnicity-and-other-ques>
+   </template>
+   <template if:true={showExamRegSummary}>
+      <c-exam-reg-summary-screen onlicenseredirect={showExamRegPrevLicFromSummary} onnextevent={showExamRegLegalSignOff} onlandingredirect={showExamRegLandingPageFromSummary} onethnicityredirect={showExamRegScrSixFromSummary} onpreviousevent={showExamRegScreenSix} oncancelevent={cancelAppForCert}></c-exam-reg-summary-screen>
+   </template>
+   <template if:true={showExamRegLegalSignOffPage}>
+      <c-exam-reg-legal-sign-off oncancelevent={cancelAppForCert} onnextevent={showExamRegPayment} onpreviousevent={showExamRegSummaryPageHandler}></c-exam-reg-legal-sign-off>
+   </template>
+   <!-- <template if:true={showExamRegLegalSignOffPage}>
+      <c-exam-reg-legal-sign-off oncancelevent={cancelAppForCert} onnextevent={showShoppingCart}
+         onpreviousevent={showExamRegSummaryPageHandler}></c-exam-reg-legal-sign-off>
+   </template>
+   <template if:true={showShoppingCartPage}>
+      <c-shopping-cart onnextevent={showExamRegPayment}
+         onpreviousevent={showExamRegSummaryPageHandler}></c-shopping-cart>
+   </template> -->
+   <template if:true={showExamRegPaymentpage}>
+      <c-exam-reg-payment oncancelevent={cancelAppForCert} onnextevent={showConfirmation} onpreviousevent={showExamRegLegalSignOff} case-record-id={caserecordidexamreg}></c-exam-reg-payment>
+   </template>
+
+   <template if:true={showEPExForm}>
+      <c-e-p-ex-form oncancelevent={cancelAppForCert} onnextevent={showEPExSummary} onpreviousevent={showProfileReivew}></c-e-p-ex-form>
+   </template>
+   <template if:true={showEPExSummaryPage}>
+      <c-e-p-ex-summary onnextevent={showEPExLegal} onpreviousevent={showDegMedSchoolDetails} oncancelevent={cancelAppForCert}></c-e-p-ex-summary>
+   </template>
+   <template if:true={showEPExLegalPage}>
+      <c-e-p-ex-legal-sign-off oncancelevent={cancelAppForCert} onnextevent={showEPExPayment} onpreviousevent={showEPExSummary}></c-e-p-ex-legal-sign-off>
+   </template>
+   <template if:true={showEPExPaymentPage}>
+      <c-e-p-ex-payment oncancelevent={cancelAppForCert} onnextevent={showConfirmation} onpreviousevent={showEPExLegal} case-record-id={caserecordidepex}></c-e-p-ex-payment>
+   </template>
+   <template if:true={showConfirmationPage}>
+      <c-app-for-cert-confirmation cases-list-conf-screen={casesListConfScreen} transcript-case-numbers={transcriptCaseNumbers} link-source={linkSource} show-exam-reg-action-button={showButtonsBasedOnExamReg} oncancelevent={confirmAndCancel}>
+      </c-app-for-cert-confirmation>
+   </template>
+   <template if:true={regionChangeSection}>
+      <template if:true={showRegionChangeManageScreenPage}>
+         <c-region-change-manage-screen oncancelevent={cancelRegionChangeRequest} onpreviousevent={showProfileReivew} onnextevent={showRegionChangeSummary}></c-region-change-manage-screen>
+      </template>
+      <template if:true={showRegionChangeSummaryPage}>
+         <c-region-change-summary onnextevent={showRegionChangeLegal} onpreviousevent={showRegionChangeManageScreen} oncancelevent={cancelRegionChangeRequest}></c-region-change-summary>
+      </template>
+      <template if:true={showRegionChangeLegalPage}>
+         <c-region-change-legal-sign-off oncancelevent={cancelRegionChangeRequest} onnextevent={showRegionChangePayment} onpreviousevent={showRegionChangeSummary} case-record-id={caserecordidregionchange}></c-region-change-legal-sign-off>
+      </template>
+      <template if:true={showRegionChangePaymentPage}>
+         <!-- <c-region-change-payment oncancelevent={cancelAppForCert} onnextevent={showConfirmation} onpreviousevent={showRegionChangeLegal} case-record-id={caserecordidregionchange}></c-region-change-payment> -->
+         <c-shopping-cart onpreviousevent={showRegionChangeLegal} case-record-id={caserecordidregionchange}></c-shopping-cart>
+      </template>
+   </template>
+   <br />
+   <template if:true={showPrior}>
+      <template if:true={showPriorExamRegList} style='padding-top:15px'>
+         <h3>Prior Exam Applications</h3>
+         <p>Exam applications for which results have been reported or that have been rejected/canceled will appear below.</p>
+         <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered" role="grid">
+            <caption></caption>
+            <thead>
+               <tr class="slds-line-height_reset">
+                  <th aria-label="Exam Type" aria-sort="none" class="slds-is-resizable slds-is-sortable slds-text-align_center" scope="col">
+                     <span class="slds-truncate" title="Exam Type">Exam Type</span>
+                  </th>
+                  <th aria-label="Eligibility Period" aria-sort="none" class="slds-is-resizable slds-is-sortable slds-text-align_center" scope="col">
+                     <span class="slds-truncate" title="Eligibility Period">Eligibility Period</span>
+                  </th>
+                  <th aria-label="Testing Region" aria-sort="none" class="slds-is-resizable slds-is-sortable slds-text-align_center" scope="col">
+                     <span class="slds-truncate" title="Testing Region">
+                        Testing Region
+                     </span>
+                  </th>
+                  <th aria-label="Test Accommodations" aria-sort="none" class="slds-is-resizable slds-is-sortable slds-text-align_center" scope="col">
+                     <span class="slds-truncate" title="Test Accommodations">Test
+                        Accommodations</span>
+                  </th>
+                  <th aria-label="Application Status" aria-sort="none" class="slds-is-resizable slds-is-sortable slds-text-align_center" scope="col">
+                     <span class="slds-truncate" title="Application Status">Application Status</span>
+                  </th>
+                  <th aria-label="Score Withheld" aria-sort="none" class="slds-is-resizable slds-is-sortable slds-text-align_center" scope="col">
+                     <span class="slds-truncate" title="Score Withheld">Score Withheld</span>
+                  </th>
+               </tr>
+            </thead>
+            <tbody>
+               <template for:each={priorExamRegistrationsList} for:item="priorExamReg" for:index="priorExamRegIndex">
+                  <tr key={priorExamReg.recordIdVal} data-record-id={priorExamReg.recordIdVal} class="exam-reg-id">
+                     <td class="slds-text-align_center">
+                        {priorExamReg.examType}
+                     </td>
+                     <td class="slds-text-align_center" style="white-space: normal;">
+                        {priorExamReg.eligibilityPeriod}
+                     </td>
+                     <td class="slds-text-align_center" style="white-space: normal;">
+                        {priorExamReg.testingRegion}
+                     </td>
+                     <td class="slds-text-align_center">
+                        {priorExamReg.testAccomodations}
+                     </td>
+                     <td class="slds-text-align_center">
+                        {priorExamReg.applicationStatus}
+                     </td>
+                     <td class="slds-text-align_center">
+                        {priorExamReg.pdOptOut}
+                     </td>
+                  </tr>
+               </template>
+            </tbody>
+         </table>
+      </template>
+   </template>
+   <c-modal-component data-id='newModalAlert' title='Alert' message='Are you sure you want to cancel? All changes will be lost.' show-secondary-button='true' secondary-button-text='Cancel' onsecondarybuttonclick={closeModal} show-primary-button='true' primary-button-text='OK' onprimarybuttonclick={cancelButton}></c-modal-component>
+</template>

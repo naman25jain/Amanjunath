@@ -1,0 +1,26 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes"
+                access="global"
+                controller="Entity_360_Base_Controller" extends="c:CommunityBase">
+
+    <aura:attribute name="chatterPosts" type="List" default="[]" />
+    <aura:attribute name="pageReady" type="Boolean" default="false" />
+    <aura:attribute name="messageValue" type="String" default="" />
+    <aura:attribute name="curRecordId" type="String" default="" />
+    <aura:attribute name="postButtonDisabled" type="Boolean" default="true" />
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:handler name="change" value="{!v.messageValue}" action="{!c.messageValueOnChange}" />
+
+
+    <div style="background-color:white">
+        <c:CommunitySummarySectionHeader hideEditButton="true" title="Collaboration" showHelpIcon="false" helpText="Collaboration" />
+        <aura:iteration items="{!v.chatterPosts}" var="post">
+            <b>{!post.CreatedBy.FirstName}&nbsp;{!post.CreatedBy.LastName}</b>&nbsp;on&nbsp;<lightning:formattedDateTime
+                    value="{!post.CreatedDate}" year="numeric" month="numeric" day="numeric" hour="2-digit"
+                    minute="2-digit" timeZoneName="short" hour12="true"/> <br/> {!post.DateFormatted}<br/>
+            <lightning:formattedRichText value="{!post.Body}"></lightning:formattedRichText><br/>
+        </aura:iteration>
+        <lightning:inputRichText aura:id="messageInput" value="{!v.messageValue}" placeholder="Type your message here" shareWithEntityId="{!v.recordId}" />
+        <lightning:button aura:id="postButton" class="slds-button slds-button_brand" onclick="{!c.handlePost}" disabled="{!v.postButtonDisabled}">Post</lightning:button>
+    </div>
+</aura:component>

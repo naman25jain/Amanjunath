@@ -1,0 +1,27 @@
+.headerText{
+    font-size: 16px;
+    font-weight: bold;
+}
+.checkboxPadding{
+    float: left;
+    padding-bottom: 0.75% !important;
+    padding-top: 0.75% !important;
+    padding-left: 0.5% !important;
+}
+.checkboxPaddingTranscript{
+    padding-bottom: 0.75% !important;
+    padding-top: 0.75% !important;
+    padding-left: 0.5% !important;
+}
+.buttonAlignment{
+    padding-left:42%;
+}
+.isa_error {
+    color: #D8000C;
+}
+.mt-6 {
+    margin-top: 1rem;
+}
+.mb-6 {
+    margin-bottom: 1rem;
+}

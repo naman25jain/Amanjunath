@@ -1,0 +1,14 @@
+<template>
+    <div class="slds-card alignment slds-var-m-left_medium">
+        <template if:true={spinner}>
+            <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+        </template>
+        <lightning-formatted-text value="Please add the Accepted verification form and Cover letter to finish the case processing."></lightning-formatted-text>
+        <div>
+            <template if:true={displayError}>
+                <lightning-formatted-text class="valMsg" value={errorMsg}></lightning-formatted-text>
+            </template> 
+        </div><br/> 
+        <lightning-button variant="brand" label="Finish" title="Finish" onclick={finishButton} class="slds-var-m-right_large buttonAlign"></lightning-button>
+    </div>
+</template>

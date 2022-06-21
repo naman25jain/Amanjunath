@@ -1,0 +1,4 @@
+<aura:event type="APPLICATION" description="Used to pass the selected sobject from the LightningSearch component to its parent component">
+    <aura:attribute name="LightningSearchRecord" type="sObject"/>
+    <aura:attribute name="LightningSearchRecordLabel" type="String"/>
+</aura:event>

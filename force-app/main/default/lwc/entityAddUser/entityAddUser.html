@@ -1,0 +1,172 @@
+<template>
+    <template if:false={yesClicked}>
+            <div class="slds-col slds-size_1-of-1 mt-6 mb-6">
+                <span class="headerText">Add a New User</span>
+            </div>
+            <c-g-display-content unique-content-value="addNewuserstoEntity"></c-g-display-content>
+             <br/><br/>
+            <template if:true={spinner}>
+                <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+            </template>
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2 slds-form-element_horizontal">
+                <lightning-input label="Last Name/Surname:" class="entityLastName" name="lastName" value={lastName} required onchange={lastNamechanged}></lightning-input>
+            </div>
+            <template if:true={lastNameFlag}>
+                <div class = "isa_error">
+                    Last Name is Required
+                </div>
+            </template>
+            <template if:false={disableLastName}>
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2 slds-form-element_horizontal">
+                <lightning-input label="Rest of Name:" class="entityLastName" name="restOfName" value={restOfName} onchange={restOfNameChanged}></lightning-input>
+            </div>
+        </template>
+        <template if:true={disableLastName}>
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2 slds-form-element_horizontal">
+                <lightning-input label="Rest of Name:" disabled class="entityLastName" name="restOfName" value={restOfName} onchange={restOfNameChanged}></lightning-input>
+            </div>
+        </template>
+        <template if:true={errRestName}>
+            <div class="isa_error">
+                Rest of Name required unless your name consists of only one name
+            </div>
+        </template>
+            <div class="slds-col slds-grid slds-wrap">
+                <div class="slds-col">
+                    <div class="checkboxPadding">
+                        <template if:false={checkBoxValue}>
+                            <lightning-input type="checkbox" variant="label-hidden" name="checkBoxValue" onchange={checkChanged}></lightning-input>
+                        </template>
+                        <template if:true={checkBoxValue}>
+                            <lightning-input type="checkbox" variant="label-hidden" name="checkBoxValue" checked onchange={checkChanged}></lightning-input>
+                        </template>
+                    </div>
+                    <div class="checkboxPaddingTranscript">
+                        <span>The User’s legal name consists of one name only.</span>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2 slds-form-element_horizontal">
+                <lightning-combobox
+                        name="generationalSuffix"
+                        label="Generational Suffix:"
+                        value={suffixVal}
+                        options={suffixOptions}
+                        onchange={handleChangeSuffix}>
+                </lightning-combobox>
+            </div>
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2 slds-form-element_horizontal">
+                <lightning-input type="date" label="Date of Birth:" class="entityDoB" name="dob" value={dob} required onchange={dobChanged}></lightning-input>
+            </div>
+            <template if:true={dateError}><div class="isa_error">
+                Date of Birth field cannot have future dates. </div>
+            </template>
+            <template if:true={dobFlag}>
+                <div class = "isa_error">
+                    Date of Birth is Required
+                </div>
+            </template>
+    <div class="slds-col slds-var-p-around_medium slds-size_1-of-2 slds-form-element_horizontal">
+        <lightning-input label="Email Address:" type="email" class="entityEmailAddress" name="emailAddress" value={emailAddress} required onchange={emailChanged}></lightning-input>
+    </div>
+    <template if:true={emailFlag}>
+        <div class = "isa_error">
+            Email Address is Required
+        </div>
+    </template>
+    <c-modal-component title='Alert' message='Are you sure you want to cancel? All changes will be lost.'  show-secondary-button='true' secondary-button-text='No' onsecondarybuttonclick={closeModal} show-primary-button='true' primary-button-text='Yes' onprimarybuttonclick={confirmModal}></c-modal-component>
+    <div class="slds-col slds-var-p-around_medium slds-size_1-of-2 slds-form-element_horizontal">
+        <lightning-input name="phoneNumber" label="Phone Number:" type="text" class="entityPhoneNumber" value={phoneNumber} required onchange={phoneChanged}></lightning-input>
+    </div>
+    <template if:true={phoneFlag}>
+        <div class = "isa_error">
+            Phone Number is Required
+        </div>
+    </template>
+    <div class="slds-col slds-var-p-around_medium slds-size_1-of-2 slds-form-element_horizontal">
+        <lightning-textarea label="Department:" class="entityDepartment" name="department" value={department} required onchange={deptChanged}></lightning-textarea>
+    </div>
+    <template if:true={deptFlag}>
+        <div class = "isa_error">
+            Department is Required
+        </div>
+    </template>
+    <div class="slds-col slds-var-p-around_medium slds-size_1-of-2 slds-form-element_horizontal">
+        <lightning-textarea label="Job Title:" class="entityJobTitle" name="jobTitle" value={jobTitle} required onchange={jobTitleChanged}></lightning-textarea>
+    </div>
+    <template if:true={titleFlag}>
+        <div class = "isa_error">
+            Job Title is Required
+        </div>
+    </template>
+    <div class="slds-col slds-var-p-around_medium slds-size_1-of-2 slds-form-element_horizontal">
+        <lightning-combobox
+                name="countryOfResidence"
+                label="Country of Residence:"
+                value={countryVal}
+                options={countryOptions}
+                onchange={handleChange}
+                required>
+        </lightning-combobox>
+    </div>
+    <template if:true={countryFlag}>
+        <div class = "isa_error">
+            Country is Required
+        </div>
+    </template>
+    <span class= "isa_error"> * </span>
+    <c-g-display-content unique-content-value="selectServiceLine"></c-g-display-content>
+    <br/><br/>
+    <template if:true={serviceFlag}>
+        <div class="isa_error">
+            Select the service(s) you would like this User to be able to access through MyIntealth.
+        </div>
+    </template>
+    <div class="slds-var-m-around_medium">
+        <template for:each={recsList} for:item="service" for:index="serviceIndex">
+            <tr key={service.id} class="slds-form-element_horizontal">
+                <td  style="padding-left: 60px;">
+                    <div>
+                        <lightning-input type="checkbox" value={checkBox} class="servicecheckbox" label="" name={serviceIndex} onclick={checkBoxEvent}></lightning-input>
+                    </div>
+                </td>
+                <td>
+                    <div>
+                        <span>{service.name}</span>
+                    </div>
+                </td>
+                </tr>
+        </template>
+    </div>
+    <template if:true={signRequired}>
+    <c-g-display-content unique-content-value="AddUserSignatureDetails"></c-g-display-content>  <br/><br/>
+    If needed, you can find the signature form <a href = "">here</a>. <br/><br/>
+    <div class="slds-col slds-var-p-around_medium slds-size_1-of-4" style="width: 132px; padding-left: 8px; padding-top: 25px;">
+        <span>Upload Signature</span>
+    </div>
+    <div class="slds-col slds-var-p-around_medium slds-size_3-of-4" style="padding-top: 0px; padding-bottom: 0px; padding-left: 0px; padding-right: 0px;">
+        <template if:true={showSignUploadButton}>
+            <c-cloud-document-upload-wrapper label="Upload" pay-load={payloadSignedSignatureForm} max-allowed-file-size=10 accepted-file-formats=".jpeg,.jpg,.pdf,.tiff"
+            enable-annotation="false" enable-redaction="false" ongeneratedurl={handleOnAssetInserted} azure-doc-url={signUrl}>
+            </c-cloud-document-upload-wrapper>
+        </template>
+        <template if:true={signatureFlag}>
+            <div class="isa_error">
+            <br/>
+            <c-g-display-content unique-content-value="uploadSignatureForm"></c-g-display-content>
+            </div>
+        </template>
+        <template if:false={signatureFlag}></template>
+    </div>
+    </template>
+    <template if:false={signRequired}>
+    </template>
+    <div class="buttonAlignment" ><br/>
+        <lightning-button variant="brand" label="Submit" title="Next" onclick={nextButton} class="slds-var-m-left_x-small"></lightning-button>
+        <lightning-button variant="brand" label="Cancel" title="Cancel" onclick={cancelButton} class="slds-var-m-left_x-small"></lightning-button>
+    </div>
+</template>
+    <template if:true={yesClicked}>
+        <c-manage-users onpreviousevent={cancelButton}> </c-manage-users>
+    </template>
+</template>

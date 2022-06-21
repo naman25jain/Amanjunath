@@ -1,0 +1,74 @@
+<template>
+    <div class="formMargin">
+        <div class="slds-grid slds-wrap gridMargin">
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-2 gridItemPadding">
+                <lightning-combobox 
+                name="optionSelect" 
+                label="Select Entity" 
+                value={accountName} 
+                placeholder="Select Entity" 
+                options={entityOptions}
+                onchange={changeHandler}>
+                </lightning-combobox>       
+              </div> 
+        </div>
+        <lightning-tabset>           
+            <lightning-tab label="Enrollment Verification" value="enrollmentVerification" onactive={tabselectCoordinator}>
+                
+
+                <div>
+                   <c-ev-entity cur-entity={accountName}></c-ev-entity>
+                </div>
+            </lightning-tab>
+            <lightning-tab label="Performance Data" value="performanceData" onactive={tabselectCoordinator}>
+                <div>
+                    <c-entity-performance-data current-entity={accountName}></c-entity-performance-data>
+                </div>
+            </lightning-tab>
+            <lightning-tab label="Credential Review" value="credentialVerification" onactive={tabselectCoordinator}>
+                <div>
+                    <c-entity-credential-verification current-entity={accountName}></c-entity-credential-verification>
+                </div>
+            </lightning-tab>          
+            <lightning-tab label="ERAS Services" value="erasServices" onactive={tabselectCoordinator}>
+                <template if:true={showERAS}>
+                    <lightning-tabset> 
+                        <lightning-tab label="Home" value="Home" onactive={tabselectCoordinator}> 
+                            <div> 
+                               <div>
+                               <c-entity-E-R-A-S-Services-Home></c-entity-E-R-A-S-Services-Home>
+                                </div>
+                            </div> 
+                        </lightning-tab> 
+                        <lightning-tab label="ERAS Requests" value="erasRequests" onactive={tabselectCoordinator}>
+                            <c-entity-eras-request cur-entity={accountName}></c-entity-eras-request>
+                        </lightning-tab> 
+                        <lightning-tab label="Re-upload Requests" value="ReuploadRequests" onactive={tabselectCoordinator}>
+                                <c-entity-task-page cur-entity={accountName}></c-entity-task-page>
+                        </lightning-tab> 
+                    </lightning-tabset> 
+                    
+                </template>
+                <template if:false={showERAS}>
+                    <div>
+                        <p>Either your entity does not currently participate in ERAS Support Services through MyIntealth or you have not been granted access to this service by the Coordinator at your entity. Go to the Administration section if you would like to request access to this service.</p>
+                    </div>
+                </template>
+            </lightning-tab>
+            <template if:true={showEPICPortal}>
+                <lightning-tab label="EPIC Portal" value="EPICPortal" onactive={tabselectCoordinator}>
+                    <div>
+                        <c-entity-E-P-I-C-Portal current-entity={accountName}></c-entity-E-P-I-C-Portal>
+                    </div>
+                </lightning-tab>
+            </template>
+            <template if:true={showCVSRequests}>
+                <lightning-tab label="CVS Requests" value="CVSRequests" onactive={tabselectCoordinator}>
+                    <div>
+                        <c-entity-c-v-s-requests current-entity={accountName}></c-entity-c-v-s-requests>
+                    </div>
+                </lightning-tab>
+            </template>
+        </lightning-tabset>
+    </div>
+</template>

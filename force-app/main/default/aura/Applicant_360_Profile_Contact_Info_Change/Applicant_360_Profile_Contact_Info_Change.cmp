@@ -1,0 +1,19 @@
+<aura:component >
+<!-- 
+attributes: 
+1)	
+
+Notes:
+Page starts in edit mode. There is no read only mode.
+On Save perform a lookup to (custom setting or metadata TBD) to determine 
+	If the newly selected country is restricted create case: 
+		RT=Restricted, Type: Restricted Country, Description has old value and new value for all the fields and not just country, Queue=Notifications Queue. Save all field changes to the contact.
+	If the newly selected country is not restricted then just save the updates.
+
+	If email address is changed:
+		1) Display additional field of "Confirm Email Address".
+			a) If "Email Address" and "Confirm Email Address" match. Pop up a warning that this will change your login username. If they agree check to see if the new username is unique and if so proceed with the update. 
+				If everything is succesful follow up with a popup saying the change is complete and they should relogin. Also, send an email to the old email address and the new email address about the change occuring.
+
+-->
+</aura:component>

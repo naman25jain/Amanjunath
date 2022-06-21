@@ -1,0 +1,47 @@
+.formMargin{
+    margin-left: 25%;
+    margin-right: 25%;
+    padding-top: 20px;
+}
+.paddingHeader{
+    padding-top: 5%;
+    font-weight: bold;
+}
+.paddingValues{
+    padding-left: 10%;
+}
+.buttonAlignment {
+    padding-top: 25px;
+    padding-left: 35%;
+  }
+.padding {
+    padding-top: 20px;
+    margin-left: 25%;
+    margin-right: 25%;
+  }
+  .stepHeader{
+    font-size: 15px
+  }
+  .header {
+    line-height: 2;
+  }
+  .paddingMainHeader {
+    padding-top: 20px;
+    margin-left: 25%;
+    margin-right: 25%;
+  }
+  .stepMainHeader {
+    font-size: 20px
+  }
+  .scoreReportContent {
+    font-weight: bold;
+  }
+  .separatorborderbottom{
+    padding-top: 15px;
+    border-bottom:1px solid #d4d4d4;
+    border-bottom-style: dotted;
+    width:100%;
+  }
+  .gridItemPadding{
+    padding-top: 35px;
+  }

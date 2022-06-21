@@ -1,0 +1,10 @@
+<!--
+ - Created by Matthew on 11/8/18.
+ -->
+
+<design:component label="Applicant Medical Schools">
+
+    <design:attribute name="submittedRecordType" label="User Submitted Record Type Name" description="The name of the school (account) record type for which to assign to an applicant submitted school, e.g. Unapproved Medical School."/>
+    <design:attribute name="associationRecordType" label="Associate Type Record Type Name" description="The name of the association type record type for which the list is filtered, e.g. Degree Medical School or Medical School." />
+
+</design:component>

@@ -1,0 +1,27 @@
+.THIS {
+}
+
+.THIS .redbutton {
+	margin: auto !important;
+    width: 140px !important;
+    height: 60px !important;
+    font-size: 15px !important;
+    background-color: red !important;
+}
+
+.THIS .bluebutton {
+	margin: auto !important;
+    width: 100% !important;
+    height: 60px !important;
+    font-size: 15px !important;
+    background-color: blue !important;
+}
+
+.THIS h1 {
+    font-size: 32px;
+    margin: 20 0 15px;
+}
+
+.THIS p {
+    margin: 20px 0 20px
+}

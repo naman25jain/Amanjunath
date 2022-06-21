@@ -1,0 +1,13 @@
+<aura:component >
+<!-- 
+attributes: 
+
+1)	
+
+Notes:
+Initial page will be a related list of all user's assets where Status IN (Verified, In Progress).
+	Related list fields: Asset Name, Type, Install Date
+Detail page will need to have a related list of files.
+	Fields displayed: Asset Name, Type, Install Date
+-->
+</aura:component>

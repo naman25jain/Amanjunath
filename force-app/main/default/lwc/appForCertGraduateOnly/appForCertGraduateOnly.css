@@ -1,0 +1,82 @@
+.formMargin{
+    margin-left: 25%;
+    margin-right: 25%;
+    padding-top:20px;
+}
+.buttonMargin{
+    padding-top: 2%; 
+    position: relative;
+    top: 57px;
+    left: 43px; 
+
+}
+.buttonAlignment{
+  padding-top: 25px;
+  padding-left:25%;
+}
+.padding {
+    padding-top:20px;
+    margin-left: 25%;
+    margin-right: 10%;
+  }
+  .stepHeader{
+    font-size: 20px
+  }
+  .errormsg{
+    color:#ff0000;
+    font-size: 13px;
+  }
+  .errorMsgAlignment{
+    padding-top: 1px;
+    margin-top: 1px;
+  }
+  .required
+  {
+    color: red;
+    padding-bottom: 1px;
+    margin-bottom: 1px
+  }
+  
+  .isSucMsg{
+    color:#00ff00;
+    font-size: 13px;
+  }
+  
+  .headerbackground{
+    background-color: #f3f2f2;
+  }
+
+  .separatorborderbottom{
+    padding-top: 15px;
+    border-bottom:1px solid #d4d4d4;
+    width:100%;
+  }
+  .gridHeader{
+    font-size: large;       
+}
+
+.gridPadding{
+  padding-bottom:15px;
+}
+
+.gridFinalTranscript{
+  width: 100%;
+}
+
+.THIS .slds-align_absolute-center {
+  display: block;
+}
+
+.THIS section.slds-modal.slds-fade-in-open {
+  max-width: 90rem!important;
+  width: 90%!important;
+  margin: 0 auto;
+}
+
+.THIS .slds-modal__close {
+  margin-right: 10px;
+}
+
+.THIS .iframeWrapper {
+  margin: 5px!important;
+}

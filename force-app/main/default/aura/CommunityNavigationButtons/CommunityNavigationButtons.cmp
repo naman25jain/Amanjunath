@@ -1,0 +1,59 @@
+<!--
+ - Created by Matthew on 11/8/18.
+ -->
+<aura:component description="Community Navigation Buttons" implements="lightning:availableForFlowScreens,forceCommunity:availableForAllPageTypes">
+
+    <aura:attribute name="service" type="String" />
+    
+    <aura:attribute name="mode" type="String" description="Valid values are Summary or empty." access="private" />
+
+    <aura:attribute name="previousUrl" type="String" description="The url to navigate to when the previous button is clicked."/>
+    <aura:attribute name="previousUrlForEPIC" type="String" description="The url to navigate to when the previous button is clicked when in the EPIC path."/>
+    <aura:attribute name="previousUrlForECFMGCert" type="String" description="The url to navigate to when the previous button is clicked when in the ECFMG Cert path."/>
+    <aura:attribute name="previousUrlForGEMx" type="String" description="The url to navigate to when the previous button is clicked when in the GEMx path."/>
+
+    <aura:attribute name="nextUrl" type="String" description="The url to navigate to when the next button is clicked." />
+	<aura:attribute name="nextUrlForEPIC" type="String" description="The url to navigate to when the next button is clicked when in the EPIC service path." />
+    <aura:attribute name="nextUrlForECFMGCert" type="String" description="The url to navigate to when the next button is clicked when in the ECFMG Cert service path." />
+    <aura:attribute name="nextUrlForGEMx" type="String" description="The url to navigate to when the next button is clicked when in the GEMx service path." />
+
+    <aura:attribute name="summaryUrlEPIC" type="String" description="The summary URL for EPIC service" />
+    <aura:attribute name="summaryUrlCert" type="String" description="The summary URL for ECFMG Certification service" />
+    <aura:attribute name="summaryUrlGEMx" type="String" description="The summary URL for GEMx service" />
+    <aura:attribute name="summaryUrlOther" type="String" description="The summary URL for all services but EPIC/ECFMG Certification" />
+
+    <aura:attribute name="previousEnabledByDefault" type="Boolean" default="false" />
+    <aura:attribute name="nextEnabledByDefault" type="Boolean" default="false" />
+    <aura:attribute name="allowPreviousWhenInvalid" type="Boolean" default="false" description="Should the previous button be enabled if there is a validation error?" />
+    <aura:attribute name="allowNextWhenInvalid" type="Boolean" default="false" description="Should the next button be enabled if there is a validation error?" />
+
+    <aura:attribute name="isValid" type="Boolean" default="true" description="Will be false if any component on the page reports invalid via event." />
+    
+    <aura:attribute name="showBackToSummary" type="Boolean" default="false" access="private"/>
+
+    <aura:attribute name="validationMap" type="Map" default="{ default: true }"
+                    description="A key/value pair of source to validation mappings. If any source's isValid is false, isValid attribute will be false."/>
+
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}" />
+
+    <aura:handler event="c:GenericValidationErrorAE" action="{!c.handleGenericValidationError}" />
+
+    <div class="slds-grid slds-grid_align-center">
+        <aura:if isTrue="{!v.showBackToSummary == true}">
+            <div class="slds-col slds-p-around_x-small">
+                <lightning:button aura:id="backToSummaryButton" variant="brand" name="summary" label="Return To Summary" onclick="{!c.handleBackToSummary}" />
+            </div>
+        </aura:if>
+        <aura:if isTrue="{!v.showBackToSummary == false}">
+            <div class="slds-col slds-p-around_x-small">
+                <!--<lightning:button aura:id="previousButton" variant="brand" name="previous" label="Previous" disabled="{! v.previousEnabledByDefault == false}" onclick="{!c.handlePrevious}" />-->
+                <lightning:button aura:id="previousButton" variant="brand" name="previous" label="Previous" disabled="true" onclick="{!c.handlePrevious}" />
+            </div>
+            <div class="slds-col slds-p-around_x-small">
+                <!--<lightning:button aura:id="nextButton" variant="brand" name="next" label="Next" disabled="{! v.nextEnabledByDefault == false}" onclick="{!c.handleNext}" />-->
+                <lightning:button aura:id="nextButton" variant="brand" name="next" label="Next" disabled="true" onclick="{!c.handleNext}" />
+            </div>
+        </aura:if>
+    </div>
+
+</aura:component>

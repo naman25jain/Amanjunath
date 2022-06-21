@@ -1,0 +1,9 @@
+.THIS h2{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-decoration: center;
+}
+.THIS .responseContainer{
+    text-align: center;
+    padding: 50px;
+}

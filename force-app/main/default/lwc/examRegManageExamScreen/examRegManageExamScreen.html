@@ -1,0 +1,271 @@
+<template>
+    <lightning-record-edit-form object-api-name="Exam_Registration__c" onsubmit={handleSubmit}>
+        <template if:true={spinner}>
+            <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+        </template>
+        <div class="padding">
+            <h2 class="h1"><span>USMLE Application: Exam Details</span></h2>
+        </div>
+        <div class="padding">
+            <template if:true={showError}>
+                <lightning-formatted-rich-text class='errormsg' value={errorMessagesText}>
+                </lightning-formatted-rich-text>
+                <lightning-formatted-rich-text class='successmsg' value={successMessageText}>
+                </lightning-formatted-rich-text>
+            </template>
+            <template if:true={showLimitError}>
+                <span class="errormsg">
+                    <c-g-display-content unique-content-value="Exam_Reg_Limit_Attempt_Error"></c-g-display-content>
+                </span>
+             </template>
+            <template if:true={showLastAttemptError}>
+                <div class="errormsg">
+                    <c-g-display-content unique-content-value="Exam_Reg_Last_Attempt_Warning"></c-g-display-content>
+                </div>
+            </template>
+        </div>
+        <c-modal-component class="exceptionModal" title={modalTitle} message={modalContent}>
+        </c-modal-component>
+        <c-modal-component class="warningModal" show-primary-button="true" primary-button-text="Yes"
+            onprimarybuttonclick={handleYesClick} onclosedialog={handleCloseClick} title message>
+        </c-modal-component>
+        <div class="formMargin ">
+            <section>
+                <div class="slds-col slds-p-top_small ">
+                    <span class="slds-text-title_bold">Select an Exam</span>
+                    <p>Select the USMLE Step you want to take.</p>
+                </div>
+                <div class="slds-col slds-p-top_small ">
+                    <span class="required">*</span>
+                    <lightning-radio-group name="Exam Selection" class="examSelectionInput" data-examtypes
+                        variant="label-hidden" value={selectedExamType} options={examTypes}
+                        onchange={handleExamSelection} type="radio">
+                    </lightning-radio-group>
+                    <template if:true={showVisaCheck}>
+                        <lightning-input type="checkbox" class="visa-checkbox"
+                            label=" I am requesting a visa letter to be issued after completion of my registration."
+                            onchange={handleVisaCheckbox}></lightning-input>
+                    </template>
+                    <template if:true={showExceptions}>
+                        <div class="slds-p-top_medium">
+                            <lightning-formatted-rich-text class='errormsg' value={exceptionMessageText}>
+                            </lightning-formatted-rich-text>
+                            <div class="slds-p-top_medium slds-p-left_medium">
+                                <table class="exceptions-table">
+                                    <caption style="display: none;">Exceptions Table</caption>
+                                    <th scope="col" style="vertical-align:top"><span class="required">*</span></th>
+                                    <template for:each={exceptionTypes} for:item='exception' for:index='index'>
+                                        <tr key={exception.id} class="slds-line-height_reset">
+                                            <td>
+                                                <lightning-input class="exception-option" type="radio"
+                                                    value={exception.value} label={exception.label}
+                                                    data-document-required={exception.documentRequired}
+                                                    data-applicant-reason-required={exception.applicantReasonRequired}
+                                                    onchange={handleExceptionSelection}>
+                                                </lightning-input>
+                                            </td>
+                                            <td>
+                                                <a href="javascript:void(0)"
+                                                    data-exception-description={exception.exceptionContent}
+                                                    data-exception-name={exception.exceptionName}
+                                                    onclick={openModal}>Click
+                                                    here for more information.</a>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </table>
+                            </div>
+                            <template if:true={showFileUpload}>
+                                <div class="fileUploadSection">
+                                    <span class="required">*</span>
+                                    <template if:true={showFileUploadCloud}>
+                                        <c-cloud-document-upload-wrapper class="cloudDocumentUpload"
+                                            pay-load={visaExceptionDocumentationPayload} max-allowed-file-size={maxsize}
+                                            accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" enable-annotation="false"
+                                            enable-redaction="false" asset-type="Visa Exception Documentation Document" azure-doc-url={visaLetterUrl}
+                                            ongeneratedurl={handleExceptionUploaded} warning-message={uploadWarningMessage}>
+                                        </c-cloud-document-upload-wrapper>
+                                    </template>
+                                </div>
+                            </template>
+                            <template if:true={showReasonInput}>
+                                <span class="required" style="padding-top:20px">*</span>
+                                <lightning-textarea class="slds-p-top_medium applicant-reason" name="applicantReason"
+                                    label="Please enter your reason below" value={applicantReason}
+                                    placeholder="Type here..." max-length="255"></lightning-textarea>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+            </section>
+            <template if:true={showEC}>
+                <section>
+                    <div class="slds-col slds-p-top_small">
+                        <template if:true={isNotCS}>
+                            <p class="slds-text-title_bold">Select an Eligibility Period</p>
+                            <p class="slds-text-body_regular">Select the three-month eligibility period during which you would like to take the exam.</p>
+                        </template>
+                    </div>
+                    <template if:false={isNotCS}>
+                        <h3 class="slds-text-title_bold">Select an Eligibility Period</h3>
+                        <p class="slds-text-body_regular">
+                            <c-g-display-content unique-content-value="Exam_Reg_Manage_Exam_Eligibility_Period"></c-g-display-content>
+                        </p>
+                        <template if:true={showUSMLEStep2CS}>
+                            <div class="step2CSPadding">
+                                <span class="errormsg">{label.step2csMsg}</span>
+                            </div>
+                            <div class="step2CSPadding">
+                                <span class="errormsg">{label.step2CS} {step2CSVal}</span>
+                            </div>
+                        </template>
+                    </template>
+                    <template if:true={isNotCS}>
+                        <lightning-card class="slds-p-top_medium" title="2022 Eligibility Period Information">
+                            <template if:true={isNotCS}>
+                                    <c-g-display-content unique-content-value="Exam_Reg_Manage_Exam_2020_Eligibility_Period"></c-g-display-content>
+                               
+                            </template>
+                            <div class="slds-col slds-p-top_small slds-p-left_medium paddingright">
+                                <template if:true={isNotCS}>
+                                    <template if:true={isEC}>
+                                        <span class="required">*</span>
+                                        <lightning-combobox label="Eligibility Periods" value={ecResultVal}
+                                            data-eligibilityperiods placeholder="-Select-" options={ecResult}>
+                                        </lightning-combobox>
+                                    </template>
+                                    <template if:false={isEC}>
+                                        <span>List has no values</span>
+                                    </template>
+                                </template>
+                            </div>
+                            <br />
+                            <template if:true={isNotCS}>
+                                <p class="slds-p-horizontal_small">
+                                    <c-g-display-content unique-content-value="Exam_Reg_Manage_Exam_2020_Eligibility_Period3"></c-g-display-content>
+                                </p>
+                            </template>
+                            <c-g-display-content unique-content-value="retaking_failed_exams"></c-g-display-content>
+                        </lightning-card>
+                    </template>
+                </section>
+            </template>
+            <template if:true={showRegionSurchargeSection}>
+                <section>
+                    <div class="slds-col slds-p-top_small">
+                        <div class="slds-col slds-p-top_small slds-size_2-of-2">
+                            <h3 class="slds-text-title_bold">Testing Region and International Test Delivery Surcharge, if Applicable</h3>
+                        </div>
+                        <div class="slds-col slds-p-top_small slds-size_2-of-2">
+                            <p class="slds-text-body_regular">Select a testing region from the list. You must choose a testing region when you apply, but you will not choose a testing center within this region until you schedule your testing appointment. You must take the exam in the testing region you select. Please refer to the <a href="http://www.prometric.com/" target="_blank">Prometric website</a> for information on specific test centers. Additionally, if you plan to test in Egypt, Hong Kong, India, or Israel, refer to the special information below.</p>
+                        </div>
+                        <div class="slds-col slds-p-top_small slds-size_2-of-2">
+                            <table class="slds-table slds-table_bordered regiontable">
+                                <caption>Testing Region</caption>
+                                <thead>
+                                    <tr class="slds-line-height_reset">
+                                        <th class="" scope="col">
+                                            <div class="slds-truncate" title="Testing Region"><span
+                                                    class="required">*</span>Testing Region</div>
+                                        </th>
+                                        <th class="" scope="col">
+                                            <div class="slds-truncate" title="Surcharge">Surcharge</div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template for:each={erSurchargeLists} for:item='surchargeItem' for:index='index'>
+                                        <tr key={surchargeItem.recordId} data-tcid={surchargeItem.recordId}
+                                            class="slds-line-height_reset">
+                                            <template if:true={surchargeItem.selectedRecordId}>
+                                                <td class="regionSurchargeSection selectedregion">
+                                                    <lightning-input type="radio" value={surchargeItem.recordId}
+                                                        class="regionradio" label="" name="Exam_Region_Surcharge__c"
+                                                        checked disabled></lightning-input>
+                                                    <span class="regionname">{surchargeItem.RegionName}</span><br />
+                                                    <template if:true={surchargeItem.RegionShortDescription}>
+                                                        <span
+                                                            class="regiondesc">({surchargeItem.RegionShortDescription})</span>
+                                                    </template>
+                                                </td>
+                                                <td class="selectedregion">${surchargeItem.RegionSurcharge}</td>
+                                            </template>
+                                            <template if:false={surchargeItem.selectedRecordId}>
+                                                <td class="regionSurchargeSection">
+                                                    <lightning-input type="radio" value={surchargeItem.recordId}
+                                                        class="regionradio" label="" name="Exam_Region_Surcharge__c"
+                                                        onchange={handleRegionSurcharge}></lightning-input>
+                                                    <span class="regionname">{surchargeItem.RegionName}</span><br />
+                                                    <template if:true={surchargeItem.RegionShortDescription}>
+                                                        <span
+                                                            class="regiondesc">({surchargeItem.RegionShortDescription})</span>
+                                                    </template>
+                                                </td>
+                                                <td>${surchargeItem.RegionSurcharge}</td>
+                                            </template>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </template>
+            <template if:true={showTestCentersSection}>
+                <section>
+                    <div class="slds-col slds-p-top_small">
+                        <div class="slds-col slds-p-top_small slds-size_2-of-2">
+                            <span class="slds-text-title_bold">3. Test Centers</span>
+                        </div>
+                        <div class="slds-col slds-p-top_small slds-size_2-of-2">
+                            <span class="slds-text-body_regular">
+                                <c-g-display-content unique-content-value="Exam_Reg_Manage_Exam_Step_2_Test_Centers"></c-g-display-content>
+                            </span>
+                        </div>
+                    </div>
+                </section>
+            </template>
+            <template if:true={showDocDisabilitiesSection}>
+                <section>
+                    <div class="slds-col slds-p-top_small">
+                        <div class="slds-col slds-p-top_small slds-size_2-of-2">
+                            <h3 class="slds-text-title_bold">Examinees with Documented Disabilities</h3>
+                        </div>
+                        <div class="slds-col slds-p-top_small slds-size_2-of-2">
+                            <span class="slds-text-body_regular">Do you have a documented disability as defined by the
+                                Americans with Disabilities Act and intend to request test accommodations for
+                                {selectedExamType}?</span>
+                        </div>
+                        <div class="slds-grid slds-gutters testaccomsec">
+                            <div class="slds-col slds-p-top_small slds-size_1-of-2" style="width:12%; padding-right:0">
+                                <span class="required">*</span>
+                                <lightning-radio-group name="Test_Accommodations_needed__c"
+                                    class="documentedDisabilitySelectionInput" data-testaccoptions
+                                    variant="label-hidden" value={selectedTestAccomadation}
+                                    options={testAccomadationOptions} onchange={handleTestAccomadations} type="radio">
+                                </lightning-radio-group>
+                            </div>
+                            <div class="slds-col slds-p-top_small slds-size_1-of-2" style="width:85%; padding-right:0">
+                                <template if:true={showTestAccomadationText}>
+                                    <c-g-display-content unique-content-value="Exam_Reg_Manage_Exam_Documented_Disabilities"></c-g-display-content>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </template>
+        </div>
+        <div class="buttonAlignment">
+            <lightning-button variant="brand" label="Back" title="Back" onclick={prevButton}
+                class="slds-m-left_x-small"></lightning-button>
+            <template if:true={btnDisabled}>
+                <lightning-button variant="brand" label="Confirm" disabled title="Confirm" onclick={confirmButton}
+                    type="submit" class="slds-m-left_x-small next-btn"></lightning-button>
+            </template>
+            <template if:false={btnDisabled}>
+                <lightning-button variant="brand" label="Confirm" title="Confirm" onclick={confirmButton} type="submit"
+                    class="slds-m-left_x-small next-btn"></lightning-button>
+            </template>
+        </div>
+    </lightning-record-edit-form>
+</template>

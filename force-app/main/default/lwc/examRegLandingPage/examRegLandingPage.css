@@ -1,0 +1,39 @@
+.exam-top-header {
+    margin-right: 10%;
+}
+.exam-top-header > h2 {
+    font-size: 1.5em;
+    font-weight: 700;
+    margin: 20px 0;
+}
+.exam-top-header > p {
+    margin-bottom: 20px;
+}
+.exams-header {
+    color: #000;
+    line-height: 2em;
+}
+.exams-header > h2 {
+    font-size: 1.25em;
+    font-weight: 700;
+}
+.exam-details-header{
+    background-color: #cccccc;
+    line-height: 30px;
+}
+.btn-add-exam {
+    color: #000000;
+}
+.formMargin {
+    margin-right: 25%;
+}
+.edit-icon,
+.delete-icon {
+  display: inline-flex;
+  width: 35%;
+}
+
+.edit-icon > span,
+.delete-icon > span {
+    cursor: pointer;
+}

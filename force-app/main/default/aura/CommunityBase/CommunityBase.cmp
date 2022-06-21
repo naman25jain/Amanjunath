@@ -1,0 +1,13 @@
+<!--
+ - Created by Matthew on 12/4/18.
+ -->
+
+<aura:component description="Community Base" extensible="true" abstract="true" >
+
+    <aura:registerEvent name="notificationEvent" type="c:NotificationEvent" />
+
+    {!v.body}
+
+    <c:Notification />
+
+</aura:component>

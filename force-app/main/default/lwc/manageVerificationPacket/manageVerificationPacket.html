@@ -1,0 +1,18 @@
+<template>
+    <div class="marginSection">
+        <lightning-combobox label="Send Language" placeholder="English" options={sendLangOptions} value={sendLanguage} onchange={handleLangChange}></lightning-combobox>
+        <br/>        
+        <template if:false={showCheckboxFieldsVeriPacket}>
+        <lightning-input type="checkbox" value={reqEntity} label="Request the Entity provide the credential" checked={reqEntity} onchange={handleReqEntityChange}></lightning-input>
+        <br/>
+        <lightning-input type="checkbox" value={inclTrans} label="Include Translation" checked={inclTrans} onchange={handleInclTransChange}></lightning-input>
+        <br/>
+        </template>
+        <lightning-textarea label="Request additional information" value={addInfo} onchange={handleAddInfoChange}></lightning-textarea>
+        <br/>
+        <lightning-input type="Text" label=Entity value={entity} readonly></lightning-input>
+        <div class="buttonAlignment">
+            <lightning-button variant="brand" label="Next" title="Next" onclick={nextButton} class="slds-var-m-left_x-small"></lightning-button>
+        </div>
+    </div>
+</template>

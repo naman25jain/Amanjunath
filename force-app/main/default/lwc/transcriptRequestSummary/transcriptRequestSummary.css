@@ -1,0 +1,34 @@
+.padding {
+  padding-top: 20px;
+  margin-left: 5%;
+  margin-right: 5%;
+}
+
+.header {
+  font-size: 20px
+}
+
+.formMargin {
+  margin-left: 5%;
+  margin-right: 5%;
+  padding-top: 20px;
+}
+
+.inline-flex {
+  display: inline-flex;
+}
+
+.fieldName{
+  font-weight: bold;
+}
+.separatorborderbottom {
+  padding-top: 15px;
+  border-bottom: 2px solid #d4d4d4;
+  width: 100%;
+}
+
+.buttonAlignment {
+  padding: 2%;
+  text-align: center;
+  width: 100%;
+}

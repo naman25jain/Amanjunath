@@ -1,0 +1,67 @@
+<template>
+    <lightning-card>
+    <div class="slds-align_absolute-center"><h1><strong>Incomplete Affirmations</strong></h1></div>
+    <div class="formMargin">
+        <template if:true={spinner}>
+            <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+        </template>
+        <div>
+            <div class="slds-col slds-size_1-of-1 ">
+                <template for:each={incAffirmations} for:item="inc">
+                    <ul class="subAffirmation" key={inc}>
+                        <li>
+                            <lightning-formatted-rich-text value={inc}></lightning-formatted-rich-text>
+                        </li>
+                    </ul>
+                </template>
+            </div>  
+            <!--Alt. Grad. Document, Final Diploma; Final Transcript, Student Medical School Transcript, Pregrad Internship Certificat-->
+            <div class="slds-var-m-top_small slds-var-m-left_medium slds-var-m-bottom_small">
+                <div class="slds-text-body_small"><strong>Select one or more Incomplete reasons:</strong></div>
+                <template if:true={showFrstSect}>
+                    <lightning-input type="checkbox" label="Authorization" name="incAuth" class="IncReason" value={auth} checked={auth} onclick={handleCheckbox}></lightning-input>
+                    <lightning-input type="checkbox" label="Name Match" name="incNameMatch" class="IncReason" value={nameMatch} checked={nameMatch} onclick={handleCheckbox}></lightning-input>
+                    <lightning-input type="checkbox" label="Official Seal/Stamp is not a match" name="incSealNotMatch" class="IncReason" value={offSealNotMatch} checked={offSealNotMatch} onclick={handleCheckbox}></lightning-input>
+                    <lightning-input type="checkbox" label="Official Seal/Stamp Missing" name="incSealMissing" class="IncReason" value={offSealMiss} checked={offSealMiss} onclick={handleCheckbox}></lightning-input>
+                    <lightning-input type="checkbox" label="Signature Match" name="incSignMatch" class="IncReason" value={signMatch} checked={signMatch} onclick={handleCheckbox}></lightning-input>
+                    <lightning-input type="checkbox" label="Title Match" name="incTitleMatch" class="IncReason" value={titleMatch} checked={titleMatch} onclick={handleCheckbox}></lightning-input>
+                </template>
+                <!--All credentials-->
+                <lightning-input type="checkbox" label="Completion - Verification form" id="incVerform" name="incVerform" class="IncReason" value={compVerForm} checked={compVerForm} onclick={handleCheckbox}></lightning-input>
+                <lightning-input type="checkbox" label="Credential" id="incCredential" name="incCredential" class="IncReason" value={cred} checked={cred} onclick={handleCheckbox}></lightning-input>
+                <lightning-input type="checkbox" label="Envelope" name="incEnvelope" class="IncReason" value={envelope} checked={envelope} onclick={handleCheckbox}></lightning-input>
+                <lightning-input type="checkbox" label="Name Missing" name="incNameMiss" class="IncReason" value={nameMissing} checked={nameMissing} onclick={handleCheckbox}></lightning-input>
+                <lightning-input type="checkbox" label="Response" name="incResponse" class="IncReason" value={response} checked={response} onclick={handleCheckbox}></lightning-input>
+                <lightning-input type="checkbox" label="Return" name="incReturn" class="IncReason" value={returnReason} checked={returnReason} onclick={handleCheckbox}></lightning-input>
+                <lightning-input type="checkbox" label="Signature Missing" name="incSignMiss" class="IncReason" value={signMissing} checked={signMissing} onclick={handleCheckbox}></lightning-input>
+                <lightning-input type="checkbox" label="Title Missing" name="incTitleMiss" class="IncReason" value={titleMissing} checked={titleMissing} onclick={handleCheckbox}></lightning-input>
+                <lightning-input type="checkbox" label="Verification" name="incVerification" class="IncReason" value={verif} checked={verif} onclick={handleCheckbox}></lightning-input>
+                <lightning-input type="checkbox" label="Other" name="incOther" class="IncReasonOther" value={otherReason} checked={otherReason} onclick={handleCheckbox}></lightning-input>
+                <!--Medical education form cred type-->
+                <template if:true={showMedForm}>
+                    <lightning-input type="checkbox" label="Completion - Med Ed Form" name="incMedform" class="IncReason" value={compMedform} checked={compMedform} onclick={handleCheckbox}></lightning-input>
+                </template>
+                <!--Final Transcript cred type-->
+                <template if:true={showfinalTr}>
+                    <lightning-input type="checkbox" label="Grades" name="incGrade" class="IncReason" value={grade} checked={grade} onclick={handleCheckbox}></lightning-input>
+                    <lightning-input type="checkbox" label="Transcript" name="incTrans" class="IncReason" value={transcript} checked={transcript} onclick={handleCheckbox}></lightning-input>
+                    <lightning-input type="checkbox" label="Transcript Seal" name="incTransSeal" class="IncReason" value={transSeal} checked={transSeal} onclick={handleCheckbox}></lightning-input>
+                </template>
+                <lightning-textarea label="Additional Comments" value={comments} onchange={handletextbox}></lightning-textarea>
+                <template if:true={showErrorMsg}>
+                    <div>
+                        <lightning-layout-item  size="12">
+                            <span class="errormsg">Please add your comments</span>
+                        </lightning-layout-item>
+                    </div>
+                </template>
+                <p><lightning-formatted-text  value="Please note that any further editing is not possible. Click the Finish button to complete the affirmation process."></lightning-formatted-text></p>
+                <div class="buttonAlignment">
+                    <lightning-button label="Back" title="Back" onclick={handleBackEvent} class="slds-var-m-left_x-small"></lightning-button>
+                    <lightning-button variant="brand" label="Finish" title="Finish" onclick={handleNextEvent} type="submit" class="slds-var-m-left_x-small"></lightning-button>
+                </div>
+            </div>
+        </div>
+    </div>
+</lightning-card>
+</template>

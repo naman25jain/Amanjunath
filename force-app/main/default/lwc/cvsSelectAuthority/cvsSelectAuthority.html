@@ -1,0 +1,150 @@
+<template>
+    <div class="formMargin">
+        <template if:true={spinner}>
+            <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+        </template>
+        <template if:true={showAuthSelectionScreen}>
+            <div class="padding">
+                <c-g-display-content unique-content-value="CVS_Select_Authority_Screen_Text_1"></c-g-display-content>
+            </div>
+            <br /><br />
+            <div class="slds-col slds-size_1-of-1">
+                <lightning-combobox class= "entityCountryResidence" label="Country" placeholder="United States" options={countryOptions}
+                    onchange={handleChangeCountryValue} value={countryName} required="true"></lightning-combobox>
+                <template if:true={enableState}>
+                    <lightning-combobox class= "entityStateResidence" label="State/Province" placeholder="-Select-" options={stateOptions}
+                    onchange={onStateNameChange} value={stateName}></lightning-combobox>
+                </template>
+            </div>
+            <br /><br />
+            <template if:true={showSearchAuthority}>
+                <div class="slds-col slds-size_1-of-1">
+                    <div class="header">
+                        <span class="required">*</span>
+                        Please select the State Board/Medical Licensing authority
+                    </div>
+                    <div class="padding">
+                        Start typing to add a new Entity...
+                    </div>
+                    <div class="slds-form-element">
+                        <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left-right">
+                            <svg class="customAccountIcon slds-icon_container slds-icon-standard-account slds-icon slds-input__icon slds-input__icon_left slds-icon-text-default"
+                                aria-hidden="true">
+                                <use xlink:href="/_slds/icons/standard-sprite/svg/symbols.svg#account">
+                                </use>
+                            </svg>
+                            <lightning-input class="accountName" name="accountName"
+                                onchange={handleChangeForAuthSearch} variant="label-hidden"
+                                placeholder="Search by entity name..." value={selectedAuthorityName}>
+                            </lightning-input>
+                            <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right"
+                                title="Clear">
+                                <svg class="slds-button__icon slds-icon-text-light" aria-hidden="true">
+                                    <use xlink:href="/_slds/icons/utility-sprite/svg/symbols.svg#search">
+                                    </use>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-col slds-size_1-of-1">
+                    <template if:true={authRecordsList}>
+                        <template for:each={authRecordsList} for:item="record">
+                            <c-epic-org-selection-screen-record-list key={record.Id} record={record}
+                                onselect={handleAuthSelect} iconname={iconname} fieldname={searchfield}>
+                            </c-epic-org-selection-screen-record-list>
+                        </template>
+                    </template>
+                </div>
+            </template>
+            <template if:true={selectedAuthRecord}>
+                <br/><br/>
+                <div class="slds-col slds-size_1-of-1">
+                    <div class="header">
+                        Name of Medical Licensing authority:
+                        <br/><br/>
+                        <div class="padding">
+                            You may add only 1 authority.
+                        </div>
+                    </div>
+                    <div class="slds-box">
+                        <lightning-card>
+                            <h3 slot="title" class="slds-text-heading_small slds-truncate">
+                                {selectedAuthRec.Name}
+                            </h3>
+                            <template if:false={hideDeleteButton}>
+                                <span class="slds-no-flex" slot= "actions">
+                                    <lightning-button-icon class="slds-button slds-button_icon slds-button_icon-border" icon-name="utility:delete" variant="border" onclick={handleDeleteOnClick} alternative-text="Delete" title="Delete"></lightning-button-icon>
+                                </span>
+                            </template>
+                            <div class="slds-grid slds-gutters slds-wrap">
+                                <div class="slds-col">
+                                    <p class="slds-p-horizontal_small slds-p-bottom_small">
+                                        <lightning-formatted-address
+                                            street={selectedAuthRec.BillingStreet}
+                                            city={selectedAuthRec.BillingCity}
+                                            province={selectedAuthRec.BillingState}
+                                            country={selectedAuthRec.BillingCountry}
+                                            postal-code={selectedAuthRec.BillingPostalCode}
+                                            disabled
+                                        ></lightning-formatted-address>
+                                    </p>
+                                </div>
+                            </div>
+                            <div slot="footer">
+                                <span class="slds-m-left">Entity</span>
+                            </div>
+                        </lightning-card>
+                    </div>
+                </div>
+            </template> 
+            <c-modal-component class="addAuthScreenModal" title={modalTitle} message={modalContent} show-primary-button="true"
+                primary-button-text="Add" onprimarybuttonclick={handleAuthYesClick} show-secondary-button="true"
+                secondary-button-text="Cancel" onclosedialog={handleAuthCancelClick}>
+                <slot>
+                    <span>Verify the entity name and address below.</span></br></br>
+                    <span class="selectedAuthRec">{selectedAuthRec.Name}</span></br>
+                    <lightning-formatted-address street={selectedAuthRec.BillingStreet} city={selectedAuthRec.BillingCity}
+                        province={selectedAuthRec.BillingState} country={selectedAuthRec.BillingCountry}
+                        postal-code={selectedAuthRec.BillingPostalCode} disabled></lightning-formatted-address>
+                </slot>
+            </c-modal-component>
+            <br /><br />
+            <div class="slds-col slds-size_1-of-1">
+                <template if:true={showDefaultChecked}>
+                    <lightning-input type="checkbox" label="Yes, send a paper copy of this report" checked disabled="disabled" readonly></lightning-input>
+                </template>
+                <template if:true={showDefaultUnChecked}>
+                    <lightning-input type="checkbox" label="Yes, send a paper copy of this report" disabled="disabled" readonly></lightning-input>
+                </template>
+                <template if:false={showDefaultEditable}>
+                    <lightning-input type="checkbox" label="Yes, send a paper copy of this report" onchange={handleSendCopyChange} value={sendPaperCopy}></lightning-input>
+                </template>
+            </div>
+            <br /><br />
+            <lightning-input label="Attention To" value={attentionToValue} onchange={onAttentionToChange}></lightning-input>
+            <br /><br />
+            <div class="padding">
+                <c-g-display-content unique-content-value="CVS_Select_Authority_Screen_Text_2"></c-g-display-content>
+            </div>
+            <br /><br />
+            <template if:true={hasRestriction}>
+                <b>
+                <div style="color:red;text-align:center">
+                    <c-g-display-content unique-content-value="CVS-Select-Duplicate"></c-g-display-content>
+                </div>
+                </b>
+            </template>
+            <div class="buttonAlignment">
+                <lightning-button variant="brand" label="Previous" title="Previous" onclick={handlePrevious} class="slds-m-left_x-small"></lightning-button>
+                <lightning-button variant="brand" label="Cancel" title="Cancel" onclick={handleClose} class="slds-m-left_x-small"></lightning-button>
+                <template if:true={enableNext}>
+                    <lightning-button variant="brand" label="Next" title="Next" onclick={handleNext} class="slds-m-left_x-small"></lightning-button>
+                </template>
+            </div>
+        </template>
+        <template if:true={showCvsNewRequestScreen}>
+            <c-cvs-requests show-details={showCvsNewRequestScreen}></c-cvs-requests>
+        </template>
+    </div>
+</template>

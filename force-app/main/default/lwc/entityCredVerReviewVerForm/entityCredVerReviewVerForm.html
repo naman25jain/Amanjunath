@@ -1,0 +1,39 @@
+<template>
+    <template if:true={spinner}>
+        <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+    </template>
+    <div class="formMargin">
+        <template if:true={showVerForm}>
+            <div class="slds-col slds-size_1-of-1 slds-border_bottom slds-var-p-top_large">
+                <h3 class="gridHeader">ECFMG Verification Form</h3>
+            </div>
+            <div class="slds-grid slds-wrap">
+                <div class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                    <span>ECFMG Verification Form</span>
+                </div>
+                <div class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                    <template if:true={showThumbnail}>
+                        <div>                              
+                            <c-cloud-document-upload-wrapper class="cloudDocumentUpload"
+                                pay-load={finalPayload}
+                                max-allowed-file-size=10
+                                accepted-file-formats=".jpeg,.jpg,.tiff,.pdf"
+                                enable-annotation="false" enable-redaction="false"
+                                hide-upload="true" 
+                                azure-doc-url={azureDocUrl}>                                
+                            </c-cloud-document-upload-wrapper>
+                        </div>
+                    </template>
+                </div>
+                <div class="slds-var-p-top_large pad btnAling">
+                    <lightning-button variant="brand" label="Return to Credential Review List" title="Return to Credential Review List" class="slds-var-m-left_x-small" onclick={showCredRevLandPage}>
+                    </lightning-button>
+                    <lightning-button variant="brand" label="Back" title="Back" class="slds-var-m-left_x-small" onclick={showCredRevPrevPage}>
+                    </lightning-button>
+                    <lightning-button variant="brand" label="Next" title="Next" class="slds-var-m-left_x-small" onclick={showCredRevNextPage}>
+                    </lightning-button>
+                </div>
+            </div>
+        </template>
+    </div>  
+</template>

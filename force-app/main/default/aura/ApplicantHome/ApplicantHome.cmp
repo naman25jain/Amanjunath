@@ -1,0 +1,134 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" 
+                access="global" 
+                controller="CommunityIdentityVerificationController">
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+	<aura:attribute name="recordId" type="Id"/>
+    <aura:attribute name="showContactInfo" type="Boolean" default="false"/>
+    <aura:attribute name="contactEcfmgId" type="String" default=""/>
+    <aura:attribute name="contactRecordType" type="String" default=""/>
+	<aura:attribute name="epicStatus" type="String" default=""/>
+	<aura:attribute name="certStatus" type="String" default=""/>
+	<aura:attribute name="gemxStatus" type="String" default=""/>
+	<aura:attribute name="j1Status" type="String" default=""/>
+	<aura:attribute name="j1RecordType" type="String" default=""/>
+    <aura:attribute name="j1InvitationRecordType" type="String" default=""/>
+    <aura:attribute name="j1InvitationStatus" type="String" default=""/>
+	<aura:attribute name="epicPayment" type="Boolean" default="false"/>
+	<aura:attribute name="certPayment" type="Boolean" default="false"/>
+	<aura:attribute name="gemxPayment" type="Boolean" default="false"/>
+	<aura:attribute name="j1Payment" type="Boolean" default="false"/>
+	<aura:attribute name="cases" type="Object[]"/>
+	<aura:attribute name="accountStatus" type="String"/>
+	<aura:attribute name="completedIdentityVerification" type="Boolean" default="false" />
+	<aura:attribute name="displayLabel" type="String" />
+	<aura:attribute name="runningUser" type="String" />
+	<aura:attribute name="privacyText" type="String" />
+	<aura:attribute name="identityCheck" type="Boolean" default="false" />
+	<aura:attribute name="privacyAgreementAccepted" type="Boolean" default="false" />
+	<aura:attribute name="showModal" type="Boolean" />
+	<aura:attribute name="privacyAgreementName" type="String"/>
+	<aura:attribute name="restrictionOnContact" type="Boolean" default="false"/>
+	<div aura:id="componentDiv">
+
+<!--
+        <h1>Progress Bar j1Status Status: {!v.j1Status}</h1>
+        <h1>Progress Bar certStatus Status: {!v.certStatus}</h1>
+        <h1>Progress Bar epicStatus Status: {!v.epicStatus}</h1>
+        <h1>Progress Bar gemxStatus Status: {!v.gemxStatus}</h1>
+-->
+
+        <aura:if isTrue="{!v.showContactInfo}">
+            <h3>ECFMG ID: {!v.contactEcfmgId}</h3>
+        </aura:if>
+
+		<aura:if isTrue="{!!v.privacyAgreementAccepted}">
+				<div>
+				<lightning:formattedRichText  value="{!v.privacyText}" /><br/>
+				<lightning:button class="bluebutton" variant="brand" label="Accept" title="Brand action" onclick="{!c.acceptPrivacy}" /><br/><br/>
+				</div>
+				<aura:set attribute="else">
+					<p class="welcomeText"><c:gDisplayContent uniqueContentValue="welcomeText"></c:gDisplayContent></p>
+					<div>
+						<h2 class="sectionHeading">EPIC</h2>
+							<c:gDisplayContent  uniqueContentValue='contentUnderEPIChead'></c:gDisplayContent>
+						<aura:if isTrue="{!and(and(and(!v.epicStatus.length > 0, v.certStatus != 'Accepted'), v.gemxStatus != 'Accepted'), v.j1Status != 'Accepted')}">
+							<div style="float: left"><span>
+								<center><lightning:button class="{!or(or(or(or(v.epicPayment, v.gemxPayment), v.certPayment), v.j1Payment), v.j1Status.length > 0) ? 'widebuttondisabled' : 'widebuttongreen'}" variant="brand" label="{!or(or(or(or(v.epicPayment, v.gemxPayment), v.certPayment), v.j1Payment), v.j1Status.length > 0) ? 'Cannot Begin Application Pending Account Establishment' : 'Begin Application'}" title="Brand action" disabled="{!or(or(or(or(v.epicPayment, v.gemxPayment), v.certPayment), v.j1Payment), v.j1Status.length > 0)}" onclick="{!c.EPICLink}" /></center>
+							</span></div><br/><br/><br/>
+						</aura:if>
+						<aura:if isTrue="{!or(or(v.certStatus == 'Accepted', v.gemxStatus == 'Accepted'), v.j1Status == 'Accepted')}">
+							<div style="float: left"><span>
+								<center><lightning:button class="{!or(or(or(or(v.epicPayment, v.gemxPayment), v.certPayment), v.j1Payment), v.j1Status.length > 0) ? 'widebuttondisabled' : 'widebuttongreen'}" variant="brand" label="{!or(or(or(or(v.epicPayment, v.gemxPayment), v.certPayment), v.j1Payment), v.j1Status.length > 0) ? 'Cannot Begin Application Pending Account Establishment' : 'Initiate Service'}" title="{!or(or(or(or(v.epicPayment, v.gemxPayment), v.certPayment), v.j1Payment), v.j1Status.length > 0) ? 'Cannot Begin Application Pending Account Establishment' : 'Initiate Service'}" disabled="{!or(or(or(or(v.epicPayment, v.gemxPayment), v.certPayment), v.j1Payment), v.j1Status.length > 0)}" onclick="{!c.EPICLink}" /></center>
+							</span></div><br/><br/><br/>
+							<aura:set attribute="else">
+                                <!--<aura:if isTrue="{!v.epicStatus != 'New'}">-->
+								    <div><c:ProgressIndicator caseRecordType="Identity Verification" headingLabel="EPIC" caseService="EPIC" /></div>
+                                <!--</aura:if>-->
+							</aura:set>
+						</aura:if>
+					</div>
+					<br/><br/><br/>
+					<div>
+						<h2 class="sectionHeading">ECFMG Certification</h2>
+						<c:gDisplayContent uniqueContentValue="contentUnderECFMG"></c:gDisplayContent>
+						<aura:if isTrue="{!and(and(and(!v.certStatus.length > 0, v.epicStatus != 'Accepted'), v.gemxStatus != 'Accepted'), v.j1Status != 'Accepted')}">
+							<div style="float: left"><span>
+								<center><lightning:button class="{!or(or(or(or(v.epicPayment, v.gemxPayment), v.certPayment), v.j1Payment), v.j1Status.length > 0) ? 'widebuttondisabled' : 'widebuttongreen'}" variant="brand" label="{!or(or(or(or(v.epicPayment, v.gemxPayment), v.certPayment), v.j1Payment), v.j1Status.length > 0) ? 'Cannot Begin Application Pending Account Establishment' : 'Begin Application'}" disabled="{!or(or(or(or(v.epicPayment, v.gemxPayment), v.certPayment), v.j1Payment), v.j1Status.length > 0)}" title="Brand action" onclick="{!c.CERTLink}" /></center>
+							</span></div><br/><br/><br/>
+						</aura:if>
+						<aura:if  isTrue="{!or(or(v.epicStatus == 'Accepted', v.gemxStatus == 'Accepted'), v.j1Status == 'Accepted')}">
+							<div style="float: left"><span>
+								<center><lightning:button class="{!or(or(or(or(v.epicPayment, v.gemxPayment), v.certPayment), v.j1Payment), v.j1Status.length > 0) ? 'widebuttondisabled' : 'widebuttongreen'}" variant="brand" label="{!or(or(or(or(v.epicPayment, v.gemxPayment), v.certPayment), v.j1Payment), v.j1Status.length > 0) ? 'Cannot Begin Application Pending Account Establishment' : 'Initiate Service'}" disabled="{!or(or(or(or(v.epicPayment, v.gemxPayment), v.certPayment), v.j1Payment), v.j1Status.length > 0)}" title="Brand action" onclick="{!c.CERTLink}" /></center>
+							</span></div><br/><br/><br/>
+							<aura:set attribute="else">
+                                <!--<aura:if isTrue="{!v.certStatus != 'New'}">-->
+								    <div><c:ProgressIndicator caseRecordType="Identity Verification" headingLabel="ECFMG Identity Verification" caseService="ECFMG_Certification" /></div>
+                                <!--</aura:if>-->
+							</aura:set>
+						</aura:if>
+					</div>
+					<br/><br/><br/>
+					<div>
+						<h2 class="sectionHeading">GEMx</h2>
+							<c:gDisplayContent uniqueContentValue="contentUnderGEMx"></c:gDisplayContent> 
+						<aura:if isTrue="{!and(and(and(!v.gemxStatus.length > 0, v.certStatus != 'Accepted'), v.epicStatus != 'Accepted'), v.j1Status != 'Accepted')}">
+							<div style="float: left"><span>
+									<center><lightning:button class="{!or(or(or(or(v.epicPayment, v.gemxPayment), v.certPayment), v.j1Payment), v.j1Status.length > 0) ? 'widebuttondisabled' : 'widebuttongreen'}" variant="brand" label="{!or(or(or(or(v.epicPayment, v.gemxPayment), v.certPayment), v.j1Payment), v.j1Status.length > 0) ? 'Cannot Begin Application Pending Account Establishment' : 'Begin Application'}" title="Brand action" disabled="{!or(or(or(or(v.epicPayment, v.gemxPayment), v.certPayment), v.j1Payment), v.j1Status.length > 0)}" onclick="{!c.GEMxLink}" /></center>
+							</span></div><br/><br/><br/>
+						</aura:if>
+						<aura:if  isTrue="{!or(or(v.epicStatus == 'Accepted', v.certStatus == 'Accepted'), v.j1Status == 'Accepted')}">
+							<div style="float: left"><span>
+									<center><lightning:button class="{!or(or(or(or(v.epicPayment, v.gemxPayment), v.certPayment), v.j1Payment), v.j1Status.length > 0) ? 'widebuttondisabled' : 'widebuttongreen'}" variant="brand" label="{!or(or(or(or(v.epicPayment, v.gemxPayment), v.certPayment), v.j1Payment), v.j1Status.length > 0) ? 'Cannot Begin Application Pending Account Establishment' : 'Initiate Service'}" title="Brand action" disabled="{!or(or(or(or(v.epicPayment, v.gemxPayment), v.certPayment), v.j1Payment), v.j1Status.length > 0)}" onclick="{!c.GEMxLink}" /></center>
+							</span></div><br/><br/><br/>
+							<aura:set attribute="else">
+                                <!--<aura:if isTrue="{!v.gemxStatus != 'New'}">-->
+								    <div><c:ProgressIndicator caseRecordType="Identity Verification" headingLabel="GEMx" caseService="GEMx" /></div>
+                                <!--</aura:if>-->
+							</aura:set>
+						</aura:if>
+					</div>
+					<br/><br/><br/>
+					<div>
+<!--                        <h1>Case A: {!v.j1RecordType}</h1>
+                        <h1>Case A: {!v.j1Status}</h1>
+                        <h1>Case B: {!v.j1InvitationRecordType}</h1>
+                        <h1>Case B: {!v.j1InvitationStatus}</h1>-->
+						<aura:if isTrue="{!or(v.j1Status.length > 0, v.j1InvitationStatus.length > 0)}">
+                            <h2 class="sectionHeading">J1 Visa Sponsorship Application</h2>
+									<p><c:gDisplayContent uniqueContentValue="contentUnderJ1Inv"></c:gDisplayContent></p>
+						</aura:if>
+						<aura:if isTrue="{!and(v.j1InvitationStatus == 'New', v.j1InvitationRecordType == 'J1 Invitation')}">
+							<div style="float: left"><span>
+								<center><lightning:button class="widebuttongreen" variant="brand" label="Begin Application" title="Brand action" onclick="{!c.J1Link}" /></center>
+							</span></div><br/><br/><br/>
+						</aura:if>
+                        <aura:if isTrue="{!v.j1RecordType == 'Identity Verification'}">
+
+							    <div><c:ProgressIndicator caseRecordType="Identity Verification" headingLabel="J1" caseService="J1" /></div>
+
+						 </aura:if>
+					</div>
+				</aura:set>
+		</aura:if>
+	</div>
+</aura:component>

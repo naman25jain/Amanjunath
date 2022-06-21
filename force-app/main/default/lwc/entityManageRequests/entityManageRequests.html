@@ -1,0 +1,9 @@
+<template>
+    <template if:true={showListView}>
+        <c-entity-case-manage-request current-entity={currentEntity} onnextevent={showManageRequestPage}></c-entity-case-manage-request>
+    </template>
+    <template if:false={showListView}>
+        <c-entity-contact-manage-request onbackevent={showManageRequestList} onsubmitevent={showManageRequestList} selected-case-id={caseDetailId}>
+        </c-entity-contact-manage-request>
+    </template>
+</template>

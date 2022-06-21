@@ -1,0 +1,28 @@
+<aura:component implements="force:lightningQuickActionWithoutHeader,force:hasRecordId">
+    <aura:attribute type="Account2Service__c" name="currentRec"></aura:attribute>
+    <force:recordData aura:id="forceRecordCmp" recordId="{!v.recordId}" fields="Active__c" targetFields="{!v.currentRec}"/>
+    <aura:if isTrue="{!v.currentRec.Active__c == false}">
+       <!--Modal Header-->  
+    <div class="modal-header slds-modal__header slds-size_1-of-1">
+        <h4 class="title slds-text-heading_medium">Error</h4>
+    </div>
+    <!--End Modal Header-->  
+     
+    <!--Modal Body-->   
+    <div class="slds-modal__content slds-var-p-around_x-small slds-align_absolute-center slds-size_1-of-1 slds-is-relative">
+        <form class="slds-form--stacked">
+            The Service is already deactivated.
+        </form> 
+    </div>
+    <!--End of Modal Body--> 
+     
+    <!--Modal Footer-->
+    <div class="modal-footer slds-modal__footer slds-size_1-of-1">
+        <lightning:button variant="Neutral" class="slds-button" label="Close" onclick="{!c.closeQA}"/>
+    </div>
+    <!--End of Modal Footer-->
+    </aura:if>
+    <aura:if isTrue="{!v.currentRec.Active__c == true}">
+       <c:deactivateServiceLWC recordId="{!v.recordId}" onclose="{!c.closeQA}"/>
+    </aura:if>
+</aura:component>

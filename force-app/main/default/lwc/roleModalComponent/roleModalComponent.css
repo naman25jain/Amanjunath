@@ -1,0 +1,15 @@
+.modal-hidden {
+    display: none;
+}
+.buttonalignment{
+	padding-top: 5%;	
+}
+.modalPicklist{
+	padding-left: 30%;
+    padding-right: 30%;
+}
+.errormsg{
+    color:#ff0000;
+    font-size: 13px;
+    font-weight: bold;
+  }

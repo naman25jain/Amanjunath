@@ -1,0 +1,32 @@
+.formMargin{
+    padding-top:20px;
+    margin-left: 18%;
+    margin-right: 22%;
+}
+.required{
+    color: red;
+}
+.errormsg{
+    color:#ff0000;
+    font-size:13px;
+}
+.header{
+    font-weight: bold;
+    font-size: 16px;
+}
+.btnAlignment{
+    padding-top:10px;
+    margin-left: 35%;
+}
+.chckBoxPadding{
+    padding-left:15%;
+}
+.tableFieldPadding{
+    padding-right:5%;
+}
+.tableHeader{
+    font-weight: bold;
+}
+.msgPadding{
+    padding-left:25%;
+}

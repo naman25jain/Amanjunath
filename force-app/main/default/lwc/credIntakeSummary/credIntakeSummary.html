@@ -1,0 +1,176 @@
+<template>
+    <div class="formMargin">  
+        <template if:true={spinner}>
+            <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+        </template>
+        <template  if:true={showButtonsAndSummary}>
+            <div class="formMargin slds-p-top--large">
+                <div class="cred-header">
+                    <h1>Summary</h1>
+                </div>
+            </div>
+        </template>
+        <template for:each={showAllRecords} for:item="eachCatRecord">
+                <label class="slds-text-heading_small" key={eachCatRecord.key.Id} for={eachCatRecord.key.Id}>
+                    {eachCatRecord.key.Credential_Type__c}
+                </label>  
+            <div key={eachCatRecord.key} class="slds-wrap">
+                <div class="slds-form-element">
+                    <lightning-record-view-form record-id={eachCatRecord.key.Id} object-api-name="Contact_Association_Type_Staging__c" mode="readonly"> 
+                        <template for:each={eachCatRecord.value} for:item="fieldName"> 
+                            <div key={fieldName}  class="slds-form-element_horizontal slds-form-element_2-col">
+                                <lightning-output-field field-name={fieldName}></lightning-output-field>  
+                            </div>
+                        </template>
+                        <div key={eachCatRecord.key.Id}  class="slds-form-element_horizontal slds-form-element_2-col">
+                            <span lightning-outputfield_outputfield="" class="slds-form-element__label">Verifying Entity</span>
+                            <div lightning-outputfield_outputfield="" class="slds-form-element__control ">
+                                {eachCatRecord.key.Account_Name__c}
+                            </div>
+                        </div>
+                        <template for:each={eachCatRecord.key.EPIC_Verification_Reports__r} for:item="eachEpicVerReport">
+                            <template if:false={eachEpicVerReport.Regulatory_Org_Do_Not_Know__c}>
+                                <span key={eachEpicVerReport.Authority__c}  class="slds-form-element_horizontal slds-form-element_2-col">
+                                    <span lightning-outputfield_outputfield="" class="slds-form-element__label">Organization for Epic Verification Report</span>
+                                    <div lightning-outputfield_outputfield="" class="slds-form-element__control ">
+                                        {eachEpicVerReport.Authority__r.Name}
+                                    </div>   
+                                </span>
+                            </template>
+                        </template>
+                        <br/>
+                        <template if:true={eachCatRecord.key.Requested_to_be_sent_to_ECFMG__c} >
+                            <div key={eachCatRecord.key.Requested_to_be_sent_to_ECFMG__c}  class="slds-form-element_horizontal slds-form-element_2-col">
+                                <span lightning-outputfield_outputfield="" class="slds-form-element__label">I have requested this authority to send a Certificate of Good Standing directly to ECFMG</span>
+                                <div class="slds-form-element__control ">
+                                    {requestedToSend}
+                                </div> 
+                            </div> 
+                            <br/>&nbsp;                          
+                        </template>                        
+                        <template if:false={eachCatRecord.key.Requested_to_be_sent_to_ECFMG__c}>
+                            <template if:true={eachCatRecord.key.Issued_in_the_last_90_days__c}>
+                                <div key={eachCatRecord.key.Issued_in_the_last_90_days__c}  class="slds-form-element_horizontal slds-form-element_2-col">
+                                    <span lightning-outputfield_outputfield="" class="slds-form-element__label">I have a Certificate of Good Standing issued in the last 90 days</span>
+                                    <div  class="slds-form-element__control ">
+                                        {issuedIn90Days}
+                                    </div> 
+                                </div>
+                                <br/>&nbsp;
+                            </template>
+                            <template for:each={eachCatRecord.key.Assets__r} for:item="eachAsset">
+                                <template if:true={eachAsset.mainDocCond}>
+                                    <div key={eachAsset.Id}  class="slds-form-element_horizontal slds-form-element_2-col">
+                                        <span lightning-outputfield_outputfield="" class="slds-form-element__label">{eachAsset.Type__c}</span>
+                                        <div  class="slds-form-element__control ">
+                                            <c-cloud-document-upload-wrapper
+                                                    show-cred-summ-screen={showCredSummScreen}
+                                                    class="cloudDocumentUpload"
+                                                    pay-load={eachAsset.mainDocPayload}
+                                                    max-allowed-file-size={maxsize}
+                                                    accepted-file-formats=".jpeg,.jpg,.tiff,.pdf"
+                                                    enable-annotation="false" enable-redaction="false"
+                                                    asset-type={eachAsset.Type__c} hide-upload="true">
+                                                </c-cloud-document-upload-wrapper>
+                                        </div> 
+                                    </div>
+                                    <div key={eachAsset.Id}  class="slds-form-element_horizontal slds-form-element_2-col">
+                                        <span lightning-outputfield_outputfield="" class="slds-form-element__label">Name on Document</span>
+                                        <div lightning-outputfield_outputfield="" class="slds-form-element__control ">
+                                            {eachAsset.Name_on_Document__c}
+                                        </div> 
+                                    </div>
+                                    <template if:false={eachAsset.Name_on_Document_is_Different__c}>
+                                        <div key={eachAsset.Id}  class="slds-form-element_horizontal slds-form-element_2-col">
+                                            <span lightning-outputfield_outputfield="" class="slds-form-element__label">Is Name on the Document different?</span>
+                                            <div lightning-outputfield_outputfield="" class="slds-form-element__control ">
+                                                No 
+                                            </div> 
+                                            <br /> 
+                                        </div>                                         
+                                    </template>
+                                    <template if:true={eachAsset.Name_on_Document_is_Different__c}> 
+                                        <template if:true={eachCatRecord.key.nameOnDocDiffWithoutUpload}>
+                                            <div key={eachAsset.Id}  class="slds-form-element_horizontal slds-form-element_2-col">
+                                                <span lightning-outputfield_outputfield="" class="slds-form-element__label">Is Name on the Document different?</span>
+                                                <div lightning-outputfield_outputfield="" class="slds-form-element__control ">
+                                                    Yes
+                                                </div> 
+                                                <br/>
+                                            </div>                                             
+                                        </template>
+                                    </template>                                    
+                                    <template if:false={eachAsset.Document_is_not_in_English__c}>
+                                        <div key={eachAsset.Id}  class="slds-form-element_horizontal slds-form-element_2-col">
+                                            <span lightning-outputfield_outputfield="" class="slds-form-element__label">Is your Document in a language other than English?</span>
+                                            <div lightning-outputfield_outputfield="" class="slds-form-element__control ">
+                                                No
+                                            </div> 
+                                            <br/>
+                                        </div>
+                                    </template>
+                                </template>                                  
+                                <template if:true={eachAsset.mainDocNameCond}>
+                                    <div key={eachAsset.Id}  class="slds-form-element_horizontal slds-form-element_2-col">
+                                        <span lightning-outputfield_outputfield="" class="slds-form-element__label">Is Name on the Document different?</span>
+                                        <div lightning-outputfield_outputfield="" class="slds-form-element__control ">
+                                            Yes
+                                        </div> 
+                                        <br/>
+                                    </div> 
+                                    <div key={eachAsset.Id}  class="slds-form-element_horizontal slds-form-element_2-col">
+                                        <span lightning-outputfield_outputfield="" class="slds-form-element__label">Name Documentation</span>
+                                        <div  class="slds-form-element__control ">                                            
+                                            <c-cloud-document-upload-wrapper show-cred-summ-screen={showCredSummScreen}
+                                                class="cloudDocumentUpload"
+                                                pay-load={eachAsset.nameDocPayload}
+                                                max-allowed-file-size={maxsize}
+                                                accepted-file-formats=".jpeg,.jpg,.tiff,.pdf"
+                                                enable-annotation="false" enable-redaction="false"
+                                                asset-type="Name Document" hide-upload="true">
+                                            </c-cloud-document-upload-wrapper>
+                                        </div> 
+                                        <br/>
+                                    </div>                                       
+                                </template>
+                                <template if:true={eachAsset.mainDocTransCond}>
+                                    <div key={eachAsset.Id}  class="slds-form-element_horizontal slds-form-element_2-col">
+                                        <span lightning-outputfield_outputfield="" class="slds-form-element__label">Is your Document in a language other than English?</span>
+                                        <div lightning-outputfield_outputfield="" class="slds-form-element__control ">
+                                            Yes
+                                        </div> 
+                                        <br/>
+                                    </div> 
+                                    <div key={eachAsset.Id}  class="slds-form-element_horizontal slds-form-element_2-col">
+                                        <span lightning-outputfield_outputfield="" class="slds-form-element__label">Translation</span>
+                                        <div  class="slds-form-element__control ">
+                                            <c-cloud-document-upload-wrapper show-cred-summ-screen={showCredSummScreen}
+                                                class="cloudDocumentUpload"
+                                                pay-load={eachAsset.transDocPayload}
+                                                max-allowed-file-size={maxsize}
+                                                accepted-file-formats=".jpeg,.jpg,.tiff,.pdf"
+                                                enable-annotation="false" enable-redaction="false"
+                                                asset-type={eachAsset.Type__c} hide-upload="true">
+                                            </c-cloud-document-upload-wrapper>
+                                        </div> 
+                                    </div> 
+                                </template>
+                            </template>
+                        </template> 
+                    </lightning-record-view-form>
+                </div>
+            </div>          
+        </template>
+    </div>
+    <br/><br/>
+    <template  if:true={showButtonsAndSummary}>
+        <div class="slds-p-top--large pad">
+            <lightning-button variant="brand" label="Previous" title="Previous" class="slds-m-left_x-small" onclick={showCredIntLandPage}>
+            </lightning-button>
+            <lightning-button variant="brand" label="Next" title="Next" class="slds-m-left_x-small" onclick={showCredLegpage}>
+            </lightning-button>
+            <lightning-button variant="brand" label="Cancel" title="Cancel" class="slds-m-left_x-small" onclick={cancelCredVer}>
+            </lightning-button>
+        </div>
+    </template>
+</template>

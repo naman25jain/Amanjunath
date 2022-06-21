@@ -1,0 +1,457 @@
+<template>
+    <template if:false={showConfirmationScreen}>
+    <div class="formMargin">
+        <template if:true={spinner}>
+			<lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+		</template>
+        <div class="slds-grid slds-wrap gridMargin">
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-1">
+                <span class="headerText">
+                    <c-g-display-content unique-content-value="entity_contact_service_form"></c-g-display-content>
+                </span>
+            </div>
+            <!-- subheading removal requested in user story 18579 -->
+            <!--
+            <div class="slds-col slds-size_1-of-1 slds-p-left_medium">
+                <span class="modContHdr">{label.subHeading}</span>
+            </div> -->
+
+            <div class="slds-col slds-size_1-of-1 slds-p-left_medium">
+                <span class="modContHdr">
+                    Please complete and submit this form to request access to an entity service available through MyIntealth. If the name of your entity does not appear in the search results, you cannot use this form. Please contact us for more information. If you already have a MyIntealth account, please log in to MyIntealth and request access to the service in the Administration section.
+                </span>
+            </div>
+
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                <span class="required">*</span>
+                <span>Name of Entity&nbsp;</span>
+                <span class="tooltip">
+                    <button type="button" class="slds-button slds-button_icon" aria-describedby="salesforce-lightning-tooltip-bubble_45e676b5-dc1d-453c-4329-4193df012fff" data-position-id="lgcp-1000004"><svg focusable="false" data-key="info" aria-hidden="true" viewBox="0 0 52 52" class="slds-button__icon"><g><path d="M26 2C12.7 2 2 12.7 2 26s10.7 24 24 24 24-10.7 24-24S39.3 2 26 2zm0 12.1c1.7 0 3 1.3 3 3s-1.3 3-3 3-3-1.3-3-3 1.3-3 3-3zm5 21c0 .5-.4.9-1 .9h-8c-.5 0-1-.3-1-.9v-2c0-.5.4-1.1 1-1.1.5 0 1-.3 1-.9v-4c0-.5-.4-1.1-1-1.1-.5 0-1-.3-1-.9v-2c0-.5.4-1.1 1-1.1h6c.5 0 1 .5 1 1.1v8c0 .5.4.9 1 .9.5 0 1 .5 1 1.1v2z"></path></g></svg><span class="slds-assistive-text">Name of Entity - Required</span></button>
+                    <span class="tooltiptext">Begin typing to search for your entity. If your entity does not appear in the search results, please contact us for more information.</span>
+                </span>
+            </div>
+            <div class="slds-col slds-var-p-around_medium slds-size_2-of-4">
+                <template if:false={selectedRecord}>
+                    <lightning-input class="entityName" type="search" name="primaryNameOfReceipt" onchange={handleChangeForInputFields} variant="label-hidden" value={primaryNameOfReceipt}></lightning-input>
+                </template>
+                <div>
+                    <template if:false={selectedRecord}>
+                        <template if:true={records}>
+                            <template for:each={records} for:item="record">
+                                <c-entity-contact-service-request-form-record-list key={record.Id} record={record}
+                                    onselect={handleSelect} iconname={iconname}
+                                    fieldname={searchfield}>
+                                </c-entity-contact-service-request-form-record-list>
+                            </template>
+                        </template>
+                    </template>
+                    <template if:false={selectedRecord}>
+                    </template>
+                </div>
+                <div class="slds-p-around_x-small" style="width: 250.59px;padding-left: 0px;padding-right: 0px;padding-bottom: 0px;padding-top: 0px;">
+                    <template if:true={selectedRecord}>
+                        <div class="slds-combobox__form-element slds-input-has-icon
+                                        slds-input-has-icon_left-right" role="none">
+                                <span class="slds-icon_container
+                                            slds-icon-standard-account
+                                            slds-combobox__input-entity-icon" title="Account">
+                                    <lightning-icon icon-name={iconname} ></lightning-icon>
+                                </span>
+                                <input class="slds-input slds-combobox__input
+                                       slds-combobox__input-value"
+                                       id="combobox-id-5" aria-controls="listbox-id-5"
+                                       autocomplete="off" role="textbox" type="text"
+                                       placeholder="Select an Option" readonly=""
+                                       value={selectedRecord.Name}
+                                       disabled
+                                       />
+                                <button class="sicon_container slds-button slds-button_icon
+                                               slds-input__icon slds-input__icon_right"
+                                        title="Remove selected option"
+                                        onclick={handleRemove}>
+                                    <lightning-icon icon-name="utility:close" size="x-small">
+
+                                    </lightning-icon>
+                                    <span class="slds-assistive-text">Remove selected option</span>
+                                </button>
+                            </div>
+                    </template>
+                </div>
+            </div>
+            <!--<div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>-->
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+
+            <!--Start of Error message-->
+            <div class="slds-col slds-p-left_medium slds-size_1-of-4">
+
+            </div>
+            <div class="slds-col slds-p-left_medium slds-size_2-of-4">
+                <template if:true={errEntityName}>
+                    <span class="errormsgName">Name of Entity cannot be blank.</span>
+                </template>
+                <template if:true={errEntityNameToSelectEntity}>
+                    <span class="errormsgName">Please search for an existing Entity and select one.</span>
+                </template>
+            </div>
+            <!--<div class="slds-col slds-size_1-of-4"></div>-->
+            <div class="slds-col slds-size_1-of-4">
+
+            </div>
+            <!--End of Error message-->
+
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                <span class="required">*</span>
+                <span>Last Name/Surname</span>
+            </div>
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                <lightning-input class="entityLastName" type="text" name="lastName" variant="label-hidden" value={lastName} onchange={handleChangeForInputValue}></lightning-input>
+            </div>
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+
+            <!--Start of Error message-->
+            <div class="slds-col slds-p-left_medium slds-size_1-of-4">
+
+            </div>
+            <div class="slds-col slds-p-left_medium slds-size_1-of-4">
+                <template if:true={errEntityLastName}>
+                    <span class="errormsgName">Last Name cannot be blank</span>
+                </template>
+            </div>
+            <div class="slds-col slds-size_1-of-4"></div>
+            <div class="slds-col slds-size_1-of-4">
+
+            </div>
+            <!--End of Error message-->
+
+            <div class="slds-col slds-p-left_medium slds-p-top_medium slds-grid slds-wrap">
+                <div class="slds-col">
+                    <div class="checkboxPadding">
+                        <lightning-input type="checkbox" variant="label-hidden" value={checkBoxValue} name="checkBoxValue" onclick={handleChangeCheckBox}></lightning-input>
+                    </div>
+                    <div class="checkboxPaddingTranscript">
+                        <span>My legal name consists of one name only</span>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+
+            <template if:true={restOfNameVisible}>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    <span class="required">*</span>
+                    <span>Rest of Name</span>
+                </div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    <lightning-input class="entityRestName" type="text" name="restOfName" variant="label-hidden" value={restOfName} onchange={handleChangeForInputValue}></lightning-input>
+                </div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+
+                    <!--Start of Error message-->
+                <div class="slds-col slds-p-left_medium slds-size_1-of-4">
+
+                </div>
+                <div class="slds-col slds-p-left_medium slds-size_1-of-4">
+                    <template if:true={errEntityRestName}>
+                        <span class="errormsgName">Rest of Name cannot be blank if above check box is not checked</span>
+                    </template>
+                </div>
+                <div class="slds-col slds-size_1-of-4">
+
+                </div>
+                <div class="slds-col slds-size_1-of-4">
+
+                </div>
+                <!--End of Error message-->
+            </template>
+
+
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                <span>Generational Suffix</span>
+            </div>
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                <lightning-combobox
+                label=""
+                name = "generationalSuffix"
+                variant="label-hidden"
+                placeholder="-Select-"
+                options={salutationOptions}
+                value={salutationValue}
+                onchange={handleChangeForInputValue}>
+                </lightning-combobox>
+            </div>
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                <span class="required">*</span>
+                <span>Date of Birth</span>
+            </div>
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                <lightning-input class="entityDateofBirth" type="date" name="dateOfBirth" variant="label-hidden" value={dateOfBirth} onchange={handleChangeForInputValue}></lightning-input>
+            </div>
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+            <!--Start of Error message-->
+            <div class="slds-col slds-p-left_medium slds-size_1-of-4">
+
+            </div>
+            <div class="slds-col slds-p-left_medium slds-size_1-of-4">
+                <template if:true={errEntityDateofBirth}>
+                    <span class="errormsgName">Date of Birth cannot be blank</span>
+                </template>
+                <template if:true={errEntityDOBFutureDate}>
+                    <span class="errormsgName">Date of Birth cannot be a future date</span>
+                </template>
+            </div>
+            <div class="slds-col slds-size_1-of-4">
+
+            </div>
+            <div class="slds-col slds-size_1-of-4">
+
+            </div>
+            <!--End of Error message-->
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                <span class="required">*</span>
+                <span>Email Address</span>
+            </div>
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                <lightning-input class="entityEmailAddress" type="text" name="emailAddress" variant="label-hidden" value={emailAddress} onblur={handleChangeInvalidEmailDomain} onchange={handleChangeForInputValue}></lightning-input>
+            </div>
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+             <!--Start of Error message-->
+             <div class="slds-col slds-p-left_medium slds-size_1-of-4">
+
+            </div>
+            <div class="slds-col slds-p-left_medium slds-size_1-of-4">
+                <template if:true={errEntityEmailAddress}>
+                    <span class="errormsgName">Email Address cannot be blank</span>
+                </template>
+                <template if:true={errEntityEmailAddressDomain}>
+                    <span class="errormsgName">Please enter a valid email format</span>
+                </template>
+            </div>
+            <div class="slds-col slds-size_1-of-4">
+
+            </div>
+            <div class="slds-col slds-size_1-of-4">
+
+            </div>
+            <!--End of Error message-->
+
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                <span class="required">*</span>
+                <span>Phone Number</span>
+            </div>
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                <lightning-input class="entityPhoneNumber" type="text" name="phoneNumber" variant="label-hidden" value={phoneNumber} onkeypress={onlyNumberKey} onchange={handleChangeForInputValue}></lightning-input>
+            </div>
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+              <!--Start of Error message-->
+              <div class="slds-col slds-p-left_medium slds-size_1-of-4">
+
+            </div>
+            <div class="slds-col slds-p-left_medium slds-size_1-of-4">
+                <template if:true={errEntityPhoneNumber}>
+                    <span class="errormsgName">Phone Number cannot be blank</span>
+                </template>
+            </div>
+            <div class="slds-col slds-size_1-of-4">
+
+            </div>
+            <div class="slds-col slds-size_1-of-4">
+
+            </div>
+            <!--End of Error message-->
+
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                <span class="required">*</span>
+                <span>Department</span>
+            </div>
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                <lightning-input class="entityDepartment" type="text" name="department" variant="label-hidden" value={department} onchange={handleChangeForInputValue}></lightning-input>
+            </div>
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+
+              <!--Start of Error message-->
+              <div class="slds-col slds-p-left_medium slds-size_1-of-4">
+
+            </div>
+            <div class="slds-col slds-p-left_medium slds-size_1-of-4">
+                <template if:true={errEntityDepartment}>
+                    <span class="errormsgName">Department cannot be blank</span>
+                </template>
+            </div>
+            <div class="slds-col slds-size_1-of-4">
+
+            </div>
+            <div class="slds-col slds-size_1-of-4">
+
+            </div>
+            <!--End of Error message-->
+
+
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                <span class="required">*</span>
+                <span>Job Title</span>
+            </div>
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                <lightning-input class="entityJobTitle" type="text" name="jobTitle" variant="label-hidden" value={jobTitle} onchange={handleChangeForInputValue}></lightning-input>
+            </div>
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+
+             <!--Start of Error message-->
+             <div class="slds-col slds-p-left_medium slds-size_1-of-4">
+
+            </div>
+            <div class="slds-col slds-p-left_medium slds-size_1-of-4">
+                <template if:true={errEntityJobTitle}>
+                    <span class="errormsgName">Job Title cannot be blank</span>
+                </template>
+            </div>
+            <div class="slds-col slds-size_1-of-4">
+
+            </div>
+            <div class="slds-col slds-size_1-of-4">
+
+            </div>
+            <!--End of Error message-->
+
+
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                <span class="required">*</span>
+                <span>Country of Residence</span>
+            </div>
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                <lightning-combobox
+                class= "entityCountryResidence"
+                label=""
+                variant="label-hidden"
+                placeholder="-Select-"
+                options={countryOptions}
+                onchange={handleChangeCountryValue}
+                value={countryOfResidence}>
+                </lightning-combobox>
+            </div>
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+
+            <!--Start of Error message-->
+            <div class="slds-col slds-p-left_medium slds-size_1-of-4">
+
+            </div>
+            <div class="slds-col slds-p-left_medium slds-size_1-of-4">
+                <template if:true={errEntityCountryResidence}>
+                    <span class="errormsgName">Please select any one of the country</span>
+                </template>
+            </div>
+            <div class="slds-col slds-size_1-of-4">
+
+            </div>
+            <div class="slds-col slds-size_1-of-4">
+
+            </div>
+            <!--End of Error message-->
+
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                <span class="required">*</span>
+                <span>Service of Interest&nbsp;</span>
+                <span class="tooltip serviceofinterest">
+                    <button type="button" class="slds-button slds-button_icon" aria-describedby="salesforce-lightning-tooltip-bubble_45e676b5-dc1d-453c-4329-4193df012fff" data-position-id="lgcp-1000004"><svg focusable="false" data-key="info" aria-hidden="true" viewBox="0 0 52 52" class="slds-button__icon"><g><path d="M26 2C12.7 2 2 12.7 2 26s10.7 24 24 24 24-10.7 24-24S39.3 2 26 2zm0 12.1c1.7 0 3 1.3 3 3s-1.3 3-3 3-3-1.3-3-3 1.3-3 3-3zm5 21c0 .5-.4.9-1 .9h-8c-.5 0-1-.3-1-.9v-2c0-.5.4-1.1 1-1.1.5 0 1-.3 1-.9v-4c0-.5-.4-1.1-1-1.1-.5 0-1-.3-1-.9v-2c0-.5.4-1.1 1-1.1h6c.5 0 1 .5 1 1.1v8c0 .5.4.9 1 .9.5 0 1 .5 1 1.1v2z"></path></g></svg><span class="slds-assistive-text">Name of Entity - Required</span></button>
+                    <span class="tooltiptext serviceofinterest">Services Available through MyIntealth</br></br>
+
+                        Enrollment Verification – Participating medical schools can verify the status of their students who apply to ECFMG for the United States Medical Licensing Examination<sup>&reg;</sup> (USMLE<sup>&reg;</sup>).</br></br>
+
+                        Credentials Verification – Participating entities can verify the authenticity of credentials we provide to them; send credentials and their verifications to us; and provide other information we may request related to credential verification.</br></br>
+
+                        Performance Data – Participating medical schools can receive information on the performance of their students/graduates on Step 1 and Step 2 of USMLE. These performance data are available only to schools that participate in both Enrollment Verification and Credentials Verification.</br></br>
+                    
+                        ERAS – Participating medical schools can upload supporting documents on behalf of their students/graduates who are applying to residency programs in the United States.</br></br>
+
+                        CVS – Participating entities can request reports providing prompt, primary-source confirmation of the ECFMG certification status of international medical graduates (IMGs).</span>
+                </span>
+            </div>
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                <lightning-combobox
+                class="entityServiceInterest"
+                label=""
+                value={serviceValue}
+                variant="label-hidden"
+                placeholder="-Select-"
+                onchange={handleChangeOfInterest}
+                options={serviceOfInterest}>
+                </lightning-combobox>
+            </div>
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+            <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+
+            <!--Start of Error message-->
+            <div class="slds-col slds-p-left_medium slds-size_1-of-4">
+
+            </div>
+            <div class="slds-col slds-p-left_medium slds-size_1-of-4">
+                <template if:true={errEntityServiceInterest}>
+                    <span class="errormsgName">Please select any one of the Service of Interest</span>
+                </template>
+            </div>
+            <div class="slds-col slds-size_1-of-4">
+
+            </div>
+            <div class="slds-col slds-size_1-of-4">
+
+            </div>
+            <!--End of Error message-->
+            <div class="slds-col slds-p-left_medium slds-size_4-of-4">
+            <lightning-input type="checkbox" class="headerSection1 checkbox" variant='label-hidden' onchange={handleChangeCheckBoxShareWithCo}> </lightning-input>
+                <!-- original text inside label.shareWithCo -->
+                <!--<span>{label.shareWithCo}</span>-->
+                <span>By checking this box, I permit Intealth to share my information and request with the Coordinator of the requested service at my entity, if my entity already participates.</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="buttonAlignment" ><br/>
+        <template if:true={enableSubmitutton}>
+            <lightning-button variant="brand" label="Submit" title="Next" onclick={nextButton} class="slds-m-left_x-small"></lightning-button>
+        </template>
+        <template if:false={enableSubmitutton}>
+            <lightning-button variant="brand" label="Submit" title="Next" disabled onclick={nextButton} class="slds-m-left_x-small"></lightning-button>
+        </template>
+    </div>
+
+    </template>
+    <template if:true={showConfirmationScreen}>
+        <template if:true={showMessage}>
+            <div class="slds-is-relative">
+                <template if:true={spinner}>
+                    <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+                </template>
+                <div class="slds-grid slds-gutters">
+                    <div class="slds-col slds-size_1-of-1">
+                        <span>
+                            <br />
+                            <div style="text-align:center">
+                                <strong>{firstLine}<br />{secondLine} {thirdLine} {caseNumber}.</strong>
+                                <br /><br /><br />{fourthLine}
+                                <br /><br />{fifthLine}
+                            </div>
+
+                            <div style="text-align:center">
+                                <lightning-button variant="brand" label="Close" title="Close" onclick={cancelButton}
+                                    class="slds-m-left_x-small"></lightning-button>
+                            </div>
+
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+    </template>
+</template>

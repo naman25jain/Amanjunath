@@ -1,0 +1,27 @@
+<template>
+    <lightning-card>
+        <div class="slds-var-p-top_medium slds-var-p-bottom_medium slds-text-heading_small">            
+            <span>Additional active cases belonging to this Applicant</span> 
+        </div>
+        <div class="slds-var-p-left_x-small headeralign">            
+            <span class="headertxt">Active Cases({data.length})</span> 
+        </div>
+        <c-paginator class="paginatorAR" records={data} total-records={data.length}
+                        show-search-box="true" onpaginatorchange={handleARPaginatorChange}>
+        </c-paginator> 
+        <lightning-datatable data={recordsToDisplay}
+            columns={columns}                
+            key-field="id"
+            sorted-by={sortBy}
+            sorted-direction={sortDirection}
+            onsort={handleSortdata}
+            onrowaction={handleRowActions}
+            hide-checkbox-column="true"></lightning-datatable>
+    </lightning-card>
+    <c-modal-component data-id='confirmationWindow' title='Reassign Case' message={confirmLang}
+     show-secondary-button='true' secondary-button-text='No' onclosedialog={cancelSubmit} show-primary-button='true' 
+     primary-button-text='Yes' onprimarybuttonclick={proceedSubmit}></c-modal-component>
+     <div class="slds-align_absolute-center btnAlign">
+        <lightning-button variant="brand" label="Return to Credential Review List" title="Return to Credential Review List" class="slds-var-m-left_x-small" onclick={showCredRevLandPage}></lightning-button>
+    </div>
+</template>

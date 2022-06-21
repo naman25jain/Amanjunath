@@ -1,0 +1,51 @@
+.headertxt{
+    font-weight: bold;    
+}
+.headeralign{
+    padding-top: 5%;
+}
+.caseNumberTd button {
+    border: none !important;
+}
+.noRecordsSection {
+    padding:15px 0 10px 0;
+}
+.noteSec{
+    padding-top:30%;
+}
+.gridHeader{
+    font-size: large;
+}
+.btnAling{
+    padding-top:5px;
+    margin-left:15%;
+}
+.uploadBtnText{
+    padding-top:5px;
+    margin-left:2%;
+}
+
+.docUploadStr{
+    padding-top:5px;
+    margin-left:17%;
+}
+
+.reUploadBtn{
+    padding-top:5px;
+    margin-left:36%;
+}
+
+.formMargin{
+    margin-left:0%;
+    margin-right:0%;
+    padding-top:20px;
+}
+
+.belowTaskDetails{
+    padding-top:5px;
+    margin-left:0.4%;
+}
+
+.custom-box {
+    background-color: #f4f6f9;
+}

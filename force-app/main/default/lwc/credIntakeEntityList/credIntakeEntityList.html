@@ -1,0 +1,96 @@
+<template>
+    <div class="slds-grid slds-wrap slds-dropdown_length-with-icon-7 slds-dropdown_fluid slds-p-left_small">
+        <div class="slds-col slds-size_4-of-4 ">
+            <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+                <li role="presentation" class="slds-listbox__item">
+                    <div class="slds-media slds-listbox__option slds-listbox__option_entity slds-listbox__option_has-meta" role="option" onclick={handleSelect}>
+                        <template if:true={showRecordsList}>
+                            <template if:true={showBillingAddress}>
+                                <span class="slds-media__figure slds-listbox__option-icon">
+                                    <lightning-icon icon-name="standard:account"></lightning-icon>
+                                </span>
+                                <span class="slds-media__body">
+                                    <span class="slds-listbox__option-text slds-listbox__option-text_entity accountName">
+                                        {record.Name}
+                                    </span>
+                                    <span class="slds-listbox__option-text slds-listbox__option-text_entity">
+                                        <span>BillingCity: </span>
+                                        {record.BillingCity}
+                                    </span>
+                                    <span class="slds-listbox__option-text slds-listbox__option-text_entity">
+                                        <span>BillingState: </span>
+                                        {record.BillingState}
+                                    </span>
+                                    <span class="slds-listbox__option-text slds-listbox__option-text_entity">
+                                        <span>BillingCountry: </span>
+                                        {record.BillingCountry}
+                                    </span>
+                                </span>
+                            </template>
+                            <template if:false={showBillingAddress}>
+                                <span class="slds-media__body">
+                                    <span class="slds-listbox__option-text slds-listbox__option-text_entity">
+                                        <div class="centerAlign1">
+                                            <lightning-button variant="brand" label="Submit New Entity" title="Submit New Entity" onclick={submitNewOrg}
+                                            class="slds-m-left_x-small"> 
+                                            </lightning-button>
+                                        </div>
+                                    </span>
+                                </span>
+                            </template>
+                        </template>   
+                        <template if:false={showRecordsList}> 
+                            <span class="slds-media__body">     
+                                <span class="slds-listbox__option-text slds-listbox__option-text_entity">
+                                    <span class="centerAlign">No records found</span>
+                                </span>  
+                                <div>     
+                                    <span class="slds-listbox__option-text slds-listbox__option-text_entity">
+                                        <div class="centerAlign1">
+                                            <lightning-button variant="brand" label="Submit New Entity" title="Submit New Entity" onclick={submitNewOrg}
+                                            class="slds-m-left_x-small"> 
+                                            </lightning-button>
+                                        </div>
+                                    </span>
+                                </div>  
+                            </span>
+                        </template>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <c-modal-component class="submitNewOrgModal slds-is-relative" title={modalTitle} message={modalContent} show-primary-button="false" primary-button-text="Submit"
+        show-secondary-button="false" secondary-button-text="Cancel">
+        <slot>
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col slds-size_1-of-2">
+                    <lightning-input type="text" label="Name of Entity" value={orgName} required="true" onchange={onNameChange}></lightning-input>
+                    <lightning-input type="text" label="University Name" value={universityName} onchange={onUniversityChange}></lightning-input>
+                </div>
+                <div class="slds-col slds-size_1-of-2">
+                    <lightning-combobox class= "entityCountryResidence" label="Country" placeholder="-Select-" options={countryOptions}
+                        onchange={handleChangeCountryValue} value={countryOfResidence} required="true"></lightning-combobox>
+                    <lightning-input type="text" label="Street" value={streetName} required="true" onchange={onStreetNameChange}></lightning-input>
+                    <lightning-input type="text" label="City" value={cityName} required="true" onchange={onCityNameChange}></lightning-input>
+                    <template if:true={enableState}>
+                        <lightning-combobox class= "entityStateResidence" label="State/Province" placeholder="-Select-" options={stateOptions}
+                        onchange={onStateNameChange} value={stateName}></lightning-combobox>
+                    </template>
+                    <template if:false={enableState}>
+                        <lightning-combobox label="State/Province" placeholder="-Select-" options={stateOptions}
+                        value={stateName} disabled></lightning-combobox>
+                    </template>
+                    <lightning-input type="text" label="Zip/Postal Code" value={postalCode} onchange={onPostalCodeChange}></lightning-input>
+                </div>
+            </div><br></br>
+            <div class="buttonAlignment">
+                <lightning-button variant="brand" label="Cancel" title="Cancel" onclick={handleClose} class="slds-m-left_x-small"></lightning-button>
+                <lightning-button variant="brand" label="Submit" title="Submit" onclick={handleInsertAccountCats} class="slds-m-left_x-small"></lightning-button>
+            </div>
+            <template if:true={spinner}>
+                <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+            </template>
+        </slot>
+    </c-modal-component>
+</template>

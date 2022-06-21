@@ -1,0 +1,217 @@
+<template>
+    <div class="padding">
+        <h2 class="header"><span>Transcript Request Summary</span></h2>
+        <div class="instructions">
+            <p>Below is a summary of the information you provided as part of this request. Please review the summary carefully to ensure that all the information you provided is accurate. If necessary, you can change your responses by clicking <strong>Previous</strong>.</p>
+        </div>
+    </div>
+    <div class="formMargin">
+        <div class="slds-grid slds-wrap">
+            <template for:each={transcriptRequestRecordList} for:item="tr" for:index="index">
+                <template if:false={tr.secondTranscriptToSameAddress}>
+                    <template if:true={tr.sendToSameAddress}>
+                        <section key={tr.sno}
+                            class="slds-col slds-p-bottom_x-large slds-size_1-of-1 slds-grid slds-wrap">
+                            <div class="slds-col slds-p-bottom_large slds-size_1-of-1">
+                                <h2>Transcript #{tr.sno}</h2>
+                            </div>
+                            <template if:true={tr.showSendToSameAddress}>
+                                <div class="slds-col slds-p-top_small slds-size_1-of-4">
+                                    <span class="fieldName">Send to same Address as Transcript#1?</span>
+                                </div>
+                                <div class="slds-col slds-p-top_small slds-size_1-of-4">
+                                    <span>{tr.sendToSameAddressText}</span>
+                                </div>
+                            </template>
+                        </section>
+                    </template>
+                    <template if:false={tr.sendToSameAddress}>
+                        <section key={tr.sno}
+                            class="slds-col slds-p-bottom_x-large slds-size_1-of-1 slds-grid slds-wrap">
+                            <div class="slds-col slds-p-bottom_large slds-size_1-of-1">
+                                <h2>Transcript #{tr.sno}</h2>
+                            </div>
+                            <template if:true={tr.showSendToSameAddress}>
+                                <div class="slds-col slds-p-bottom_medium slds-size_1-of-1 slds-grid slds-wrap">
+                                    <div class="slds-col slds-size_1-of-4">
+                                        <span class="fieldName">Send to same Address as Transcript#1?</span>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-4">
+                                        <span>{tr.sendToSameAddressText}</span>
+                                    </div>
+                                </div>
+                            </template>
+                            <div class="slds-col slds-p-top_small slds-size_1-of-4">
+                                <span class="fieldName">Name of Recipient</span>
+                            </div>
+                            <div class="slds-col slds-p-top_small slds-size_1-of-4">
+                                <lightning-formatted-text value={tr.nameOfRecipient}></lightning-formatted-text>
+                            </div>
+                            <div class="slds-col slds-p-top_small slds-size_1-of-4"></div>
+                            <div class="slds-col slds-p-top_small slds-size_1-of-4"></div>
+                            <div class="slds-col slds-p-top_small slds-size_1-of-4">
+                                <span class="fieldName">Organization</span>
+                            </div>
+                            <div class="slds-col slds-p-top_small slds-size_1-of-4">
+                                <lightning-formatted-text value={tr.organization}></lightning-formatted-text>
+                            </div>
+                            <div class="slds-col slds-p-top_small slds-p-left_x-large slds-size_1-of-4">
+                                <span class="fieldName">Send to Self</span>
+                            </div>
+                            <div class="slds-col slds-p-top_small slds-size_1-of-4">
+                                <lightning-formatted-text value={tr.sendToSelf}></lightning-formatted-text>
+                            </div>
+                            <div class="slds-col slds-p-top_small slds-size_1-of-4">
+                                <span class="fieldName">Street Address</span>
+                            </div>
+                            <div class="slds-col slds-p-top_small slds-size_1-of-4">
+                                <lightning-formatted-text value={tr.street}></lightning-formatted-text>
+                            </div>
+                            <div class="slds-col slds-p-top_small slds-p-left_x-large slds-size_1-of-4">
+                                <span class="fieldName">City</span>
+                            </div>
+                            <div class="slds-col slds-p-top_small slds-size_1-of-4">
+                                <lightning-formatted-text value={tr.city}></lightning-formatted-text>
+                            </div>
+                            <div class="slds-col slds-p-top_small slds-size_1-of-4">
+                                <span class="fieldName">State/Providence</span>
+                            </div>
+                            <div class="slds-col slds-p-top_small slds-size_1-of-4">
+                                <lightning-formatted-text value={tr.state}></lightning-formatted-text>
+                            </div>
+                            <div class="slds-col slds-p-top_small slds-p-left_x-large slds-size_1-of-4">
+                                <span class="fieldName">Zip/Postal Code</span>
+                            </div>
+                            <div class="slds-col slds-p-top_small slds-size_1-of-4">
+                                <lightning-formatted-text value={tr.zipcode}></lightning-formatted-text>
+                            </div>
+                            <div class="slds-col slds-p-top_small slds-size_1-of-4">
+                                <span class="fieldName">Country</span>
+                            </div>
+                            <div class="slds-col slds-p-top_small slds-size_1-of-4">
+                                <lightning-formatted-text value={tr.country}></lightning-formatted-text>
+                            </div>
+                            <template if:true={tr.showTelephone}>
+                                <div class="slds-col slds-p-top_small slds-p-left_x-large slds-size_1-of-4">
+                                    <span class="fieldName">Telephone Number</span>
+                                </div>
+                                <div class="slds-col slds-p-top_small slds-size_1-of-4">
+                                    <lightning-formatted-text value={tr.telephone}></lightning-formatted-text>
+                                </div>
+                            </template>
+                            <div class="slds-col slds-p-top_x-large slds-size_1-of-1">
+                                <span class="fieldName">Courier Required</span>
+                            </div>
+                            <div class="slds-col slds-p-top_small slds-size_1-of-1">
+                                <lightning-formatted-text value={tr.courierRequired}></lightning-formatted-text>
+                            </div>
+                        </section>
+                    </template>
+                </template>
+                <template if:true={tr.secondTranscriptToSameAddress}>
+                    <section key={tr.sno} class="slds-col slds-p-bottom_x-large slds-size_1-of-1 slds-grid slds-wrap">
+                        <div class="slds-col slds-p-bottom_large slds-size_1-of-1">
+                            <h2>Transcript #{tr.sno}</h2>
+                        </div>
+                        <template if:true={tr.showSendToSameAddress}>
+                            <div class="slds-col slds-p-bottom_medium slds-size_1-of-1 slds-grid slds-wrap">
+                                <div class="slds-col slds-size_1-of-4">
+                                    <span class="fieldName">Send to same Address as Transcript#1?</span>
+                                </div>
+                                <div class="slds-col slds-size_1-of-4">
+                                    <span>{tr.sendToSameAddressText}</span>
+                                </div>
+                            </div>
+                        </template>
+                        <div class="slds-col slds-p-top_small slds-size_1-of-4">
+                            <span class="fieldName">Name of Recipient</span>
+                        </div>
+                        <div class="slds-col slds-p-top_small slds-size_1-of-4">
+                            <lightning-formatted-text value={tr.nameOfRecipient}></lightning-formatted-text>
+                        </div>
+                        <div class="slds-col slds-p-top_small slds-size_1-of-4"></div>
+                        <div class="slds-col slds-p-top_small slds-size_1-of-4"></div>
+                        <div class="slds-col slds-p-top_small slds-size_1-of-4">
+                            <span class="fieldName">Organization</span>
+                        </div>
+                        <div class="slds-col slds-p-top_small slds-size_1-of-4">
+                            <lightning-formatted-text value={tr.organization}></lightning-formatted-text>
+                        </div>
+                        <div class="slds-col slds-p-top_small slds-p-left_x-large slds-size_1-of-4">
+                            <span class="fieldName">Send to Self</span>
+                        </div>
+                        <div class="slds-col slds-p-top_small slds-size_1-of-4">
+                            <lightning-formatted-text value={tr.sendToSelf}></lightning-formatted-text>
+                        </div>
+                        <div class="slds-col slds-p-top_small slds-size_1-of-4">
+                            <span class="fieldName">Street Address</span>
+                        </div>
+                        <div class="slds-col slds-p-top_small slds-size_1-of-4">
+                            <lightning-formatted-text value={tr.street}></lightning-formatted-text>
+                        </div>
+                        <div class="slds-col slds-p-top_small slds-p-left_x-large slds-size_1-of-4">
+                            <span class="fieldName">City</span>
+                        </div>
+                        <div class="slds-col slds-p-top_small slds-size_1-of-4">
+                            <lightning-formatted-text value={tr.city}></lightning-formatted-text>
+                        </div>
+                        <div class="slds-col slds-p-top_small slds-size_1-of-4">
+                            <span class="fieldName">State/Providence</span>
+                        </div>
+                        <div class="slds-col slds-p-top_small slds-size_1-of-4">
+                            <lightning-formatted-text value={tr.state}></lightning-formatted-text>
+                        </div>
+                        <div class="slds-col slds-p-top_small slds-p-left_x-large slds-size_1-of-4">
+                            <span class="fieldName">Zip/Postal Code</span>
+                        </div>
+                        <div class="slds-col slds-p-top_small slds-size_1-of-4">
+                            <lightning-formatted-text value={tr.zipcode}></lightning-formatted-text>
+                        </div>
+                        <div class="slds-col slds-p-top_small slds-size_1-of-4">
+                            <span class="fieldName">Country</span>
+                        </div>
+                        <div class="slds-col slds-p-top_small slds-size_1-of-4">
+                            <lightning-formatted-text value={tr.country}></lightning-formatted-text>
+                        </div>
+                        <template if:true={tr.showTelephone}>
+                            <div class="slds-col slds-p-top_small slds-p-left_x-large slds-size_1-of-4">
+                                <span class="fieldName">Telephone Number</span>
+                            </div>
+                            <div class="slds-col slds-p-top_small slds-size_1-of-4">
+                                <lightning-formatted-text value={tr.telephone}></lightning-formatted-text>
+                            </div>
+                        </template>
+                        <div class="slds-col slds-p-top_x-large slds-size_1-of-1">
+                            <span class="fieldName">Courier Required</span>
+                        </div>
+                        <div class="slds-col slds-p-top_small slds-size_1-of-1">
+                            <lightning-formatted-text value={tr.courierRequired}></lightning-formatted-text>
+                        </div>
+                    </section>
+                    <section key={tr.sno} class="slds-col slds-p-bottom_x-large slds-size_1-of-1 slds-grid slds-wrap">
+                        <div class="slds-col slds-p-bottom_large slds-size_1-of-1">
+                            <h2>Transcript #2</h2>
+                        </div>
+                        <div class="slds-col slds-p-top_small slds-size_1-of-4">
+                            <span class="fieldName">Send to same Address as Transcript#1?</span>
+                        </div>
+                        <div class="slds-col slds-p-top_small slds-size_1-of-4">
+                            <span>Yes</span>
+                        </div>
+                    </section>
+                </template>
+            </template>
+            <div class="separatorborderbottom"></div>
+            <div class="buttonAlignment">
+                <lightning-button variant="brand" label="Previous" title="Previous" onclick={prevButton}
+                    class="slds-m-left_x-small"></lightning-button>
+                <lightning-button variant="brand" label="Next" title="Next" onclick={nextButton}
+                    class="slds-m-left_x-small"></lightning-button>
+                <lightning-button variant="brand" label="Cancel" title="Cancel" onclick={cancelButtonToOpen}
+                    class="slds-m-left_x-small">
+                </lightning-button>
+            </div>
+        </div>
+    </div>
+    <c-modal-component data-id = 'newModalAlert' title='Alert' message='Are you sure you want to cancel? All changes will be lost.'  show-secondary-button='true' secondary-button-text='Cancel' onsecondarybuttonclick={closeModal} show-primary-button='true' primary-button-text='OK' onprimarybuttonclick={cancelButton}></c-modal-component>
+</template>

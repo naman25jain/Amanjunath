@@ -1,0 +1,4 @@
+<aura:component implements="flexipage:availableForAllPageTypes" access="global" >
+    bridge listener
+   <aura:handler event="c:AddressAutocompleteBridgeAppPlaceUpdated" action="{!c.handleAddressAutocompleteBridgeAppPlaceUpdated}"/>
+</aura:component>

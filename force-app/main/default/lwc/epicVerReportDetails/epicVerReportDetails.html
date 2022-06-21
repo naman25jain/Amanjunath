@@ -1,0 +1,426 @@
+<template>
+    <template if:true={showAll}>    
+    <div class="formMargin">
+        <template if:true={spinner}>
+            <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+        </template>
+        <div class="slds-grid slds-wrap">  
+            <div class="slds-col slds-size_1-of-1">
+                <div class="slds-grid slds-wrap">
+                    <div class="slds-col slds-size_1-of-1">
+                        <span class="required">*</span>
+                        <span class="header">Credentials to choose :</span>
+                    </div>
+                </div>
+            </div> 
+            <div class="slds-col slds-size_1-of-1">
+                <template if:true={epicVerErr}>                    
+                    <span class="errormsg msgPadding">
+                        Please select the Credentials
+                    </span>                    
+                </template>
+            </div> 
+            <!--Table Starts-->                              
+        <div class="slds-col gridSize slds-size_2-of-2">
+            <div class="slds-grid slds-wrap">
+                <div class="slds-col slds-p-top_medium slds-size_1-of-5 chckBoxPadding">
+                    <span class="slds-truncate tableHeader" title="Selected"></span>
+                </div>
+                <div class="slds-col slds-p-top_medium  slds-size_1-of-5">
+                    <span class="slds-truncate tableHeader" title="">Case Number</span>
+                </div>
+                <div class="tableFieldPadding slds-col slds-p-top_medium slds-p-left_medium slds-p-right_medium slds-size_2-of-5">
+                    <span class="slds-truncate tableHeader">
+                       Document Type
+                    </span>
+                </div>
+                <div class="tableFieldPadding slds-col slds-p-top_medium slds-p-left_medium slds-p-right_medium slds-size_1-of-5">
+                    <span class="slds-truncate tableHeader">
+                       Source 
+                    </span>
+                </div>   
+            </div>
+        </div>
+        <br/>
+      <div class="slds-col slds-size_2-of-2">
+            <div class="slds-grid slds-wrap">
+                <template for:each={epicVerList} for:item='rec' for:index='index'>
+                    <div key={rec.key} class="slds-col" data-tcid={rec.key}>                                                    
+                    <div class="slds-grid slds-wrap">
+                         <div class="slds-col  slds-p-top_medium slds-size_1-of-5 chckBoxPadding">
+                            <span>
+                                <template if:true={rec.selected}>
+                                    <lightning-input onchange={onCheckedRow} class="transferCreditCourseInput" type="checkbox" checked variant="label-hidden" value={rec.selected} data-selected-rep={rec.key}></lightning-input> 
+                                </template>
+                                <template if:false={rec.selected}>
+                                    <lightning-input onchange={onCheckedRow} class="transferCreditCourseInput" type="checkbox" variant="label-hidden" value={rec.selected} data-selected-rep={rec.key}></lightning-input>      
+                                </template>                               
+                             </span>
+                         </div>
+                         <div class="slds-col slds-p-top_medium slds-size_1-of-5">
+                            <span><lightning-input disabled class="transferCreditCourseInput" type="text" variant="label-hidden" value={rec.casNum}></lightning-input>  </span>
+                        </div>
+                        <div class="tableFieldPadding slds-col slds-p-right_medium slds-p-left_medium slds-p-top_medium slds-size_2-of-5">
+                            <span><lightning-input disabled class="transferCreditCourseInput" type="text" variant="label-hidden" value={rec.docType}></lightning-input>  </span>
+                        </div>
+                        <div class="tableFieldPadding slds-col slds-p-right_medium slds-p-left_medium slds-p-top_medium slds-size_1-of-5">
+                            <template if:true={rec.asstExist}>
+                            <lightning-button variant="brand" label="View" title="View" onclick={viewSource} class="slds-var-m-left_x-small" data-selected-asst={rec.asst} data-selected-asst-doc={rec.type}>
+                            </lightning-button> 
+                            </template>
+                            <template if:false={rec.asstExist}>
+                               
+                            </template>
+                        </div>
+                    </div>
+                    </div>
+                </template>                
+          </div>
+        </div> 
+        <!--Table Ends--> 
+        <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+            <span class="required">*</span>
+            <span class="credLabel">Report Type :</span>
+        </div>
+        <div class="slds-col slds-size_1-of-2 slds-p-top_medium">            
+            <lightning-combobox class="credAtt" id="credType" name="Credential" variant="label-hidden"
+                                label="Credential Attributes" placeholder="Choose Values" value={chosenValue}
+                                onchange={handleChangeRadio} onkeydown={preventBackslash} options={Items}>
+                            </lightning-combobox>
+        </div>
+        <template if:true={chosenValErr}>   
+            <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+            </div>     
+            <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+                <span class="errormsg">
+                    Please select the Report Type
+                </span> 
+            </div>         
+         </template>
+         <template if:true={cvAccptedErr}>   
+            <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+            </div>     
+            <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+                <span class="errormsg">
+                    Credential not yet verified, unable to request a report at this time.
+                </span> 
+            </div>         
+         </template>
+         <template if:true={alreadyInprocess}>
+            <div class="slds-col slds-size_1-of-2 slds-var-p-top_medium">
+            </div>
+            <div class="slds-col slds-size_1-of-2 slds-var-p-top_medium">
+                <span class="errormsg">
+                    <c-g-display-content unique-content-value="Epic_Verification_Report_Duplicate_Recipient_Request_Error"></c-g-display-content> ({inProgressCase})
+                </span>
+            </div>
+         </template>
+        <div class="slds-col slds-size_1-of-1">
+            <template if:true={showAuthEntitySearch}>
+                <div class="slds-grid slds-wrap gridMargin">
+                    <div class="slds-col slds-size_1-of-1">
+                        <div class="header">
+                            <span class="required">*</span>
+                            Please select the entity from the list below:
+                            <br /><br />
+                        </div>
+                        <div class="padding">
+                            Start typing to add a new Entity...
+                        </div>
+                        <div class="slds-form-element">
+                            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left-right">
+                                <svg class="customAccountIcon slds-icon_container slds-icon-standard-account slds-icon slds-input__icon slds-input__icon_left slds-icon-text-default"
+                                    aria-hidden="true">
+                                    <use xlink:href="/_slds/icons/standard-sprite/svg/symbols.svg#account">
+                                    </use>
+                                </svg>
+                                <lightning-input class="accountName" name="accountName"
+                                    onchange={handleChangeForAuthSearch} variant="label-hidden"
+                                    placeholder="Search by entity name..." value={selectedAuthorityName}>
+                                </lightning-input>
+                                <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right"
+                                    title="Clear">
+                                    <svg class="slds-button__icon slds-icon-text-light" aria-hidden="true">
+                                        <use xlink:href="/_slds/icons/utility-sprite/svg/symbols.svg#search">
+                                        </use>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1">
+                        <template if:true={authRecordsList}>
+                            <template for:each={authRecordsList} for:item="record">
+                                <c-epic-org-selection-screen-record-list key={record.Id} record={record}
+                                    onselect={handleAuthSelect} iconname={iconname} fieldname={searchfield}>
+                                </c-epic-org-selection-screen-record-list>
+                            </template>
+                        </template>
+                    </div>
+                    <template if:true={selectedEntErr}>
+                        <lightning-layout-item padding="around-small" size="12">
+                            <span class="errormsg">
+                                Please select the Entity
+                            </span>
+                        </lightning-layout-item>
+                    </template>
+                </div>
+            </template>
+            <template if:true={selectedAuthRecord}>
+                <br /><br />
+                <div class="slds-col slds-size_1-of-1">
+                    <div class="header">
+                        Entity:
+                        <br /><br />
+                        <div class="padding">
+                            You may add only 1 entity.
+                        </div>
+                    </div>
+                    <lightning-card>
+                        <h3 slot="title" class="slds-text-heading_small slds-truncate">
+                            {selectedAuthRec.Name}
+                        </h3>
+                        <span class="slds-no-flex" slot="actions">
+                            <lightning-button-icon class="slds-button slds-button_icon slds-button_icon-border"
+                                icon-name="utility:delete" variant="border" onclick={handleDeleteAuthOnClick}
+                                alternative-text="Delete" title="Delete"></lightning-button-icon>
+                        </span>
+                        <div class="slds-grid slds-gutters slds-wrap">
+                            <div class="slds-col">
+                                <p class="slds-p-horizontal_small slds-p-bottom_small">
+                                    <lightning-formatted-address street={selectedAuthRec.BillingStreet}
+                                        city={selectedAuthRec.BillingCity} province={selectedAuthRec.BillingState}
+                                        country={selectedAuthRec.BillingCountry}
+                                        postal-code={selectedAuthRec.BillingPostalCode} disabled>
+                                    </lightning-formatted-address>
+                                </p>
+                            </div>
+                        </div>
+                        <div slot="footer">
+                            <span class="slds-m-left">Entity</span>
+                        </div>
+                    </lightning-card>
+                </div>
+                <br/>
+                <span class="required">
+                    <lightning-formatted-rich-text
+                        value={specialIntruction}>
+                    </lightning-formatted-rich-text>
+                </span>
+                <div class="slds-grid slds-wrap gridMargin" style='width: 100%;'>
+                    <lightning-layout-item padding="around-small" size="8">
+                        <span>Reference/Identification Number</span>
+                    </lightning-layout-item>
+                    <lightning-layout-item padding="around-small" size="4">
+                        <lightning-input type="text" class="reference" label="Reference Number" name="referenceNumber" value={referenceNumber}
+                            variant="label-hidden" onchange={handleChangeForReferenceNumber}></lightning-input>
+                    </lightning-layout-item>
+                </div>
+            </template>
+        </div>         
+        <div class="slds-col slds-size_1-of-2">
+            <c-modal-component class="addAuthScreenModal" title={modalTitle} message={modalContent} show-primary-button="true"
+            primary-button-text="Add" onprimarybuttonclick={handleAuthYesClick} show-secondary-button="true"
+            secondary-button-text="Cancel">
+            <slot><template if:true={showAddEntity}>
+                <span>Verify the entity name and address below.</span></br></br>
+                <span class="selectedAuthRec">{selectedAuthRec.Name}</span></br>
+                <lightning-formatted-address street={selectedAuthRec.BillingStreet} city={selectedAuthRec.BillingCity}
+                    province={selectedAuthRec.BillingState} country={selectedAuthRec.BillingCountry}
+                    postal-code={selectedAuthRec.BillingPostalCode} disabled></lightning-formatted-address>
+            </template></slot>
+            </c-modal-component>  
+        </div>                
+        <c-modal-component class="removeAuthScreenModal" title={modalTitle} message={modalContent}
+        show-primary-button="true" primary-button-text="Yes" onprimarybuttonclick={handleYesAuthDeleteClick}
+        show-secondary-button="true" secondary-button-text="Cancel">
+        <slot>
+            <template if:true={showDelEntity}>
+            <span>Are you sure you want to remove this entity?</span></br></br>
+            <span class="selectedAuthRec">{selectedAuthRec.Name}</span></br>
+            <lightning-formatted-address street={selectedAuthRec.BillingStreet} city={selectedAuthRec.BillingCity}
+                province={selectedAuthRec.BillingState} country={selectedAuthRec.BillingCountry}
+                postal-code={selectedAuthRec.BillingPostalCode} disabled></lightning-formatted-address>
+            </template>
+        </slot>
+        </c-modal-component>  
+        <div class="slds-col slds-size_1-of-1">
+            <template if:true={showNewAuthCreation}>
+                <div class="slds-grid slds-wrap gridMargin">
+                    <div class="slds-col slds-size_1-of-1 slds-p-top_medium">
+                        <span class="tableHeader">If your Entity was not found in the search, please enter the Entity information</span>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+                        <span class="required">*</span>
+                        <span>Email address to which the report should be sent :</span>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+                        <lightning-input class="emailAddress" name="emailAddress" type="text"
+                        onchange={handleChangeText} variant="label-hidden"
+                         value={emailAddress}>
+                        </lightning-input>
+                    </div>
+                    <template if:true={emailAddressErr}>   
+                        <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+                        </div>     
+                        <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+                            <span class="errormsg">
+                                Please enter the value
+                            </span> 
+                        </div>         
+                     </template>
+                     <template if:true={emailAddressVerifyErr}>   
+                        <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+                        </div>     
+                        <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+                            <span class="errormsg">
+                                Email Address and Verify Email Address should be the same
+                            </span> 
+                        </div>         
+                     </template>
+                    <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+                        <span class="required">*</span>
+                        <span>Verify email address to which report should be sent :</span>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+                        <lightning-input  class="verifyEmailAddress" name="verifyEmailAddress" type="text"
+                        onchange={handleChangeText} variant="label-hidden"
+                         value={verifyEmailAddress}>
+                        </lightning-input>
+                    </div>
+                    <template if:true={verifyEmailAddressErr}>   
+                        <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+                        </div>     
+                        <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+                            <span class="errormsg">
+                                Please enter the value
+                            </span> 
+                        </div>         
+                     </template>
+                    <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+                        <span class="required">*</span>
+                        <span>Contact Person Name :</span>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+                        <lightning-input  class="contactPersonName" name="contactPersonName"
+                        onchange={handleChangeText} variant="label-hidden"
+                         value={contactPersonName}>
+                        </lightning-input>
+                    </div>
+                    <template if:true={contactPersonNameErr}>   
+                        <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+                        </div>     
+                        <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+                            <span class="errormsg">
+                                Please enter the value
+                            </span> 
+                        </div>         
+                     </template>
+                    <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+                        <span class="required">*</span>
+                        <span>Name of Entity :</span>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+                        <lightning-input class="nameOfEntity" name="nameOfEntity"
+                        onchange={handleChangeText} variant="label-hidden"
+                         value={nameOfEntity}>
+                        </lightning-input>
+                    </div>
+                    <template if:true={nameOfEntityErr}>   
+                        <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+                        </div>     
+                        <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+                            <span class="errormsg">
+                                Please enter the value
+                            </span> 
+                        </div>         
+                     </template>
+                    <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+                        <span class="required">*</span>
+                        <span>Country :</span>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+                        <lightning-combobox class="country" name="country" variant="label-hidden"
+                        label="Credential Attributes" placeholder="Choose Values" value={country}
+                        onchange={handleChangeCountry} onkeydown={preventBackslash} options={ItemsCountry}>
+                        </lightning-combobox>
+                    </div>
+                    <template if:true={countryErr}>   
+                        <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+                        </div>     
+                        <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+                            <span class="errormsg">
+                                Please select the value
+                            </span> 
+                        </div>         
+                     </template>
+                    <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+                        <span class="required">*</span>
+                        <span>Entity's Address :</span>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+                        <lightning-textarea class="entityAddress" name="entityAddress" variant="label-hidden" value={entityAddress} onchange={handleChangeText}></lightning-textarea>
+                    </div>
+                    <template if:true={entityAddressErr}>   
+                        <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+                        </div>     
+                        <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+                            <span class="errormsg">
+                                Please enter the value
+                            </span> 
+                        </div>         
+                     </template>
+                    <div class="slds-col slds-size_1-of-2 slds-p-top_medium">                        
+                        <span>Reference/identification number issued to you by this entity, if applicable :</span>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+                        <lightning-input  class="referenceNum" name="referenceNum"
+                        onchange={handleChangeText} variant="label-hidden"
+                         value={referenceNum}>
+                        </lightning-input>
+                    </div>
+                    <template if:true={referenceNumErr}>   
+                        <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+                        </div>     
+                        <div class="slds-col slds-size_1-of-2 slds-p-top_medium">
+                            <span class="errormsg">
+                                Please enter the value
+                            </span> 
+                        </div>         
+                     </template>
+                </div>
+            </template>
+        </div>
+        <div class="slds-col slds-size_1-of-2">
+            <c-modal-component class="addAuthScreenModalAsset" title="Source Document" message="" show-primary-button="false"
+            primary-button-text="Add" onprimarybuttonclick={handleAuthYesClick} show-secondary-button="true"
+            secondary-button-text="Ok">
+            <slot>                
+                <c-cloud-document-upload-wrapper class="cloudDocumentUpload"
+                                                pay-load={assetIdToShow}
+                                                max-allowed-file-size=10
+                                                accepted-file-formats=".jpeg,.jpg,.tiff,.pdf"
+                                                enable-annotation="false" enable-redaction="false"
+                                                asset-type={docType}
+                                                hide-upload="true">
+                </c-cloud-document-upload-wrapper>
+            </slot>
+            </c-modal-component>  
+        </div>
+    </div>
+    <div class="btnAlignment">
+        <lightning-button variant="brand" label="Request Report" title="Request Report" onclick={requestRep} class="slds-var-m-left_x-small">
+        </lightning-button> 
+        <lightning-button variant="brand" label="Back" title="Back" onclick={backToRep} class="slds-var-m-left_x-small">
+        </lightning-button> 
+    </div>
+    </div>
+</template>
+<template if:false={showAll}>
+    <div class="btnAlignment">
+        <div>No records found</div><br/>
+    <lightning-button variant="brand" label="Back" title="Back" onclick={backToRep} class="slds-var-m-left_x-small">
+    </lightning-button> 
+    </div>
+</template>
+</template>

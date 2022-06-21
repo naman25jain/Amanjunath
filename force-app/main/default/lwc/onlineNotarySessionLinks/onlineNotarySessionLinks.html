@@ -1,0 +1,43 @@
+<template>
+    <div class="slds-grid slds-gutters">
+        <div class="slds-col slds-size_1-of-1">
+            <span>
+                <h2>Online Notary Session</h2>
+                <br/>
+                <p>
+                    Please ensure you have the following items before you begin the online notary live session with NotaryCam.
+                </p>
+                <ul class="slds-list_dotted">
+                    <li>A computer with a webcam and audio (Visit <a href="https://www.notarycam.com/faq/" target="_blank">https://www.notarycam.com/faq/</a> for system requirements.)</li>
+                    <li>Google Chrome web browser</li>
+                    <li>Reliable high-speed internet connection</li>
+                    <li>Your original, color passport</li>
+                  </ul>
+                <p>Your identification form will be made available during the online notary live session. Once you are ready, please initiate an online notary live session by clicking <lightning-button variant="base" label="here" title="Online Notary Session" onclick={handleNotarySession}></lightning-button>. Wait times may vary.</p>
+            </span>
+        </div>
+    </div>
+    <template if:true={initiateNotarySession}>
+        <div class="demo-only" style="height: 640px;">
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Initiate Live Online Notary Session</h2>
+                    </header>
+                    <div class="slds-modal__content slds-var-p-around_medium" id="modal-content-id-1">
+                        <p class="slds-var-p-bottom_small">Click <strong>Proceed</strong> to initiate your online notary session with NotaryCam. You will leave MyIntealth to enter the session and be subject to NotaryCam's terms of service and policies.</p>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <div class="slds-float_left">
+                            <lightning-button label="Back" variant="brand" title="Back" onclick={handleBack}></lightning-button>
+                        </div>
+                        <div class="slds-float_right">
+                            <lightning-button label="Proceed" variant="brand" title="Proceed" onclick={handleProceed}></lightning-button>
+                        </div>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+    </template>
+</template>

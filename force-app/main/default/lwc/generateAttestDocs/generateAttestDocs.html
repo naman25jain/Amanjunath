@@ -1,0 +1,9 @@
+<template>
+    <div class="slds-modal__content slds-var-p-around_medium slds-is-relative">
+        <lightning-quick-action-panel>
+            <template if:true={spinner}>
+                <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+            </template>
+        </lightning-quick-action-panel>
+    </div>
+</template>

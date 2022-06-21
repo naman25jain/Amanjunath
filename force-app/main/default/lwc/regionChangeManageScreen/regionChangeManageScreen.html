@@ -1,0 +1,162 @@
+<template>
+    <div class="slds-is-relative">
+        <lightning-record-edit-form object-api-name="Exam_Registration__c" onsubmit={handleSubmit}>
+            <template if:true={spinner}>
+                <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+            </template>
+
+            <div class="formMargin">
+                <div>
+                    <h2 class="header"><span>Testing Region Change Request</span></h2>
+                    <p>If you are registered for Step 1 and/or Step 2 CK and are unable to take the exam in the testing region you selected, you may request to change your testing region. There is a fee for changing a USMLE testing region that is due at the time you submit your request. If the international test delivery surcharge for the testing region you request is more than the surcharge for your current testing region, you also must pay the difference in these surcharges. If your testing region is changed, a revised scheduling permit reflecting this change will be issued.  You must present the revised scheduling permit at the test center on your exam date.</p><br>
+                    <p>If you have a scheduled testing appointment in your current testing region, your appointment will be canceled when your testing region is changed. You will need to schedule a new testing appointment at a test center in your new testing region. See information on rescheduling in the applicable edition of the ECFMG <a href="https://www.ecfmg.org/resources/publications.html#ib" target="_blank"><i>Information Booklet</i></a>.</p>
+                </div>
+                <section>
+                    <div class="slds-col slds-p-top_small slds-size_2-of-2">
+                        <span class="slds-text-title_bold f14">Please select the exam(s) for which you would like to request a testing region change:
+                        </span>
+                    </div>
+                </section>
+                <section>
+                    <div class="maincontainer">
+                        <div class="centeralign">
+                            <lightning-formatted-rich-text class='errormsg w80 regionmainerrormsg'></lightning-formatted-rich-text>
+                        </div>
+                        <template if:true={showRegionError}>
+                            <p style="color: red;">You already have a pending region change request for this exam. You cannot submit a region change request at this time.</p>
+                        </template>
+                        <template for:each={examRegistrationsList} for:item="examReg" for:index="examRegIndex">
+                            <div key={examReg.recordIdVal} data-examregid={examReg.recordIdVal} data-caseidval={examReg.caseIdVal} data-indexv={examRegIndex} class="examregloop">
+                                <div class="centeralign">
+                                    <lightning-formatted-rich-text class='errormsg w80 regionerrormsg'></lightning-formatted-rich-text>
+                                </div>
+                                <div class="slds-grid slds-gutters sldsexamregid">
+                                    <div class="slds-col slds-size_1-of-3">
+                                        <template if:true={examReg.isRequestedRegionChange}>
+                                            <lightning-input type="checkbox" class="examtypecheckbox"
+                                                variant="label-hidden"
+                                                name="examtype"
+                                                value={examReg.recordIdVal}
+                                                onchange={showSurchargeRegionSectionClick}
+                                                label={examReg.examType}  checked></lightning-input>
+                                                <span class="slds-text-title_bold examtypetitle">{examReg.examType}</span>
+                                        </template>
+                                        <template if:false={examReg.isRequestedRegionChange}>
+                                            <lightning-input type="checkbox" class="examtypecheckbox"
+                                                variant="label-hidden"
+                                                name="examtype"
+                                                value={examReg.recordIdVal}
+                                                onchange={showSurchargeRegionSectionClick}
+                                                label={examReg.examType} ></lightning-input>
+                                                <span class="slds-text-title_bold examtypetitle">{examReg.examType}</span>
+                                        </template>
+                                    </div>
+                                    <div class="slds-col slds-size_2-of-3">
+                                        <span class="slds-text-body_regular">Current Testing Region <strong>{examReg.testingRegion}</strong> Surcharge  <strong>${examReg.surcharge}</strong></span>
+                                    </div>
+                                </div>
+                                <template if:false={showRegionError}>
+                                    <template if:true={examReg.isRequestedRegionChange}>
+                                        <div class="surchargeregionsection showmode">
+                                            <div class="slds-col slds-p-top_small w80 pB20">
+                                                <span>Select the new region below:</span><br />
+                                                <table class="slds-table slds-table_bordered regiontable">
+                                                    <caption>Testing Region</caption>
+                                                    <thead>
+                                                        <tr class="slds-line-height_reset">
+                                                            <th class="" scope="col">
+                                                                <div class="slds-truncate" title="Testing Region">Testing Region</div>
+                                                            </th>
+                                                            <th class="" scope="col">
+                                                                <div class="slds-truncate" title="Surcharge">Surcharge</div>
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <template for:each={examReg.surchargeLists} for:item='surchargeItem' for:index='index'>
+                                                            <tr key={surchargeItem.regionSurchargeIdVal} data-surchargeid={surchargeItem.regionSurchargeIdVal} class="slds-line-height_reset surchargerow">
+                                                                <template if:true={surchargeItem.selectedSurchargeId}>
+                                                                    <td class="regionSurchargeSection" data-surchargeregion={surchargeItem.regionName}>
+                                                                        <lightning-input type="radio" value={surchargeItem.regionSurchargeIdVal} class="regionradio" label="" data-defaultsurchargeid={surchargeItem.selectedSurchargeId} data-surchargeid={surchargeItem.regionSurchargeIdVal} data-surchargevalue={surchargeItem.regionSurcharge} data-surchargeregion={surchargeItem.regionName} data-regionid={surchargeItem.regionId} name={examReg.recordIdVal} checked></lightning-input>
+                                                                        <span class="regionname">{surchargeItem.regionName}</span><br />
+                                                                        <template if:true={surchargeItem.regionShortDescription}>
+                                                                            <span class="regiondesc">({surchargeItem.regionShortDescription})</span>
+                                                                        </template>
+                                                                    </td>
+                                                                    <td>${surchargeItem.regionSurcharge}</td>
+                                                                </template>
+                                                                <template if:false={surchargeItem.selectedSurchargeId}>
+                                                                    <td class="regionSurchargeSection">
+                                                                        <lightning-input type="radio" value={surchargeItem.regionSurchargeIdVal} class="regionradio" label="" data-regionid={surchargeItem.regionId} data-defaultsurchargeid={surchargeItem.selectedSurchargeId} data-surchargeid={surchargeItem.regionSurchargeIdVal} data-surchargevalue={surchargeItem.regionSurcharge} data-surchargeregion={surchargeItem.regionName} name={examReg.recordIdVal}></lightning-input>
+                                                                        <span class="regionname">{surchargeItem.regionName}</span><br />
+                                                                        <template if:true={surchargeItem.regionShortDescription}>
+                                                                            <span class="regiondesc">({surchargeItem.regionShortDescription})</span>
+                                                                        </template>
+                                                                    </td>
+                                                                    <td>${surchargeItem.regionSurcharge}</td>
+                                                                </template>
+                                                            </tr>
+                                                        </template>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </template>
+                                </template>
+                                <template if:false={examReg.isRequestedRegionChange}>
+                                    <div class="surchargeregionsection hidemode">
+                                        <div class="slds-col slds-p-top_small w80 pB20">
+                                            <span>Select the new region below:</span><br />
+                                            <table class="slds-table slds-table_bordered regiontable">
+                                                <caption>Testing Region</caption>
+                                                <thead>
+                                                    <tr class="slds-line-height_reset">
+                                                        <th class="" scope="col">
+                                                            <div class="slds-truncate" title="Testing Region">Testing Region</div>
+                                                        </th>
+                                                        <th class="" scope="col">
+                                                            <div class="slds-truncate" title="Surcharge">Surcharge</div>
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <template for:each={examReg.surchargeLists} for:item='surchargeItem' for:index='index'>
+                                                        <tr key={surchargeItem.regionSurchargeIdVal} data-surchargeid={surchargeItem.regionSurchargeIdVal} data-surchargeregion={surchargeItem.regionName} data-regionid={surchargeItem.Id} class="slds-line-height_reset surchargerow">
+                                                            <td class="regionSurchargeSection">
+                                                                <lightning-input type="radio" value={surchargeItem.regionSurchargeIdVal} class="regionradio" label="" data-defaultsurchargeid={surchargeItem.selectedSurchargeId} data-surchargeid={surchargeItem.regionSurchargeIdVal} data-surchargeregion={surchargeItem.regionName} data-regionid={surchargeItem.regionId} data-surchargevalue={surchargeItem.regionSurcharge} name={examReg.recordIdVal}></lightning-input>
+                                                                <span class="regionname">{surchargeItem.regionName}</span><br />
+                                                                <template if:true={surchargeItem.regionShortDescription}>
+                                                                    <span class="regiondesc">({surchargeItem.regionShortDescription})</span>
+                                                                </template>
+                                                            </td>
+                                                            <td>${surchargeItem.regionSurcharge}</td>
+                                                        </tr>
+                                                    </template>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+
+                    </div>
+                </section>
+            </div>
+            <div class="buttonAlignment">
+                <lightning-button variant="brand" label="Previous" title="Previous" onclick={prevButton} class="slds-m-left_x-small"></lightning-button>
+                <template if:false={showRegionError}>
+                    <template if:true={btnDisabled}>
+                        <lightning-button variant="brand" label="Next" disabled title="Next" onclick={nextButton} type="submit"
+                            class="slds-m-left_x-small next-btn"></lightning-button>
+                    </template>
+                    <template if:false={btnDisabled}>
+                        <lightning-button variant="brand" label="Next" title="Next" onclick={nextButton} type="submit"
+                            class="slds-m-left_x-small next-btn"></lightning-button>
+                    </template>
+                </template>
+                <lightning-button variant="brand" label="Cancel" title="Cancel" onclick={cancelButton} class="slds-m-left_x-small"></lightning-button>
+            </div>
+        </lightning-record-edit-form>
+    </div>
+</template>

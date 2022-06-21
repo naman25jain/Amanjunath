@@ -1,0 +1,36 @@
+<apex:page id="ContactRedirect" controller="ContactRedirectController">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+
+        $(document).ready(function(){
+            console.log('Begin rediect!');
+
+            Visualforce.remoting.Manager.invokeAction(
+            '{!$RemoteAction.ContactRedirectController.redirect}',
+            function(result, event){
+                if (event.status) {
+                    console.log('result: ' + result);
+
+                    let getUrl = window.parent.location;
+                    console.log('getUrl: ' + getUrl);
+
+                    let baseUrl = getUrl.protocol + "//" + getUrl.host + "/" + getUrl.pathname;
+
+                    let redirectURL = baseUrl.replace("/contactredirect", result)
+                    console.log('redirectURL: ' + redirectURL);
+
+                    window.parent.location.href = redirectURL;
+                    
+                } else if (event.type === 'exception') {
+
+                } else {
+
+                }
+            },
+            {escape: true}
+        );
+
+        })
+    </script>
+</apex:page>

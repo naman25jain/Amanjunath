@@ -1,0 +1,40 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,forceCommunity:availableForAllPageTypes" 
+                access="global" 
+                controller="CommunityIdentityVerificationController">
+	<aura:attribute name="pageReady" type="Boolean" default="false" access="private" description="Indicates that the server calls are complete" />
+    <aura:attribute name="CardNumber" type="Integer" />
+    <aura:attribute name="CVC" type="Integer" />
+    <aura:attribute name="Name" type="String" />
+    <aura:attribute name="Expiration" type="Date" />
+    <aura:attribute name="caseId" type="String" />
+    <aura:attribute name="paymentMade" type="Boolean" default="false" />
+	<aura:attribute name="service" type="String"/>
+	<aura:attribute name="currentCaseNumber" type="String" />
+	<aura:attribute name="caseRecordId" type="String" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+	<aura:if isTrue="{!v.pageReady}">
+		<div>
+			<div class="slds-grid slds-gutters">
+				<div class="slds-col slds-size_1-of-1">
+					<aura:if isTrue="{!!v.paymentMade}">
+						<h1>Payment Information</h1>
+						<ui:inputNumber label="Card Number" format="################" value="{!v.CardNumber}" maxlength="16" size="16" />
+						<ui:inputNumber label="CVC" format="###" value="{!v.CVC}" maxlength="3" size="3" change="{!c.validate}" keypress="{!c.validate}" keyup="{!c.validate}" keydown="{!c.validate}"  updateOn="keypress, keyup, keydown, change"/>
+						<lightning:input name="Name" label="Card Holder Name" value="{!v.Name}" />
+						<lightning:input type="date" name="Expiration" label="Expiration Date" value="{!v.Expiration}" /><br/>
+						<lightning:button class="bluebutton" variant="brand" label="Complete Order ($175.00)" title="Brand action" onclick="{!c.processPayment}" />
+						<aura:set attribute="else">
+							<c:gDisplayContent uniqueContentValue="com_Payment1"/>
+							<div style="display: inline-block;">
+								<c:gDisplayContent uniqueContentValue="duplicate_cert_confirm2"></c:gDisplayContent>
+							</div>
+							<div style="display: inline-block;">&nbsp;{!v.currentCaseNumber}.</div>							
+							<c:gDisplayContent uniqueContentValue="pay_Confirmation2"/>
+							<lightning:button variant="brand" name="next" label="Next" onclick="{!c.handleNext}" />
+						</aura:set>
+					</aura:if>
+				</div>
+			</div>
+		</div>
+	</aura:if>
+</aura:component>

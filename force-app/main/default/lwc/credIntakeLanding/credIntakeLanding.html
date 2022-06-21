@@ -1,0 +1,142 @@
+<template>
+    <template if:true={spinner}>
+        <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+    </template>
+    <template if:true={showSpecInstr}>
+        <template for:each={specInstr} for:item="instr">
+            <div key={instr.id} class="slds-p-top--large">  
+                You have indicated that you plan to apply to the {instr.Name}. Please read the <a href={instr.EPIC_Client_Special_Instructions_url__c} target="_blank" key={instr.id}> 
+                {instr.EPIC_Client_Special_Instructions_Languag__c}</a> before uploading your credentials for verification 
+            </div>
+        </template>
+        <br/>
+    </template>
+    <template if:false={showCredList}>
+        <div class="formMargin slds-p-top--large">
+            <div class="cred-header">
+                <h1>Your {program} Application</h1>
+            </div>
+            <div class="slds-p-top--large"> 
+                <c-g-display-content unique-content-value="Epic_CredIntake_NoCredUploaded"></c-g-display-content>
+            </div>
+        </div>
+    </template>
+    <template if:true={showCredList}>
+        <div class="formMargin slds-p-top--large">
+            <div class="cred-header">
+                <h1>Your {program} Application</h1>
+            </div>
+            <div class="slds-p-top--large">
+                <h1>Added Credentials List</h1>
+            </div>
+        </div>
+        <div class="slds-p-top--small">
+            <table class="slds-border_top slds-table slds-no-cell-focus slds-table_bordered slds-table_edit slds-table_fixed-layout slds-table_resizable-cols"
+                role="grid" >
+                <caption class="bold"></caption>
+                <thead>
+                    <tr class="slds-line-height_reset">
+                        <th aria-label="Document Type" aria-sort="none"
+                            class="slds-is-resizable slds-is-sortable slds-text-align_center"
+                            scope="col">
+                            <span class="slds-truncate" title="Document Type">Document Type</span>
+                        </th>
+                        <th aria-label="Issuing Entity " aria-sort="none"
+                            class="slds-is-resizable slds-is-sortable slds-text-align_center"
+                            scope="col">
+                            <span class="slds-truncate" title="Issuing Entity ">Issuing Entity</span>
+                        </th>
+                        <th aria-label="Issue Date" aria-sort="none"
+                            class="slds-is-resizable slds-is-sortable slds-text-align_center"
+                            scope="col">
+                            <span class="slds-truncate" title="Issue Date">
+                                Issue Date
+                            </span>
+                        </th>
+                        <th aria-label="Title " aria-sort="none"
+                            class="slds-is-resizable slds-is-sortable slds-text-align_center"
+                            scope="col">
+                            <span class="slds-truncate" title="Title ">Title</span>
+                        </th>
+                        <th aria-label="Report Recipient Name" aria-sort="none"
+                            class="slds-is-resizable slds-is-sortable slds-text-align_center"
+                            scope="col">
+                            <span class="slds-truncate" title="Report Recipient Name">Report Recipient Name</span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template for:each={credList} for:item="cred" for:index="credIndex">
+                        <tr key={cred.recordIdVal} data-record-id={cred.recordIdVal} data-case-id-val={cred.caseIdVal} class="cred-id">
+                            <td class="slds-text-align_center whiteSpace">
+                                {cred.documentType}
+                            </td>
+                            <td class="slds-text-align_center whiteSpace">
+                                {cred.issuingEntity}
+                            </td>
+                            <td class="slds-text-align_center whiteSpace">
+                                {cred.issueDate}
+                            </td>
+                            <td class="slds-text-align_center whiteSpace">
+                                {cred.title}
+                            </td>
+                            <td class="slds-text-align_center whiteSpace">
+                                {cred.reportRecipient}
+                            </td> 
+                            <td class="icon-cell slds-text-align_center">
+                                <div class="edit-icon" onclick={editCred}>
+                                    <span
+                                        class="slds-icon_container slds-icon-action-edit slds-icon_container--circle"
+                                        title="Edit">
+                                        <svg class="slds-icon slds-icon--xx-small" aria-hidden="true">
+                                            <use
+                                                xlink:href="/_slds/icons/action-sprite/svg/symbols.svg#edit"></use>
+                                            </use>
+                                        </svg>
+                                        <span class="slds-assistive-text">Edit</span>
+                                    </span>
+                                </div>
+                                <div class="delete-icon" onclick={removeCred}>
+                                    <span
+                                        class="slds-icon_container slds-icon-action-delete slds-icon_container--circle"
+                                        title="Remove">
+                                        <svg class="slds-icon slds-icon--xx-small" aria-hidden="true">
+                                            <use
+                                                xlink:href="/_slds/icons/action-sprite/svg/symbols.svg#delete">
+                                            </use>
+                                        </svg>
+                                        <span class="slds-assistive-text">Remove</span>
+                                    </span>
+                                </div>
+                                <div class="remove-icon" onclick={removeReportRecipient}>
+                                    <span
+                                        class="slds-icon_container slds-icon-action-remove slds-icon_container--circle"
+                                        title="Remove Recipient">
+                                        <svg class="slds-icon slds-icon--xx-small" aria-hidden="true">
+                                            <use
+                                                xlink:href="/_slds/icons/action-sprite/svg/symbols.svg#remove"></use>
+                                            </use>
+                                        </svg>
+                                        <span class="slds-assistive-text">Remove Recipient</span>
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+        </div>
+    </template>
+        <br/><br/>
+    <div class="slds-p-top--large pad">
+        <lightning-button variant="brand" label="Add Credential" title=" Add Credential" class="slds-m-left_x-small" onclick={addCredRedirect}>
+        </lightning-button>
+        <template if:true={showCredList}>
+            <lightning-button variant="brand" label="Next" title="Next" class="slds-m-left_x-small" onclick={showSummary}>
+            </lightning-button>
+        </template>
+        <lightning-button variant="brand" label="Cancel" title="Cancel" class="slds-m-left_x-small cancelButton" onclick={cancelCred}>
+        </lightning-button>
+    </div>
+    <c-modal-component data-id = 'newModalAlert' title='Alert' message='You are about to delete this credential.  Are you sure you want to continue?'  show-secondary-button='true' secondary-button-text='No' onsecondarybuttonclick={closeModal} show-primary-button='true' primary-button-text='Yes' onprimarybuttonclick={deleteYesButton}></c-modal-component>
+</template>

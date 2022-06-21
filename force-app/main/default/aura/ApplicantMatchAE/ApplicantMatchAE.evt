@@ -1,0 +1,8 @@
+<!--
+ - Created by Matthew on 2019-08-13.
+ -->
+ <aura:event type="APPLICATION" description="ApplicantMatchAE" access="global">
+    <aura:attribute name="contact" type="Contact" description="The contact that was chosen." />
+    <aura:attribute name="showMatches" type="Boolean" default="false" description="Indicates if the potential matches section should be shown."/>
+    <aura:attribute name="cibisDupMatch" type="Boolean" default="false" description="Indicates if the potential Cibis Duplicate matches section should be shown."/>
+</aura:event>

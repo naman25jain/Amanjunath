@@ -1,0 +1,51 @@
+.headertxt{
+    font-weight: bold;    
+}
+.headeralign {
+    padding: 10px 0;
+}
+.secContainer{
+    padding:10px 0 20px 0;
+}
+.thHead {
+    padding:5px 0px;
+}
+.noRecordsSection {
+    padding:15px 0 10px 0;
+}
+.caseNumberTd button {
+    border: none !important;
+    width:75px;
+}
+.bloc1, .bloc2
+{
+    display:inline;
+}
+.tableBlock{
+    width: 20px;
+    height: 20px;
+}
+h1{
+    font-size:xx-large;
+}
+.tableBlock{
+    height: 300px;
+}
+.bloc2 {
+    padding:15px 0 10px 0;
+    float:right;
+}
+.blocContainer{
+    padding-bottom: 20px;
+    clear:both;
+}
+.blocContainer h1{
+    display:inline;
+}
+
+.slds-resizable__divider{
+    display:none !important;
+}
+.comboBoxClass{
+    width:7rem;
+}

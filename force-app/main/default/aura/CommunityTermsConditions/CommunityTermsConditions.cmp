@@ -1,0 +1,54 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,forceCommunity:availableForAllPageTypes" 
+                access="global" 
+                controller="CommunityIdentityVerificationController"
+				extends="c:CommunityBase">
+    <aura:attribute name="service" type="String" />
+	<aura:attribute name="TC_1" type="Boolean" default="false"/>
+	<aura:attribute name="TC_2" type="Boolean" default="false"/>
+	<aura:attribute name="TC_3" type="Boolean" default="false"/>
+	<aura:attribute name="TC_4" type="Boolean" default="false"/>
+	<aura:attribute name="TC_5" type="Boolean" default="false"/>
+	<aura:attribute name="isAccepted" type="Boolean" default="false"/>
+	<aura:attribute name="TC_5_Disabled" type="Boolean" default="true"/>
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+	
+		<div>
+			<h1>Certification by Applicant</h1>
+			<h2>Release of Legal Claims, Waiver of Liability, Indemnification, and Hold Harmless Statement</h2>
+			<c:gDisplayContent uniqueContentValue="EpicTermsAndConditions">
+		    </c:gDisplayContent>		
+			<lightning:input type="checkbox" name="TC_1" value="{!v.TC_1}" aura:id="TC_1" checked="{!v.TC_1}"  />
+			<label for="TC_1">By checking this box, I confirm that I have read, understood, and agree to the Release of Legal Claims, Waiver of Liability, Indemnification, and Hold Harmless Statement as described above.</label>
+			
+			<h2>Release of Information Authorization</h2>			
+			<c:gDisplayContent uniqueContentValue="TermsNconditionInfoAuth">
+		    </c:gDisplayContent>
+			<lightning:input type="checkbox" name="TC_2"  value="{!v.TC_2}" aura:id="TC_2" checked="{!v.TC_2}" />
+			<label for="TC_2">By checking this box, I confirm that I have read, understood, and agree to the Release of Information Authorization as described above.</label>						
+					<h2>Privacy Notice</h2>					
+					<c:gDisplayContent uniqueContentValue="PrivacyNotes">
+					</c:gDisplayContent>					
+			<lightning:input type="checkbox" name="TC_3" value="{!v.TC_3}" aura:id="TC_3" checked="{!v.TC_3}"  />
+			<label for="TC_3">By checking this box, I certify that I have read, understood, and agree to the ECFMG Privacy Notice.</label>
+			
+			<h2>Use Of Credentials</h2>
+			<lightning:input type="checkbox" name="TC_4" value="{!v.TC_4}" aura:id="TC_4" checked="{!v.TC_4}"  />
+				<c:gDisplayContent uniqueContentValue="usercredentials">
+		        </c:gDisplayContent>
+			<h2>Certification</h2>
+			<lightning:input style="display: inline;" type="checkbox" name="TC_5" value="{!v.TC_5}" aura:id="TC_5" checked="{!v.TC_5}" />
+			<label for="TC_5">				
+				<c:gDisplayContent uniqueContentValue="CertificationCheckbox">
+		        </c:gDisplayContent>
+			</label>
+			<div align="right">
+				<lightning:button class="redbutton" variant="brand" label="Back" title="Brand action" onclick="{!c.gotoPrev}" />&nbsp;&nbsp;&nbsp;&nbsp;
+				<aura:if isTrue="{!or(or(or(or(!v.TC_1, !v.TC_2),!v.TC_3),!v.TC_4),!v.TC_5)}">
+					<lightning:button class="greybutton" variant="brand" label="Proceed to Payment" title="Brand action" onclick="{!c.gotoPayment}" disabled="{!or(or(or(or(!v.TC_1, !v.TC_2),!v.TC_3),!v.TC_4),!v.TC_5)}"/>
+					<aura:set attribute="else">
+						<lightning:button class="bluebutton" variant="brand" label="Proceed to Payment" title="Brand action" onclick="{!c.gotoPayment}" disabled="{!or(or(or(or(!v.TC_1, !v.TC_2),!v.TC_3),!v.TC_4),!v.TC_5)}"/>
+					</aura:set>
+				</aura:if>
+			</div>
+		</div>
+</aura:component>

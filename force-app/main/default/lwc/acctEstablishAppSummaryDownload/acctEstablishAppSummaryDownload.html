@@ -1,0 +1,10 @@
+<template>
+    <div class="padding">
+        <template if:true={showDownloadlink}>
+            <a  href="javascript:void(0)" data-key={appSummaryAssetURL} onclick={downloadAppSummary}><lightning-icon icon-name="action:download" alternative-text="Download" title="Download" size="small"></lightning-icon></a>
+        </template>
+        <template if:false={showDownloadlink}>
+            No summary available for download.
+        </template>
+     </div>
+</template>

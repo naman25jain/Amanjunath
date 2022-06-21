@@ -1,0 +1,78 @@
+<template>
+    <template if:true={showCVSHome}>
+        <div></br></div>
+        <div class="heading">
+            <p class="subheading">
+                Request a CVS Report
+            </p>
+        </div>
+        <div>
+            <div class="padding">
+                <c-g-display-content unique-content-value="CVS_Requests__C"></c-g-display-content>
+            </div>
+        </div>
+        <div></br></div>
+        <div class="btnPadding">
+            <lightning-button variant="brand" label="New CVS Request" title="New CVS Request" onclick={requestRep} disabled={disableRequestCVSButton} class="slds-var-m-left_x-small"></lightning-button>
+        </div>
+        <div class="padding">
+            <template if:true={showError}>
+                <c-g-display-content unique-content-value="CVS_New_Restriction_Msg"></c-g-display-content>
+            </template>
+        </div>
+        <c-cvs-request-reports-history></c-cvs-request-reports-history> 
+        <template if:true={isApplicantBio}>      
+            <div class="slds-m-top_medium">
+            <strong>
+                <div class="padding" >
+                    <c-g-display-content unique-content-value="CVS_Requests_NotAllowed__C"></c-g-display-content>
+                </div>   
+            </strong>
+        </div>
+        </template>
+    </template>
+    <template if:true={showDetails}>
+        <c-app-for-cert-profile-review get-id-from-parent={contactId} get-link-source={linkSource}>
+        </c-app-for-cert-profile-review>
+        <div class="buttonAlignment">
+            <lightning-button variant="brand" label="Previous" title="Previous" onclick={showCVSLandingScreen} class="slds-var-m-left_x-small cancelButton"></lightning-button>
+            <lightning-button variant="brand" label="Next" title="Next" onclick={showCVSDetails} class="slds-var-m-left_x-small"></lightning-button>
+        </div>
+    </template>
+    <lightning-card if:true={visible}>
+        <div class="slds-container_small">
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">{title}</h2>
+                    </header>
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <p><c-g-display-content unique-content-value="CVS_Not_Certified_Language"></c-g-display-content></p>
+                    </div>
+                    <footer class="slds-modal__footer">
+                        <lightning-button class="buttnPadding" variant="neutral"
+                                          name="cancel"
+                                          label="Cancel"
+                                          title="Cancel"
+                                          onclick={reqcancel} ></lightning-button>
+                        <lightning-button variant="brand"
+                                          name="confirm"
+                                          label="Confirm"
+                                          title="Confirm"
+                                          onclick={reqconfirm} ></lightning-button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </div>
+    </lightning-card>
+    <template if:true={showSelectAuthority}>
+        <c-cvs-select-authority user="Applicant" oncancelevent={showCVSLandingScreen1} onprevevent={showPrevScreen} onnextevent={showSummaryScreen} case-id={caseId}></c-cvs-select-authority>
+    </template>
+    <template if:true={showSummary}>
+        <c-cvs-summary-screen onnextevent={showShoppingCartPage} oncancelevent={showCVSLandingScreen} onaddnewreq={showEntitySelection} oneditevent={showUpdateSelection} source="applicant"></c-cvs-summary-screen>
+    </template>
+    <template if:true={showShoppingCart}>
+        <c-shopping-cart onpreviousevent={showSummaryScreen} case-record-id={caseRecordId}></c-shopping-cart>
+    </template>
+</template>

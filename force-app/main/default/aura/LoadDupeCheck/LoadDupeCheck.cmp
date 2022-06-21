@@ -1,0 +1,365 @@
+<!--
+ - Created by Matthew on 2019-05-21.
+ -->
+
+<aura:component
+    implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,forceCommunity:availableForAllPageTypes,force:hasRecordId"
+    access="global"
+    controller="DuplicateCheckController"
+    description="LoadDupeCheck"
+    extends="c:CommunityBase">
+
+    <aura:attribute name="activeSections" type="List" default="['applicantMatches','entityMatches']" />
+
+    <aura:attribute name="disabled" type="Boolean" default="false"/>
+
+    <aura:attribute name="verificationRequest" type="Object" access="public"/>
+    <aura:attribute name="entityServiceRequest" type="Object" access="public"/>
+
+    <aura:attribute name="applicantData" type="Object"/>
+    <aura:attribute name="applicantColumns" type="List"/>
+    <aura:attribute name="applicantSelectedRows" type="List"/>
+    <aura:attribute name="applicantMatchCount" type="String" default="…"/>
+    <aura:attribute name="applicantSectionLabelTemplate" type="String" default="Applicant Matches ({0})"/>
+    <aura:attribute name="applicantSectionLabel" type="String" default="Applicant Matches"/>
+    <aura:attribute name="applicantLinkedSectionLabel" type="String" default="Linked Applicant"/>
+    <aura:attribute name="selectedApplicantId" type="String"/>
+    <aura:attribute name="showLinkApplicantButton" type="Boolean" default="false"/>
+    <aura:attribute name="showUnlinkApplicantButton" type="Boolean" default="false"/>
+    <aura:attribute name="showCreateApplicantButton" type="Boolean" default="false"/>
+
+
+    <aura:attribute name="entityData" type="Object"/>
+    <aura:attribute name="entityColumns" type="List"/>
+    <aura:attribute name="entitySelectedRows" type="List"/>
+    <aura:attribute name="entityMatchCount" type="String" default="…"/>
+    <aura:attribute name="entitySectionLabelTemplate" type="String" default="Entity Matches ({0})"/>
+    <aura:attribute name="entitySectionLabel" type="String" default="Entity Matches"/>
+    <aura:attribute name="entityLinkedSectionLabel" type="String" default="Linked Entity"/>
+    <aura:attribute name="selectedEntityId" type="String"/>
+    <aura:attribute name="showLinkEntityButton" type="Boolean" default="false"/>
+    <aura:attribute name="showUnlinkEntityButton" type="Boolean" default="false"/>
+    <aura:attribute name="showNewEntityButton" type="Boolean" default="false"/>
+
+    <aura:attribute name="case" type="Object"/>
+    <aura:attribute name="linkedApplicant" type="Object" description="The linked applicant (contact)."/>
+    <aura:attribute name="linkedEntity" type="Object" description="The linked entity (account)."/>
+    <aura:attribute name="linkedPlaceholder" type="String" default="-"/>
+    <aura:attribute name="linkedApplicantName" type="String" />
+    <aura:attribute name="linkedEntityName" type="String" />
+
+
+    <aura:attribute name="compareOptions" type="List" default="[{'label': 'None', 'value': 'none'}, {'label': 'Same', 'value': 'same'}, {'label': 'Difference', 'value': 'difference'}]"/>
+    <aura:attribute name="compareOptionsValue" type="String" default="difference"/>
+    <aura:attribute name="compareData" type="Object"/>
+    <aura:attribute name="compareColumns" type="List"/>
+    <aura:attribute name="compareSelectedRows" type="List"/>
+
+    <aura:attribute name="showLinkSelectedApplicantModal" type="Boolean" default="false"/>
+    <aura:attribute name="showCreateApplicantModal" type="Boolean" default="false"/>
+    <aura:attribute name="showLinkSelectedEntityModal" type="Boolean" default="false"/>
+    <aura:attribute name="showNewEntityModal" type="Boolean" default="false"/>
+    <aura:attribute name="showCompareModal" type="Boolean" default="false"/>
+    <aura:attribute name="currentlyOpenCompareModal" type="String"/>
+    <aura:attribute name="showCompareModalLinkButton" type="Boolean" default="false"/>
+    <aura:attribute name="compareModalObjectId" type="String"/>
+
+
+    <aura:attribute name="scoreNotAvailablePlaceholder" type="String" default="-"/>
+
+    <!--<aura:handler name="change" value="{!v.case}" action="{! c.caseOnChange }"/>-->
+
+    <aura:handler name="init" value="{! this }" action="{! c.init }"/>
+
+    <div class="slds-box">
+        <div class="slds-grid slds-gutters">
+            <div class="slds-col">
+                <div class="slds-form-element slds-form-element_readonly slds-hint-parent" style="border: none;">
+                    <span class="slds-form-element__label slds-truncate" title="Status">Linked Applicant</span>
+                    <div class="slds-form-element__control">
+                        <div class="slds-form-element__static slds-truncate">
+                            <span>{!v.linkedApplicantName}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="slds-col">
+                <div class="slds-form-element slds-form-element_readonly slds-hint-parent" style="border: none;">
+                    <span class="slds-form-element__label slds-truncate" title="Status">Linked Entity</span>
+                    <div class="slds-form-element__control">
+                        <div class="slds-form-element__static slds-truncate">
+                            <span>{!v.linkedEntityName}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <lightning:accordion aura:id="accordion" activeSectionName="{!v.activeSections}" allowMultipleSectionsOpen="true" >
+        <lightning:accordionSection name="applicantMatches" label="{!v.applicantSectionLabel}">
+            <aura:set attribute="actions">
+                <lightning:buttonGroup>
+                    <aura:if isTrue="{!v.showLinkApplicantButton}">
+                        <lightning:button label="Link Selected" onclick="{!c.applicantLinkButtonOnClick}" disabled="{!v.disabled}"/>
+                    </aura:if>
+                    <aura:if isTrue="{!v.showUnlinkApplicantButton}">
+                        <lightning:button label="Unlink Applicant" onclick="{!c.applicantUnlinkButtonOnClick}" disabled="{!v.disabled}"/>
+                    </aura:if>
+                    <aura:if isTrue="{!v.showCreateApplicantButton}">
+                        <lightning:button label="Create New" onclick="{!c.createApplicantButtonOnClick}" disabled="{!v.disabled}"/>
+                    </aura:if>
+                </lightning:buttonGroup>
+            </aura:set>
+            <aura:set attribute="body">
+                <lightning:datatable
+                        aura:id="applicantTable"
+                        data="{!v.applicantData }"
+                        columns="{!v.applicantColumns}"
+                        keyField="Id"
+                        selectedRows="{!v.applicantSelectedRows}"
+                        hideCheckboxColumn="true"
+                        maxRowSelection="1"
+                        onrowselection="{!c.applicantTableRowOnSelect}"
+                        onrowaction="{!c.onApplicantRowAction}"
+                />
+            </aura:set>
+        </lightning:accordionSection>
+        <lightning:accordionSection name="entityMatches" label="{!v.entitySectionLabel}">
+            <aura:set attribute="actions">
+                <lightning:buttonGroup>
+                    <aura:if isTrue="{!v.showLinkEntityButton}">
+                        <lightning:button label="Link Selected" onclick="{!c.entityLinkButtonOnClick}" disabled="{!v.disabled}"/>
+                    </aura:if>
+                    <aura:if isTrue="{!v.showUnlinkEntityButton}">
+                        <lightning:button label="Unlink Entity" onclick="{!c.entityUnlinkButtonOnClick}" disabled="{!v.disabled}"/>
+                    </aura:if>
+                    <aura:if isTrue="{!v.showNewEntityButton}">
+                        <lightning:button label="Request New" onclick="{!c.entityNewButtonOnClick}" disabled="{!v.disabled}"/>
+                    </aura:if>
+                </lightning:buttonGroup>
+            </aura:set>
+            <aura:set attribute="body">
+
+                <aura:if isTrue="{!v.showNewEntityButton == false}">
+                    <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_warning" role="alert">
+                        <span class="slds-assistive-text">warning</span>
+                        <h2>An Entity Service Request is created with a status of <strong>{!v.entityServiceRequest.Internal_Status__c}</strong>.</h2>
+                        <div class="slds-notify__close">
+                            <button class="slds-button slds-button_icon slds-button_icon-small" title="Close">
+                                <span class="slds-assistive-text">Close</span>
+                            </button>
+                        </div>
+                    </div>
+                </aura:if>
+
+
+                <lightning:datatable
+                        aura:id="entityTable"
+                        data="{!v.entityData }"
+                        columns="{!v.entityColumns}"
+                        keyField="Id"
+                        selectedRows="{!v.entitySelectedRows}"
+                        hideCheckboxColumn="true"
+                        maxRowSelection="1"
+                        onrowselection="{!c.entityTableRowOnSelect}"
+                        onrowaction="{!c.onEntityRowAction}"
+                />
+            </aura:set>
+        </lightning:accordionSection>
+    </lightning:accordion>
+
+    <aura:if isTrue="{!v.showLinkSelectedApplicantModal}">
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <!-- Modal/Popup Box Header Starts here-->
+                <header class="slds-modal__header">
+                    <lightning:buttonIcon iconName="utility:close"
+                                          onclick="{! c.closeModel }"
+                                          alternativeText="close"
+                                          variant="bare-inverse"
+                                          class="slds-modal__close"/>
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Link Selected Applicant?</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <p>You are about to link this case to the selected applicant record. Do you wish to continue?</p>
+                </div>
+                <footer class="slds-modal__footer">
+                    <lightning:button variant="neutral"
+                                      label="Back"
+                                      title="Back"
+                                      onclick="{! c.linkSelectedApplicantModalBackOnClick }"
+                                      disabled="{!v.disabled}"/>
+                    <lightning:button variant="brand"
+                                      label="Proceed"
+                                      title="Proceed"
+                                      onclick="{!c.linkSelectedApplicantModalProceedOnClick}"
+                                      disabled="{!v.disabled}"/>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </aura:if>
+
+    <aura:if isTrue="{!v.showCreateApplicantModal}">
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <!-- Modal/Popup Box Header Starts here-->
+                <header class="slds-modal__header">
+                    <lightning:buttonIcon iconName="utility:close"
+                                          onclick="{! c.closeModel }"
+                                          alternativeText="close"
+                                          variant="bare-inverse"
+                                          class="slds-modal__close"/>
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Create New Applicant?</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <p>You are about to create a new applicant record. Do you wish to continue?</p>
+                </div>
+                <footer class="slds-modal__footer">
+                    <lightning:button variant="neutral"
+                                      label="Back"
+                                      title="Back"
+                                      onclick="{! c.createApplicantModalBackOnClick }"
+                                      disabled="{!v.disabled}"/>
+                    <lightning:button variant="brand"
+                                      label="Proceed"
+                                      title="Proceed"
+                                      onclick="{!c.createApplicantModalProceedOnClick}"
+                                      disabled="{!v.disabled}"/>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </aura:if>
+
+    <aura:if isTrue="{!v.showLinkSelectedEntityModal}">
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <!-- Modal/Popup Box Header Starts here-->
+                <header class="slds-modal__header">
+                    <lightning:buttonIcon iconName="utility:close"
+                                          onclick="{! c.closeModel }"
+                                          alternativeText="close"
+                                          variant="bare-inverse"
+                                          class="slds-modal__close"/>
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Link Selected Entity?</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <p>You are about to link the selected entity record to this case. Do you wish to continue?</p>
+                </div>
+                <footer class="slds-modal__footer">
+                    <lightning:button variant="neutral"
+                                      label="Back"
+                                      title="Back"
+                                      onclick="{! c.linkSelectedEntityModalBackOnClick }"
+                                      disabled="{!v.disabled}"/>
+                    <lightning:button variant="brand"
+                                      label="Proceed"
+                                      title="Proceed"
+                                      onclick="{!c.linkSelectedEntityModalProceedOnClick}"
+                                      disabled="{!v.disabled}"/>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </aura:if>
+
+
+    <aura:if isTrue="{!v.showNewEntityModal}">
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <!-- Modal/Popup Box Header Starts here-->
+                <header class="slds-modal__header">
+                    <lightning:buttonIcon iconName="utility:close"
+                                          onclick="{! c.closeModel }"
+                                          alternativeText="close"
+                                          variant="bare-inverse"
+                                          class="slds-modal__close"/>
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Request New Entity?</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <p>You are about to place this case on hold and request for the entity to be added. Do you wish to continue?</p>
+                </div>
+                <footer class="slds-modal__footer">
+                    <lightning:button variant="neutral"
+                                      label="Back"
+                                      title="Back"
+                                      onclick="{! c.newEntityModalBackOnClick }"
+                                      disabled="{!v.disabled}"/>
+                    <lightning:button variant="brand"
+                                      label="Proceed"
+                                      title="Proceed"
+                                      onclick="{!c.newEntityModalProceedOnClick}"
+                                      disabled="{!v.disabled}"/>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </aura:if>
+
+
+    <aura:if isTrue="{!v.showCompareModal}">
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <!-- Modal/Popup Box Header Starts here-->
+                <header class="slds-modal__header">
+                    <lightning:buttonIcon iconName="utility:close"
+                                          onclick="{! c.closeModel }"
+                                          alternativeText="close"
+                                          variant="bare-inverse"
+                                          class="slds-modal__close"/>
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Side-by-Side Compare</h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <div class="slds-grid slds-grid_vertical">
+                        <div class="slds-col">
+                            <div class="slds-grid slds-grid_align-center slds-p-vertical_small">
+                                <div class="slds-col slds-p-around_xxx-small">
+                                    <span>Highlight:&nbsp;&nbsp;</span>
+                                </div>
+                                <div class="slds-col slds-p-around_xxx-small">
+                                    <lightning:input type="radio" label="Same" name="compareOptions" value="same" checked="true" onclick="{!c.compareOptionsOnClick}"/>
+                                </div>
+                                <div class="slds-col slds-p-around_xxx-small">
+                                    <lightning:input type="radio" label="Differences" name="compareOptions" value="different" onclick="{!c.compareOptionsOnClick}"/>
+                                </div>
+                                <div class="slds-col slds-p-around_xxx-small">
+                                    <lightning:input type="radio" label="None" name="compareOptions" value="none" onclick="{!c.compareOptionsOnClick}"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-col">
+                            <lightning:datatable
+                                    aura:id="compareTable"
+                                    data="{!v.compareData }"
+                                    columns="{!v.compareColumns}"
+                                    selectedRows="{!v.compareSelectedRows}"
+                                    hideCheckboxColumn="true"
+                                    keyField="Id"
+                            />
+
+                        </div>
+                    </div>
+                </div>
+                <footer class="slds-modal__footer">
+                    <aura:if isTrue="{!v.showCompareModalLinkButton}">
+                        <lightning:button variant="neutral"
+                                          label="Link"
+                                          title="Link"
+                                          onclick="{! c.compareModalLinkOnClick }"
+                                          disabled="{!v.disabled}"/>
+                    </aura:if>
+                    <lightning:button variant="neutral"
+                                      label="Close"
+                                      title="Close"
+                                      onclick="{! c.compareModalCloseOnClick }"
+                                      disabled="{!v.disabled}"/>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </aura:if>
+
+
+</aura:component>

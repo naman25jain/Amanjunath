@@ -1,0 +1,50 @@
+<!--
+ - Created by Matthew on 10/31/18.
+ -->
+<aura:component controller="ApplicantCommunityController" description="Contact Association Type" implements="lightning:availableForFlowScreens,forceCommunity:availableForAllPageTypes">
+
+    <aura:attribute name="contactId" type="String" />
+    <aura:attribute name="associationTypes" type="ContactAssociationTypeViewModel[]" />
+    <aura:attribute name="recordNameSingularLower" type="String" />
+    <aura:attribute name="recordNamePluralLower" type="String" />
+    <aura:attribute name="visible" type="Boolean" default="true" description="Indicates if the list control is visible."/>
+
+    <!-- Design Attributes -->
+    <aura:attribute name="recordNameSingular" type="String" default="School" />
+    <aura:attribute name="recordNamePlural" type="String" default="Schools" />
+    <aura:attribute name="submittedRecordType" type="String" default="Unapproved Medical School" />
+    <aura:attribute name="associationRecordType" type="String" default="Degree Medical School" />
+    <aura:attribute name="readOnly" type="Boolean" default="false" description="Indicates if the list control is not editable."/>
+
+    <aura:registerEvent name="notificationEvent" type="c:NotificationEvent"/>
+
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}" />
+
+    <aura:handler event="c:ContactAssociationTypeAddedAE" action="{!c.handleAssociationTypeAddedEvent}" />
+    <aura:handler event="c:ContactAssociationTypeDeletedAE" action="{!c.handleAssociationTypeDeletedEvent}" />
+    <aura:handler event="c:ContactAssociationTypeStateAE" action="{!c.handleAssociationTypeStateEvent}" />
+
+    <aura:if isTrue="{!v.visible}">
+        <div class="slds-grid slds-wrap">
+            <aura:iteration items="{!v.associationTypes}" var="associationType">
+
+<!--                <h1>readOnly: {!v.readOnly}</h1>-->
+
+                <div class="slds-col slds-size_1-of-2 slds-p-around_x-small">
+                    <c:ContactAssociationTypeCard
+                            associationType="{!associationType}"
+                            associationRecordType="{!v.associationRecordType}"
+                            recordNamePlural="{!v.recordNamePlural}"
+                            recordNameSingular="{!v.recordNameSingular}"
+                            recordNamePluralLower="{!v.recordNamePluralLower}"
+                            recordNameSingularLower="{!v.recordNameSingularLower}"
+                            readOnly="{!v.readOnly}"
+                    />
+                </div>
+            </aura:iteration>
+        </div>
+    </aura:if>
+
+    <c:Notification />
+
+</aura:component>

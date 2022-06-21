@@ -1,0 +1,210 @@
+<aura:component controller="FindDuplicateApplicantsController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,lightning:availableForFlowScreens" access="global">
+    <aura:attribute name="recordId" type="String" access="global" />
+    <aura:attribute name="contactId" type="Id" />
+    <aura:attribute name="contactObject" type="Object" />
+    <aura:attribute name="caseContactObject" type="Object" />
+    <aura:attribute name="currentCaseContactObject" type="Object" />
+    <aura:attribute name="duplicatelist" type="Contact[]" />
+    <aura:attribute name="RecordIdIsCase" type="string" access="global"/>
+    <aura:attribute name="record" type="Object" />
+    <aura:attribute name="simpleRecord" type="Object" />
+    <aura:attribute name="recordError" type="Object" />
+    <aura:attribute name="selectedrecordid" type="Id" />
+    <aura:attribute name="isOpen" type="boolean" default="false"/>
+    <aura:attribute name="contactsToDelete" type="List"/>
+    <aura:attribute name="selectedContact" type="String"/>
+    <aura:attribute name="selectedContactEmail" type="String"/>
+    <aura:attribute name="areNoDupes" type="Boolean" />
+    <aura:attribute name="isCurrentContactRecord" type="Boolean"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+
+
+    <!--flow attributes-->
+    <!--inputs-->
+    <aura:attribute name="componentCaseId" type="String" access="global"/>
+    <aura:attribute name="componentContactId" type="String" access="global"/>
+    <aura:attribute name="currentComponentContactIdOutput" type="String" access="global"/>
+    <aura:attribute name="currentComponentContactEmailOutput" type="String" access="global"/>
+    <aura:attribute name="currentComponentContactFirstNameOutput" type="String" access="global"/>
+    <aura:attribute name="currentComponentContactLastNameOutput" type="String" access="global"/>
+    <!--outputs-->
+    <aura:attribute name="selectedComponentContactIdOutput" type="String" access="global"/>
+    <aura:attribute name="selectedComponentContactFirstNameOutput" type="String" access="global"/>
+    <aura:attribute name="selectedComponentContactLastNameOutput" type="String" access="global"/>
+    <aura:attribute name="selectedComponentContactEmailOutput" type="String" access="global"/>
+    <aura:attribute name="duplicatesSelected" type="Boolean" access="global"/>
+    <aura:attribute name="duplicateContactRecordTypeId" type="String" access="global"/>
+    <aura:attribute name="selectedAccountId" type="String" access="global"/>
+
+    <!-- remove these -->
+    <aura:attribute name="sampleOutput" type="String" access="global"/>
+    <aura:attribute name="selectedComponentContactNameOutput" type="String" access="global"/>
+    <aura:attribute name="componentContactIdOutput" type="String" access="global"/>
+    <aura:attribute name="componentContactNameOutput" type="String" access="global"/>
+    <aura:attribute name="componentContactEmailOutput" type="String" access="global"/>
+    <aura:attribute name="currentComponentContactNameOutput" type="String" access="global"/>
+
+
+    <!--end remove -->
+
+
+
+
+
+    <force:recordData aura:id="recordLoader"
+                      recordId="{!v.componentCaseId}"
+                      fields="ContactId,Contact.NotDuplicates__c, RecordTypeId, Internal_Status__c, Contact.Name, Contact.Email"
+                      targetFields="{!v.simpleRecord}"
+                      targetRecord="{!v.contactObject}"
+                      targetError="{!v.recordError}"
+                      />
+    <!-- recordUpdated="{!c.handleUpdated}"-->
+    <div aura:id="searchRes" class="slds-form-element slds-lookup">
+    </div>
+    <div>
+
+        <lightning:card class="card">
+            <lightning:accordion aura:id="duplicatelistaccordion" activeSectionName="A">
+                <lightning:accordionSection name="A" label="Potential Duplicates">
+
+                    <table class="slds-table">
+                        <tr> <td>
+                                <aura:if isTrue="{!v.areNoDupes}">
+                                    <center>
+                                        <ui:outputText class="moveLeft" value="No Duplicates Found"/>
+                                        <lightning:button label="Ok" aura:id="okButton" onclick="{!c.navigateNext}"></lightning:button>
+                                    </center>
+                                    <aura:set attribute="else">
+                                        <!--<center>-->
+                                        <ui:outputText value="Duplicates Found"/>
+                                        <br/>
+                                        <div style="display:inline-flex">
+                                        <lightning:button label="Select Duplicate Applicants" onclick="{!c.openModel}" aura:id="selectBtn"></lightning:button>
+                                            <br/>
+                                            <lightning:button variant="brand"
+                                                              aura:id="proceedWithoutSelecting"
+                                                              label="Proceed Without Selecting Duplicate"
+                                                              title="Proceed Without Selecting Duplicate"
+                                                              onclick="{! c.navigateNext }"/>
+                                        <!--</center>-->
+                                        </div>
+                                    </aura:set>
+                                </aura:if>
+                            </td>
+                        </tr>
+                    </table>
+                    <hr />
+                </lightning:accordionSection>
+                
+            </lightning:accordion>
+
+        </lightning:card>
+
+    </div>
+<!--Start Modal-->
+        <aura:if isTrue="{!v.isOpen}">
+
+            <!--###### MODAL BOX Start######-->
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <!-- ###### MODAL BOX HEADER Start ######-->
+                    <header class="slds-modal__header">
+                        <lightning:buttonIcon iconName="utility:close"
+                                              onclick="{! c.closeModel }"
+                                              alternativeText="close"
+                                              variant="bare-inverse"
+                                              class="slds-modal__close"/>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Potential Duplicate Contacts For:</h2>
+                        <div class="slds-col">
+
+                            <p class="slds-p-horizontal_small slds-p-bottom_small">
+                                Current Case Contact:
+
+                                <a href="{!'/' + v.currentCaseContactObject.Id}" target="_blank">
+                                    {!v.currentCaseContactObject.Name}&nbsp;{!v.currentCaseContactObject.Generational_Suffix__c}
+                                </a>
+                                <br/>
+                                <br/>
+                                <!--start columns-->
+                                <!--<div class="slds-col slds-size_4-of-12"></div>-->
+                            <div class="slds-grid slds-wrap">
+                                <div class="slds-col slds-size_4-of-12"> DOB: {!v.currentCaseContactObject.Birthdate}</div>
+                                <div class="slds-col slds-size_4-of-12">Gender: {!v.currentCaseContactObject.Gender__c}</div>
+                                <div class="slds-col slds-size_4-of-12">EPIC ID: {!v.currentCaseContactObject.EPIC_Id__c}</div>
+                                <div class="slds-col slds-size_4-of-12">USMLE ID: {!v.currentCaseContactObject.USMLE_ID__c}</div>
+                                <div class="slds-col slds-size_4-of-12">EICS ID: {!v.currentCaseContactObject.EICS_ID__c}</div>
+                                <!--will have to make these iterations if needed-->
+                                <!--<div class="slds-col slds-size_4-of-12"> Student ID: {!v.currentCaseContactObject.Contact_Medical_Schools__r.Student_ID__c}</div>-->
+                                <!--<div class="slds-col slds-size_12-of-12">Degree Medschool Name: {!v.currentCaseContactObject.Contact_Medical_Schools__r.Account__r.Name}</div>-->
+
+                            </div>
+
+                            </p>
+                        </div>
+                    </header>
+                    <!--###### MODAL BOX BODY Part Start######-->
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        Duplicate(s) Found:
+                        <!--<ui:outputText value="Select Duplicate Contacts to Delete:"/>-->
+                        <aura:iteration items="{!v.duplicatelist}" var="rec">
+
+                            <lightning:card title="{!rec.name}" class="dupeBox" aura:id="dupeBoxes">
+                                <div class="slds-border--bottom">
+                                <div class="slds-grid slds-gutters slds-wrap dupeInfo"  id="{!rec.Id}">
+                                    <div class="slds-size_1-of-12">
+                                        <div class="slds-text-align_center slds-m-around_x-small">
+                                            <lightning:input type="radio"  aura:id="radioButton" onchange="{!c.contactSelected}"  value="{!rec.Id}" id="{!rec.AccountId}" name="radioGroup"/>
+                                        </div>
+                                    </div>
+                                    <div class="slds-col">
+
+                                        <p class="slds-p-horizontal_small slds-p-bottom_small">
+
+                                            <a href="{!'/' + rec.Id}" target="_blank">
+                                                {!rec.Name}&nbsp;{!rec.Generational_Suffix__c}
+                                            </a>
+                                            <br/>
+                                            DOB: {!rec.Birthdate}<br/>
+                                            Gender: {!rec.Gender__c}<br/>
+                                            EPIC ID: {!rec.EPIC_Id__c}<br/>
+                                            USMLE ID: {!rec.USMLE_ID__c}<br/>
+                                            EICS ID: {!rec.EICS_ID__c}
+
+                                        </p>
+                                    </div>
+                                    <div class="slds-col">
+                                        <p class="slds-p-horizontal_small slds-p-bottom_small">
+                                            <aura:iteration items="{!rec.Contact_Medical_Schools__r}" var="medschools">
+                                                Degree Medschool Name: {!medschools.Account__r.Name}
+                                                <br/>
+                                                Student Id: {!medschools.Student_ID__c}
+                                            </aura:iteration>
+                                        </p>
+
+                                    </div>
+
+                                </div>
+                                </div>
+                            </lightning:card>
+                        </aura:iteration>
+                    </div>
+                    <!--###### MODAL BOX FOOTER Part Start ######-->
+                    <footer class="slds-modal__footer">
+                        <lightning:button variant="brand"
+                                          aura:id="selectButton"
+                                          disabled="true"
+                                          label="Select Record"
+                                          title="Select Record"
+                                          onclick="{! c.selectRecord }"/>
+                        <lightning:button variant="neutral"
+                                          label="Cancel"
+                                          title="Cancel"
+                                          onclick="{! c.closeModel }"/>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </aura:if>
+    <!--End modal-->
+</aura:component>

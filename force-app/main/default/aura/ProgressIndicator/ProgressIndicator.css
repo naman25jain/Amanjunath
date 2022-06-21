@@ -1,0 +1,52 @@
+.THIS {
+}
+
+.THIS .wrap{
+    text-align:center
+}
+.THIS .left{
+    float: left;
+}
+.THIS .right{
+    float: right;
+    color: red
+}
+.THIS .center{
+    margin:0 auto;
+   display:inline-block
+}
+
+.THIS .widebutton {
+	margin: auto !important;
+    width: 200px !important;
+    height: 50px !important;
+    border-color: black !important;
+}
+
+.THIS .widebuttonred {
+	margin: auto !important;
+    width: 200px !important;
+    height: 50px !important;
+    background-color: #c95348 !important;
+    border-color: #c95348 !important;
+}
+
+.THIS .widebuttonred2 {
+	margin: auto !important;
+    width: 300px !important;
+    height: 70px !important;
+    background-color: #c95348 !important;
+    border-color: #c95348 !important;
+}
+
+.THIS .widebuttondisabled {
+	margin: auto !important;
+    width: 300px !important;
+    height: 70px !important;
+    background-color: #a0a0a0 !important;
+    border-color: #a0a0a0 !important;
+}
+
+.THIS p {
+    margin: 20px 0 20px
+}

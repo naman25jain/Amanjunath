@@ -1,0 +1,16 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes"
+                access="global"
+                controller="Entity_360_Base_Controller">
+<!--
+attributes:
+1)
+
+
+Notes:
+Will just display basic HTML/rich text content
+-->
+
+        <c:gDisplayContent uniqueContentValue="entity_home_page"></c:gDisplayContent>
+
+
+</aura:component>

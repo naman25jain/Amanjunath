@@ -1,0 +1,45 @@
+<!--
+ - Created by Matthew on 11/8/18.
+ -->
+
+<aura:component controller="ApplicantCommunityController" implements="lightning:availableForFlowScreens,forceCommunity:availableForAllPageTypes" description="School Enrollment Status">
+<div>
+        <h2>Enrollment Status</h2>
+</div>
+    <aura:attribute name="options" type="List" default="[{'label': 'Student', 'value': 'Student'},{'label': 'Graduate', 'value': 'Graduate'}]"/>
+
+    <aura:attribute name="contactId" type="String"/>
+
+    <aura:attribute name="contactRecord" type="Object"/>
+    <aura:attribute name="contactFields" type="Object"/>
+    <aura:attribute name="contactError" type="String"/>
+
+    <aura:attribute name="readOnly" type="Boolean" default="false"/>
+
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}" />
+
+    <aura:registerEvent name="genericValidationError" type="c:GenericValidationErrorAE" />
+
+    <force:recordData aura:id="contactData"
+            recordId="{!v.contactId}"
+            mode="EDIT"
+            layoutType="FULL"
+            targetRecord="{!v.contactRecord}"
+            targetFields="{!v.contactFields}"
+            targetError="{!v.contactError}"
+            recordUpdated="{!c.handleRecordUpdated}"
+
+    />
+
+    <lightning:radioGroup
+            name="statusRadioGroup"
+            label="School Enrollment Status"
+            options="{! v.options }"
+            value="{! v.contactFields.School_Enrollment_Status__c }"
+            type="radio"
+            required="{!v.readOnly == false}"
+            onchange="{!c.handleStatusOnChange}"
+            disabled="{!v.readOnly}"
+    />
+
+</aura:component>

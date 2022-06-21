@@ -1,0 +1,13 @@
+.errormsg{
+    color: #FF0000
+}
+.padding{
+    padding-top:1%;
+}
+.checkbox-float {
+    float: left;
+  }
+.checkboxText{
+    display: block;
+    width: 100%;
+}

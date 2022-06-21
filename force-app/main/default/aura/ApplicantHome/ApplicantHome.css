@@ -1,0 +1,75 @@
+.THIS {
+}
+
+.THIS .redbutton {
+  margin: auto !important;
+  width: 140px !important;
+  height: 60px !important;
+  font-size: 15px !important;
+  background-color: red !important;
+}
+
+.THIS .bluebutton {
+  margin: auto !important;
+  width: 140px !important;
+  height: 60px !important;
+  font-size: 15px !important;
+  background-color: blue !important;
+}
+
+.THIS .widebutton {
+  margin: auto !important;
+  width: 200px !important;
+  height: 50px !important;
+  font-size: 15px !important;
+}
+
+.THIS .sectionHeading {
+  border-radius: 6px;
+  background: #6187af;
+  padding: 5px;
+  color: white;
+  text-align: center;
+  font-weight: bold;
+}
+
+.THIS .widebuttongreen {
+  margin: auto !important;
+  width: 200px !important;
+  height: 50px !important;
+  background-color: #4bca81 !important;
+  border-color: #4bca81 !important;
+}
+
+.THIS .widebuttonred {
+  margin: auto !important;
+  width: 200px !important;
+  height: 50px !important;
+  background-color: #c95348 !important;
+  border-color: #c95348 !important;
+}
+
+.THIS .widebuttonred2 {
+  margin: auto !important;
+  width: 300px !important;
+  height: 70px !important;
+  background-color: #c95348 !important;
+  border-color: #c95348 !important;
+}
+
+.THIS .widebuttondisabled {
+  margin: auto !important;
+  width: 300px !important;
+  height: 70px !important;
+  background-color: #a0a0a0 !important;
+  border-color: #a0a0a0 !important;
+}
+
+.THIS .welcomeText {
+  text-align: center;
+  font-weight: bold;
+}
+
+.THIS p {
+    margin: 20px 0 20px
+}

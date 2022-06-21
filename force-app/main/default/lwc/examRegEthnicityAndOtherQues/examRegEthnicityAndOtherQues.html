@@ -1,0 +1,141 @@
+<template>
+    <div class="formMargin">
+
+        <template if:true={isStudent}>
+            <div>
+                <h2 class="h1 medicalSchool">USMLE Application: Student Status and Exam Eligibility</h2>
+                <div class = 'officiallyEnrolled'>
+                    <lightning-formatted-rich-text
+                        value='<p><strong>Are you currently a student officially enrolled in medical school and will be (or will have graduated) on your test day?</strong></p>'>
+                    </lightning-formatted-rich-text>
+                    <p>Both ECFMG and USMLE policy require that, to be eligible for a USMLE Step, you must be either a medical school student officially enrolled or a medical school graduate both at the time you apply AND on your test day. Certifying in this question that you are currently a student officially enrolled in medical school when you are not officially enrolled may result in a determination of irregular behavior. </p>
+                    <p>&#8226; If you are dismissed or withdraw(n) from medical school, you are not eligible for USMLE, even if you are appealing the school's decision to dismiss you or are otherwise contesting your status.</p>
+                    <p>&#8226; If you take a leave of absence from medical school, you should consult with your school about whether you will be considered officially enrolled in medical school during leave. Your medical school may consider a student on leave of absence to be withdrawn from medical school. You are not eligible for USMLE if you are considered withdrawn.</p>
+                    <p>Additional information on student eligibility for examination is available in the ECFMG <a href="https://www.ecfmg.org/resources/publications.html#ib" target="_blank"><em>Information Booklet</em></a>.</p>
+                    <lightning-radio-group options={picklist} value={officiallyEnrolled} onchange={handleQn1}
+                        type="radio">
+                    </lightning-radio-group>
+                </div>
+                <div class='basicSciences'><br />
+                    <lightning-formatted-rich-text
+                        value='<strong>Will you have completed the basic medical sciences requirement by the beginning of your eligibility period?</strong>'>
+                    </lightning-formatted-rich-text><br /><br />
+                    <p>In addition to being currently enrolled in medical school, to be eligible for USMLE, you must have completed at least two years of medical school. This eligibility requirement means that you must have completed the basic medical science component of your medical school’s curriculum by the beginning of your eligibility period. Additional information on student eligibility for examination is available in the ECFMG <a href="https://www.ecfmg.org/resources/publications.html#ib" target="_blank"><em>Information Booklet</em></a>.</p>
+                    <lightning-radio-group options={picklist} value={basicSciencesRequirement} onchange={handleQn2}
+                        type="radio">
+                    </lightning-radio-group>
+                </div>
+
+                <p class="mt-20">IMPORTANT NOTE: We reserve the right to reverify your eligibility for USMLE with your medical school after you are registered for an exam. If your medical school informs us that your enrollment status has changed, and we verify that you are no longer eligible for examination, your exam registration will be canceled. If we request reverification of your student status with your medical school after you have taken an examination, your score report will be issued only after we receive reverification of your enrollment status.</p>
+            </div>
+        </template>
+
+        <h3 class="h2">USMLE Application: Additional Information</h3>
+        <p>Providing the information in the section below is voluntary. Providing a particular response, or choosing not to respond, in the section below will not affect the outcome of your application(s). The information collected below, should you choose to provide it, may be used for conducting statistical research and analysis only. We will not verify any of the information collected below.</p>
+        <div class="slds-grid slds-wrap">
+            <template if:true={spinner}>
+                <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+            </template>
+
+            <div class='content'>
+                <template if:true={showMsg}>
+                    <div class="successMessage" style="color:#4BB543;font-size: 13px;">
+                        <lightning-formatted-rich-text value={successMessageText}></lightning-formatted-rich-text>
+                        </br>
+                    </div>
+                </template>
+                <h2>Ethnicity</h2></br>
+
+                <lightning-input class="checkbox-float" label='I do not wish to respond' type="checkbox"
+                    checked={noResponse} onchange={handleCheckbox}></lightning-input>
+
+                <template if:true={hasResponse}>
+                    <h3>Select Your Ethnicity&nbsp;<lightning-helptext content="Select all that apply."></lightning-helptext></h3>
+                    <lightning-dual-listbox id="ethnicitySelect" name="ethnicity" label="&nbsp;"
+                        source-label="Available Ethnicities" selected-label="Selected Ethnicities" options={listOptions}
+                        value={selectedOptions} onchange={handleChange}>
+                    </lightning-dual-listbox>
+                </template>
+            </div>
+            </br>
+            <div class="slds-col slds-p-top_medium slds-size_1-of-2" style="width: 100%;">
+                <br />
+                <h2>Language Fluency</h2></br>
+                <span class="required">*</span>
+                <span>Select Your Native Language</span>
+            </div>
+            <div class='language'>
+                <lightning-combobox name="nLanguage" value={nativeLanguage}
+                    placeholder="Select" options={nativeLanguageOptions} onchange={handleLanguage}>
+                </lightning-combobox>
+
+                <template if:true={hasOtherNativeLanguage}>
+                    <br />
+                    <lightning-input type="text" value={otherNativeLanguage} class="otherNativeLanguage" variant="label-stacked" required label="Other Native Language"></lightning-input>
+                </template>
+            </div>
+            <div class="slds-col slds-p-top_medium slds-size_1-of-2" style="width: 100%;">
+                <h3>Select Other Languages Spoken&nbsp;<lightning-helptext content="Select all that apply."></lightning-helptext></h3>
+            </div>
+            <div style="width: 70%;">
+                <lightning-dual-listbox id="otherLangSelect" name="otherLangSelect" label="&nbsp;"
+                    source-label="Available Languages" selected-label="Selected Languages" options={listLanguagesSpoken}
+                    value={selectedLanguagesSpoken} onchange={handleLangSpokenChange}>
+                </lightning-dual-listbox>
+            </div>
+            <div style="width: 31%;">
+                <template if:true={hasAddLanguagesSpoken}>
+                    <br />
+                    <lightning-input type="text" value={addLanguagesSpoken} class="addLanguagesSpoken" variant="label-stacked" label="Additional Languages Spoken"></lightning-input>
+                </template>
+            </div>
+            <div class="slds-col slds-p-top_medium slds-size_1-of-2" style="width: 100%;">
+                <br />
+                <h2>U.S. Social Security Number and/or National Identification Number</h2>
+            </div>
+            <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                <span>U.S. Social Security #</span>
+            </div>
+            <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                <lightning-input type="text" variant="label-hidden" value={socialSecurityNumber}
+                    class="socialSecurityNumber" maxlength='11'></lightning-input>
+            </div>
+            <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                <span>National Identification #</span>
+            </div>
+            <div class="slds-col slds-p-top_medium slds-size_1-of-2">
+                <lightning-input type="text" variant="label-hidden" value={nationalIdentification}
+                    class="nationalIdentification" maxlength='20'></lightning-input>
+            </div>
+            <div class="slds-col slds-p-top_medium slds-size_1-of-2" style="padding-top:18px">
+                <span>National ID Country</span>
+            </div>
+            <div class="slds-col slds-p-top_medium slds-size_1-of-2" style="padding-top: 0%">
+                <lightning-combobox name="country" label="" value={nationalIDCountry} placeholder="Select"
+                    options={countryList} onchange={handleCountry}>
+                </lightning-combobox>
+
+            </div>
+            
+            <template if:false={showBackToSummary}>
+                <div class="buttonAlignment">
+                    <lightning-button variant="brand" label="Save" title="Previous" onclick={saveStagingContactRecord}
+                        class="slds-m-left_x-small" disabled={btnDisabled}></lightning-button>
+                    <lightning-button variant="brand" label="Previous" title="Previous" onclick={prevButton}
+                        class="slds-m-left_x-small"></lightning-button>
+                    <lightning-button variant="brand" label="Next" title="Next" onclick={nextButton}
+                        class="slds-m-left_x-small" disabled={btnDisabled}></lightning-button>
+                    <lightning-button variant="brand" label="Cancel" title="Cancel" onclick={cancelButton}
+                        class="slds-m-left_x-small"></lightning-button>
+                </div>
+            </template>
+            <template if:true={showBackToSummary}>
+                <div style="padding-left:40%;padding-top: 3%;">
+                <lightning-button variant="brand"  label="Return To Summary" title="Back To Summary" onclick={backToSummary}
+                        class="slds-m-left_x-small"></lightning-button>
+                </div>
+            </template>
+
+        </div>
+    </div>
+</template>

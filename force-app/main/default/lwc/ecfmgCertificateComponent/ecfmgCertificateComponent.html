@@ -1,0 +1,40 @@
+<template>
+    <template if:true={showHeader}>
+        <div class="padding">
+            <h3>
+                <c-g-display-content unique-content-value="ECFMG_Certification_Instructions"></c-g-display-content>
+            </h3>
+            <br/>
+            <template if:true={enableDupCertRequest}>
+                <lightning-button variant="Success" label="Request a Duplicate Certificate" title="Request" onclick={showProfileReview}></lightning-button>
+            </template>
+            <template if:true = {showErrorDupCert}>
+                <div class="is_error">
+                    <c-g-display-content unique-content-value="ECFMG_Cert_Duplicate_Error"></c-g-display-content>
+                </div>
+            </template>
+        </div>
+    </template>    
+    <template if:true={showContact}>
+        <c-app-for-cert-profile-review get-id-from-parent={contactId}>
+        </c-app-for-cert-profile-review>
+        <div class="buttonAlignment">
+            <lightning-button variant="brand" label="Next" title="Next" onclick={showDupCertReasonScreen} class="slds-var-m-left_x-small">
+            </lightning-button>
+            <lightning-button variant="brand" label="Cancel" title="Cancel" onclick={cancelDupCertReq}
+            class="slds-var-m-left_x-small cancelButton"></lightning-button>
+        </div>
+    </template>   
+    <template if:true={showDupCertReason}>
+        <c-dup-cert-reason-screen reason-duplicate={reasonDuplicate} additional-dtl={additionalDtl} onnextevent={showLegalScreen} onprevevent={showProfileReview} oncancelevent={cancelDupCertReq}></c-dup-cert-reason-screen>
+    </template>
+    <template if:true={showLegal}> 
+        <c-dup-cert-legal-lang-screen reason-duplicate={reasonDuplicate} additional-dtl={additionalDtl} onnextevent={showPaymentScreen} onprevevent={showDupCertReasonScreen} oncancelevent={confirmAndCancel}></c-dup-cert-legal-lang-screen>
+    </template>
+    <template if:true={showPayment}> 
+        <c-dup-cert-payment reason-duplicate={reasonDuplicate} additional-dtl={additionalDtl} onnextevent={showConfScreen} onprevevent={showLegLangScreen} case-record-id={caserecordid}></c-dup-cert-payment>
+    </template>
+    <template if:true={showConfirm}> 
+        <c-dup-cert-confirmation reason-duplicate={reasonDuplicate} oncancelevent={confirmAndCancel}></c-dup-cert-confirmation>
+    </template>
+</template>

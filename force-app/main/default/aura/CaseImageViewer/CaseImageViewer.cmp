@@ -1,0 +1,28 @@
+<!--
+ - Created by Matthew on 1/1/19.
+ -->
+
+<aura:component
+        controller="ApplicantCommunityController"
+        description="CaseImageViewer"
+        implements="force:hasRecordId,lightning:availableForFlowScreens,forceCommunity:availableForAllPageTypes,flexipage:availableForAllPageTypes"
+        extends="c:CommunityBase">
+
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="model" type="List" default="[]"/>
+
+    <aura:handler name="init" action="{!c.doInit}" value="{!this}" />
+
+    <lightning:carousel disableAutoRefresh="true" disableAutoScroll="true" title="Case Image Viewer">
+        <aura:iteration items="{!v.model}" var="item">
+            <lightning:carouselImage
+                    src = "{!item.Url}"
+                    header = "{!item.Name}"
+                    description = "{!item.Description}"
+                    alternativeText = "{!item.Description}"
+                    href = "{!item.Reference}">
+            </lightning:carouselImage>
+        </aura:iteration>
+    </lightning:carousel>
+
+</aura:component>

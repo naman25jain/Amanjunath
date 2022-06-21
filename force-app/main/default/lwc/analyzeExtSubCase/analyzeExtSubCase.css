@@ -1,0 +1,30 @@
+.formMargin{
+    margin-left: 15px;
+    margin-right: 15px;
+    padding-top:10px;
+  }
+.buttonAlignment{
+    padding-left: 35%;    
+    padding-top: 5%; 
+    top: 57px;
+    left: 43px;
+  }
+.entityPadding{
+  padding-left: 2px;
+  padding-right: 2px;
+}
+.errormsg{
+  color:#ff0000;
+  font-size: 13px;
+}
+.errorPadding{
+  padding-left: 140px;
+  padding-right: 20px;
+}
+.errorNamePadding{
+  padding-left: 140px;
+  padding-right: 5px;
+}
+.verifPadding{
+  padding-top: 15px;
+}

@@ -1,0 +1,21 @@
+.formMargin {
+    margin-left: 20%;
+    margin-right: 20%;
+    padding-top: 20px;
+}
+.padding {
+    padding-top: 20px;
+    margin-left: 20%;
+    margin-right: 20%;
+}
+.buttonAlignment{
+    text-align: center;
+    padding-top: 10%;
+}
+.required{
+    color: red;
+}
+.errormsg{
+    color:#ff0000;
+    font-size: 13px;
+}

@@ -1,0 +1,19 @@
+.padding {
+  padding-top: 20px;
+  margin-left: 25%;
+  margin-right: 25%;
+}
+.stepHeader {
+  font-size: 15px;
+  padding-bottom: 3%;
+  padding-top: 5%;
+}
+.hideButton {
+  display: none;
+}
+.mt-20 {
+  margin-top: 20px;
+}
+.mb-20 {
+  margin-bottom: 20px;
+}

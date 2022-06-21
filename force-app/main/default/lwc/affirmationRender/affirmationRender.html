@@ -1,0 +1,76 @@
+<template>
+	<template if:true={renderData}>
+		<div if:false={renderData.isCheckbox}>
+			<div if:false={renderData.Display_Text__c}>
+				<p if:true={renderData.Required__c}> <abbr title="required"
+						class="slds-required">*</abbr>{renderData.Affirmation_Question__c}</p>
+				<p if:false={renderData.Required__c}>{renderData.Affirmation_Question__c}</p>
+			</div>
+		</div>
+		<div if:true={renderData.isPicklist}>
+			<select class="slds-select" data-value={renderData.Required__c} disabled={renderData.isReadOnly__c}
+                data-id={renderData.Affirmation_Field_API_Name__c} onchange={handleChange}>
+                <template for:each={renderData.Affirmation_List_of_Field_Values__c} for:item="val">
+                    <option key={val.Affirmation_Field_API_Name__c} aria-required="true" value={val.value}
+                        selected={val.checked}>{val.value}</option>
+                </template>
+            </select>
+		</div>
+		<div if:true={renderData.isCheckbox}>
+			<lightning-input class="slds-required input" disabled={renderData.isReadOnly__c}
+				label={renderData.Affirmation_Question__c} data-value={renderData.Required__c}
+				data-id={renderData.Affirmation_Field_API_Name__c} type="checkbox" required={renderData.Required__c}
+				checked={renderData.isChecked} onchange={handleChange} value={renderData.isChecked}>
+			</lightning-input>
+		</div>
+		<div if:true={renderData.isRadio}>
+			<template for:each={renderData.Affirmation_List_of_Field_Values__c} for:item="val">
+				<lightning-input class="slds-required input" disabled={renderData.isReadOnly__c}
+					data-value={renderData.Required__c} data-id={renderData.Affirmation_Field_API_Name__c} data-static={renderData.Affirmation_Static_Values__c} key={val}
+					type="radio" checked={val.checked} label={val.label} value={val.value} onchange={handleChange}>
+				</lightning-input>
+			</template>
+		</div>
+		<div if:true={renderData.isDate}>
+			<lightning-input type="Date" label="Signature Date"
+				variant="label-hidden" disabled={renderData.isReadOnly__c} value={renderData.dateValue} name="date" data-value={renderData.Required__c}
+				data-id={renderData.Affirmation_Field_API_Name__c} onchange={handleChange}> 
+			</lightning-input>
+		</div>
+		<div if:true={renderData.isTextarea}>
+			<div if:false={renderData.Display_Text__c}>
+				<lightning-textarea name="textarea" disabled={renderData.isReadOnly__c} variant="label-hidden"
+				onchange={handleChange} value={renderData.TextareaValue} data-value={renderData.Required__c}
+				data-id={renderData.Affirmation_Field_API_Name__c}></lightning-textarea>
+			</div>
+			<div if:true={renderData.Display_Text__c}>
+				<lightning-formatted-rich-text value={renderData.Display_Text__c}>
+                </lightning-formatted-rich-text>
+			</div>
+		</div>		
+		<div style="padding-left: 3%;" if:true={renderData.isStaticValue}>
+			<lightning-formatted-rich-text value={renderData.isStaticValue}>
+            </lightning-formatted-rich-text>
+		</div>
+			<div style="padding-left: 3%;" if:true={isStaticValue}>
+				<lightning-formatted-rich-text value={isStaticValue}>
+               </lightning-formatted-rich-text>
+			</div>
+	</template><br/>
+	<template if:true={isChild}>
+		<template for:each={isChildRecords} for:item="childMdt">
+			<div style="padding-left: 5%;" key={childMdt} if:true={childMdt.Indentation__c}>
+				<c-affirmation-render populate-values={populateValues} map-a-p-i-key-and-record={mapAPIKeyAndRecord} parent-key={parentKey}
+					child-and-parent-data={childAndParentData} key={childMdt} render-data={childMdt}
+					initial-child-key={childMdt.childKey} fields-to-send={fieldsToSend}
+					affrimation-record={affrimationRecord}></c-affirmation-render>
+			</div>
+			<div key={childMdt} if:false={childMdt.Indentation__c}>
+				<c-affirmation-render populate-values={populateValues} map-a-p-i-key-and-record={mapAPIKeyAndRecord} parent-key={parentKey}
+					child-and-parent-data={childAndParentData} key={childMdt} render-data={childMdt}
+					initial-child-key={childMdt.childKey} fields-to-send={fieldsToSend}
+					affrimation-record={affrimationRecord}></c-affirmation-render>
+			</div>
+		</template>
+	</template>
+</template>

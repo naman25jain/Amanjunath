@@ -1,0 +1,8 @@
+/**
+ * Created by Matthew on 2019-03-26.
+ */
+.THIS img {
+    max-height: 400px;
+    object-fit: contain;
+    margin-top: 20px;
+}

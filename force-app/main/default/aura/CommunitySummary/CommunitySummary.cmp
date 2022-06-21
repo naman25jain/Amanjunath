@@ -1,0 +1,11 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,forceCommunity:availableForAllPageTypes" 
+                access="global" 
+                controller="CommunityIdentityVerificationController">
+    <aura:attribute name="contact" type="Object" default="{}"/>
+    <aura:attribute name="service" type="String" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <center><h2><b>Summary of Information</b></h2></center><br/><br/>
+    <h1><b>Biographics</b></h1><br/>
+    <c:CommunityBiographics readOnlyMode="true" />
+	<center><lightning:button variant="brand" name="next" label="Previous" onclick="{!c.handlePrevious}" />&nbsp;&nbsp;&nbsp;&nbsp;<lightning:button variant="brand" name="next" label="Next" onclick="{!c.handleNext}" /></center>
+</aura:component>

@@ -1,0 +1,806 @@
+<template>
+    <template if:true={spinner}>
+        <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+    </template>
+    <div class="slds-col slds-size_1-of-1 slds-border_bottom slds-var-p-top_large">
+        <c-g-display-content unique-content-value="Med_Edu_Instructions_to_Dean_Heading"></c-g-display-content>
+    </div>
+    <lightning-layout>
+        <lightning-layout-item class="slds-var-p-top_small">
+            <c-g-display-content unique-content-value="Med_Edu_Instructions_to_Dean"></c-g-display-content>
+        </lightning-layout-item>
+    </lightning-layout>
+    <lightning-record-edit-form object-api-name={objectApiName} record-id={objectId} record-type-id={recordTypeId}
+        onsubmit={handleSubmit} onsuccess={handleSuccess}>
+        <lightning-messages></lightning-messages>
+        <div class="slds-col slds-size_1-of-1 slds-border_bottom slds-var-p-top_large">
+            <c-g-display-content unique-content-value="Med_Edu_Degree_Certification_Heading"></c-g-display-content>
+        </div>
+        <template if:false={fieldMap.IndividualWasConferred.value}>
+            <lightning-layout>
+                <lightning-layout-item class="slds-var-p-top_small">
+                    <lightning-radio-group class="fontNormal" required name="IndividualWasConferred"
+                        label="This individual" options={wasConferredOptionsInitial}
+                        value={fieldMap.IndividualWasConferred.value} type="radio" onchange={handleOnChange}>
+                    </lightning-radio-group>
+                </lightning-layout-item>
+            </lightning-layout>
+        </template>
+        <template if:true={fieldMap.IndividualWasConferred.value}>
+            <template if:false={wasnotConferred}>
+                <lightning-layout>
+                    <lightning-layout-item class="slds-var-p-top_small">
+                        <lightning-radio-group required name="IndividualWasConferred" label="This individual"
+                            class="fontNormal" options={wasConferredOptions}
+                            value={fieldMap.IndividualWasConferred.value} type="radio" onchange={handleOnChange}>
+                        </lightning-radio-group>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-var-p-right_small slds-var-p-top_x-large" size="5">
+                        <lightning-input required type="text" variant="label-hidden" name="DegreeTitle"
+                            label="Issued Degree" max-length="250" value={fieldMap.DegreeTitle.value}
+                            onchange={handleOnChange}></lightning-input>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-var-p-right_small slds-var-p-top_x-large"
+                        style="margin-top:0.4rem">on
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-var-p-right_small slds-var-p-top_x-large">
+                        <lightning-input required type="date" variant="label-hidden" name="DegreeIssueDate"
+                            label="Issued On" value={fieldMap.DegreeIssueDate.value} max={today}
+                            onchange={handleOnChange}></lightning-input>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </template>
+            <template if:true={wasnotConferred}>
+                <lightning-layout>
+                    <lightning-layout-item class="slds-var-p-top_small">
+                        <lightning-radio-group required name="IndividualWasConferred" label="This individual"
+                            class="fontNormal" options={wasNotConferredOptions}
+                            value={fieldMap.IndividualWasConferred.value} type="radio" onchange={handleOnChange}>
+                        </lightning-radio-group>
+                    </lightning-layout-item>
+                </lightning-layout>
+                <lightning-layout>
+                    <lightning-layout-item class="slds-var-p-left_large" size="10">
+                        <lightning-textarea required type="text" variant="label-hidden" name="ReasonNotIssuesDegree"
+                            label="If this individual was not conferred/issued a degree by this medical school, please explain"
+                            max-length="1500" value={fieldMap.ReasonNotIssuesDegree.value} onchange={handleOnChange}>
+                        </lightning-textarea>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </template>
+        </template>
+        <div class="slds-col slds-size_1-of-1 slds-border_bottom slds-var-p-top_large">
+            <c-g-display-content unique-content-value="Pre_Medical_Education_Heading"></c-g-display-content>
+        </div>
+        <lightning-layout>
+            <lightning-layout-item class="slds-var-p-right_small slds-var-p-top_medium">
+                <c-g-display-content unique-content-value="Pre_Med_Edu_Years_of_Education"></c-g-display-content>
+            </lightning-layout-item>
+            <lightning-layout-item class="slds-var-p-right_small slds-var-p-top_small" size="1">
+                <lightning-combobox required variant="label-hidden" name="YearsEduReq"
+                    label="Years of education required for admission to your medical school:"
+                    value={fieldMap.YearsEduReq.value} options={optionsYear} onchange={handleOnChange}>
+                </lightning-combobox>
+            </lightning-layout-item>
+            <lightning-layout-item class="slds-var-p-right_small slds-var-p-top_medium">
+                <c-g-display-content unique-content-value="Pre_Med_Edu_Years"></c-g-display-content>
+            </lightning-layout-item>
+        </lightning-layout>
+        <lightning-layout>
+            <lightning-layout-item class="slds-var-p-right_small slds-var-p-top_medium">
+                <c-g-display-content unique-content-value="Pre_Med_Edu_credential_degree_by_applicant">
+                </c-g-display-content>
+            </lightning-layout-item>
+            <lightning-layout-item class="slds-var-p-right_small slds-var-p-top_small" size="5">
+                <lightning-input required type="text" variant="label-hidden" name="CredentialDegreeAppicant"
+                    label="Credential/degree presented by the applicant for admission to your medical school:"
+                    max-length="255" value={fieldMap.CredentialDegreeAppicant.value} onchange={handleOnChange}>
+                </lightning-input>
+            </lightning-layout-item>
+        </lightning-layout>
+        <div class="slds-col slds-size_1-of-1 slds-border_bottom slds-var-p-top_large">
+            <c-g-display-content unique-content-value="Medical_Education_Heading"></c-g-display-content>
+        </div>
+        <lightning-layout>
+            <lightning-layout-item class="slds-var-p-right_small slds-var-p-top_medium">
+                <c-g-display-content unique-content-value="Med_Edu_enrollment_and_participation"></c-g-display-content>
+            </lightning-layout-item>
+            <lightning-layout-item size="1" class="slds-var-p-right_small slds-var-p-top_small">
+                <lightning-input required variant="label-hidden" type="number" name="totalWeeksEdu" max="999"
+                    value={fieldMap.totalWeeksEdu.value} onchange={handleOnChange}></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item class="slds-var-p-right_small slds-var-p-top_medium">
+                <c-g-display-content unique-content-value="Med_Edu_weeks_from_to_dates"></c-g-display-content>
+            </lightning-layout-item>
+        </lightning-layout>
+        <lightning-layout>
+            <lightning-layout-item flexibility="auto" size="2">
+                <lightning-input required type="date" name="attendanceStart" label="From"
+                    value={fieldMap.attendanceStart.value} onchange={handleOnChange} max={today}></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item class="slds-var-p-left_large" flexibility="auto" size="2">
+                <lightning-input required type="date" name="attendanceEnd" label="To"
+                    value={fieldMap.attendanceEnd.value} onchange={handleOnChange} max={today}></lightning-input>
+            </lightning-layout-item>
+        </lightning-layout>
+        <template if:true={errorMsgMedEduDate}>
+            <lightning-layout>
+                <lightning-layout-item>
+                    <c-g-display-content unique-content-value="Med_Edu_weeks_from_to_dates_error"></c-g-display-content>
+                </lightning-layout-item>
+            </lightning-layout>
+        </template>
+        <lightning-layout>
+            <lightning-layout-item size="9" class="slds-var-p-top_large">
+                <c-g-display-content unique-content-value="Med_Edu_transfer_credits"></c-g-display-content>
+            </lightning-layout-item>
+            <lightning-layout-item size="3" class="slds-var-p-top_large">
+                <lightning-radio-group required name="transferCredit" variant="label-hidden"
+                    label="Transfer Credits: Did this individual transfer credits to your medical school from another institution?"
+                    options={optionsYesNoTrueFalse} value={fieldMap.transferCredit.value} type="radio"
+                    onchange={handleOnChange}></lightning-radio-group>
+            </lightning-layout-item>
+        </lightning-layout>
+        <template if:true={hasTrasferredCredit}>
+            <lightning-layout>
+                <lightning-layout-item class="slds-var-p-left_large slds-var-p-top_large" flexibility="auto">
+                    <lightning-input required variant="label-inline" type="text" name="institTransferCredit"
+                        label="Please enter the name of the institution(s) from where the credits were transferred:"
+                        max-length="150" value={fieldMap.institTransferCredit.value} onchange={handleOnChange}>
+                    </lightning-input>
+                </lightning-layout-item>
+            </lightning-layout>
+        </template>
+        <div class="slds-col slds-size_1-of-1 slds-border_bottom slds-var-p-top_large">
+            <c-g-display-content unique-content-value="Med_Edu_Unusual_Circumstances_Heading"></c-g-display-content>
+        </div>
+        <lightning-layout>
+            <lightning-layout-item class="slds-var-p-top_large">
+                <c-g-display-content unique-content-value="Med_Edu_unusual_circumstances_instructions">
+                </c-g-display-content>
+            </lightning-layout-item>
+        </lightning-layout>
+        <lightning-layout>
+            <lightning-layout-item size="9" class="slds-var-p-top_large">
+                <c-g-display-content unique-content-value="Med_Edu_unusual_circumstances_query"></c-g-display-content>
+            </lightning-layout-item>
+            <lightning-layout-item size="3" class="slds-var-p-top_large">
+                <lightning-radio-group required name="interruptions" variant="label-hidden"
+                    label="Does this individual's official record reflect (an) interruption(s) or extension(s) in his/her medical education?"
+                    options={optionsYesNo} value={fieldMap.interruptions.value} type="radio" onchange={handleOnChange}>
+                </lightning-radio-group>
+            </lightning-layout-item>
+        </lightning-layout>
+        <template if:true={wasInterrupted}>
+            <template if:true={subFieldReq.interruptions}>
+                <lightning-layout>
+                    <lightning-layout-item class="slds-var-p-left_large">
+                        <div style="color:red">
+                            <c-g-display-content unique-content-value="Med_Edu_unusual_circumstances_sub_instructions">
+                            </c-g-display-content>
+                        </div>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </template>
+            <template if:false={subFieldReq.interruptions}>
+                <lightning-layout>
+                    <lightning-layout-item class="slds-var-p-left_large">
+                        <c-g-display-content unique-content-value="Med_Edu_unusual_circumstances_sub_instructions">
+                        </c-g-display-content>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </template>
+            <lightning-layout>
+                <lightning-layout-item class="slds-var-p-left_large">
+                    <lightning-input type="checkbox" label="Personal/Family" name="personalFamily"
+                        checked={fieldMap.personalFamily.value} onchange={handleOnChange}></lightning-input>
+                </lightning-layout-item>
+            </lightning-layout>
+            <template if:true={fieldMap.personalFamily.value}>
+                <lightning-layout>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <lightning-combobox required name="personalFamilyFromMonth" label="From Month"
+                            value={fieldMap.personalFamilyFromMonth.value} options={optionsMonths}
+                            onchange={handleOnChange}></lightning-combobox>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <lightning-combobox required name="personalFamilyFromYear" label="From Year"
+                            value={fieldMap.personalFamilyFromYear.value} options={optionsYears}
+                            onchange={handleOnChange}></lightning-combobox>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <lightning-combobox required name="personalFamilyToMonth" label="To Month"
+                            value={fieldMap.personalFamilyToMonth.value} options={optionsMonths}
+                            onchange={handleOnChange}></lightning-combobox>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <lightning-combobox required name="personalFamilyToYear" label="To Year"
+                            value={fieldMap.personalFamilyToYear.value} options={optionsYears}
+                            onchange={handleOnChange}></lightning-combobox>
+                    </lightning-layout-item>
+                    <lightning-layout>
+                        <lightning-layout-item class="slds-var-p-left_xx-large slds-var-p-top_xx-small"
+                            flexibility="auto">
+                            <c-g-display-content unique-content-value="Med_Edu_Required_Symbol"></c-g-display-content>
+                        </lightning-layout-item>
+                        <lightning-layout-item class="slds-var-p-top_small">
+                            <lightning-radio-group variant="label-hidden" required name="personalFamilyApproved"
+                                options={optionsApproved} value={fieldMap.personalFamilyApproved.value} type="radio"
+                                onchange={handleOnChange}></lightning-radio-group>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </lightning-layout>
+                <lightning-layout>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <template if:true={monthYearExceed.personalFamily}>
+                            <c-g-display-content unique-content-value="Med_Edu_Month_Year_Exceed_Error">
+                            </c-g-display-content>
+                        </template>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </template>
+            <lightning-layout>
+                <lightning-layout-item class="slds-var-p-left_large">
+                    <lightning-input type="checkbox" label="Academic remediation" name="academicRemediation"
+                        checked={fieldMap.academicRemediation.value} onchange={handleOnChange}></lightning-input>
+                </lightning-layout-item>
+            </lightning-layout>
+            <template if:true={fieldMap.academicRemediation.value}>
+                <lightning-layout>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <lightning-combobox required name="academicRemediationFromMonth" label="From Month"
+                            value={fieldMap.academicRemediationFromMonth.value} onchange={handleOnChange}
+                            options={optionsMonths}></lightning-combobox>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <lightning-combobox required name="academicRemediationFromYear" label="From Year"
+                            value={fieldMap.academicRemediationFromYear.value} onchange={handleOnChange}
+                            options={optionsYears}></lightning-combobox>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <lightning-combobox required name="academicRemediationToMonth" label="To Month"
+                            value={fieldMap.academicRemediationToMonth.value} onchange={handleOnChange}
+                            options={optionsMonths}></lightning-combobox>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <lightning-combobox required name="academicRemediationToYear" label="To Year"
+                            value={fieldMap.academicRemediationToYear.value} onchange={handleOnChange}
+                            options={optionsYears}></lightning-combobox>
+                    </lightning-layout-item>
+                    <lightning-layout>
+                        <lightning-layout-item class="slds-var-p-left_xx-large slds-var-p-top_xx-small"
+                            flexibility="auto">
+                            <c-g-display-content unique-content-value="Med_Edu_Required_Symbol"></c-g-display-content>
+                        </lightning-layout-item>
+                        <lightning-layout-item class="slds-var-p-top_small">
+                            <lightning-radio-group required class="radio" name="academicRemediationApproved"
+                                options={optionsApproved} value={fieldMap.academicRemediationApproved.value}
+                                onchange={handleOnChange} type="radio" variant="label-hidden"></lightning-radio-group>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </lightning-layout>
+                <lightning-layout>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <template if:true={monthYearExceed.academicRemediation}>
+                            <c-g-display-content unique-content-value="Med_Edu_Month_Year_Exceed_Error">
+                            </c-g-display-content>
+                        </template>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </template>
+            <lightning-layout>
+                <lightning-layout-item class="slds-var-p-left_large">
+                    <lightning-input type="checkbox" label="Health" name="health" checked={fieldMap.health.value}
+                        onchange={handleOnChange}></lightning-input>
+                </lightning-layout-item>
+            </lightning-layout>
+            <template if:true={fieldMap.health.value}>
+                <lightning-layout>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <lightning-combobox required name="healthFromMonth" label="From Month" options={optionsMonths}
+                            value={fieldMap.healthFromMonth.value} onchange={handleOnChange}></lightning-combobox>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <lightning-combobox required name="healthFromYear" label="From Year" options={optionsYears}
+                            value={fieldMap.healthFromYear.value} onchange={handleOnChange}></lightning-combobox>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <lightning-combobox required name="healthToMonth" label="To Month" options={optionsMonths}
+                            value={fieldMap.healthToMonth.value} onchange={handleOnChange}></lightning-combobox>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <lightning-combobox required name="healthToYear" label="To Year" options={optionsYears}
+                            value={fieldMap.healthToYear.value} onchange={handleOnChange}></lightning-combobox>
+                    </lightning-layout-item>
+                    <lightning-layout>
+                        <lightning-layout-item class="slds-var-p-left_xx-large slds-var-p-top_xx-small"
+                            flexibility="auto">
+                            <c-g-display-content unique-content-value="Med_Edu_Required_Symbol"></c-g-display-content>
+                        </lightning-layout-item>
+                        <lightning-layout-item class="slds-var-p-top_small">
+                            <lightning-radio-group variant="label-hidden" required name="healthApproved"
+                                options={optionsApproved} type="radio" value={fieldMap.healthApproved.value}
+                                onchange={handleOnChange}></lightning-radio-group>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </lightning-layout>
+                <lightning-layout>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <template if:true={monthYearExceed.health}>
+                            <c-g-display-content unique-content-value="Med_Edu_Month_Year_Exceed_Error">
+                            </c-g-display-content>
+                        </template>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </template>
+            <lightning-layout>
+                <lightning-layout-item class="slds-var-p-left_large">
+                    <lightning-input type="checkbox" label="Financial" name="financial"
+                        checked={fieldMap.financial.value} onchange={handleOnChange}></lightning-input>
+                </lightning-layout-item>
+            </lightning-layout>
+            <template if:true={fieldMap.financial.value}>
+                <lightning-layout>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <lightning-combobox required name="financialFromMonth" label="From Month"
+                            options={optionsMonths} value={fieldMap.financialFromMonth.value} onchange={handleOnChange}>
+                        </lightning-combobox>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <lightning-combobox required name="financialFromYear" label="From Year" options={optionsYears}
+                            value={fieldMap.financialFromYear.value} onchange={handleOnChange}></lightning-combobox>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <lightning-combobox required name="financialToMonth" label="To Month" options={optionsMonths}
+                            value={fieldMap.financialToMonth.value} onchange={handleOnChange}></lightning-combobox>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <lightning-combobox required name="financialToYear" label="To Year" options={optionsYears}
+                            value={fieldMap.financialToYear.value} onchange={handleOnChange}></lightning-combobox>
+                    </lightning-layout-item>
+                    <lightning-layout>
+                        <lightning-layout-item class="slds-var-p-left_xx-large slds-var-p-top_xx-small"
+                            flexibility="auto">
+                            <c-g-display-content unique-content-value="Med_Edu_Required_Symbol"></c-g-display-content>
+                        </lightning-layout-item>
+                        <lightning-layout-item class="slds-var-p-top_small">
+                            <lightning-radio-group variant="label-hidden" required name="financialApproved"
+                                options={optionsApproved} type="radio" value={fieldMap.financialApproved.value}
+                                onchange={handleOnChange}></lightning-radio-group>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </lightning-layout>
+                <lightning-layout>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <template if:true={monthYearExceed.financial}>
+                            <c-g-display-content unique-content-value="Med_Edu_Month_Year_Exceed_Error">
+                            </c-g-display-content>
+                        </template>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </template>
+            <lightning-layout>
+                <lightning-layout-item class="slds-var-p-left_large">
+                    <lightning-input type="checkbox" label="Participation in joint degree Program (e.g., MD/PhD)"
+                        name="jointDeg" checked={fieldMap.jointDeg.value} onchange={handleOnChange}></lightning-input>
+                </lightning-layout-item>
+            </lightning-layout>
+            <template if:true={fieldMap.jointDeg.value}>
+                <lightning-layout>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <lightning-combobox required name="jointDegFromMonth" label="From Month" options={optionsMonths}
+                            value={fieldMap.jointDegFromMonth.value} onchange={handleOnChange}></lightning-combobox>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <lightning-combobox required name="jointDegFromYear" label="From Year" options={optionsYears}
+                            value={fieldMap.jointDegFromYear.value} onchange={handleOnChange}></lightning-combobox>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <lightning-combobox required name="jointDegToMonth" label="To Month" options={optionsMonths}
+                            value={fieldMap.jointDegToMonth.value} onchange={handleOnChange}></lightning-combobox>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <lightning-combobox required name="jointDegToYear" label="To Year" options={optionsYears}
+                            value={fieldMap.jointDegToYear.value} onchange={handleOnChange}></lightning-combobox>
+                    </lightning-layout-item>
+                    <lightning-layout>
+                        <lightning-layout-item class="slds-var-p-left_xx-large slds-var-p-top_xx-small"
+                            flexibility="auto">
+                            <c-g-display-content unique-content-value="Med_Edu_Required_Symbol"></c-g-display-content>
+                        </lightning-layout-item>
+                        <lightning-layout-item class="slds-var-p-top_small">
+                            <lightning-radio-group variant="label-hidden" required name="jointDegApproved"
+                                options={optionsApproved} type="radio" value={fieldMap.jointDegApproved.value}
+                                onchange={handleOnChange}></lightning-radio-group>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </lightning-layout>
+                <lightning-layout>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <template if:true={monthYearExceed.jointDeg}>
+                            <c-g-display-content unique-content-value="Med_Edu_Month_Year_Exceed_Error">
+                            </c-g-display-content>
+                        </template>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </template>
+            <lightning-layout>
+                <lightning-layout-item class="slds-var-p-left_large">
+                    <lightning-input type="checkbox"
+                        label="Participation in non-research special study (e.g., fellowship, international experience)"
+                        name="nonReseach" checked={fieldMap.nonReseach.value} onchange={handleOnChange}>
+                    </lightning-input>
+                </lightning-layout-item>
+            </lightning-layout>
+            <template if:true={fieldMap.nonReseach.value}>
+                <lightning-layout>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <lightning-combobox required name="nonReseachFromMonth" label="From Month"
+                            options={optionsMonths} value={fieldMap.nonReseachFromMonth.value}
+                            onchange={handleOnChange}></lightning-combobox>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <lightning-combobox required name="nonReseachFromYear" label="From Year" options={optionsYears}
+                            value={fieldMap.nonReseachFromYear.value} onchange={handleOnChange}></lightning-combobox>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <lightning-combobox required name="nonReseachToMonth" label="To Month" options={optionsMonths}
+                            value={fieldMap.nonReseachToMonth.value} onchange={handleOnChange}></lightning-combobox>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <lightning-combobox required name="nonReseachToYear" label="To Year" options={optionsYears}
+                            value={fieldMap.nonReseachToYear.value} onchange={handleOnChange}></lightning-combobox>
+                    </lightning-layout-item>
+                    <lightning-layout>
+                        <lightning-layout-item class="slds-var-p-left_xx-large slds-var-p-top_xx-small"
+                            flexibility="auto">
+                            <c-g-display-content unique-content-value="Med_Edu_Required_Symbol"></c-g-display-content>
+                        </lightning-layout-item>
+                        <lightning-layout-item class="slds-var-p-top_small">
+                            <lightning-radio-group variant="label-hidden" required name="nonReseachApproved"
+                                options={optionsApproved} value={fieldMap.nonReseachApproved.value}
+                                onchange={handleOnChange} type="radio">
+                            </lightning-radio-group>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </lightning-layout>
+                <lightning-layout>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <template if:true={monthYearExceed.nonReseach}>
+                            <c-g-display-content unique-content-value="Med_Edu_Month_Year_Exceed_Error">
+                            </c-g-display-content>
+                        </template>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </template>
+            <lightning-layout>
+                <lightning-layout-item class="slds-var-p-left_large">
+                    <lightning-input type="checkbox" label="Participation in non-degree research" name="nonDegRes"
+                        checked={fieldMap.nonDegRes.value} onchange={handleOnChange}></lightning-input>
+                </lightning-layout-item>
+            </lightning-layout>
+            <template if:true={fieldMap.nonDegRes.value}>
+                <lightning-layout>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <lightning-combobox required name="nonDegResFromMonth" label="From Month"
+                            options={optionsMonths} value={fieldMap.nonDegResFromMonth.value} onchange={handleOnChange}>
+                        </lightning-combobox>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <lightning-combobox required name="nonDegResFromYear" label="From Year" options={optionsYears}
+                            value={fieldMap.nonDegResFromYear.value} onchange={handleOnChange}></lightning-combobox>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <lightning-combobox required name="nonDegResToMonth" label="To Month" options={optionsMonths}
+                            value={fieldMap.nonDegResToMonth.value} onchange={handleOnChange}></lightning-combobox>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <lightning-combobox required name="nonDegResToYear" label="To Year" options={optionsYears}
+                            value={fieldMap.nonDegResToYear.value} onchange={handleOnChange}></lightning-combobox>
+                    </lightning-layout-item>
+                    <lightning-layout>
+                        <lightning-layout-item class="slds-var-p-left_xx-large slds-var-p-top_xx-small"
+                            flexibility="auto">
+                            <c-g-display-content unique-content-value="Med_Edu_Required_Symbol"></c-g-display-content>
+                        </lightning-layout-item>
+                        <lightning-layout-item class="slds-var-p-top_small">
+                            <lightning-radio-group required variant="label-hidden" name="nonDegResApproved"
+                                options={optionsApproved} value={fieldMap.nonDegResApproved.value}
+                                onchange={handleOnChange} type="radio">
+                            </lightning-radio-group>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </lightning-layout>
+                <lightning-layout>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <template if:true={monthYearExceed.nonDegRes}>
+                            <c-g-display-content unique-content-value="Med_Edu_Month_Year_Exceed_Error">
+                            </c-g-display-content>
+                        </template>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </template>
+            <lightning-layout>
+                <lightning-layout-item class="slds-var-p-left_large">
+                    <lightning-input type="checkbox" label="Other" name="other" checked={fieldMap.other.value}
+                        onchange={handleOnChange}></lightning-input>
+                </lightning-layout-item>
+            </lightning-layout>
+            <template if:true={fieldMap.other.value}>
+                <lightning-layout>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <lightning-combobox required name="otherFromMonth" label="From Month" options={optionsMonths}
+                            value={fieldMap.otherFromMonth.value} onchange={handleOnChange}></lightning-combobox>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <lightning-combobox required name="otherFromYear" label="From Year" options={optionsYears}
+                            value={fieldMap.otherFromYear.value} onchange={handleOnChange}></lightning-combobox>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <lightning-combobox required name="otherToMonth" label="To Month" options={optionsMonths}
+                            value={fieldMap.otherToMonth.value} onchange={handleOnChange}></lightning-combobox>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <lightning-combobox required name="otherToYear" label="To Year" options={optionsYears}
+                            value={fieldMap.otherToYear.value} onchange={handleOnChange}></lightning-combobox>
+                    </lightning-layout-item>
+                    <lightning-layout>
+                        <lightning-layout-item class="slds-var-p-left_xx-large slds-var-p-top_xx-small"
+                            flexibility="auto">
+                            <c-g-display-content unique-content-value="Med_Edu_Required_Symbol"></c-g-display-content>
+                        </lightning-layout-item>
+                        <lightning-layout-item class="slds-var-p-top_small">
+                            <lightning-radio-group variant="label-hidden" required name="otherReasonApproved"
+                                options={optionsApproved} type="radio" value={fieldMap.otherReasonApproved.value}
+                                onchange={handleOnChange}>
+                            </lightning-radio-group>
+                        </lightning-layout-item>
+                    </lightning-layout>
+                </lightning-layout>
+                <lightning-layout>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <template if:true={monthYearExceed.other}>
+                            <c-g-display-content unique-content-value="Med_Edu_Month_Year_Exceed_Error">
+                            </c-g-display-content>
+                        </template>
+                    </lightning-layout-item>
+                </lightning-layout>
+                <lightning-layout>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <lightning-textarea required name="otherDetails" label="Other Details" max-length="1500"
+                            value={fieldMap.otherDetails.value} onchange={handleOnChange}></lightning-textarea>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </template>
+        </template>
+        <lightning-layout>
+            <lightning-layout-item size="9" class="slds-var-p-top_large">
+                <c-g-display-content unique-content-value="Med_Edu_Probation_Question"></c-g-display-content>
+            </lightning-layout-item>
+            <lightning-layout-item size="3" class="slds-var-p-top_large">
+                <lightning-radio-group required name="onAcademicDiscProb" variant="label-hidden"
+                    label="Does this individual's official record reflect that he/she was ever placed on academic or disciplinary probation during his/her medical education?"
+                    options={optionsYesNo} value={fieldMap.onAcademicDiscProb.value} onchange={handleOnChange}
+                    type="radio"></lightning-radio-group>
+            </lightning-layout-item>
+        </lightning-layout>
+        <template if:true={onAcademicDisc}>
+            <template if:true={subFieldReq.onAcademicDiscProb}>
+                <lightning-layout>
+                    <lightning-layout-item class="slds-var-p-left_large">
+                        <div style="color:red">
+                            <c-g-display-content unique-content-value="Med_Edu_Probation_Question_Instruction">
+                            </c-g-display-content>
+                        </div>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </template>
+            <template if:false={subFieldReq.onAcademicDiscProb}>
+                <lightning-layout>
+                    <lightning-layout-item class="slds-var-p-left_large">
+                        <c-g-display-content unique-content-value="Med_Edu_Probation_Question_Instruction">
+                        </c-g-display-content>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </template>
+            <lightning-layout>
+                <lightning-layout-item class="slds-var-p-left_large">
+                    <lightning-input type="checkbox" label="Academic Probation" name="academicProbation"
+                        checked={fieldMap.academicProbation.value} onchange={handleOnChange}></lightning-input>
+                </lightning-layout-item>
+            </lightning-layout>
+            <template if:true={fieldMap.academicProbation.value}>
+                <lightning-layout>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <lightning-combobox required name="academicProbationFromMonth" label="From Month"
+                            options={optionsMonths} value={fieldMap.academicProbationFromMonth.value}
+                            onchange={handleOnChange}></lightning-combobox>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <lightning-combobox required name="academicProbationFromYear" label="From Year"
+                            options={optionsYears} value={fieldMap.academicProbationFromYear.value}
+                            onchange={handleOnChange}></lightning-combobox>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <lightning-combobox required name="academicProbationToMonth" label="To Month"
+                            options={optionsMonths} value={fieldMap.academicProbationToMonth.value}
+                            onchange={handleOnChange}></lightning-combobox>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <lightning-combobox required name="academicProbationToYear" label="To Year"
+                            options={optionsYears} value={fieldMap.academicProbationToYear.value}
+                            onchange={handleOnChange}></lightning-combobox>
+                    </lightning-layout-item>
+                </lightning-layout>
+                <lightning-layout>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <template if:true={monthYearExceed.academicProbation}>
+                            <c-g-display-content unique-content-value="Med_Edu_Month_Year_Exceed_Error">
+                            </c-g-display-content>
+                        </template>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </template>
+            <lightning-layout>
+                <lightning-layout-item class="slds-var-p-left_large">
+                    <lightning-input type="checkbox" label="Probation for unprofessional conduct/behavior"
+                        name="unprofessionalProbation" checked={fieldMap.unprofessionalProbation.value}
+                        onchange={handleOnChange}></lightning-input>
+                </lightning-layout-item>
+            </lightning-layout>
+            <template if:true={fieldMap.unprofessionalProbation.value}>
+                <lightning-layout>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <lightning-combobox required name="unprofessionalProbationFromMonth" label="From Month"
+                            options={optionsMonths} value={fieldMap.unprofessionalProbationFromMonth.value}
+                            onchange={handleOnChange}></lightning-combobox>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <lightning-combobox required name="unprofessionalProbationFromYear" label="From Year"
+                            options={optionsYears} value={fieldMap.unprofessionalProbationFromYear.value}
+                            onchange={handleOnChange}></lightning-combobox>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <lightning-combobox required name="unprofessionalProbationToMonth" label="To Month"
+                            options={optionsMonths} value={fieldMap.unprofessionalProbationToMonth.value}
+                            onchange={handleOnChange}></lightning-combobox>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <lightning-combobox required name="unprofessionalProbationToYear" label="To Year"
+                            options={optionsYears} value={fieldMap.unprofessionalProbationToYear.value}
+                            onchange={handleOnChange}></lightning-combobox>
+                    </lightning-layout-item>
+                </lightning-layout>
+                <lightning-layout>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <template if:true={monthYearExceed.unprofessionalProbation}>
+                            <c-g-display-content unique-content-value="Med_Edu_Month_Year_Exceed_Error">
+                            </c-g-display-content>
+                        </template>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </template>
+            <lightning-layout>
+                <lightning-layout-item class="slds-var-p-left_large">
+                    <lightning-input type="checkbox" label="Probation for other reason" name="probationOther"
+                        checked={fieldMap.probationOther.value} onchange={handleOnChange}></lightning-input>
+                </lightning-layout-item>
+            </lightning-layout>
+            <template if:true={fieldMap.probationOther.value}>
+                <lightning-layout>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <lightning-combobox required name="probationOtherFromMonth" label="From Month"
+                            options={optionsMonths} value={fieldMap.probationOtherFromMonth.value}
+                            onchange={handleOnChange}></lightning-combobox>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <lightning-combobox required name="probationOtherFromYear" label="From Year"
+                            options={optionsYears} value={fieldMap.probationOtherFromYear.value}
+                            onchange={handleOnChange}></lightning-combobox>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <lightning-combobox required name="probationOtherToMonth" label="To Month"
+                            options={optionsMonths} value={fieldMap.probationOtherToMonth.value}
+                            onchange={handleOnChange}></lightning-combobox>
+                    </lightning-layout-item>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <lightning-combobox required name="probationOtherToYear" label="To Year" options={optionsYears}
+                            value={fieldMap.probationOtherToYear.value} onchange={handleOnChange}></lightning-combobox>
+                    </lightning-layout-item>
+                </lightning-layout>
+                <lightning-layout>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <template if:true={monthYearExceed.probationOther}>
+                            <c-g-display-content unique-content-value="Med_Edu_Month_Year_Exceed_Error">
+                            </c-g-display-content>
+                        </template>
+                    </lightning-layout-item>
+                </lightning-layout>
+                <lightning-layout>
+                    <lightning-layout-item class="slds-var-p-left_xx-large" flexibility="auto">
+                        <lightning-textarea required name="probationOtherReason"
+                            label="Please provide detailed information about the circumstances and outcome(s):"
+                            max-length="1500" value={fieldMap.probationOtherReason.value} onchange={handleOnChange}>
+                        </lightning-textarea>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </template>
+        </template>
+        <lightning-layout>
+            <lightning-layout-item size="9" class="slds-var-p-top_large">
+                <c-g-display-content unique-content-value="Med_Edu_Query_Unprofessional_Conduct"></c-g-display-content>
+            </lightning-layout-item>
+            <lightning-layout-item size="3" class="slds-var-p-top_large">
+                <lightning-radio-group required variant="label-hidden" name="unprofessionalDisciplined"
+                    label="Does this individual's official record reflect that they were ever disciplined for unprofessional conduct/behavior reasons by the medical school or parent university?"
+                    options={optionsYesNo} value={fieldMap.unprofessionalDisciplined.value} onchange={handleOnChange}
+                    type="radio"></lightning-radio-group>
+            </lightning-layout-item>
+        </lightning-layout>
+        <template if:true={wasDisciplined}>
+            <lightning-layout>
+                <lightning-layout-item class="slds-var-p-left_large" flexibility="auto">
+                    <lightning-textarea required name="unprofessionalDisciplinedDetail"
+                        label="Please provide detailed information about the circumstances and outcome(s):"
+                        max-length="1500" value={fieldMap.unprofessionalDisciplinedDetail.value}
+                        onchange={handleOnChange}></lightning-textarea>
+                </lightning-layout-item>
+            </lightning-layout>
+        </template>
+        <lightning-layout>
+            <lightning-layout-item size="9" class="slds-var-p-top_large">
+                <c-g-display-content unique-content-value="Med_Edu_Query_Negative_Report"></c-g-display-content>
+            </lightning-layout-item>
+            <lightning-layout-item size="3" class="slds-var-p-top_large">
+                <lightning-radio-group required variant="label-hidden" name="negativeReport"
+                    label="Does this individual's official record reflect they were ever the subject of negative reports or an investigation by the medical school or parent university?"
+                    options={optionsYesNo} value={fieldMap.negativeReport.value} onchange={handleOnChange} type="radio">
+                </lightning-radio-group>
+            </lightning-layout-item>
+        </lightning-layout>
+        <template if:true={hasNegative}>
+            <lightning-layout>
+                <lightning-layout-item class="slds-var-p-left_large" flexibility="auto">
+                    <lightning-textarea required name="negativeReportDetail"
+                        label="Please provide detailed information about the circumstances and outcome(s):"
+                        max-length="1500" value={fieldMap.negativeReportDetail.value} onchange={handleOnChange}>
+                    </lightning-textarea>
+                </lightning-layout-item>
+            </lightning-layout>
+        </template>
+        <lightning-layout>
+            <lightning-layout-item size="9" class="slds-var-p-top_large">
+                <c-g-display-content unique-content-value="Med_Edu_Query_Academic_Limitations"></c-g-display-content>
+            </lightning-layout-item>
+            <lightning-layout-item size="3" class="slds-var-p-top_large">
+                <lightning-radio-group required variant="label-hidden" name="limitationsImposed"
+                    label="Does this individual's official record reflect that there were any limitations or special requirements imposed on the individual because of questions of academic incompetence, disciplinary problems, or any other reason?"
+                    options={optionsYesNo} type="radio" value={fieldMap.limitationsImposed.value}
+                    onchange={handleOnChange}></lightning-radio-group>
+            </lightning-layout-item>
+        </lightning-layout>
+        <template if:true={hasLimitiations}>
+            <lightning-layout>
+                <lightning-layout-item class="slds-var-p-left_large" flexibility="auto">
+                    <lightning-textarea required name="limitationSpecialRequ"
+                        label="Please provide detailed documentation/information about the nature of the limitations or special requirements:"
+                        max-length="1500" value={fieldMap.limitationSpecialRequ.value} onchange={handleOnChange}>
+                    </lightning-textarea>
+                </lightning-layout-item>
+            </lightning-layout>
+        </template>
+        <lightning-layout-item padding="around-small" size="6">
+            <div class="slds-align_absolute-center">
+                <lightning-button variant="brand" label="Return to Credential Review List"
+                    title="Return to Credential Review List" onclick={returnCredRevList}
+                    class="slds-var-m-left_x-small"></lightning-button>
+                <lightning-button variant="brand" label="Back" title="Back" class="slds-var-m-left_x-small"
+                    onclick={reviewDocuments}></lightning-button>
+                <template if:false={errorOccurred}>
+                    <lightning-button variant="brand" label="Next" title="Next" type="submit"
+                        class="slds-var-m-left_x-small"></lightning-button>
+                </template>
+            </div>
+        </lightning-layout-item>
+    </lightning-record-edit-form>
+</template>

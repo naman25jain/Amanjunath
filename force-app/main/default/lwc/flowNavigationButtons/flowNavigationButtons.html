@@ -1,0 +1,14 @@
+<template>
+    <div if:true={isPrevious} class="slds-float--left">
+        <lightning-button name="Previous" label="Previous" title="previous" onclick={handleAction}>
+        </lightning-button>
+    </div>
+    <div if:true={isNext} class="slds-float--right">
+        <lightning-button variant="brand" name="Next" label="Next" title="Next" onclick={handleAction}>
+        </lightning-button>
+    </div>
+    <div if:true={isFinish} class="slds-float--right">
+        <lightning-button variant="brand" name="Finish" label="Finish" title="Finish" onclick={handleAction}>
+        </lightning-button>
+    </div>
+</template>

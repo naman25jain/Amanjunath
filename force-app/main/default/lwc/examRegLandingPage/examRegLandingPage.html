@@ -1,0 +1,123 @@
+<template>
+    <div class="slds-is-relative">
+        <div class="exam-top-header">
+            <h2>USMLE Application: Add Exam</h2>
+            <p>Click <strong>Add Exam</strong> to select the USMLE Step you want to include on this application. If you do not meet requirements or are otherwise ineligible to apply for a USMLE Step, information will be provided to you when you select that exam.</p>
+            <p>You may be eligible to apply for more than one USMLE Step in a single application. Exams must be added to the application one at a time. Once you have entered all requested information for the first exam, you can click <strong>Add Exam</strong> to add an additional exam to your application.</p>
+            <p>Once you have added to the application all the exams for which you are eligible and wish to register, click <strong>Next</strong>.</p>
+        </div>
+
+        <template if:false={showExamRegList}>
+            <div class="formMargin slds-p-top--large">
+                <div class="exams-header">
+                    <h2>{label.examRegTableHeader}</h2>
+                </div>
+                <div class="slds-p-top--large">
+                    <h2>{label.examRegNoExamMessage}</h2>
+                </div>
+            </div>
+        </template>
+
+        <template if:true={showExamRegList}>
+            <div class="slds-p-top--large formMargin">
+                <div class="exam-details-header">
+                    <h2>{label.examRegTableHeader}</h2>
+                </div>
+                <div class="slds-p-top--small">
+                    <table class="slds-border_top slds-table slds-no-cell-focus slds-table_bordered slds-table_edit slds-table_fixed-layout slds-table_resizable-cols"
+                        role="grid" >
+                        <caption>Added Exam List</caption>
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                <th aria-label="Exam Type" aria-sort="none"
+                                    class="slds-is-resizable slds-is-sortable slds-text-align_center"
+                                    scope="col">
+                                    <span class="slds-truncate" title="Exam Type">Exam Type</span>
+                                </th>
+                                <th aria-label="Eligibility Period" aria-sort="none"
+                                    class="slds-is-resizable slds-is-sortable slds-text-align_center"
+                                    scope="col">
+                                    <span class="slds-truncate" title="Eligibility Period">Eligibility Period</span>
+                                </th>
+                                <th aria-label="Testing Region" aria-sort="none"
+                                    class="slds-is-resizable slds-is-sortable slds-text-align_center"
+                                    scope="col">
+                                    <span class="slds-truncate" title="Testing Region">
+                                        Testing Region
+                                    </span>
+                                </th>
+                                <th aria-label="Test Accommodations" aria-sort="none"
+                                    class="slds-is-resizable slds-is-sortable slds-text-align_center"
+                                    scope="col">
+                                    <span class="slds-truncate" title="Test Accommodations">Test Accommodations</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={examRegistrationsList} for:item="examReg" for:index="examRegIndex">
+
+                                <tr key={examReg.recordIdVal} data-record-id={examReg.recordIdVal} class="exam-reg-id">
+                                    <td class="slds-text-align_center">
+                                        {examReg.examType}
+                                    </td>
+                                    <td class="slds-text-align_center" style="white-space: normal;">
+                                        {examReg.eligibilityPeriod}
+                                    </td>
+                                    <td class="slds-text-align_center" style="white-space: normal;">
+                                        {examReg.testingRegion}
+                                    </td>
+                                    <td class="slds-text-align_center">
+                                        {examReg.testAccomodations}
+                                    </td>
+
+                                    <td class="icon-cell slds-text-align_center">
+                                        <div class="edit-icon" onclick={editExamReg}>
+                                            <span
+                                                class="slds-icon_container slds-icon-action-edit slds-icon_container--circle"
+                                                title="Edit">
+                                                <svg class="slds-icon slds-icon--x-small" aria-hidden="true">
+                                                    <use
+                                                        xlink:href="/_slds/icons/action-sprite/svg/symbols.svg#edit">
+                                                    </use>
+                                                </svg>
+                                                <span class="slds-assistive-text">Edit</span>
+                                            </span>
+                                        </div>
+                                        <div class="delete-icon" onclick={showDeleteExamRegAlert}>
+                                            <span
+                                                class="slds-icon_container slds-icon-action-delete slds-icon_container--circle"
+                                                title="Remove">
+                                                <svg class="slds-icon slds-icon--x-small" aria-hidden="true">
+                                                    <use
+                                                        xlink:href="/_slds/icons/action-sprite/svg/symbols.svg#delete">
+                                                    </use>
+                                                </svg>
+                                                <span class="slds-assistive-text">Remove</span>
+                                            </span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </template>
+        <template if:false={showBackToSummary}>
+            <div class="slds-p-top--large" style="padding-left:25%;padding-top: 3%;">
+                <lightning-button variant="brand" label="Previous" title="Previous" class="slds-m-left_x-small btn-add-exam" onclick={previous}></lightning-button>
+                <lightning-button variant="brand" label="Add Exam" title="Add Exam" class="slds-m-left_x-small btn-add-exam" onclick={addExamReg}></lightning-button>
+                <lightning-button if:true={showExamRegList} variant="brand" label="Next" title="Next" class="slds-m-left_x-small btn-add-exam" onclick={next}></lightning-button>
+                <lightning-button variant="brand" label="Cancel" title="Cancel" class="slds-m-left_x-small" onclick={cancel}></lightning-button>
+            </div>
+        </template>
+        <template if:true={showBackToSummary}>
+            <div style="padding-left:25%;padding-top: 3%;">
+                <lightning-button variant="brand" label="Add Exam" title="Add Exam" class="slds-m-left_x-small btn-add-exam" onclick={addExamReg}></lightning-button>
+                <lightning-button variant="brand"  label="Return To Summary" title="Back To Summary" onclick={backToSummary} class="slds-m-left_x-small"></lightning-button>
+                <lightning-button variant="brand" label="Cancel" title="Cancel" class="slds-m-left_x-small" onclick={cancel}></lightning-button>
+            </div>
+        </template>
+    </div>
+    <c-modal-component data-id='deleteExamRegModalAlert' title='Alert' message='Are you sure you want to remove this exam from your application?' show-secondary-button='true' secondary-button-text='No' onsecondarybuttonclick={closeDeleteExamRegAlert} show-primary-button='true' primary-button-text='Yes' onprimarybuttonclick={deleteExamReg}></c-modal-component>
+</template>

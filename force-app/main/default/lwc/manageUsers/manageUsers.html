@@ -1,0 +1,39 @@
+<template>
+    <template if:true={spinner}>
+        <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+    </template>
+    <template if:false={boolVal}>
+    <p class="mb-20 mt-15">The following is a list of MyIntealth Users at your entity and to which services they have access. Based on your permissions, you may be able to add or deactivate a service for a User, and/or add a new User to your entity. If you have permissions, the ability to perform these actions will be visible below.</p>
+    <template if:true={wiredShowButtons}>
+        <div class="buttonAlignment" >
+            <lightning-button variant="brand" label="Add Service" onclick={addService} title="Add Service" class="slds-m-left_x-small"></lightning-button>
+          <lightning-button variant="brand" label="Add a New User" title="Add a New User" class="slds-m-left_x-small" onclick={addUser}></lightning-button>
+        </div>
+    </template>
+    <c-modal-component title='Deactivate Service' message={label.deactivateLabel}  show-secondary-button='true' secondary-button-text='Cancel' onsecondarybuttonclick={closeModal} show-primary-button='true' primary-button-text='Confirm' onprimarybuttonclick={confirmModal}></c-modal-component>
+    <template if:false={wiredShowButtons}>
+        <div class="buttonAlignment" >
+        </div>
+    </template>
+    <br/>
+    <template if:true={showPaginator}>
+        <c-paginator records={dataRecClone} total-records={dataRecClone.length}
+            onpaginatorchange={handlePaginatorChange} show-search-box="true" attributes-to-avoid={attributesList}>
+        </c-paginator>
+    </template>
+    <br/>
+    <template if:true={showTable}>
+        <lightning-datatable data={dataRec} columns={columns} key-field="Id" hide-checkbox-column="true" resize-column-disabled="true" record-id={currentRecordId} onrowaction={handleRowActions} onsort={onHandleSort} sorted-by={sortedBy}  default-sort-direction={defaultSortDirection} sorted-direction={sortDirection}>
+        </lightning-datatable>
+    </template>
+    <template if:false={showTable}>
+        <h3>No Data Found</h3>
+    </template>
+    </template>
+    <template if:true={toAddServiceClicked}>
+        <c-entity-add-service-for-user cur-entity={_currentEnt} onpreviousevent={cancelButton}> </c-entity-add-service-for-user>
+    </template>
+    <template if:true={toAddUserClicked}>
+        <c-entity-add-user cur-entity={_currentEnt} onpreviousevent={cancelButton}> </c-entity-add-user>
+    </template>
+</template>

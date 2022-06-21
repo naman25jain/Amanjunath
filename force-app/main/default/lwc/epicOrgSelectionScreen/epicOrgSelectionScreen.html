@@ -1,0 +1,140 @@
+<template>
+    <div class="slds-is-relative">
+        <template if:true={spinner}>
+            <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+        </template>
+        <div class="padding">
+            <c-g-display-content unique-content-value="EpicOrgSelectionScreen"></c-g-display-content>
+        </div>
+        <div class="slds-p-around_x-small">
+            <div class="padding">
+                <template if:true={orgUnconfirmed}>
+                    <lightning-input type="checkbox" class="checkboxOrg" data-id="checkboxOrg" name="checkboxOrg" 
+                    label="I do not know to which organization(s) I plan to send EPIC Reports" onchange={handleChangeCheckboxOrg} checked>
+                    </lightning-input>
+                </template>
+                <template if:false={orgUnconfirmed}>
+                    <lightning-input type="checkbox" class="checkboxOrg" data-id="checkboxOrg" name="checkboxOrg" 
+                    label="I do not know to which organization(s) I plan to send EPIC Reports" onchange={handleChangeCheckboxOrg}>
+                    </lightning-input>
+                </template>
+            </div>
+            <template if:true={showSearchButton}>
+                <div class="padding">
+                    <h3>Start typing to add a new Organization...</h3><br>
+                </div>
+                <template if:false={selectedRecord}>                    
+                    <lightning-input class="accountName" type="search" name="accountName" onchange={handleChangeForInputFields} variant="label-hidden" placeholder="Search by entity name..." value={selectedAccountName}></lightning-input>        
+                </template>  
+                <div>
+                    <template if:false={selectedRecord}>
+                        <template if:true={recordsList}>
+                                <template for:each={recordsList} for:item="record">
+                                    <c-epic-org-selection-screen-record-list key={record.Id} record={record} 
+                                        onselect={handleSelect} iconname={iconname}
+                                        fieldname={searchfield}>
+                                    </c-epic-org-selection-screen-record-list>
+                                </template>
+                                <template if:true={recordsExistSubmitButton}>
+                                    <c-epic-org-selection-screen-record-list record="" records-exist-submit-button={recordsExistSubmitButton} onclearsearchbox={clearSearchBox}
+                                        onsubmitedneworg={handleCreateNewAcc} iconname={iconname}
+                                        fieldname={searchfield}>
+                                    </c-epic-org-selection-screen-record-list>
+                                </template>
+                        </template>
+                        <template if:true={showNewSubmitButton}>
+                                <c-epic-org-selection-screen-record-list record="" onclearsearchbox={clearSearchBox}
+                                    onsubmitedneworg={handleCreateNewAcc} iconname={iconname}
+                                    fieldname={searchfield}>
+                                </c-epic-org-selection-screen-record-list>
+                        </template>
+                    </template>
+                </div>  
+                <template if:true={selectedRecord}></template>
+            </template>
+        </div>
+        <div><br></br></div>   
+        <template if:true={showAddedOrgs}>
+            <div class="slds-grid slds-wrap">
+                <template for:each={catsRecordList} for:item="eachCatRec">
+                    <div key={eachCatRec.Id} class="slds-col slds-size_1-of-2 slds-p-around_x-small">
+                        <lightning-card>
+                            <h3 slot="title" class="slds-text-heading_small slds-truncate">
+                                {eachCatRec.Name}
+                            </h3>
+                            <span class="slds-no-flex" slot= "actions">
+                                <lightning-button-icon class="slds-button slds-button_icon slds-button_icon-border" icon-name="utility:delete" variant="border" data-catrec-id={eachCatRec.Id} onclick={handleDeleteOnClick} alternative-text="Delete" title="Delete"></lightning-button-icon>
+                            </span>
+                            <div class="slds-grid slds-gutters slds-wrap">
+                                <div class="slds-col">
+                                    <p class="slds-p-horizontal_small slds-p-bottom_small">
+                                        <lightning-formatted-address
+                                            street={eachCatRec.Address1}
+                                            city={eachCatRec.Address2}
+                                            province={eachCatRec.Address3}
+                                            country={eachCatRec.Country}
+                                            postal-code={eachCatRec.Address4}
+                                            disabled
+                                        ></lightning-formatted-address>
+                                    </p>
+                                </div>
+                            </div>
+                            <div slot="footer">
+                                    <span class="slds-m-left">Entity</span>
+                            </div>
+                        </lightning-card>
+                    </div>
+                </template>
+            </div>
+        </template> 
+    </div>
+    <div class="formMargin">
+        <div class="buttonAlignment">
+            <lightning-button variant="brand" label="Previous" title="Previous" onclick={prevButton}
+                class="slds-m-left_x-small"></lightning-button>
+                <template if:true={enableNextButton}>
+                    <lightning-button variant="brand" label="Next" title="Next" onclick={nextButton}
+                    class="slds-m-left_x-small"></lightning-button>
+                </template>
+                <template if:false={enableNextButton}>
+                    <lightning-button variant="brand" label="Next" title="Next" onclick={nextButton} disabled
+                    class="slds-m-left_x-small"></lightning-button>
+                </template>
+            <lightning-button variant="brand" label="Cancel" title="Cancel" onclick={cancelButton} 
+                class="slds-m-left_x-small"></lightning-button>
+        </div>
+    </div>
+    <c-modal-component class="addScreenModal" title={modalTitle} message={modalContent} show-primary-button="true" primary-button-text="Add"
+        onprimarybuttonclick={handleYesClick} show-secondary-button="true" secondary-button-text="Cancel">
+        <slot>
+            <span>Verify the organization name and address below.</span></br></br>
+            <span class="selectedRec">{selectedRec.Name}</span></br>
+            <lightning-formatted-address
+                            street={selectedRec.BillingStreet}
+                            city={selectedRec.BillingCity}
+                            province={selectedRec.BillingState}
+                            country={selectedRec.BillingCountry}
+                            postal-code={selectedRec.BillingPostalCode}
+                            disabled
+            ></lightning-formatted-address>
+        </slot>
+    </c-modal-component>
+    <c-modal-component class="removeScreenModal" title={modalTitle} message={modalContent} show-primary-button="true" primary-button-text="Yes"
+        onprimarybuttonclick={handleYesDeleteClick} show-secondary-button="true" secondary-button-text="Cancel">
+        <slot>
+            <span>Are you sure you want to remove this organization?</span></br></br>
+            <span class="selectedRec">{catRecordToRemove.Name}</span></br>
+            <lightning-formatted-address
+                            street={catRecordToRemove.Address1}
+                            city={catRecordToRemove.Address2}
+                            province={catRecordToRemove.Address3}
+                            country={catRecordToRemove.Country}
+                            postal-code={catRecordToRemove.Address4}
+                            disabled
+            ></lightning-formatted-address>
+        </slot>
+    </c-modal-component>
+    <c-modal-component class="checkboxOrgModal" title={modalTitle} message={modalContent} show-primary-button="true" primary-button-text="Ok"
+        onprimarybuttonclick={handleDelAllSelectedOrg} onclosedialog={handleUncheckbox} show-secondary-button="true" secondary-button-text="Cancel">
+    </c-modal-component>
+</template>

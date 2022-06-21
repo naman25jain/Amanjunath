@@ -1,0 +1,34 @@
+<template>
+    <div class="slds-is-relative">
+        <template if:true={spinner}>
+            <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+        </template>
+        <div class="padding">
+            <c-g-display-content unique-content-value="app_for_cert_reporter_heading"></c-g-display-content>
+        </div>
+        <div class="padding">
+            <template if:true={showMessage}>
+                <lightning-formatted-rich-text class='successmsg' value={successMessageText}></lightning-formatted-rich-text>
+            </template>
+        </div>
+        <div class="padding">
+            <c-g-display-content unique-content-value="app_for_cert_reporter_instruction_message"></c-g-display-content>
+        </div>    
+        <div class="formMargin">
+            <div class="slds-grid slds-wrap">
+                <div class="slds-col slds-p-top_small slds-size_1-of-2 pad-right">
+                    <span><c-g-display-content unique-content-value="app_for_cert_reporter_question"></c-g-display-content></span>
+                </div>
+                <div class="slds-col slds-p-top_small slds-size_1-of-2">
+                    <lightning-input class="checkbox-float" type="checkbox" checked={accepted} onchange={handleChange}></lightning-input>
+                </div>
+            </div>
+        </div>
+        <div class="buttonAlignment">
+            <lightning-button variant="brand" label="Save" title="Save" onclick={saveButton}  class="slds-m-left_x-small"></lightning-button>
+            <lightning-button variant="brand" label="Previous" title="Previous" onclick={prevButton} class="slds-m-left_x-small"></lightning-button>
+            <lightning-button variant="brand" label="Next" title="Next" onclick={nextButton} class="slds-m-left_x-small"></lightning-button>
+            <lightning-button variant="brand" label="Cancel" title="Cancel" onclick={cancelButton} class="slds-m-left_x-small"></lightning-button>
+        </div>
+    </div>
+</template>

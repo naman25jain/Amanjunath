@@ -1,0 +1,22 @@
+.headertxt{
+    font-weight: bold;    
+}
+.headeralign {
+    padding: 10px 0;
+}
+.secContainer{
+    padding:10px 0 20px 0;
+}
+.thHead {
+    padding:5px 0px;
+}
+.noRecordsSection {
+    padding:15px 0 10px 0;
+}
+.caseNumberTd button {
+    border: none !important;
+    
+}
+.errormsgName{
+    color: red;
+}

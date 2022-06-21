@@ -1,0 +1,72 @@
+<template>
+    <template if:true={spinner}>
+        <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+    </template>
+    <template if:false={hideUpload}>
+        <c-document-upload onfileuploaded={handleFileUploaded} accepted-file-formats={acceptedFileFormats}
+            max-allowed-file-size={maxAllowedFileSize}></c-document-upload>
+    </template>
+    <c-modal class="documentViewerModal" header={header} onclosedialog={handleCloseModal}>
+        <span slot="content">
+            <c-document-viewer 
+                ondocviewer_ready={handleMainDocument}
+                ondocviewer_save_document={handleSaveDocument} 
+                document={document} 
+                asset-type={assetType}
+                enable-redaction={enableRedaction} 
+                enable-annotation={enableAnnotation} 
+                enable-saving=true>
+            </c-document-viewer>
+        </span>
+    </c-modal>
+    <template if:true={assetExists}> 
+        <template if:true={showCredSummScreen}> 
+            <div title="Click to expand view" class="iframeWrapperSummScre" onclick={handleClick}> 
+                <template if:true={pdfContentThumbnail}>
+                    <iframe title="thumbnail" src={url} class="slds-scrollable_none image"></iframe>
+                </template>
+                <template if:false={pdfContentThumbnail}>
+                    <div class="contentImageWrapper">
+                        <img alt={uploadedFileName} src={url} />
+                    </div>
+                </template>
+            </div>
+        </template>
+        <template if:false={showCredSummScreen}>
+            <div title="Click to expand view" class="slds-text-align_center iframeWrapper" onclick={handleClick}>
+                <template if:true={pdfContentThumbnail}>
+                    <iframe title="thumbnail" src={url} class="slds-scrollable_none image"></iframe>
+                </template>
+                <template if:false={pdfContentThumbnail}>
+                    <div class="contentImageWrapper">
+                        <img alt={uploadedFileName} src={url} />
+                    </div>
+                </template>
+            </div>
+        </template>
+        <template if:true={showDeleteButton}>
+            <div class="slds-align_absolute-center" style="padding-top: 2px;">
+                <lightning-button variant="brand" label="Delete" title="Delete" onclick={markForDeletion}
+                    class="slds-m-left_x-small"></lightning-button>
+            </div>
+        </template>
+        <c-modal class="thumbnailModal" header={modalHeader} onclosedialog={handleCloseThumbnailModal}>
+            <span slot="content">
+                <template if:true={pdfContent}>
+                    <iframe title="full-screen" src={url} class="slds-container_fluid full-screen"></iframe>
+                </template>
+                <template if:false={pdfContent}>
+                    <div class="contentImageWrapper">
+                        <img alt={uploadedFileName} src={url} />
+                    </div>
+                </template>
+            </span>
+        </c-modal>
+    </template>
+    <template if:false={hideUpload}>
+        {warningMessage}
+    </template>
+    <template if:true={showMerge}>
+        <c-merge-upload merge={merge} uploaded-blob={uploadedBlob} uploaded-base64={uploadedBase64} uploaded-pay-load={payLoad} merged-url={mergedUrl} onmergecomplete={handleMergeComplete}></c-merge-upload>
+    </template>        
+</template>

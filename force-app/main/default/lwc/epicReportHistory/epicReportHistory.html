@@ -1,0 +1,68 @@
+<template>
+    <template if:true={spinner}>
+        <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+     </template>
+    <div class="slds-var-p-top_large">
+        <template if:true={showReportData} style='padding-top:15px'> 
+            <h2>EPIC Report History</h2>
+            </br>
+            <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered" role="grid">
+                <caption></caption>
+                <thead>
+                    <tr class="slds-line-height_reset">
+                        <th aria-label="Report Recipient" aria-sort="none" class="slds-is-resizable slds-is-sortable slds-text-align_center" scope="col">
+                            <span class="slds-truncate" title="Report Recipient">Report Recipient</span>
+                        </th>
+                        <th aria-label="Credential" aria-sort="none" class="slds-is-resizable slds-is-sortable slds-text-align_center" scope="col">
+                            <span class="slds-truncate" title="Credential">Credential</span>
+                        </th>
+                        <th aria-label="Report" aria-sort="none" class="slds-is-resizable slds-is-sortable slds-text-align_center" scope="col">
+                            <span class="slds-truncate" title="Report">Report</span>
+                        </th>
+                        <th aria-label="Status" aria-sort="none" class="slds-is-resizable slds-is-sortable slds-text-align_center" scope="col">
+                            <span class="slds-truncate" title="Status">Status</span>
+                        </th> 
+                        <th aria-label="Updated Date" aria-sort="none" class="slds-is-resizable slds-is-sortable slds-text-align_center" scope="col">
+                            <span class="slds-truncate" title="Updated Date">Updated Date</span>
+                        </th>
+                        <th aria-label="Payment History" aria-sort="none" class="slds-is-resizable slds-is-sortable slds-text-align_center" scope="col">
+                            <span class="slds-truncate" title="Payment History">Payment History</span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template for:each={epicHistoryData} for:item="data" for:index="dataIndex">
+                        <tr key={data.recId} data-record-id={data.recId} class="epic-his-reports">
+                            <template if:true={data.hasApplicantName}>
+                                <td class="slds-text-align_center">{data.applicantName}</td>
+                            </template>
+                            <template if:true={data.hasEntity}>
+                                <td class="slds-text-align_center">{data.entityName}</td>
+                            </template>
+                            <template if:true={data.showVerCreds}>
+                                <td class="slds-text-align_center">{data.verifiedCred} - <a href="javascript:void(0)" onclick={handleViewCredential} data-recordid={data.recId} data-credtype={data.verifiedCred}>View</a></td>
+                            </template>
+                            <template if:false={data.showVerCreds}>
+                                <td class="slds-text-align_center">{data.verifiedCred}</td>
+                            </template>
+                            <td class="slds-text-align_center"><a href="javascript:void(0)" onclick={handleViewEpicReport} data-recordid={data.recId} data-showreport={data.showRep} data-status={data.status}>View</a></td>
+                            <td class="slds-text-align_center">{data.status}</td>
+                            <td class="slds-text-align_center">{data.updatedDate}</td>
+                            <td class="slds-text-align_center">{data.paymentHistory}</td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+        </template>
+    </div>
+    <template if:true={showNoReportMsg} style='padding-top:15px'>     
+        <h2>EPIC Report History</h2>
+        </br>
+        You don't have any EPIC Report History yet.
+    </template>
+    <c-modal header={header} onclosedialog={handleCloseModal}>
+        <span slot="content">
+            <c-document-viewer ondocviewer_ready={handleShowDocument} enable-redaction="false" enable-annotation="false" enable-saving="false"></c-document-viewer>
+        </span>
+    </c-modal>
+</template>

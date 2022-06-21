@@ -1,0 +1,46 @@
+<template>
+    <div class="cardClass fontClass">
+        <template if:true={showData}>
+            <hr>
+            <p class="slds-text-align_left slds-text-heading_small"> <b>ECFMG Certificate Details </b></p><br>       
+                <template if:true={showMessage}>
+                    <div class="slds-align_absolute-center">
+                        <p class="slds-text-align_left"> 
+                        {label.A360_efmgCertificateDetailsMessage} 
+                        </p>
+                    </div>
+                </template>
+
+                <template if:true={showDetails}>
+                    <div class="slds-text-align_left">
+                        <table class="slds-table">                               
+                            <tr>
+                                <td> Date Issued : </td>
+                                <td> {certificationData.dateIssued} </td>
+                            </tr>
+                            <tr>
+                                <td> Date Sent : </td>
+                                <td> {certificationData.dateSent} </td>
+                            </tr>
+                            <tr>
+                                <td> Address Sent To : </td>
+                                <td> <lightning-formatted-address
+                                    street={certificationData.mailingStreet}
+                                    city={certificationData.mailingCity}
+                                    country={certificationData.mailingCountry}
+                                    province={certificationData.mailingState}
+                                    postal-code={certificationData.mailingPostalCode}
+                                    disabled
+                                ></lightning-formatted-address> </td>
+                            </tr>                    
+                            <tr>
+                                <td> Tracking Number : </td>
+                                <td> {certificationData.trackingNumber} </td>
+                            </tr>
+                        </table>
+                    </div>
+                </template>
+                <hr>
+        </template>
+    </div>
+</template>

@@ -1,0 +1,28 @@
+.formMargin{
+  padding-top:20px;
+  margin-left: 25%;
+  margin-right: 25%;
+}
+.required{
+  color: red;
+  padding-bottom: 1px;
+  margin-bottom: 1px
+}
+.buttonAlignmentLeg{
+  padding-left: 30%;    
+  padding-top: 2%;    
+}
+.buttonAlignment{
+  padding-left: 44%;
+  padding-top: 2%;
+}
+.headerbackground{
+  background-color: #f3f2f2;
+}
+.errormsg{
+  color:#ff0000;
+  font-size: 13px;
+}
+.dupNote{
+  font-weight: bold;
+}

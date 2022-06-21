@@ -1,0 +1,25 @@
+.padding {
+    padding-top:20px;
+}
+.header {
+    line-height: 2;
+    text-align: center;
+}
+.buttonAlignment{
+    padding-left: 44%;    
+    padding-top: 2%;    
+}
+.buttonAlignmentExamReg{
+    padding-left: 35%;    
+    padding-top: 2%;    
+}
+.cancelButton{
+    margin-left:2%;
+}
+.errormsg{
+    color:#ff0000;
+    font-size: 13px;
+}
+.checkbox-float {
+    float: left;
+}

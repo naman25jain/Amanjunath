@@ -1,0 +1,90 @@
+<template>
+    <template if:true={spinner}>
+        <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+    </template>
+    <lightning-accordion allow-multiple-sections-open>
+        <lightning-accordion-section name="A" label={activeCaseLabel}>
+            <c-credential-verification-data onnextevent={showCaseDet} onremovecomp={removeComp}
+                onactivecount={activecount} applicant-specific=true applicant-id={contactId}
+                current-entity={currentEntity} curr-case-id={recordId}></c-credential-verification-data>
+        </lightning-accordion-section>
+    </lightning-accordion>
+    <div class="formMargin">
+        <div class="slds-col slds-size_1-of-1 slds-border_bottom slds-var-p-top_large">
+            <h3 class="gridHeader">
+                <c-g-display-content unique-content-value="entity_credential_heading"></c-g-display-content>
+            </h3>
+        </div>
+        <div class="slds-grid slds-wrap">
+            <div class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                <span>Name of Record</span>
+            </div>
+            <div class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                <lightning-input type="Text" value={contactName} variant="label-hidden" disabled></lightning-input>
+            </div>
+            <div class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                <span>DOB</span>
+            </div>
+            <div class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                <lightning-input type="Text" value={birthDate} variant="label-hidden" disabled></lightning-input>
+            </div>
+            <div class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                <span>Name on Document</span>
+            </div>
+            <div class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                <lightning-input type="Text" value={nameOnDoc} variant="label-hidden" disabled></lightning-input>
+            </div>
+            <div class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                <span>MyIntealth ID</span>
+            </div>
+            <div class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                <lightning-input type="Text" value={myIntealthId} variant="label-hidden" disabled></lightning-input>
+            </div>
+            <div class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                <span>Unique Medical School ID</span>
+            </div>
+            <div class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                <lightning-input type="Text" value={uniMedSchId} variant="label-hidden" disabled></lightning-input>
+            </div>
+        </div>
+        <hr/>
+        <div class="slds-grid slds-wrap">
+            <div class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                <span>Case Number</span>
+            </div>
+            <div class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                <lightning-input type="Text" value={caseNumber} variant="label-hidden" disabled></lightning-input>
+            </div>
+        </div>
+        <hr/>
+    </div>
+    <template if:true={entityCredVerReviewAsset}>
+        <c-entity-cred-ver-review-asset case-id={recordId} onfromassetnextbutton={handleFromAssetNextButton}
+            oncredverreviewlist={handleCredVerReviewList} show-back-button={showBackButton}
+            onbackevent={handleBacktoSum}>
+        </c-entity-cred-ver-review-asset>
+    </template>
+    <template if:true={showAddlDoc}>
+        <c-additional-doc-review case-id={recordId} onnextevent={nextFromAdditionalDocReview}
+            onshowscredintland={handleCredVerReviewList} onpreviousevent={previousFromAdditionalDocReview}>
+        </c-additional-doc-review>
+    </template>
+    <template if:true={showReview}>
+        <c-entity-credential-review case-id={recordId} onnextevent={showCredVerReviewFormScreen}
+            onprevevent={showAddtnDocScreen} onshowscredintland={handleCredVerReviewList}
+            current-entity={currentEntity}></c-entity-credential-review>
+    </template>
+    <template if:true={showCredVerRevForm}>
+        <c-entity-cred-ver-review-ver-form case-id={recordId} azure-doc-url={detailObj}
+            onprevevent={handleFromAssetNextButton} onnextevent={showSummaryScreen}
+            onshowscredintland={handleCredVerReviewList}></c-entity-cred-ver-review-ver-form>
+    </template>
+    <template if:true={showSummary}>
+        <c-entity-cred-ver-review-summary case-id={recordId} azure-doc-url-ver-form={detailObj}
+            onprevevent={handleFromAssetNextButton} onfinishevent={showSummaryScreen}
+            oncredreviewlist={handleCredVerReviewList} onapplicantinfo={previousFromAdditionalDocReview}
+            onverform={showCredVerRevFormScreen} oncredupload={showCredUploadScreen}
+            oncredreview={showCredReviewScreen} current-entity={currentEntity} applicant-id={contactId} onactivecaseslist={handleactiveCaselist}>
+        </c-entity-cred-ver-review-summary>
+    </template>
+</template>

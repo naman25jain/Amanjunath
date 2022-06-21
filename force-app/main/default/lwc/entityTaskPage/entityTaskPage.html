@@ -1,0 +1,106 @@
+<template>
+    <div class="formMargin">
+        <template if:false={isTaskClicked}>
+            <div class="secContainer">
+                    <span class="headertxt">
+                        <h3>ERAS Document Re-Upload Task List</h3>
+                    </span>
+                </br>
+                <div class="slds-p-top--large belowTaskDetails">
+                    <c-g-display-content unique-content-value="ERAS_Document_Below_My_Task">
+                    </c-g-display-content>
+                </div>
+                </br>
+                <div style="height: 800px;">
+                    <lightning-datatable key-field="Id" data={data} columns={columns} sorted-by={sortBy}
+                        sorted-direction={sortDirection} onsort={handleSortdata} hide-checkbox-column="true"
+                        onrowaction={handleRowAction}>
+                    </lightning-datatable>
+                </div>
+            </div>
+        </template>
+        <template if:true={isTaskClicked}>
+            <div class="slds-col slds-p-left_x-large slds-size_1-of-1 slds-border_bottom slds-var-p-top_large">
+                <h3 class="gridHeader">
+                    Task Details
+                </h3>
+            </div>
+            <div class="slds-grid slds-wrap">
+                <div class="slds-col slds-p-left_x-large slds-var-p-top_small slds-size_1-of-2">
+                    <span>Applicant Name</span>
+                </div>
+                <div class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                    <lightning-input type="Text" value={applicantName} variant="label-hidden" disabled>
+                    </lightning-input>
+                </div>
+                <div class="slds-col slds-p-left_x-large slds-var-p-top_small slds-size_1-of-2">
+                    <span>Subject</span>
+                </div>
+                <div class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                    <lightning-input type="Text" value={subject} variant="label-hidden" disabled></lightning-input>
+                </div>
+                <div class="slds-col slds-p-left_x-large slds-var-p-top_small slds-size_1-of-2">
+                    <span>Related To</span>
+                </div>
+                <div class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                    <lightning-input type="Text" value={relatedTo} variant="label-hidden" disabled></lightning-input>
+                </div>
+                <div class="slds-col slds-p-left_x-large slds-var-p-top_small slds-size_1-of-2">
+                    <span>Assigned To</span>
+                </div>
+                <div class="slds-col slds-var-p-top_small slds-size_1-of-2">
+                    <lightning-input type="Text" value={assignedTo} variant="label-hidden" disabled></lightning-input>
+                </div>
+                <div class="slds-col slds-p-left_x-large slds-var-p-top_small slds-size_1-of-2">
+                    <span>Status</span>
+                </div>
+                <div class="slds-col slds-p-bottom_xx-small slds-size_1-of-2">
+                    <lightning-combobox name="progress" value={status}
+                        options={options} onchange={handleStatusChange} disabled></lightning-combobox>
+                </div>
+                <div class="slds-col slds-p-left_x-large slds-var-p-top_small slds-size_1-of-2">
+                    <span>External Comments</span>
+                </div>
+                <div class="slds-col slds-var-p-top_small slds-size_1-of-2 custom-box slds-box">
+                    <lightning-formatted-rich-text value={externalComments}></lightning-formatted-rich-text>
+                </div>
+            </div>
+            <hr />
+            <div class="slds-p-top--large pad docUploadStr">
+                <lightning-layout>
+                    <span style="font-size:14px;"><strong>{documentToReUploadString}</strong></span>
+                </lightning-layout>
+            </div>
+            <div class="slds-p-top--large pad btnAling">
+                <lightning-layout>
+                    <lightning-layout-item padding="around-small" size="4">
+                        <c-cloud-document-upload-wrapper label="Upload Medical School Performance Evaluation"
+                            pay-load={payloadMspe} max-allowed-file-size={mspeSize} accepted-file-formats=".pdf"
+                            show-cred-summ-screen={showCredSummScreen} merge="entityPortal" warning-message=""
+                            enable-annotation="false" enable-redaction="false" azure-doc-url={mspeUrl}
+                            ongeneratedurl={handleOnMspeUpload}>
+                        </c-cloud-document-upload-wrapper>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </div>
+            <div class="slds-p-top--large pad uploadBtnText">
+                <lightning-layout>
+                    <lightning-layout-item padding="around-small" size="8">
+                        <c-g-display-content unique-content-value="ERAS_Document_Reupload_Task_List">
+                        </c-g-display-content>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </div>
+            <div class="slds-p-top--large pad reUploadBtn">
+                <lightning-button variant="brand" label="Return to Task List" title="Return to Task List"
+                    class="slds-m-left_x-small" onclick={showTaskList}>
+                </lightning-button>
+                <template if:true={isUploadButtonEnabled}>
+                    <lightning-button variant="brand" label="Reupload" title="Reupload" class="slds-m-left_x-small"
+                        onclick={handleReUploadButton}>
+                    </lightning-button>
+                </template>
+            </div>
+        </template>
+    </div>
+</template>

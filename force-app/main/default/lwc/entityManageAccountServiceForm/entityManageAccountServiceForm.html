@@ -1,0 +1,250 @@
+<template>
+    <div class="formMargin">
+        <template if:true={spinner}>
+        <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+        </template>    
+        <span class="headerText">Manage Services</span>    
+        <template if:false={isModalOpen}>
+            <div class="buttonAlignment" ><br/>
+                <lightning-button variant="brand" label="Add New Service" title="Add New Service" onclick={addNewService} class="slds-m-left_x-small"></lightning-button>
+            </div>
+        </template>
+        <template if:true={showServices}>
+            <div class="slds-grid slds-wrap gridMargin">             
+                <div class="slds-col slds-size_1-of-1 slds-var-p-around_medium">                  
+                    <span class="modContHdr">Service Information : </span>   
+                </div>  
+                <div class = "tablePadding">
+                    <table
+                    class="slds-table slds-no-cell-focus slds-table_bordered slds-table_edit slds-table_fixed-layout slds-table_resizable-cols slds-table_striped "
+                    role="grid">                         
+                    <caption></caption>
+                    <thead>
+                        <tr>
+                            <th aria-label="Name" aria-sort="none"
+                                class="slds-is-resizable slds-is-sortable slds-text-align_center slds-cell-wrap"
+                                scope="col">
+                                Name
+                            </th>
+                            <th aria-label="Mode of Communication" aria-sort="none"
+                                class="slds-is-resizable slds-is-sortable slds-text-align_center slds-cell-wrap"
+                                scope="col">
+                                Mode of Communication
+                            </th>
+                            <th aria-label="Action" aria-sort="none"
+                            class="slds-is-resizable slds-is-sortable slds-text-align_center slds-cell-wrap"
+                            scope="col">
+                                Action
+                            </th>                
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template for:each={serviceList} for:item='recordItem' for:index='index'>    
+                            <tr key={recordItem.Id}>
+                                <td class="slds-text-align_center slds-cell-wrap">
+                                    <lightning-formatted-rich-text value={recordItem.Service__r.Name}></lightning-formatted-rich-text>                            
+                                </td>
+                                <td class="slds-text-align_center slds-cell-wrap">
+                                    <lightning-formatted-rich-text value={recordItem.Mode_of_communication__c}></lightning-formatted-rich-text>                                
+                                </td>
+                                <td class="slds-text-align_center slds-cell-wrap">
+                                <a href="javascript:void(0)"  >
+                                        <lightning-formatted-rich-text value="EDIT" onclick={editService} data-service-id={recordItem.Service__r.Id}
+                                        data-accservice-id={recordItem.Id} data-mode={recordItem.Mode_of_communication__c}
+                                        data-physical-addr={recordItem.Physical_Address__c} data-email={recordItem.List_of_emails__c} ></lightning-formatted-rich-text>
+                                    </a>
+                                    <br/>
+                                    <a href="javascript:void(0)"  >
+                                        <lightning-formatted-rich-text value="DELETE" onclick={deleteService} 
+                                        data-service-id={recordItem.Id} ></lightning-formatted-rich-text>
+                                    </a>
+                                </td>                            
+                            </tr>
+                        </template>
+                    </tbody>
+                    </table>
+                </div>         
+            </div>        
+    <c-role-modal-component title='' message=''  show-primary-button='true' primary-button-text='Confirm' onprimarybuttonclick={handleConfirm} show-secondary-button='true' secondary-button-text='Cancel'>
+    </c-role-modal-component>
+    <c-modal-component message='Please confirm you want to deactivate the service '  show-primary-button='true' primary-button-text='Confirm' onprimarybuttonclick={handleDelete} show-secondary-button='true' secondary-button-text='Cancel'></c-modal-component>
+        </template>
+        <template if:true={isModalOpen}>
+            <!-- Modal/Popup Box LWC starts here -->
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <!-- Modal/Popup Box LWC header here -->
+                    <header class="slds-modal__header">
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Add New Service</h2>
+                    </header>
+                    <!-- Modal/Popup Box LWC body starts here -->
+                    <div class="slds-modal__content slds-p-around_medium modalHeight" id="modal-content-id-1">
+                        <template if:true={err}>
+                            <span style="color:red">Both service and mode of communication are mandatory fields.</span>
+                        </template><br/>
+                        Choose the mode of communication and service you wish to add the Account in.<br/>
+                        <div class="slds-grid slds-wrap gridMargin">
+                            <div class="slds-col slds-var-p-around_large slds-size_1-of-2" style="text-align: center;">
+                                <span style="color:red">*</span><span>Service:</span>
+                            </div>             
+                            <div class="slds-col slds-var-p-around_large slds-size_1-of-2">                         
+                                <lightning-combobox
+                                variant="label-hidden"
+                                class="service" 
+                                name="serviceSelect"
+                                value={serviceVal}
+                                placeholder="--None--"
+                                options={serviceOptions}
+                                onchange={serviceChangeHandler} 
+                                onkeydown={preventBackslash}>
+                                </lightning-combobox>
+                            </div>
+                            <template if:true={errorService}>
+                                <div class="slds-col slds-size_1-of-2">
+                                    <span></span>
+                                </div>
+                                <div class="slds-col slds-size_1-of-2">            
+                                    <span class="errormsg">Please enter the value</span>           
+                                </div>
+                            </template>
+                            <div class="slds-col slds-var-p-around_large slds-size_1-of-2" style="text-align: center;">     
+                                <span style="color:red">*</span><span>Mode of Communication:</span>
+                            </div>                                     
+                            <div class="slds-col slds-var-p-around_large slds-size_1-of-2">                            
+                                <lightning-combobox
+                                variant="label-hidden"
+                                class="mode" 
+                                name="mode"
+                                value={selectedMode}
+                                placeholder="--None--"
+                                options={modeOptions}
+                                onchange={modeChangeHandler} 
+                                onkeydown={preventBackslash}>
+                                </lightning-combobox>    
+                            </div>
+                            <template if:true={errorMode}>
+                                <div class="slds-col slds-size_1-of-2">
+                                    <span></span>
+                                </div>
+                                <div class="slds-col slds-size_1-of-2">            
+                                    <span class="errormsg">Please enter the value</span>           
+                                </div>
+                            </template>
+                            <template if:true={isPhysicalAddress}>
+                                <div class="slds-col slds-var-p-around_large slds-size_1-of-2" style="text-align: center;">     
+                                    <span>Physical Address:</span>
+                                </div>             
+                                <div class="slds-col slds-var-p-around_large slds-size_1-of-2" style="text-align: center;">                                
+                                    <lightning-textarea name="address"  variant="label-hidden" value={physicalAddress} onchange={handleChangeForPhysicalAddress}></lightning-textarea>
+                                </div>
+                            </template>
+                            <template if:true={isEmail}>
+                                <div class="slds-col slds-var-p-around_large slds-size_1-of-2" style="text-align: center;">     
+                                    <span>List of Emails:</span>
+                                </div>             
+                                <div class="slds-col slds-var-p-around_large slds-size_1-of-2" style="text-align: center;">                                
+                                    <lightning-textarea name="emailList"  variant="label-hidden" value={emailList} onchange={handleChangeForEmailList}></lightning-textarea>
+                                </div>
+                            </template>
+                            </div>
+                        <br/>
+                    </div>
+                    <!-- Modal/Popup Box LWC footer starts here -->
+                    <footer class="slds-modal__footer">
+                        <button class="slds-button slds-button_neutral" onclick={closeModal} title="Cancel">Cancel</button>
+                        <button class="slds-button slds-button_brand" onclick={submitDetails} title="Save">Save</button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+    <!--EDIT Service-->
+        <template if:true={isModalOpenEdit}>
+            <!-- Modal/Popup Box LWC starts here -->
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <!-- Modal/Popup Box LWC header here -->
+                    <header class="slds-modal__header">
+                        <h2 id="modal-heading-02" class="slds-text-heading_medium slds-hyphenate">Edit Service</h2>
+                    </header>
+                    <!-- Modal/Popup Box LWC body starts here -->
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-2"><br/>
+                        Choose the mode of communication and service you wish to add the Account in.<br/>
+                        <div class="slds-grid slds-wrap gridMargin">
+                            <div class="slds-col slds-var-p-around_large slds-size_1-of-2" style="text-align: center;">
+                                <span style="color:red">*</span><span>Service:</span>
+                            </div>             
+                            <div class="slds-col slds-var-p-around_large slds-size_1-of-2">
+                                <lightning-combobox
+                                disabled
+                                variant="label-hidden"
+                                class="serviceEdit" 
+                                name="serviceSelect"
+                                value={serviceValEdit}
+                                placeholder="--None--"
+                                options={serviceOptions}
+                                onchange={serviceChangeHandlerEdit} 
+                                onkeydown={preventBackslash}>
+                                </lightning-combobox>
+                            </div>
+                            <template if:true={errorServiceEdit}>
+                                <div class="slds-col slds-size_1-of-2">
+                                    <span></span>
+                                </div>
+                                <div class="slds-col slds-size_1-of-2">            
+                                    <span class="errormsg">Please enter the value</span>           
+                                </div>
+                            </template>
+                            <div class="slds-col slds-var-p-around_large slds-size_1-of-2" style="text-align: center;">     
+                                <span style="color:red">*</span><span>Mode of Communication:</span>
+                            </div>                                     
+                            <div class="slds-col slds-var-p-around_large slds-size_1-of-2" >
+                                <lightning-combobox
+                                variant="label-hidden"
+                                class="modeEdit" 
+                                name="mode"
+                                value={selectedModeEdit}
+                                placeholder="--None--"
+                                options={modeOptions}
+                                onchange={modeChangeHandlerEdit}
+                                onkeydown={preventBackslash} >
+                                </lightning-combobox>    
+                            </div>
+                            <template if:true={errorModeEdit}>
+                                <div class="slds-col slds-size_1-of-2">
+                                    <span></span>
+                                </div>
+                                <div class="slds-col slds-size_1-of-2">            
+                                    <span class="errormsg">Please enter the value</span>           
+                                </div>
+                            </template>
+                            <template if:true={isPhysicalAddressEdit}>
+                                <div class="slds-col slds-var-p-around_large slds-size_1-of-2" style="text-align: center;">     
+                                    <span>Physical Address:</span>
+                                </div>             
+                                <div class="slds-col slds-var-p-around_large slds-size_1-of-2" style="text-align: center;">                                
+                                    <lightning-textarea name="address"  variant="label-hidden" value={physicalAddressEdit} onchange={handleChangeForPhysicalAddressEdit}></lightning-textarea>
+                                </div>
+                            </template>
+                            <template if:true={isEmailEdit}>
+                                <div class="slds-col slds-var-p-around_large slds-size_1-of-2" style="text-align: center;">     
+                                    <span>List of Emails:</span>
+                                </div>             
+                                <div class="slds-col slds-var-p-around_large slds-size_1-of-2" style="text-align: center;">                                
+                                    <lightning-textarea name="emailList"  variant="label-hidden" value={emailListEdit} onchange={handleChangeForEmailListEdit}></lightning-textarea>
+                                </div>
+                            </template>
+                            </div>
+                        <br/>
+                    </div>
+                    <!-- Modal/Popup Box LWC footer starts here -->
+                    <footer class="slds-modal__footer">
+                        <button class="slds-button slds-button_neutral" onclick={closeModalEdit} title="Cancel">Cancel</button>
+                        <button class="slds-button slds-button_brand" onclick={submitDetailsEdit} title="Save">Save</button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+    </div>
+</template>

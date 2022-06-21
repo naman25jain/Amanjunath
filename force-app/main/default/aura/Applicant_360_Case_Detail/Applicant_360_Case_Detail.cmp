@@ -1,0 +1,669 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,forceCommunity:availableForAllPageTypes,force:hasRecordId" access="global" controller="ApplicantMyProfileController" extends="c:CommunityBase">
+	<aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+	<aura:attribute name="case" type="Object" default="{}" />
+	<aura:attribute name="pageReady" type="Boolean" default="false" />
+	<aura:attribute name="files" type="List" default="" />
+    <aura:attribute name="showCancelModal" type="Boolean" default="false"/>
+    <aura:attribute name="reasonOptions" type="List" default="[{'label': 'Request Submitted by Mistake', 'value': 'Request Submitted by Mistake'},{'label': 'Information provided contains errors', 'value': 'Information provided contains errors'},{'label': 'Supporting Documentation Unavailable', 'value': 'Supporting Documentation Unavailable'},{'label': 'Other', 'value': 'Other'},]"/>
+	<aura:attribute name="photoErrors" type="String[]"/>
+	<aura:attribute name="passportErrors" type="String[]"/>
+	<aura:attribute name="photoIsExpired" type="Boolean" />
+    <aura:attribute name="showPhotoError" type="Boolean" default="false" />
+	<aura:attribute name="showPassportError" type="Boolean" default="false" />
+	<aura:attribute name="showExamRegActionButton" type="Boolean" default="false" />
+	<aura:attribute name="showAppForCertCaseDetail" type="Boolean" default="true" />
+	<aura:attribute name="showEpicVerfCaseDetail" type="Boolean" default="true" />
+	<aura:attribute name="lastUpdatedDate" type="DateTime" />
+	<aura:attribute name="createdDate" type="DateTime" />
+	<aura:attribute name="showCancel" type="Boolean" default="false" />
+	<aura:attribute name="cancelableStatuses" type="String[]" />
+	<aura:attribute name="recType" type="String"/>
+	<aura:attribute name="transcriptList" type="Transcript_Request__c[]"/>
+	<aura:attribute name="flag1" type="Boolean" default = "false"/>
+	<aura:attribute name="flag4" type="Boolean" default = "false"/>
+	<aura:attribute name="flag2" type="Boolean" default = "false"/>
+	<aura:attribute name="flag3" type="Boolean" default = "false"/>
+	<aura:attribute name="licVal" type="String" default = ""/>
+	<aura:attribute name="examRecs" type="object[]"/>
+	<aura:attribute name="ethnicityInfo" type="object"/>
+	<aura:attribute name="nativeLanguage" type="String"/>
+	<aura:attribute name="showOtherNativeLanguage" type="Boolean" default = "false"/>
+	<aura:attribute name="otherNativeLanguage" type="String"/>
+	<aura:attribute name="otherLanguagesSpoken" type="Object"/>
+	<aura:attribute name="showOtherLanguagesSpoken" type="Boolean" default = "false"/>
+	<aura:attribute name="additionalLanguagesSpoken" type="String"/>
+	<aura:attribute name="socialSecNumber" type="String"/>
+	<aura:attribute name="nationalId" type="String"/>
+	<aura:attribute name="nationalCountry" type="String"/>
+	<aura:attribute name="officiallyEnrolled" type="String"/>
+	<aura:attribute name="basicScience" type="String"/>
+	<aura:attribute name="isGraduate" type="boolean"/>
+	<aura:attribute name="examRegistrationsList" type="object[]"/>
+	<aura:attribute name="examRecsList" type="Exam_Registration__c[]"/>
+	<aura:attribute name="recListSR" type="object"/>
+	<aura:attribute name="examType" type="String" />
+	<aura:attribute name="assetRecId" type="String" />
+	<aura:attribute name="flagInternalStatus" type="Boolean" default = "false"/>
+	<aura:attribute name="PEUrl" type="String" />
+	<aura:attribute name="data" type="Object"/>
+    <aura:attribute name="columns" type="List"/>
+	<aura:attribute name="hypData" type="String" />
+    <aura:if isTrue="{!!v.pageReady}"><lightning:spinner variant="brand" alternativeText="Loading" size="large" /></aura:if>
+	<aura:if isTrue="{!v.pageReady}">
+		<div>
+			<c:CommunitySummarySectionHeader hideEditButton="true" title="Case Information" showHelpIcon="false" helpText="Case Information" />
+			<aura:if isTrue="{!and(v.case.RecordType.DeveloperName == 'Credential_Verification', v.case.Internal_Status__c == 'CV Rejected')}">
+				<lightning:layoutItem padding="horizontal-small" size="12">
+					<div class="slds-form-element slds-form-element_horizontal">
+						<c:credVerfDefScreen caseId="{!v.case.Id}"></c:credVerfDefScreen>
+					</div>
+				</lightning:layoutItem>
+				<br/>
+			</aura:if>
+			<aura:if isTrue="{!v.case.RecordType.DeveloperName != 'Application_For_Certification'}">
+			<aura:if isTrue="{!v.hypData != ''}">
+				<h1>You currently have a pending action on this case: <img src="/img/samples/flag_red.gif"/><a target="_blank" href="javascript: void(0)">{!v.hypData}</a></h1><br/>
+				<aura:set attribute="else">
+    				<aura:if isTrue="{!v.case.Action_Required_Icon__c != null}">
+						<h1>You currently have a pending action on this case: <aura:unescapedHtml value="{!v.case.Action_Required_Icon__c}"/></h1><br/>
+					</aura:if>
+  				</aura:set>
+			</aura:if>
+				<aura:if isTrue="{!or(or(v.showPhotoError, v.showPassportError), v.photoIsExpired)}">
+					<h1>This case was rejected due to the reason(s) listed below. Please correct the problem with the supporting document you provided, and then go to the Identity Information section of My Profile and submit a new change request.</h1>
+					<ul>
+						<aura:iteration items="{!v.photoErrors}" var="photoErr">
+							<li>• {!photoErr}</li>
+						</aura:iteration>
+						<aura:iteration items="{!v.passportErrors}" var="passportErr">
+							<li>• {!passportErr}</li>
+						</aura:iteration>
+					</ul><br/>
+				</aura:if>
+			</aura:if>
+	        <form class="slds-form">
+                 <aura:if isTrue="{!v.case.RecordType.DeveloperName == 'Application_For_Certification'}">
+					<aura:if isTrue="{!not(empty(v.data))}">
+						<lightning:datatable indexVar="key" keyField="id" data="{!v.data}" columns="{!v.columns}" hideCheckboxColumn="true"/>
+					</aura:if>
+                </aura:if>
+	            <div class="slds-form-element slds-form-element_horizontal">
+	                <lightning:input name="caseNumber" value="{!v.case.CaseNumber}" placeholder="" label="Case Number" aura:id="fieldToValidate" required="false"  disabled="true" />
+				</div>
+				<aura:if isTrue="{!and(and(and(and(and(v.case.RecordType.DeveloperName != 'USMLE_Transcript', v.case.RecordType.DeveloperName != 'Non_USMLE_Transcript'), v.case.RecordType.DeveloperName != 'Exam_Registration'), v.case.RecordType.DeveloperName != 'Region_Change'), v.case.RecordType.DeveloperName != 'Eligibility_Period_Extension'), v.case.RecordType.DeveloperName != 'Score_Recheck')}">
+					<div class="slds-form-element slds-form-element_horizontal">
+						<lightning:input name="caseStatus" value="{!v.case.External_Status__c}" placeholder="" label="Case Status" aura:id="fieldToValidate" required="false"  disabled="true" />
+					</div>
+				</aura:if>
+				<aura:if isTrue="{!or(or(or(or(or(v.case.RecordType.DeveloperName == 'USMLE_Transcript', v.case.RecordType.DeveloperName == 'Non_USMLE_Transcript'), v.case.RecordType.DeveloperName == 'Exam_Registration'), v.case.RecordType.DeveloperName == 'Region_Change'), v.case.RecordType.DeveloperName == 'Eligibility_Period_Extension'), v.case.RecordType.DeveloperName == 'Score_Recheck')}">
+					<div class="slds-form-element slds-form-element_horizontal">
+						<lightning:input name="caseStatus" value="{!v.case.External_Status__c}" placeholder="" label="Case Status" aura:id="fieldToValidate" required="false"  disabled="true" />
+					</div>
+				</aura:if>
+				<aura:if isTrue="{!and(and(and(and(and(and(v.case.RecordType.DeveloperName != 'Application_For_Certification', v.case.RecordType.DeveloperName != 'USMLE_Transcript'), v.case.RecordType.DeveloperName != 'Non_USMLE_Transcript'), v.case.RecordType.DeveloperName != 'Exam_Registration'), v.case.RecordType.DeveloperName != 'Region_Change'), v.case.RecordType.DeveloperName != 'Eligibility_Period_Extension'), v.case.RecordType.DeveloperName != 'Score_Recheck')}">
+					<div class="slds-form-element slds-form-element_horizontal">
+						<lightning:input name="caseType" value="{!v.case.RecordType.Name}" placeholder="" label="Type" aura:id="fieldToValidate" required="false"  disabled="true" />
+					</div>
+				</aura:if>
+				<aura:if isTrue="{!or(or(or(or(or(or(v.case.RecordType.DeveloperName == 'Application_For_Certification', v.case.RecordType.DeveloperName == 'Non_USMLE_Transcript'), v.case.RecordType.DeveloperName == 'USMLE_Transcript'), v.case.RecordType.DeveloperName == 'Exam_Registration'), v.case.RecordType.DeveloperName == 'Region_Change'), v.case.RecordType.DeveloperName == 'Eligibility_Period_Extension'), v.case.RecordType.DeveloperName == 'Score_Recheck')}">
+					<div class="slds-form-element slds-form-element_horizontal">
+						<lightning:input name="caseType" value="{!v.case.RecordType.Name}" placeholder="" label="Case Type" aura:id="fieldToValidate" required="false"  disabled="true" />
+					</div>
+				</aura:if>
+				<aura:if isTrue="{!v.flag4}">
+					<div class="slds-form-element slds-form-element_horizontal">
+						<label class="slds-form-element__label" for="form-element-01">Score Recheck Letter</label>
+						<div class="blank-Container">
+							<a href="{!'/sfc/servlet.shepherd/document/download/'+ v.assetRecId}">Download</a>
+						</div>
+					</div>
+				</aura:if>
+				<aura:if isTrue="{!or(v.case.RecordType.DeveloperName == 'Non_USMLE_Transcript', v.case.RecordType.DeveloperName == 'USMLE_Transcript')}">
+					<div class="slds-form-element slds-form-element_horizontal">
+						<lightning:input name="caseType" value="{!v.case.Related_Transcript_Case__r.CaseNumber}" placeholder="" label="Related Transcript Case" aura:id="fieldToValidate" required="false"  disabled="true" fieldLevelHelp="Any other Transcript request(s) submitted in the same application"/>
+					</div>
+				</aura:if>
+	            <div class="slds-form-element slds-form-element_horizontal">
+	                <lightning:input type="date" name="createdDate" value="{!v.createdDate}" placeholder="" label="Date Created" aura:id="fieldToValidate" required="false"  disabled="true" />
+	            </div>
+	            <div class="slds-form-element slds-form-element_horizontal">
+	                <lightning:input type="date" name="LastModifiedDate" value="{!v.lastUpdatedDate}" placeholder="" label="Last Updated Date" aura:id="fieldToValidate" required="false"  disabled="true" />
+				</div>
+				<aura:if isTrue="{!and(and(and(and(and(and(and(and(and(v.case.RecordType.DeveloperName != 'Application_For_Certification', v.case.RecordType.DeveloperName != 'Non_USMLE_Transcript'), v.case.RecordType.DeveloperName != 'USMLE_Transcript'), v.case.RecordType.DeveloperName != 'Exam_Registration'), v.case.RecordType.DeveloperName != 'Region_Change'), v.case.RecordType.DeveloperName != 'Eligibility_Period_Extension'), v.case.RecordType.DeveloperName != 'Score_Recheck'), v.case.RecordType.DeveloperName != 'Duplicate_Certificate'), v.case.RecordType.DeveloperName != 'Credential_Verification'),v.case.RecordType.DeveloperName != 'EPIC_Verification_Report_Request')}">
+					<div class="slds-form-element slds-form-element_horizontal">
+						<label class="slds-form-element__label" for="form-element-01">Reason for Change</label>
+						<lightning:textarea value="{!v.case.Reason_for_Change__c}" disabled="true" />
+					</div>
+					<div class="slds-form-element slds-form-element_horizontal">
+						<label class="slds-form-element__label" for="form-element-01">Changes Requested</label>
+						<lightning:textarea value="{!v.case.Description}" disabled="true" />
+					</div>
+				</aura:if>
+				<aura:if isTrue="{!v.case.RecordType.DeveloperName == 'Duplicate_Certificate'}">
+					<div class="slds-form-element slds-form-element_horizontal">
+						<label class="slds-form-element__label" for="form-element-01">Reason for Duplicate Certificate</label>
+						<lightning:textarea value="{!v.case.Reason_for_Duplicate_Certificate__c}" disabled="true" />
+					</div>
+				</aura:if>
+				<aura:if isTrue="{!and(v.case.RecordType.DeveloperName == 'Credential_Verification', v.case.ParentId != null)}">
+					<div class="slds-form-element slds-form-element_horizontal">
+                        <lightning:input name="parentCase" value="{!v.case.Parent.CaseNumber}" placeholder="" label="Parent Case" aura:id="fieldToValidate" required="false"  disabled="true" />
+                    </div>
+                    <div class="slds-form-element slds-form-element_horizontal">
+                        <label class="slds-form-element__label" for="form-element-01">External Instructions</label>
+                        <lightning:textarea value="{!v.case.Entity__r.External_Instructions__c}" disabled="true" />
+                    </div>
+				</aura:if>
+				<aura:if isTrue="{!or(v.case.Internal_Status__c == 'Incomplete', v.case.Internal_Status__c == 'CV Incomplete')}">
+					<aura:if isTrue="{!v.case.RecordType.DeveloperName != 'Credential_Verification'}">				
+						<div class="slds-form-element slds-form-element_horizontal">
+							<label class="slds-form-element__label" for="form-element-01">Deficiency Reason</label>
+							<div class="deficieny-Container">
+								<lightning:formattedRichText value="{!v.case.Deficiency_Reason_RTF__c}" disabled="true"/>
+							</div>
+						</div>
+					</aura:if>
+				</aura:if>
+				<aura:if isTrue="{!and(v.case.Internal_Status__c == 'Rejected', v.case.RecordType.DeveloperName != 'EPIC_Verification_Report_Request')}">
+					<div class="slds-form-element slds-form-element_horizontal">
+						<label class="slds-form-element__label" for="form-element-01">Deficiency Reason</label>
+						<div class="deficieny-Container">
+							<lightning:formattedRichText value="{!v.case.Deficiency_Reason_RTF__c}" disabled="true"/>
+						</div>
+					</div>
+				</aura:if>
+				<aura:if isTrue="{!v.case.RecordType.DeveloperName != 'Application_For_Certification'}">
+					<aura:if isTrue="{!v.case.Internal_Status__c == 'Enrollment Verification Incomplete'}">
+					<div class="slds-form-element slds-form-element_horizontal">
+						<label class="slds-form-element__label" for="form-element-01">Deficiency Reason</label>
+						<div class="deficieny-Container">
+							<lightning:formattedRichText value="{!v.case.Deficiency_Reason_RTF__c}" disabled="true"/>
+						</div>
+					</div>
+					</aura:if>
+					<aura:if isTrue="{!or(v.case.Internal_Status__c == 'Cancelled By Applicant', v.case.Internal_Status__c == 'Cancelled by ECFMG')}">
+						<div class="slds-form-element slds-form-element_horizontal">
+							<lightning:input name="Close_Reason__c" value="{!v.case.Close_Reason__c}" placeholder="" label="Closed Reason" aura:id="fieldToValidate" required="false"  disabled="true" />
+						</div>
+						<aura:if isTrue="{!v.case.Close_Reason__c == 'Other'}">
+							<div class="slds-form-element slds-form-element_horizontal">
+								<lightning:input name="External_Close_Comments__c" value="{!v.case.External_Close_Comments__c}" placeholder="" label="Cancellation Explanation" aura:id="fieldToValidate" required="false"  disabled="true" />
+							</div>
+						</aura:if>
+					</aura:if>
+				</aura:if>
+				<aura:if isTrue="{!and(v.flag1, v.flagInternalStatus)}">
+					<div class="slds-form-element slds-form-element_horizontal">
+						<label class="slds-form-element__label" for="form-element-01">Paper Enrollment Verification Form</label>
+						<div class="blank-Container">
+							<a href="javascript:void(0)" onclick = "{!c.handleDownloadClick}">Download</a>
+						</div>
+					</div>
+				</aura:if>
+				<aura:if isTrue="{!v.flag2}">
+					<div class="slds-form-element slds-form-element_horizontal">
+						<label class="slds-form-element__label" for="form-element-01">Scheduling Permit Form</label>
+						<div class="blank-Container">
+							<a href="javascript:void(0)" onclick = "{!c.handleEpermitDownloadClick}">Download</a>
+						</div>
+					</div>
+				</aura:if>
+				<aura:if isTrue="{!v.flag3}">
+					<div class="slds-form-element slds-form-element_horizontal">
+						<label class="slds-form-element__label" for="form-element-01">Visa Letter</label>
+						<div class="blank-Container">
+							<a href="{!}" target="_blank">Download</a>
+						</div>
+					</div>
+				</aura:if>
+				<aura:if isTrue="{!v.case.RecordType.DeveloperName =='Application_For_Certification' || v.case.RecordType.DeveloperName =='Identity_Verification' || v.case.RecordType.DeveloperName =='Credential_Verification' || v.case.RecordType.DeveloperName =='EPIC_Verification_Report_Request'}">
+					<div class="slds-form-element slds-form-element_horizontal">
+						<label class="slds-form-element__label" for="form-element-01">Action Needed?</label>
+						<div class="deficieny-Container">
+							<aura:if isTrue="{!v.hypData != ''}">
+								<img src="/img/samples/flag_red.gif"/><a target="_blank" href="javascript: void(0)">{!v.hypData}</a>
+								<aura:set attribute="else">
+    								<aura:if isTrue="{!v.case.Action_Required_Icon__c != null}">
+									<aura:unescapedHtml value="{!v.case.Action_Required_Icon__c}"/>
+									</aura:if>
+  								</aura:set>
+							</aura:if>
+						</div>
+					</div>
+					<aura:if isTrue="{!v.case.RecordType.DeveloperName =='Credential_Verification'}">
+						<div class="slds-form-element slds-form-element_horizontal">
+							<lightning:input name="trackingNumber" value="{!v.case.Tracking_Number__c}" placeholder="" label="Tracking Number" aura:id="fieldToValidate" required="false" disabled="true" />
+						</div>
+					</aura:if>
+					<c:CommunitySummarySectionHeader hideEditButton="true" title="Summary" showHelpIcon="false" helpText="Summary" />
+					<aura:if isTrue="{!v.case.RecordType.DeveloperName =='Identity_Verification'}">
+						<div class="slds-form-element slds-form-element_horizontal">
+							<label class="slds-form-element__label" for="form-element-01">Account Establishment Application Summary</label>
+							<div class="slds-form-element slds-form-element_horizontal">
+								<c:acctEstablishAppSummaryDownload caseId="{!v.case.Id}"/>
+							</div>
+						</div>
+					</aura:if>
+					<aura:if isTrue="{!v.case.RecordType.DeveloperName =='Application_For_Certification'}">
+						<div class="slds-form-element slds-form-element_horizontal">
+							<c:appForCertSummary showExamRegActionButton="{!v.showExamRegActionButton}" showCaseDetail="{!v.showAppForCertCaseDetail}" caseRecordId="{!v.case.Id}" getIdFromParent ="{!v.case.ContactId}"/>
+						</div>
+						<div class="slds-form-element slds-form-element_horizontal appForCertSummaryDownload">
+							<c:appForCertSummaryDownload caseId="{!v.case.Id}" />
+						</div>
+					</aura:if>
+					<aura:if isTrue="{!v.case.RecordType.DeveloperName =='EPIC_Verification_Report_Request'}">
+						<div class="slds-form-element slds-form-element_horizontal">
+							<c:epicReportSummary showCaseDetail="{!v.showEpicVerfCaseDetail}" getSecondaryParentCaseId ="{!v.case.Secondary_Parent_Case__c}" getEntityId ="{!v.case.Entity__c}" getRejectReason ="{!v.case.Rejection_Reason__c}" getEpicCaseId ="{!v.case.Id}" />
+						</div>
+					</aura:if>
+					<aura:if isTrue="{!v.case.RecordType.DeveloperName =='Credential_Verification'}">
+						<div class="slds-form-element slds-form-element_horizontal">
+							<c:credIntakeSummary hideButtonsForCredVerCase="True" credVerificationCaseId="{!v.case.Id}"/>
+						</div>
+					</aura:if>
+					<div class="slds-form-element_horizontal actions">
+						<label class="slds-form-element__label" for="form-element-01">&nbsp;</label>
+						<div class="slds-form-element__control back-Button">
+							<lightning:button aura:id="backButton" variant="brand" name="back" label="Back" onclick="{!c.handleBackCaseList}" />
+						</div>
+					</div>
+				</aura:if>
+				<aura:if isTrue="{!or(v.case.RecordType.DeveloperName =='USMLE_Transcript', v.case.RecordType.DeveloperName =='Non_USMLE_Transcript')}">
+					<c:CommunitySummarySectionHeader hideEditButton="true" title="Summary" showHelpIcon="false" helpText="Summary" />
+					<h2 class="header"><span>Transcript Summary</span></h2>
+					<div class="slds-form-element slds-form-element_horizontal">
+						<div class="formMargin">
+							<div class="slds-grid slds-wrap">
+							<div class="slds-col slds-var-p-top_small slds-size_1-of-4 slds-text-title_bold">
+							<span class="fieldName">Name of Recipient</span>
+						</div>
+						<div class="slds-col slds-var-p-top_small slds-size_1-of-4">
+							<lightning:formattedText value="{!v.transcriptList[0].Name_of_Recipient__c}"></lightning:formattedText>
+						</div>
+						<div class="slds-col slds-var-p-top_small slds-size_1-of-4"></div>
+						<div class="slds-col slds-var-p-top_small slds-size_1-of-4"></div>
+
+						<div class="slds-col slds-var-p-top_small slds-size_1-of-4 slds-text-title_bold">
+							<span class="fieldName">Organization</span>
+						</div>
+						<div class="slds-col slds-var-p-top_small slds-size_1-of-4">
+							<lightning:formattedText value="{!v.transcriptList[0].Organization__c}"></lightning:formattedText>
+						</div>
+						<div class="slds-col slds-var-p-top_small slds-var-p-left_x-large slds-size_1-of-4 slds-text-title_bold">
+							<span class="fieldName">Send to Self</span>
+						</div>
+						<div class="slds-col slds-var-p-top_small slds-size_1-of-4">
+							<aura:if isTrue="{!v.transcriptList[0].Send_to_Self__c}">
+								<lightning:formattedText value="True"></lightning:formattedText>
+							</aura:if>
+							<aura:if isTrue="{!not(v.transcriptList[0].Send_to_Self__c)}">
+								<lightning:formattedText value="False"></lightning:formattedText>
+							</aura:if>
+						</div>
+						<div class="slds-col slds-var-p-top_small slds-size_1-of-4 slds-text-title_bold">
+							<span class="fieldName">Street Address</span>
+						</div>
+						<div class="slds-col slds-var-p-top_small slds-size_1-of-4">
+							<lightning:formattedText value="{!v.transcriptList[0].Street__c}"></lightning:formattedText>
+						</div>
+						<div class="slds-col slds-var-p-top_small slds-var-p-left_x-large slds-size_1-of-4 slds-text-title_bold">
+							<span class="fieldName">City</span>
+						</div>
+						<div class="slds-col slds-var-p-top_small slds-size_1-of-4">
+							<lightning:formattedText value="{!v.transcriptList[0].City__c}"></lightning:formattedText>
+						</div>
+						<div class="slds-col slds-var-p-top_small slds-size_1-of-4 slds-text-title_bold">
+							<span class="fieldName">State/Providence</span>
+						</div>
+						<div class="slds-col slds-var-p-top_small slds-size_1-of-4">
+							<lightning:formattedText value="{!v.transcriptList[0].State__c}"></lightning:formattedText>
+						</div>
+						<div class="slds-col slds-var-p-top_small slds-var-p-left_x-large slds-size_1-of-4 slds-text-title_bold">
+							<span class="fieldName">Zip/Postal Code</span>
+						</div>
+						<div class="slds-col slds-var-p-top_small slds-size_1-of-4">
+							<lightning:formattedText value="{!v.transcriptList[0].Zip_Postal_Code__c}"></lightning:formattedText>
+						</div>
+						<div class="slds-col slds-var-p-top_small slds-size_1-of-4 slds-text-title_bold">
+							<span class="fieldName">Country</span>
+						</div>
+						<div class="slds-col slds-var-p-top_small slds-size_1-of-4">
+							<lightning:formattedText value="{!v.transcriptList[0].Country__c}"></lightning:formattedText>
+						</div>
+						<div class="slds-col slds-var-p-top_small slds-var-p-left_x-large slds-size_1-of-4 slds-text-title_bold">
+							<span class="fieldName">Telephone Number</span>
+						</div>
+						<div class="slds-col slds-var-p-top_small slds-size_1-of-4">
+							<lightning:formattedText value="{!v.transcriptList[0].Telephone_Number__c}"></lightning:formattedText>
+						</div>
+						<div class="slds-col slds-var-p-top_small slds-size_1-of-4 slds-text-title_bold">
+							<span class="fieldName">Courier Required</span>
+						</div>
+						<div class="slds-col slds-var-p-top_small slds-size_1-of-4">
+							<aura:if isTrue="{!v.transcriptList[0].Courier__c}">
+								<lightning:formattedText value="True"></lightning:formattedText>
+							</aura:if>
+							<aura:if isTrue="{!not(v.transcriptList[0].Courier__c)}">
+								<lightning:formattedText value="False"></lightning:formattedText>
+							</aura:if>
+						</div>
+						<div class="slds-col slds-var-p-top_small slds-var-p-left_x-large slds-size_1-of-4 slds-text-title_bold">
+							<span class="fieldName">Tracking Number</span>
+						</div>
+						<div class="slds-col slds-var-p-top_small slds-size_1-of-4">
+							<lightning:formattedText value="{!v.transcriptList[0].Tracking_Number__c}"></lightning:formattedText>
+						</div>
+						</div>
+						</div>
+					</div>
+					<div class="slds-form-element_horizontal actions">
+						<label class="slds-form-element__label" for="form-element-01">&nbsp;</label>
+						<div class="slds-form-element__control back-Button">
+							<lightning:button aura:id="backButton" variant="brand" name="back" label="Back" onclick="{!c.handleBackCaseList}" />
+						</div>
+					</div>
+				</aura:if>
+				<aura:if isTrue="{!v.case.RecordType.DeveloperName == 'Exam_Registration'}">
+					<c:CommunitySummarySectionHeader hideEditButton="true" title="Summary" showHelpIcon="false" helpText="Summary" />
+					<div class="slds-form-element slds-form-element_horizontal">
+						<lightning:accordion aura:id="accordion" activeSectionName="examReg" allowMultipleSectionsOpen="true">
+							<lightning:accordionSection name="phyLicense" label="Physician License in the United States">
+								<aura:set attribute="body">
+									<aura:if isTrue ="{!v.licVal == 'Yes'}">
+										Yes, I have been granted a physician license by a U.S. medical licensing authority based on other licensure examinations.
+									</aura:if>
+									<aura:if isTrue ="{!v.licVal == 'No'}">
+										No, I have not been granted a physician license by a U.S. medical licensing authority based on other licensure examinations.
+									</aura:if>
+									<aura:if isTrue ="{!v.licVal == 'NoValue'}">
+									</aura:if>
+								</aura:set>
+							</lightning:accordionSection>
+							<lightning:accordionSection name="examReg" label="Exam Information">
+								<div>
+									<table
+										class="slds-border_top slds-table slds-no-cell-focus slds-table_bordered slds-table_edit slds-table_fixed-layout slds-table_resizable-cols"
+										role="grid">
+										<caption>Added Exam List</caption>
+										<thead>
+											<tr class="slds-line-height_reset">
+												<th aria-label="Exam Type" aria-sort="none"
+													class="slds-is-resizable slds-is-sortable slds-text-align_center"
+													scope="col">
+													<span class="slds-truncate" title="Exam Type">Exam Type</span>
+												</th>
+												<th aria-label="Eligibility Period" aria-sort="none"
+													class="slds-is-resizable slds-is-sortable slds-text-align_center"
+													scope="col">
+													<span class="slds-truncate"
+														title="Eligibility Period">Eligibility Period</span>
+												</th>
+												<th aria-label="Testing Region" aria-sort="none"
+													class="slds-is-resizable slds-is-sortable slds-text-align_center"
+													scope="col">
+													<span class="slds-truncate" title="Testing Region">
+														Testing Region
+													</span>
+												</th>
+												<th aria-label="Test Accommodations" aria-sort="none"
+													class="slds-is-resizable slds-is-sortable slds-text-align_center"
+													scope="col">
+													<span class="slds-truncate" title="Test Accommodations">Test
+														Accommodations</span>
+												</th>
+											</tr>
+										</thead>
+										<tbody>
+											<aura:iteration var="pc" items="{!v.examRecs}">
+												<tr key="{!pc.recordIdVal}" data-record-id="{!pc.recordIdVal}">
+													<td><div class="slds-align_absolute-center">{!pc.examType}</div></td>
+													<td><div class="slds-align_absolute-center">{!pc.eligibilityPeriod}</div></td>
+													<td><div class="slds-align_absolute-center">{!pc.testingRegion}</div></td>
+													<td><div class="slds-align_absolute-center">{!pc.testAccomodations}</div></td>
+												</tr>
+											</aura:iteration>
+										</tbody>
+									</table>
+								</div>
+							</lightning:accordionSection>
+							<lightning:accordionSection name="ethnicity" label="Ethnicity and other Questions Information">
+								<div class="gridItemPadding">
+									<lightning:layout multipleRows="true">
+										<lightning:layoutItem>
+											<lightning:formattedRichText value=""></lightning:formattedRichText>
+										</lightning:layoutItem>
+										<lightning:layoutItem padding="around-small" size="6">
+											<div class="">Ethnicity</div>
+										</lightning:layoutItem>
+										<lightning:layoutItem padding="around-small" size="6">
+											<lightning:formattedRichText value="{!v.ethnicityInfo}">
+											</lightning:formattedRichText>
+										</lightning:layoutItem>
+										<lightning:layoutItem padding="around-small" size="6">
+											<div class="">Native Language</div>
+										</lightning:layoutItem>
+										<lightning:layoutItem padding="around-small" size="6">
+											<lightning:formattedRichText value="{!v.nativeLanguage}"></lightning:formattedRichText>
+										</lightning:layoutItem>
+										<aura:if isTrue="{!v.showOtherNativeLanguage == true}">
+											<lightning:layoutItem padding="around-small" size="6">
+												<div class="">Other Native Language</div>
+											</lightning:layoutItem>
+											<lightning:layoutItem padding="around-small" size="6">
+												<lightning:formattedRichText value="{!v.otherNativeLanguage}"></lightning:formattedRichText>
+											</lightning:layoutItem>
+										</aura:if>
+										<lightning:layoutItem padding="around-small" size="6">
+											<div class="">Other Languages Spoken</div>
+										</lightning:layoutItem>
+										<lightning:layoutItem padding="around-small" size="6">
+											<lightning:formattedRichText value="{!v.otherLanguagesSpoken}">
+											</lightning:formattedRichText>
+										</lightning:layoutItem>
+										<aura:if isTrue="{!v.showOtherLanguagesSpoken == true}">
+											<lightning:layoutItem padding="around-small" size="6">
+												<div class="">Additional Languages Spoken</div>
+											</lightning:layoutItem>
+											<lightning:layoutItem padding="around-small" size="6">
+												<lightning:formattedRichText value="{!v.additionalLanguagesSpoken}"></lightning:formattedRichText>
+											</lightning:layoutItem>
+										</aura:if>
+										<lightning:layoutItem padding="around-small" size="6">
+											<div class="">U.S. Social Security #</div>
+										</lightning:layoutItem>
+										<lightning:layoutItem padding="around-small" size="6">
+											<lightning:formattedRichText value="{!v.socialSecNumber}">
+											</lightning:formattedRichText>
+										</lightning:layoutItem>
+										<lightning:layoutItem padding="around-small" size="6">
+											<div class="">National Identification #</div>
+										</lightning:layoutItem>
+										<lightning:layoutItem padding="around-small" size="6">
+											<lightning:formattedRichText value="{!v.nationalId}">
+											</lightning:formattedRichText>
+										</lightning:layoutItem>
+										<lightning:layoutItem padding="around-small" size="6">
+											<div class="">National ID Country</div>
+										</lightning:layoutItem>
+										<lightning:layoutItem padding="around-small" size="6">
+											<lightning:formattedRichText value="{!v.nationalCountry}">
+											</lightning:formattedRichText>
+										</lightning:layoutItem>
+										<aura:if isTrue = "{!v.isGraduate == false}">
+											<lightning:layoutItem padding="around-small" size="6">
+												<div class="">Are you currently a student officially enrolled in medical school and will be (or will have graduated) on your test day?</div>
+											</lightning:layoutItem>
+											<lightning:layoutItem padding="around-small" size="6">
+												<lightning:formattedRichText value="{!v.officiallyEnrolled}">
+												</lightning:formattedRichText>
+											</lightning:layoutItem>
+											<lightning:layoutItem padding="around-small" size="6">
+												<div class="">Will you have completed the basic medical sciences requirement by the beginning of your eligibility period?
+												</div>
+											</lightning:layoutItem>
+											<lightning:layoutItem padding="around-small" size="6">
+												<lightning:formattedRichText value="{!v.basicScience}">
+												</lightning:formattedRichText>
+											</lightning:layoutItem>
+										</aura:if>
+									</lightning:layout>
+								</div>
+							</lightning:accordionSection>
+						</lightning:accordion>
+					</div>
+					<div class="slds-form-element_horizontal actions">
+						<label class="slds-form-element__label" for="form-element-01">&nbsp;</label>
+						<div class="slds-form-element__control back-Button">
+							<lightning:button aura:id="backButton" variant="brand" name="back" label="Back" onclick="{!c.handleBackCaseList}" />
+						</div>
+					</div>
+				</aura:if>
+				<aura:if isTrue="{!v.case.RecordType.DeveloperName == 'Region_Change'}">
+					<c:CommunitySummarySectionHeader hideEditButton="true" title="Summary" showHelpIcon="false" helpText="Summary" />
+					<div class="slds-form-element slds-form-element_horizontal">
+						<div class="formMargin">
+							<div class="slds-grid slds-wrap">
+								<aura:iteration var = "rec" items = "{!v.examRegistrationsList}">
+									<div key="{!rec.recId}" class="slds-col">
+										<div class="slds-grid slds-wrap">
+											<div class="slds-col slds-var-p-top_small slds-size_1-of-1 paddingHeader">
+												<span>Exam : {!rec.examTypeVal}</span><br/>
+											</div>
+											<div class="slds-col slds-var-p-top_small slds-size_1-of-1 paddingValues">
+												<span>Previous Region and Surcharge : {!rec.currentRegionName}</span><br/>
+											</div>
+											<div class="slds-col slds-var-p-top_small slds-size_1-of-1 paddingValues">
+												<span>New Region and Surcharge : {!rec.newRegionName} </span><br/>
+											</div>
+										</div>
+									</div>
+								</aura:iteration>
+							</div>
+						</div>
+					</div>
+					<div class="slds-form-element_horizontal actions">
+						<label class="slds-form-element__label" for="form-element-01">&nbsp;</label>
+						<div class="slds-form-element__control back-Button">
+							<lightning:button aura:id="backButton" variant="brand" name="back" label="Back" onclick="{!c.handleBackCaseList}" />
+						</div>
+					</div>
+				</aura:if>
+				<aura:if isTrue="{!v.case.RecordType.DeveloperName == 'Eligibility_Period_Extension'}">
+					<c:CommunitySummarySectionHeader hideEditButton="true" title="Summary" showHelpIcon="false" helpText="Summary" />
+					<aura:iteration items="{!v.examRecsList}" var="exam">
+					<div key="{!exam.Id}" class="slds-col">
+						<div class="slds-grid slds-wrap">
+							<div class="slds-col slds-var-p-top_small slds-size_1-of-1 paddingHeader">
+								<span>Exam : {!exam.Parent.Eligibility_Period__r.Exam_Type__c}</span><br/>
+							</div>
+							<div class="slds-col slds-var-p-top_small slds-size_1-of-1 paddingValues">
+								<span>Previous Eligibility Period : </span>
+								<lightning:formattedDateTime value="{!exam.Parent.Previous_EP_Start_Date__c}" time-zone="UTC"></lightning:formattedDateTime>
+								<span> - </span>
+								<lightning:formattedDateTime value="{!exam.Parent.Previous_EP_End_Date__c}" time-zone="UTC"></lightning:formattedDateTime>
+								<br/>
+							</div>
+							<div class="slds-col slds-var-p-top_small slds-size_1-of-1 paddingValues">
+								<span>New Eligibility Period : </span>
+								<lightning:formattedDateTime value="{!exam.EP_Start_Date__c}" time-zone="UTC"></lightning:formattedDateTime>
+								<span> - </span>
+								<lightning:formattedDateTime value="{!exam.EP_End_Date__c}" time-zone="UTC"></lightning:formattedDateTime>
+								<br/>
+							</div>
+							<div class="slds-col slds-var-p-top_small slds-size_1-of-1 paddingValues">
+								<span>Fee : $100.00</span><br/>
+							</div>
+						</div>
+					</div>
+					</aura:iteration>
+					<div class="slds-form-element_horizontal actions">
+						<label class="slds-form-element__label" for="form-element-01">&nbsp;</label>
+						<div class="slds-form-element__control back-Button">
+							<lightning:button aura:id="backButton" variant="brand" name="back" label="Back" onclick="{!c.handleBackCaseList}" />
+						</div>
+					</div>
+				</aura:if>
+				<aura:if isTrue="{!v.case.RecordType.DeveloperName == 'Score_Recheck'}">
+					<c:CommunitySummarySectionHeader hideEditButton="true" title="Summary" showHelpIcon="false" helpText="Summary" />
+						<div class="paddingMainHeader">
+							<h2 class="stepMainHeader">USMLE Exams</h2>
+						</div><br/><br/>
+						<aura:if isTrue="{!v.recListSR[0].examType == 'USMLE Step 1'}">
+							<h2 class="stepHeader">Your most recent USMLE Step 1 score</h2>
+						</aura:if>
+						<aura:if isTrue="{!v.recListSR[0].examType == 'USMLE Step 2 CK'}">
+							<h2 class="stepHeader">Your most recent USMLE Step 2 CK score</h2>
+						</aura:if>
+						<aura:if isTrue="{!v.recListSR[0].examType == 'USMLE Step 2 CS'}">
+							<h2 class="stepHeader">Your most recent USMLE Step 2 CS score</h2>
+						</aura:if>
+						<br/><br/>
+						Exam Date:
+						<lightning:formattedDateTime value="{!v.recListSR[0].examDate}" time-zone="UTC"></lightning:formattedDateTime>
+						<br/><br/>
+						Available Until:
+						<lightning:formattedDateTime value="{!v.recListSR[0].availableUntil}" time-zone="UTC"></lightning:formattedDateTime>
+						<br/><br/>
+						Score Report:
+						<a href="{!$Resource.Score_Report_PDF}" target="_blank"><img src="{!$Resource.PDF_logo}" alt="pdfLogo" class="scoreReportImage"></img></a>
+						<br/><br/>
+						Score withheld from Medical School?
+						{!v.recListSR[0].pdOptOutFlag}
+						<br/><br/>
+						{!v.recListSR[0].withHeldReason}
+					<div class="slds-form-element_horizontal actions">
+						<label class="slds-form-element__label" for="form-element-01">&nbsp;</label>
+						<div class="slds-form-element__control back-Button">
+							<lightning:button aura:id="backButton" variant="brand" name="back" label="Back" onclick="{!c.handleBackCaseList}" />
+						</div>
+					</div>
+				</aura:if>
+	            <aura:if isTrue="{!v.showCancel}">
+					<div class="slds-form-showCancel slds-form-element_horizontal actions">
+						<label class="slds-form-element__label" for="form-element-01">&nbsp;</label>
+						<div class="slds-form-element__control">
+		        			<lightning:button aura:id="cancelButton" variant="brand" name="cancel" label="Cancel Case" onclick="{!c.handleCancelModal}" />
+						</div>
+					</div>
+				</aura:if>
+				<aura:if isTrue="{!v.case.RecordType.DeveloperName != 'Application_For_Certification'}">
+					<aura:iteration items="{!v.files}" var="file">
+						<aura:if isTrue="{!file.Document_Type__c != 'Notarized ID Form'}">
+							<div class="slds-form-element slds-form-element_horizontal">
+								<label class="slds-form-element__label" for="form-element-01">Supporting Document<br/>{!file.Document_Type__c}</label>
+								<div class="slds-form-element__control">
+									<lightning:fileCard fileId="{!file.ContentDocumentId}" hideDescription="true" description="{!file.Document_Type__c}"/>
+								</div>
+							</div>
+						</aura:if>
+					</aura:iteration>
+				</aura:if>
+	        </form>
+		</div>
+	</aura:if>
+	<aura:if isTrue="{!v.showCancelModal}">
+		<div class="demo-only" style="height: 640px;">
+			<section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+				<div class="slds-modal__container">
+					<header class="slds-modal__header">
+						<h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Cancel Request</h2>
+					</header>
+					<div class="slds-modal__content slds-var-p-around_medium" id="modal-content-id-1">
+				 	    <p>Before canceling this request please select a reason</p>
+                        <lightning:combobox aura:id="fieldToValidate" name="reasonCategory" label="Reason" options="{!v.reasonOptions}" value="{!v.case.Close_Reason__c}" required="true" />
+                        <aura:if isTrue="{!v.case.Close_Reason__c == 'Other'}">
+                        	<lightning:textarea value="{!v.case.External_Close_Comments__c}" required="true" label="Please Explain Your Reason"/>
+                            <aura:set attribute="else"><br/><br/><br/><br/><br/><br/><br/>&nbsp;</aura:set>
+                        </aura:if>
+					</div>
+					<footer class="slds-modal__footer">
+						<lightning:button aura:id="okButton" class="slds-button slds-button_brand" onclick="{!c.handleBack}">Back</lightning:button>
+                        <lightning:button aura:id="okButton" class="slds-button slds-button_brand" onclick="{!c.handleCancel}" disabled="{!or(v.case.Close_Reason__c == null, and(v.case.Close_Reason__c == 'Other', or(v.case.External_Close_Comments__c == '',v.case.External_Close_Comments__c == null)))}">Proceed</lightning:button>
+					</footer>
+				</div>
+			</section>
+			<div class="slds-backdrop slds-backdrop_open"></div>
+		</div>
+	</aura:if>
+</aura:component>

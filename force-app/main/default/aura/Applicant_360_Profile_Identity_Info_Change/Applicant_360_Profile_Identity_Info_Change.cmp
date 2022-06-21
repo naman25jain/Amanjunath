@@ -1,0 +1,554 @@
+<aura:component
+implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,forceCommunity:availableForAllPageTypes"
+access="global" controller="ApplicantMyProfileController" extends="c:CommunityBase">
+<!--
+   attributes:
+   
+   1)
+   
+   Notes:
+   Needs a cancel button that functions like a back button (Applicant_360_Profile_Identity_Info with warning if there are unsaved changes).
+   One file upload component per section.
+   Upon clicking "Back" return to the Applicant_360_Profile_Identity_Info component
+   Upon clicking "Next" first perform all validations.
+   1) Validation Passed
+   a) Display Terms & Conditions as a modal in component
+	   1) Click Accept - Add record to staging table for field updates, Ts&Cs record ID, and file upload IDs. Then, create the Case and link to Ts&Cs record.
+	An asset will need to be created for each supporting document uploaded. The asset type will match the document type selected for that info update's change.
+	Display thank you/cancel case message with case number.
+   2) Click Cancel - Close Terms & Conditions modal
+   2) Validation Failed - display error messages for fields that failed validation
+   
+   
+   Supporting documentation is only displayed if one of the above fields is modified.
+   If Supporting documentation is displayed "Reason for Change" and "Government Issued ID" are required.
+   If Supporting documentation is displayed only allow one of each of the additional types (optional)
+   Check on disabling ctrl-v into to confirm field
+   -->
+<aura:attribute name="pageReady" type="Boolean" default="false" />
+<aura:attribute name="readOnlyMode" type="Boolean" default="false" />
+<aura:attribute name="disableSelect" type="Boolean" default="false" />
+<aura:attribute name="contact" type="Object" default="{}" />
+<aura:attribute name="generationalSuffix" type="String[]" default=",Jr,Sr,II,III,IV,V" />
+<aura:attribute name="generationalSuffixCB" type="List"
+   default="[{'label': '', 'value': ''},{'label': 'Jr', 'value': 'Jr'},{'label': 'Sr', 'value': 'Sr'},{'label': 'II', 'value': 'II'},{'label': 'III', 'value': 'III'},{'label': 'IV', 'value': 'IV'},{'label': 'V', 'value': 'V'},]" />
+<aura:attribute name="genderOptions" type="String[]" default=",Female,Male,X" />
+<aura:attribute name="genderOptionsCB" type="List"
+   default="[{'label': 'Female', 'value': 'Female'},{'label': 'Male', 'value': 'Male'},{'label': 'X', 'value': 'X'},]" />
+<aura:attribute name="hasExistingChangeCase" type="Boolean" default="false" />
+<aura:attribute name="disableButtons" type="Boolean" default="false" access="private" />
+<aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+<aura:attribute name="showCompleteModal" type="Boolean" default="false" />
+<aura:attribute name="contactId" type="String" />
+<aura:attribute name="reasonForChange" type="String" default="" />
+<aura:attribute name="docTypesRemaining" type="String[]"
+   default="--Select One--,Birth Certificate,Marriage Certificate,Official Court Order,U.S. Resident Alien Card,U.S. Naturalization Certificate,U.S. Passport Card" />
+<aura:attribute name="docTypeSelected" type="String" default="--Select One--" />
+<aura:attribute name="governmentIssuedId" type="String" default="" />
+<aura:attribute name="photoId" type="String" default="" />
+<aura:attribute name="docTypesUsed" type="String[]" default="" />
+<aura:attribute name="passportExpirationId" type="String" default="" />
+<aura:attribute name="passportTranslationId" type="String" default="" />
+<aura:attribute name="birthCertificateId" type="String" default="" />
+<aura:attribute name="marriageCertificateId" type="String" default="" />
+<aura:attribute name="officalCourtOrderId" type="String" default="" />
+<aura:attribute name="usResidentAlienCardId" type="String" default="" />
+<aura:attribute name="naturalizationCertificateId" type="String" default="" />
+<aura:attribute name="usPassportCardId" type="String" default="" />
+<aura:attribute name="unknownTypeId" type="String" default="" />
+<aura:attribute name="lastName" type="String" default="" />
+<aura:attribute name="oneNameOnly" type="Boolean"/>
+<aura:attribute name="firstName" type="String" default="" />
+<aura:attribute name="genSuffix" type="String" default="" />
+<aura:attribute name="dob" type="Date" />
+<aura:attribute name="gender" type="String" default="" />
+<aura:attribute name="lastNameInitial" type="String" default="" />
+<aura:attribute name="oneNameOnlyInitial" type="Boolean"/>
+<aura:attribute name="firstNameInitial" type="String" default="" />
+<aura:attribute name="genSuffixInitial" type="String" default="" />
+<aura:attribute name="dobInitial" type="Date" />
+<aura:attribute name="genderInitial" type="String" default="" />
+<aura:attribute name="confirmChange" type="Boolean" default="false" />
+<aura:attribute name="confirmText" type="String" default="" />
+<aura:attribute name="confirmId" type="String" default="" />
+<aura:attribute name="passportNumber" type="String" default="" />
+<aura:attribute name="passportIssued" type="Date" />
+<aura:attribute name="passportExpires" type="Date" />
+<aura:attribute name="passportCountry" type="String" default="" />
+<aura:attribute name="currentCitizenshipCountryDual" type="Map" />
+<aura:attribute name="caseNumber" type="String" default="" />
+<aura:attribute name="payloadPassport" type="String" />
+<aura:attribute name="payloadPassportTranslation" type="String" />
+<aura:attribute name="payloadPhoto" type="String" />
+<aura:attribute name="maxsize" type="Integer" default="10" />
+<aura:attribute name="passportUploaded" type="String" default="No" />
+<aura:attribute name="passportTranslationUploaded" type="String" default="No" />
+<aura:attribute name="passportInEnglish" type="String" default="No" />
+<aura:attribute name="passportTranslationDone" type="String" default="No" />
+<aura:attribute name="payloadPassportExpiration" type="String" />
+<aura:attribute name="passportExpirationUploaded" type="String" default="No" />
+<aura:attribute name="passportExpired" type="String" default="No" />
+<aura:attribute name="passportExpirationDone" type="String" default="No" />
+<aura:attribute name="payloadBirthCertificate" type="String" />
+<aura:attribute name="birthCertificateUploadBool" type="Boolean" default="false" />
+<aura:attribute name="payloadMarriageCertificate" type="String" />
+<aura:attribute name="marriageCertificateUploadBool" type="Boolean" default="false" />
+<aura:attribute name="payloadOfficalCourtOrder" type="String" />
+<aura:attribute name="officalCourtOrderUploadBool" type="Boolean" default="false" />
+<aura:attribute name="payloadUsResidentAlienCard" type="String" />
+<aura:attribute name="usResidentAlienCardUploadBool" type="Boolean" default="false" />
+<aura:attribute name="payloadUsNaturalizationCertificate" type="String" />
+<aura:attribute name="usNaturalizationCertificateUploadBool" type="Boolean" default="false" />
+<aura:attribute name="payloadUsPassportCard" type="String" />
+<aura:attribute name="usPassportCardUploadBool" type="Boolean" default="false" />
+<aura:attribute name="caseRecordId" type="String" default="" />
+<aura:attribute name="showShoppingCartLWC" type="Boolean" default="false" />
+<aura:attribute name="hasCSDetails" type="Boolean" default="false" />
+<aura:attribute name="hasPassportDetails" type="Boolean" default="false" />
+<aura:attribute name="hasPhotoDetails" type="Boolean" default="false" />
+<aura:attribute name="hasTranslation" type="Boolean" default="false" />
+<aura:attribute name="hasExpiration" type="Boolean" default="false" />
+
+
+<aura:if isTrue="{!and(v.pageReady,v.showShoppingCartLWC)}">
+   <lightning:spinner variant="brand" alternativeText="Loading" size="large" />
+</aura:if>
+<aura:if isTrue="{!v.pageReady}">
+   <div>
+	  <c:CommunitySummarySectionHeader hideEditButton="true" title="Name" showHelpIcon="false"
+		 helpText="{!$Label.c.A360_page_identity_info_change_helptext_name}" />
+	  <p><strong>If you have legally changed your name from what appears in your Intealth profile, you must submit a change request. Enter the necessary change to your name in the field below, provide a brief explanation of the reason for the change, and upload documentation, as indicated. Then, click Submit. We must be able to determine from the supporting documentation you submit that your name has legally changed from the name currently in your profile to the name that you’re requesting to appear in your profile.</strong></p>
+	  <p>If your change request is accepted, your Intealth Identification Form may be invalidated. If your identification form is invalidated, you will be provided with an updated identification form to have notarized, and your notarized form must be accepted before you will be able to request additional services through MyIntealth.</p>
+	  <form class="slds-form">
+		 <div class="slds-form-element slds-form-element_horizontal">
+			<lightning:input name="lastName" value="{!v.lastName}" placeholder="" label="Last Name"
+			   aura:id="fieldToValidate" required="true" disabled="{!v.readOnlyMode}" />
+		 </div>
+		 <div>
+			<div class="slds-form-element slds-form-element_horizontal actions">
+			   <label class="slds-form-element__label" for="form-element-01">My legal name consists of one name
+			   only</label>
+			   <div class="slds-form-element__control">
+				  <lightning:input type="checkbox" label="" aura:id="lastOnly" name="lastOnly"
+					 checked="{!v.oneNameOnly}" disabled="{!v.readOnlyMode}"
+					 onchange="{!c.handleRestOfNameOnclick}" />
+			   </div>
+			</div>
+		 </div>
+		 <aura:if isTrue="{!!v.oneNameOnly}">
+			<div class="slds-form-element slds-form-element_horizontal">
+			   <lightning:input name="firstName" value="{!v.firstName}" placeholder="" label="Rest of Name"
+				  aura:id="fieldToValidate" required="true" disabled="{!v.readOnlyMode}" />
+			</div>
+		 </aura:if>
+		 <div class="slds-form-element slds-form-element_horizontal">
+			<lightning:combobox name="generationalSuffix" label="Generational Suffix" placeholder=" "
+			   options="{!v.generationalSuffixCB}" value="{!v.genSuffix}" />
+		 </div>
+	  </form>
+	  <c:CommunitySummarySectionHeader hideEditButton="true" title="Date of Birth" showHelpIcon="false"
+		 helpText="{!$Label.c.A360_Profile_identity_info_change_helptext_dob}" />
+	  <p>If your date of birth is incorrect in your Intealth profile, you must submit a change request. Enter the necessary correction to your date of birth in the field below, provide a brief explanation of the reason for the change, and upload documentation, as indicated. Then, click <strong>Submit</strong>.</p>
+	  <p>If your change request is accepted, your Intealth Identification Form may be invalidated. If your identification form is invalidated, you will be provided with an updated identification form to have notarized, and your notarized form must be accepted before you will be able to request additional services through MyIntealth. </p>
+	  <form class="slds-form">
+		 <div class="slds-form-element slds-form-element_horizontal">
+			<lightning:input name="dateOfBirth" type="date" value="{!v.dob}" placeholder=""
+			   label="Date of Birth" aura:id="fieldToValidate" required="true" disabled="{!v.readOnlyMode}" onchange="{!c.checkDOBValid}" />
+		 </div>
+	  </form>
+	  <c:CommunitySummarySectionHeader hideEditButton="true" title="Gender" showHelpIcon="false"
+		 helpText="{!$Label.c.A360_Profile_identity_info_change_helptext_gender}" />
+	  <p>If you have legally changed your gender from what appears in your Intealth profile, please contact us for further instructions before you submit a change request.</p>
+	  <form class="slds-form">
+		 <div class="slds-form-element slds-form-element_horizontal">
+			<lightning:combobox name="gender" label="Gender" options="{!v.genderOptionsCB}"
+			   value="{!v.gender}" />
+		 </div>
+	  </form>
+	  <aura:if
+		 isTrue="{! !and(and(and(and(and(and(v.firstNameInitial == v.firstName, v.lastNameInitial == v.lastName),v.oneNameOnlyInitial == v.oneNameOnly), v.genSuffixInitial == v.genSuffix), v.dobInitial == v.dob), v.genderInitial == v.gender))}">
+		 <c:CommunitySummarySectionHeader hideEditButton="true" title="Supporting Documentation"
+			showHelpIcon="false"
+			helpText="{!$Label.c.A360_Profile_identity_info_change_helptext_supporting_documentation}" />
+		 <p>You must provide a brief explanation for the reason you are requesting a change (i.e., name change due to marriage). You also must provide an image of your current, unexpired passport bearing the name, gender, and date of birth you are requesting to be listed in your Intealth profile. Additional documentation also may be required. We must be able to determine from the supporting documentation you provide that the information currently in your profile has legally changed to the information that you have provided in this request.</p>
+		 <div class="slds-p-bottom_x-large">
+			<form class="slds-form">
+			   <div class="slds-form-element slds-form-element_horizontal">
+				  <lightning:textarea name="reasonForChange" value="{!v.reasonForChange}" placeholder=""
+					 label="Reason for Change" aura:id="fieldToValidate" required="true"
+					 disabled="{!v.readOnlyMode}" />
+			   </div>
+			   <div class="slds-form-element slds-form-element_horizontal">
+				  <lightning:input name="passportNumber" value="{!v.passportNumber}" placeholder=""
+					 label="Passport Number" aura:id="fieldToValidate" required="true"
+					 disabled="{!v.readOnlyMode}" />
+			   </div>
+			   <div class="slds-form-element slds-form-element_horizontal">
+				  <lightning:input name="passportIssueDate" type="date" value="{!v.passportIssued}"
+					 placeholder="" label="Passport Issue Date" aura:id="fieldToValidate" required="true"
+					 disabled="{!v.readOnlyMode}" onchange="{!c.checkPPIssueDateValid}" />
+			   </div>
+			   <div class="slds-form-element slds-form-element_horizontal">
+				  <lightning:input name="passportExpiration" type="date" value="{!v.passportExpires}"
+					 placeholder="" label="Passport Expiration Date" aura:id="fieldToValidate"
+					 required="true" disabled="{!v.readOnlyMode}" onchange="{!c.checkPPExpDateValid}" />
+			   </div>
+			   <div class="slds-form-element slds-form-element_horizontal">
+				  <lightning:combobox name="passportCountry" label="Passport Country" placeholder=" "
+					 options="{!v.currentCitizenshipCountryDual}" aura:id="fieldToValidate" required="true"
+					 value="{!v.passportCountry}" />
+			   </div>
+			</form>
+			<!-- DISPLAY UPLOADED DOCUMENT TYPES  -->
+			<div class="slds-form-element slds-form-element_horizontal actions slds-p-bottom_medium">
+			   <label class="slds-form-element__label" for="form-element-01"><span
+				  style="color:red">*&nbsp;</span><span>Upload Passport</span></label>
+			   <div class="slds-form-element__control">
+				  <div class="slds-form-element__control">
+					 <aura:if isTrue="{!!v.hasPassportDetails}">
+						<p style="color:red;">You must upload a clear, color image of the page in your current, unexpired passport that includes your name and photo.</p>
+					 </aura:if>
+					 <c:cloudDocumentUploadWrapper aura:id="passport" payLoad="{!v.payloadPassport}"
+						hideUpload="{!v.hasPassportDetails}" maxAllowedFileSize="{!v.maxsize}" acceptedFileFormats=".jpeg,.jpg"
+						enableAnnotation="false" enableRedaction="false" assetType="PASSPORT"
+						showDeleteButton="true" onuploadcompleted="{!c.handleGovermentIdUpload}"
+						onafterdelete="{!c.handleRemovePassport}"/>
+					 <c:gDisplayContent uniqueContentValue="upload_msg_jpeg_jpg"></c:gDisplayContent>
+				  </div>
+			   </div>
+			</div>
+			<div class="slds-form-element slds-form-element_horizontal actions  slds-p-bottom_medium">
+			   <label class="slds-form-element__label" for="form-element-01"><span
+				  style="color:red">*&nbsp;</span><span>Passport Translation</span></label>
+			   <div class="slds-form-element__control">
+				  <p>Is the text in the image of your passport in Latin characters?</p>
+				  <lightning:input type="radio" label="Yes" name="isEng" value="true"
+					 checked="{!v.passportInEnglish == 'Yes'}" onchange="{!c.handleEnglishChecked}" />
+				  <lightning:input type="radio" label="No" name="isEng" value="false"
+					 checked="{!v.passportInEnglish == 'No'}" onchange="{!c.handleEnglishChecked}" />
+				  <!-- upload button, red text and 'please not black text' disappear when yes radio button is selected -->
+				  <aura:if isTrue="{!v.passportInEnglish == 'No'}">
+					 <p style="color:red;">If the text in the image of the passport page with your name and photo is not in Latin characters, you also need to upload an image of the section of your passport that is in Latin characters.</p>
+					 <c:cloudDocumentUploadWrapper aura:id="passportTranslation"
+						payLoad="{!v.payloadPassportTranslation}" hideUpload="{!v.hasTranslation}" maxAllowedFileSize="{!v.maxsize}"
+						acceptedFileFormats=".jpeg,.pdf,.tiff" enableAnnotation="false"
+						enableRedaction="false" showDeleteButton="true" onuploadcompleted="{!c.handleTranslationUpload}" 
+						onafterdelete="{!c.handleRemovePassportTranslation}"/>
+					 <c:gDisplayContent uniqueContentValue="upload_msg_jpeg_tiff_pdf"></c:gDisplayContent>
+				  </aura:if>
+			   </div>
+			</div>
+			<div class="slds-form-element slds-form-element_horizontal actions  slds-p-bottom_medium">
+			   <label class="slds-form-element__label" for="form-element-01"><span
+				  style="color:red">*&nbsp;</span><span>Passport Expiration Page</span></label>
+			   <div class="slds-form-element__control">
+				  Does your passport image include the passport expiration date?<br />
+				  <lightning:input type="radio" label="Yes" name="isExp" value="true"
+					 checked="{!v.passportExpired == 'Yes'}" onchange="{!c.handleExpirationChecked}" />
+				  <lightning:input type="radio" label="No" name="isExp" value="false"
+					 checked="{!v.passportExpired == 'No'}" onchange="{!c.handleExpirationChecked}" />
+				  <aura:if isTrue="{!v.passportExpired == 'No'}">
+					 <p style="color:red;">If the image of the page with your name and photo does not include the expiration date, you must upload an image of the page that includes your passport expiration date.</p>
+					 <c:cloudDocumentUploadWrapper aura:id="passportExpiration"
+					 	payLoad="{!v.payloadPassportExpiration}" hideUpload="{!v.hasExpiration}" maxAllowedFileSize="{!v.maxsize}"
+						acceptedFileFormats=".jpeg,.pdf,.tiff" enableAnnotation="false"
+						enableRedaction="false" showDeleteButton="true" onuploadcompleted="{!c.handleExpirationUpload}" 
+						onafterdelete="{!c.handleRemovePassportExpiration}"/>
+					 <c:gDisplayContent uniqueContentValue="upload_msg_jpeg_tiff_pdf"></c:gDisplayContent>
+				  </aura:if>
+			   </div>
+			</div>
+			<div class="slds-form-element slds-form-element_horizontal actions  slds-p-bottom_medium">
+			   <label class="slds-form-element__label" for="form-element-01"><span
+				  style="color:red">*&nbsp;</span><span>Upload Photo</span></label>
+			   <div class="slds-form-element__control">
+				  <div class="slds-form-element__control">
+					 <aura:if isTrue="{!!v.hasPhotoDetails}">
+						<p style="color:red;">You must upload a recent, color photograph showing only a clear, front view of your full face with a plain, light-colored background.</p>
+					 </aura:if>
+					 <c:cloudDocumentUploadWrapper aura:id="photo" payLoad="{!v.payloadPhoto}"
+						hideUpload="{!v.hasPhotoDetails}" maxAllowedFileSize="{!v.maxsize}" acceptedFileFormats=".jpeg,.jpg"
+						enableAnnotation="false" enableRedaction="false" assetType="PHOTO"
+						showDeleteButton="true" onuploadcompleted="{!c.handlePhotoIdUpload}"
+						onafterdelete="{!c.handleRemovePhoto}"/>
+					 <c:gDisplayContent uniqueContentValue="upload_msg_jpeg_jpg"></c:gDisplayContent>
+				  </div>
+			   </div>
+			</div>
+			<aura:if isTrue="{!v.passportExpirationId != ''}">
+			   <div class="slds-form-element slds-form-element_horizontal actions  slds-p-bottom_medium">
+				  <label class="slds-form-element__label" for="form-element-01">Passport Expiration</label>
+				  <div class="slds-form-element__control">
+					 <lightning:fileCard fileId="{!v.passportExpirationId}" hideDescription="true"
+						description="" />
+					 <lightning:button variant="destructive" label="Remove" title="Remove"
+						onclick="{! c.handleRemovePassportExpiration }" />
+				  </div>
+			   </div>
+			</aura:if>
+			<aura:if isTrue="{!v.passportTranslationId != ''}">
+			   <div class="slds-form-element slds-form-element_horizontal actions  slds-p-bottom_medium">
+				  <label class="slds-form-element__label" for="form-element-01">Passport Translation</label>
+				  <div class="slds-form-element__control">
+					 <lightning:fileCard fileId="{!v.passportTranslationId}" hideDescription="true"
+						description="" />
+					 <lightning:button variant="destructive" label="Remove" title="Remove"
+						onclick="{! c.handleRemovePassportTranslation }" />
+				  </div>
+			   </div>
+			</aura:if>
+			<!-- DISPLAY UPLOADED DOCUMENT TYPES  -->
+			<div class="displaySection">
+			   <aura:if isTrue="{!v.birthCertificateId != ''}">
+				  <div
+					 class="slds-form-element slds-form-element_horizontal actions testSection  slds-p-bottom_medium">
+					 <label class="slds-form-element__label" for="form-element-01">Birth Certificate</label>
+					 <div class="slds-form-element__control">
+						<c:cloudDocumentUploadWrapper aura:id="birthCertificateDisplay"
+						   payLoad="{!v.payloadBirthCertificate}"
+						   hideUpload="{!v.birthCertificateUploadBool}" maxAllowedFileSize="{!v.maxsize}"
+						   acceptedFileFormats=".jpeg,.jpg,.tiff,.pdf" enableAnnotation="false"
+						   enableRedaction="false" assetType="BIRTH CERTIFICATE" showDeleteButton="true"
+						   onuploadcompleted="{!c.handlebirthCertificateUpload}"
+						   onafterdelete="{!c.handleRemoveBirthCertificate}" />
+					 </div>
+				  </div>
+			   </aura:if>
+			   <aura:if isTrue="{!v.marriageCertificateId != ''}">
+				  <div class="slds-form-element slds-form-element_horizontal actions  slds-p-bottom_medium">
+					 <label class="slds-form-element__label" for="form-element-01">Marriage
+					 Certificate</label>
+					 <div class="slds-form-element__control">
+						<c:cloudDocumentUploadWrapper aura:id="marriageCertificateDisplay"
+						   payLoad="{!v.payloadMarriageCertificate}"
+						   hideUpload="{!v.marriageCertificateUploadBool}"
+						   maxAllowedFileSize="{!v.maxsize}" acceptedFileFormats=".jpeg,.jpg,.tiff,.pdf"
+						   enableAnnotation="false" enableRedaction="false"
+						   assetType="MARRIAGE CERTIFICATE" showDeleteButton="true"
+						   onuploadcompleted="{!c.handleMarriageCertificateUpload}"
+						   onafterdelete="{!c.handleRemoveMarriageCertificate}" />
+					 </div>
+				  </div>
+			   </aura:if>
+			   <aura:if isTrue="{!v.officalCourtOrderId != ''}">
+				  <div class="slds-form-element slds-form-element_horizontal actions  slds-p-bottom_medium">
+					 <label class="slds-form-element__label" for="form-element-01">Official Court
+					 Order</label>
+					 <div class="slds-form-element__control">
+						<c:cloudDocumentUploadWrapper aura:id="officalCourtOrderDisplay"
+						   payLoad="{!v.payloadOfficalCourtOrder}"
+						   hideUpload="{!v.officalCourtOrderUploadBool}" maxAllowedFileSize="{!v.maxsize}"
+						   acceptedFileFormats=".jpeg,.jpg,.tiff,.pdf" enableAnnotation="false"
+						   enableRedaction="false" assetType="OFFICIAL COURT ORDER" showDeleteButton="true"
+						   onuploadcompleted="{!c.handleOfficalCourtOrderUpload}"
+						   onafterdelete="{!c.handleRemoveCourtOrder}" />
+					 </div>
+				  </div>
+			   </aura:if>
+			   <aura:if isTrue="{!v.usResidentAlienCardId != ''}">
+				  <div class="slds-form-element slds-form-element_horizontal actions slds-p-bottom_medium">
+					 <label class="slds-form-element__label" for="form-element-01">
+					 U.S. Resident Alien Card
+					 </label>
+					 <div class="slds-form-element__control">
+						<c:cloudDocumentUploadWrapper aura:id="usResidentAlienCardDisplay"
+						   payLoad="{!v.payloadUsResidentAlienCard}"
+						   hideUpload="{!v.usResidentAlienCardUploadBool}"
+						   maxAllowedFileSize="{!v.maxsize}" acceptedFileFormats=".jpeg,.jpg,.tiff,.pdf"
+						   enableAnnotation="false" enableRedaction="false"
+						   assetType="U.S. RESIDENT ALIEN CARD" showDeleteButton="true"
+						   onuploadcompleted="{!c.handleUsResidentAlienCardUpload}"
+						   onafterdelete="{!c.handleRemoveResidentAlien}" />
+					 </div>
+				  </div>
+			   </aura:if>
+			   <aura:if isTrue="{!v.naturalizationCertificateId != ''}">
+				  <div class="slds-form-element slds-form-element_horizontal actions  slds-p-bottom_medium">
+					 <label class="slds-form-element__label" for="form-element-01">U.S. Naturalization
+					 Certificate</label>
+					 <div class="slds-form-element__control">
+						<c:cloudDocumentUploadWrapper aura:id="usNaturalizationCertificateDisplay"
+						   payLoad="{!v.payloadUsNaturalizationCertificate}"
+						   hideUpload="{!v.usNaturalizationCertificateUploadBool}"
+						   maxAllowedFileSize="{!v.maxsize}" acceptedFileFormats=".jpeg,.jpg,.tiff,.pdf"
+						   enableAnnotation="false" enableRedaction="false"
+						   assetType="U.S. NATURALIZATION CERTIFICATE" showDeleteButton="true"
+						   onuploadcompleted="{!c.handleUsNaturalizationCertificateUpload}"
+						   onafterdelete="{!c.handleRemoveNaturalizationCertificate}" />
+					 </div>
+				  </div>
+			   </aura:if>
+			   <aura:if isTrue="{!v.usPassportCardId != ''}">
+				  <div class="slds-form-element slds-form-element_horizontal actions  slds-p-bottom_medium">
+					 <label class="slds-form-element__label" for="form-element-01">U.S. Passport Card</label>
+					 <div class="slds-form-element__control">
+						<c:cloudDocumentUploadWrapper aura:id="usPassportCardDisplay"
+						   payLoad="{!v.payloadUsPassportCard}" hideUpload="{!v.usPassportCardUploadBool}"
+						   maxAllowedFileSize="{!v.maxsize}" acceptedFileFormats=".jpeg,.jpg,.tiff,.pdf"
+						   enableAnnotation="false" enableRedaction="false" assetType="U.S. PASSPORT CARD"
+						   showDeleteButton="true" onuploadcompleted="{!c.handleUsPassportCardUpload}"
+						   onafterdelete="{!c.handleRemovePassportCard}" />
+					 </div>
+				  </div>
+			   </aura:if>
+			</div>
+			<!-- DISPLAY DOCUMENT TYPE UPLOADS -->
+			<aura:if isTrue="{!v.docTypesRemaining != ''}">
+			   <div class="slds-form-element slds-form-element_horizontal actions selectSection  slds-p-bottom_medium">
+				  <label class="slds-form-element__label" for="form-element-01">Supporting Document</label>
+				  <div class="slds-form-element__control">
+					 <lightning:select name="docType" label="" value="{!v.docTypeSelected}"
+						disabled="{!v.readOnlyMode || v.disableSelect}">
+						<aura:iteration items="{!v.docTypesRemaining}" var="docType">
+						   <option text="{!docType}"></option>
+						</aura:iteration>
+					 </lightning:select>
+				  </div>
+			   </div>
+			</aura:if>
+			<aura:if isTrue="{!v.docTypeSelected == 'Birth Certificate'}">
+			   <div
+				  class="slds-form-element slds-form-element_horizontal actions testSection  slds-p-bottom_medium">
+				  <label class="slds-form-element__label" for="form-element-01">Birth Certificate</label>
+				  <div class="slds-form-element__control">
+					 <c:cloudDocumentUploadWrapper aura:id="birthCertificate"
+						payLoad="{!v.payloadBirthCertificate}" hideUpload="{!v.birthCertificateUploadBool}"
+						maxAllowedFileSize="{!v.maxsize}" acceptedFileFormats=".jpeg,.jpg,.tiff,.pdf"
+						enableAnnotation="false" enableRedaction="false" assetType="BIRTH CERTIFICATE"
+						showDeleteButton="true" onuploadcompleted="{!c.handlebirthCertificateUpload}"
+						onafterdelete="{!c.handleRemoveBirthCertificate}" />
+				  </div>
+			   </div>
+			</aura:if>
+			<aura:if isTrue="{!v.docTypeSelected == 'Marriage Certificate'}">
+			   <div class="slds-form-element slds-form-element_horizontal actions  slds-p-bottom_medium">
+				  <label class="slds-form-element__label" for="form-element-01">Marriage Certificate</label>
+				  <div class="slds-form-element__control">
+					 <c:cloudDocumentUploadWrapper aura:id="marriageCertificate"
+						payLoad="{!v.payloadMarriageCertificate}"
+						hideUpload="{!v.marriageCertificateUploadBool}" maxAllowedFileSize="{!v.maxsize}"
+						acceptedFileFormats=".jpeg,.jpg,.tiff,.pdf" enableAnnotation="false"
+						enableRedaction="false" assetType="MARRIAGE CERTIFICATE" showDeleteButton="true"
+						onuploadcompleted="{!c.handleMarriageCertificateUpload}"
+						onafterdelete="{!c.handleRemoveMarriageCertificate}" />
+				  </div>
+			   </div>
+			</aura:if>
+			<aura:if isTrue="{!v.docTypeSelected == 'Official Court Order'}">
+			   <div class="slds-form-element slds-form-element_horizontal actions  slds-p-bottom_medium">
+				  <label class="slds-form-element__label" for="form-element-01">Official Court Order</label>
+				  <div class="slds-form-element__control">
+					 <c:cloudDocumentUploadWrapper aura:id="officalCourtOrder"
+						payLoad="{!v.payloadOfficalCourtOrder}"
+						hideUpload="{!v.officalCourtOrderUploadBool}" maxAllowedFileSize="{!v.maxsize}"
+						acceptedFileFormats=".jpeg,.jpg,.tiff,.pdf" enableAnnotation="false"
+						enableRedaction="false" assetType="OFFICIAL COURT ORDER" showDeleteButton="true"
+						onuploadcompleted="{!c.handleOfficalCourtOrderUpload}"
+						onafterdelete="{!c.handleRemoveCourtOrder}" />
+				  </div>
+			   </div>
+			</aura:if>
+			<aura:if isTrue="{!v.docTypeSelected == 'U.S. Resident Alien Card'}">
+			   <div class="slds-form-element slds-form-element_horizontal actions slds-p-bottom_medium">
+				  <label class="slds-form-element__label" for="form-element-01">
+				  U.S. Resident Alien Card
+				  </label>
+				  <div class="slds-form-element__control">
+					 <c:cloudDocumentUploadWrapper aura:id="usResidentAlienCard"
+						payLoad="{!v.payloadUsResidentAlienCard}"
+						hideUpload="{!v.usResidentAlienCardUploadBool}" maxAllowedFileSize="{!v.maxsize}"
+						acceptedFileFormats=".jpeg,.jpg,.tiff,.pdf" enableAnnotation="false"
+						enableRedaction="false" assetType="U.S. RESIDENT ALIEN CARD" showDeleteButton="true"
+						onuploadcompleted="{!c.handleUsResidentAlienCardUpload}"
+						onafterdelete="{!c.handleRemoveResidentAlien}" />
+				  </div>
+			   </div>
+			</aura:if>
+			<aura:if isTrue="{!v.docTypeSelected == 'U.S. Naturalization Certificate'}">
+			   <div class="slds-form-element slds-form-element_horizontal actions  slds-p-bottom_medium">
+				  <label class="slds-form-element__label" for="form-element-01">U.S. Naturalization
+				  Certificate</label>
+				  <div class="slds-form-element__control">
+					 <c:cloudDocumentUploadWrapper aura:id="usNaturalizationCertificate"
+						payLoad="{!v.payloadUsNaturalizationCertificate}"
+						hideUpload="{!v.usNaturalizationCertificateUploadBool}"
+						maxAllowedFileSize="{!v.maxsize}" acceptedFileFormats=".jpeg,.jpg,.tiff,.pdf"
+						enableAnnotation="false" enableRedaction="false"
+						assetType="U.S. NATURALIZATION CERTIFICATE" showDeleteButton="true"
+						onuploadcompleted="{!c.handleUsNaturalizationCertificateUpload}"
+						onafterdelete="{!c.handleRemoveNaturalizationCertificate}" />
+				  </div>
+			   </div>
+			</aura:if>
+			<aura:if isTrue="{!v.docTypeSelected == 'U.S. Passport Card'}">
+			   <div class="slds-form-element slds-form-element_horizontal actions  slds-p-bottom_medium">
+				  <label class="slds-form-element__label" for="form-element-01">U.S. Passport Card</label>
+				  <div class="slds-form-element__control">
+					 <c:cloudDocumentUploadWrapper aura:id="usPassportCard"
+						payLoad="{!v.payloadUsPassportCard}" hideUpload="{!v.usPassportCardUploadBool}"
+						maxAllowedFileSize="{!v.maxsize}" acceptedFileFormats=".jpeg,.jpg,.tiff,.pdf"
+						enableAnnotation="false" enableRedaction="false" assetType="U.S. PASSPORT CARD"
+						showDeleteButton="true" onuploadcompleted="{!c.handleUsPassportCardUpload}"
+						onafterdelete="{!c.handleRemovePassportCard}" />
+				  </div>
+			   </div>
+			</aura:if>
+			<!-- DISPLAY DOCUMENT TYPE UPLOADS -->
+			<aura:if
+			   isTrue="{! and(and(and(and(and(and(v.reasonForChange != null, v.reasonForChange != ''), and(v.photoId != null , and(v.photoId != '', and(v.governmentIssuedId != null, v.governmentIssuedId != '')))), !v.disableButtons), !v.hasExistingChangeCase),or(v.passportInEnglish == 'Yes', and(v.passportInEnglish=='No',v.passportTranslationDone == 'Yes'))),or(v.passportExpired == 'Yes', and(v.passportExpired=='No',v.passportExpirationDone == 'Yes')))}">
+			   <div class="slds-form-element slds-form-element_horizontal actions">
+				  <lightning:input type="checkbox" label="{!v.confirmText}" aura:id="agreement"
+					 name="agreement" checked="{!v.confirmChange}" />
+			   </div>
+			</aura:if>
+			<aura:if isTrue="{!v.hasExistingChangeCase}">
+			   <center>
+				  <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_warning"
+					 role="alert">
+					 <p>You cannot submit another Applicant Biographic Change request until your pending request has been closed. If you would like to cancel this request for some reason, go to My Cases, click the case number for the request, and then click <strong>Cancel Request</strong>.</p>
+				  </div>
+			   </center>
+			   <br />
+			</aura:if>
+			<div class="slds-p-bottom_x-large custom-styles">
+			   <center>
+				  <lightning:button aura:id="cancelButton" variant="brand" name="cancel" label="Cancel"
+					 onclick="{!c.handleCancel}" />
+				  &nbsp;&nbsp;&nbsp;&nbsp;
+				  <lightning:button aura:id="saveButton" class="slds-button slds-button_brand"
+					 onclick="{!c.handleSave}"
+					 disabled="{! or(or(or(or(or(or(or(or(or(or(or(or(or(or(v.reasonForChange == null, v.reasonForChange == ''), or(v.photoId == null, v.photoId == ''), or(v.governmentIssuedId == null, v.governmentIssuedId == ''))), v.disableButtons), v.hasExistingChangeCase), !v.confirmChange), v.governmentIssuedId == ''),v.reasonForChange == ''),v.passportNumber == ''),v.passportIssued == null),v.passportExpires == null),v.passportCountry == ''),and(v.passportInEnglish=='No',v.passportTranslationDone == 'No')),and(v.passportExpired=='No',v.passportExpirationDone == 'No'))}">
+					 Next
+				  </lightning:button>
+			   </center>
+			</div>
+		 </div>
+	  </aura:if>
+   </div>
+</aura:if>
+<aura:if isTrue="{!v.showShoppingCartLWC}">
+   <c:shoppingCart onpreviousevent="{!c.onPrevHitFromPayment}" caseRecordId="{!v.caseRecordId}"></c:shoppingCart>
+</aura:if>
+<aura:if isTrue="{!v.showCompleteModal}">
+   <div class="demo-only" style="height: 640px;">
+	  <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+		 aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+		 <div class="slds-modal__container">
+			<header class="slds-modal__header">
+			   <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Thank You</h2>
+			</header>
+			<div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+			   <p>You have successfully submitted your Applicant Biographic Change request. For reference, your case number for this request is {!v.caseNumber}. The status of your case will be updated as soon as your request has been processed.</p>
+			   <br />
+			   <p>Please contact us if you have any questions.</p>
+			</div>
+			<footer class="slds-modal__footer">
+			   <lightning:button aura:id="okButton" class="slds-button slds-button_brand"
+				  onclick="{!c.onConfirm}">Ok</lightning:button>
+			</footer>
+		 </div>
+	  </section>
+	  <div class="slds-backdrop slds-backdrop_open"></div>
+   </div>
+</aura:if>
+</aura:component>

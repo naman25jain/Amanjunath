@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    
+    <apiVersion>50.0</apiVersion>
+    
+    <description>Internal Cloud Document Wrapper For Analyst</description>
+    
+    <masterLabel>Internal Cloud Document Wrapper</masterLabel>
+    
+    <isExposed>true</isExposed>
+    
+    <targets>
+        
+      <target>lightning__AppPage</target>
+        
+      <target>lightning__RecordPage</target>
+        
+      <target>lightning__HomePage</target>
+              
+      <target>lightningCommunity__Page</target>
+        
+      <target>lightningCommunity__Default</target>
+        
+    </targets>
+    
+    <targetConfigs>
+        
+      <targetConfig targets="lightning__AppPage,lightning__RecordPage,lightning__HomePage,lightningCommunity__Default">
+            
+          <!-- This should have been multi select picklist, but target config property doesn't support that -->
+          <property name="acceptedFileFormats" type="String" default=".pdf, .jpeg, .jpg" description="Supported File Formats" label="Supported File Formats(Comma-separated values)" required="true"/>
+            
+          <!-- Picklist values can be loaded dynamically from apex class(read from custom settings of org) -->
+          <property name="maxAllowedFileSize" type="String" default="10" description="Maximum Allowed File Size(MB)" label="Maximum Allowed File Size(MB)" required="true" datasource="2, 5, 10"/>
+            
+          <property name="enableRedaction" type="Boolean" default="false" description="Allow document redaction" label="Allow Redaction" required="false"/>
+            
+            <property name="enableAnnotation" type="Boolean" default="false" description="Allow document annotations" label="Allow Annotations" required="false"/>
+            
+            <property name="showbuilder" type="Boolean" default="false" description="Show the builder component" label="Show Builder" required="false"/>
+            
+            <property name="recordType" type="String" default="appForCert" description="Record type of the case" label="Record type of the case" required="false"/>
+            
+      </targetConfig>
+        
+  </targetConfigs>
+    
+</LightningComponentBundle>

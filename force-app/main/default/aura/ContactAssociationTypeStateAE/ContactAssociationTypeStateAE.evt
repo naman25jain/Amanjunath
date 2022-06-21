@@ -1,0 +1,14 @@
+<!--
+ - Created by Matthew on 11/15/18.
+ -->
+<aura:event type="APPLICATION" description="ContactAssociationTypeStateAE">
+
+    <aura:attribute name="visible" type="Boolean" default="true" required="true"/>
+    <aura:attribute name="disabled" type="Boolean" default="false" required="true"/>
+    <aura:attribute name="source" type="String" default="Default" required="true"/>
+
+    <!-- Used to override configured values -->
+    <aura:attribute name="minimumAssociationTypes" type="Integer" required="false"/>
+    <aura:attribute name="maximumAssociationTypes" type="Integer" required="false"/>
+
+</aura:event>

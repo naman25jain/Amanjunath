@@ -1,0 +1,81 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes"
+                access="global"
+                controller="Entity_360_Base_Controller" extends="c:CommunityBase">
+<!-- 
+attributes: 
+1) 
+
+
+Notes:
+Uses a custom metadata object called "Entity Contact Initial Fields" that has the display name, API name, field type, required, visibile logic, required logic, and field display order to display the fields on the page and determine if they are required.
+Upon saving and completing the required fields a flag is set on the contact record to show they have completed the information (Entity_Contact_Initial_Fields_Complete type=boolean)
+Upon completion grant them access to the entity maintenance app. (permission set?)
+
+-->
+
+    <!--<aura:attribute name="contact" type="Object" default="{!v.contactInitialFieldsCreated}" />-->
+    <aura:attribute name="contact" type="Object" />
+    <aura:attribute name="birthCountryList" type="List" default="{!v.countries}" />
+    <!--<aura:attribute name="contactInitialFieldsCreated" type="Object"/>-->
+    <aura:attribute name="contactCompleted" type="Boolean"/>
+<!--    <aura:attribute name="gender" type="String[]" default=",Female,Male,X"/>-->
+    <!--<aura:attribute name="genderOptions" type="List" default="[{'label': 'Female', 'value': 'Female'},{'label': 'Male', 'value': 'Male'},{'label': 'X', 'value': 'X'},]"/>-->
+    <aura:attribute name="genderOptions" type="List" />
+    <!--<aura:attribute name="generationalSuffixCB" type="List" default="[{'label': 'Jr', 'value': 'Jr'},{'label': 'Sr', 'value': 'Sr'},{'label': 'II', 'value': 'II'},{'label': 'III', 'value': 'III'},{'label': 'IV', 'value': 'IV'},{'label': 'V', 'value': 'V'},]"/>-->
+    <aura:attribute name="generationalSuffixOptions" type="List" />
+	<aura:attribute name="canceledDisabled" type="Boolean" default="false" />
+    <aura:attribute name="saveDisabled" type="Boolean" default="true" />
+    <aura:attribute name="pageReady" type="Boolean" default="true" />
+
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+
+    <aura:if isTrue="{!!v.pageReady}"><lightning:spinner variant="brand" alternativeText="Loading" size="large" /></aura:if>
+
+    <h1>Contact Details </h1>
+    <div class="slds-form-element slds-form-element_horizontal">
+        <lightning:input name="lastName" value="{!v.contact.LastName}" placeholder="" label="Last Name"  aura:id="fieldToValidate" required="true"/>
+    </div>
+    <aura:if isTrue="{!!v.contact.legal_name_consists_of_one_name_only__c}">
+        <div class="slds-form-element slds-form-element_horizontal">
+            <lightning:input name="firstName" value="{!v.contact.FirstName}" placeholder="" label="Rest of Name"  aura:id="fieldToValidate" required="{!!v.contact.legal_name_consists_of_one_name_only__c}" />
+        </div>
+    </aura:if>
+        <div class="slds-form-element slds-form-element_horizontal">
+            <lightning:input type="checkbox" label="My legal name consists of one name only" aura:id="lastOnly" name="lastOnly" checked="{!v.contact.legal_name_consists_of_one_name_only__c}" onchange="{!c.oneNameOnlyOnChange}" />
+        </div>
+    <div class="slds-form-element slds-form-element_horizontal">
+        <lightning:combobox name="generationalSuffix" label="Generational Suffix" options="{!v.generationalSuffixOptions}" value="{!v.contact.Generational_Suffix__c}" />
+    </div>
+    <div class="slds-form-element slds-form-element_horizontal">
+        <lightning:input name="dateOfBirth" type="date" value="{!v.contact.Birthdate}" placeholder="" label="Date of Birth" aura:id="fieldToValidate" required="true" />
+    </div>
+    <div class="slds-form-element slds-form-element_horizontal">
+        <lightning:combobox name="birthCountry" label="Birth Country" value="{!v.contact.Birth_Country__c}" placeholder="Select Birth Country" options="{! v.birthCountryList }" onchange="{!c.handleBirthCountryOnChange}" aura:id="fieldToValidate" required="true"/>
+    </div>
+    <div class="slds-form-element slds-form-element_horizontal">
+        <lightning:input name="phone" value="{!v.contact.Phone}" placeholder="" label="Phone Number" aura:id="fieldToValidate" />
+    </div>
+    <div class="slds-form-element slds-form-element_horizontal">
+        <lightning:input name="email" value="{!v.contact.Department}" placeholder="" label="Department" aura:id="fieldToValidate" />
+    </div>
+    <div class="slds-form-element slds-form-element_horizontal">
+        <lightning:input name="email" value="{!v.contact.Title}" placeholder="" label="Job Title" aura:id="fieldToValidate" />
+    </div>    
+    <div class="slds-form-element slds-form-element_horizontal actions">
+        <label class="slds-form-element__label" for="form-element-01">&nbsp;</label>
+        <div class="slds-form-element__control">
+            <lightning:input name="certify" type="checkbox" class="slds-float_left" onchange="{!c.certifyOnChange}" />By checking this box, I hereby certify that the information provided in this request to establish an ECFMG account is true and accurate to the best of my knowledge <strong>and</strong> I hereby authorize ECFMG to update the information in my contact record as provided in this request.
+        </div>
+    </div>     
+    <div class="slds-form-element slds-form-element_horizontal actions">
+        <label class="slds-form-element__label" for="form-element-01">&nbsp;</label>
+        <div class="slds-form-element__control">
+            <lightning:button variant="brand" label="Cancel" onclick="{! c.handleCancelOnClick }" disabled="{! v.canceledDisabled }" />&nbsp;&nbsp;&nbsp;&nbsp;
+            <lightning:button aura:id="saveButton" class="slds-button slds-button_brand" label="Save" onclick="{! c.handleSaveOnClick }" disabled="{! v.saveDisabled }" />
+        </div>
+    </div>    
+    
+
+</aura:component>

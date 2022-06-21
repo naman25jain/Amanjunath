@@ -1,0 +1,36 @@
+<template>
+    <template if:true={showMessage}>
+		<div class="slds-is-relative">
+			<template if:true={spinner}>
+				<lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+			</template>			
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col slds-size_1-of-1">
+                    <span>
+                        <br />
+                        <div style="text-align:center;">
+                            <c-g-display-content unique-content-value="duplicate_cert_confirm1"></c-g-display-content><br/>
+                            <div style="display: inline-block;">
+                                <c-g-display-content unique-content-value="duplicate_cert_confirm2"></c-g-display-content>
+                            </div>
+                            <div style="display: inline-block;">&nbsp;{caseNumber}.</div>
+                            <c-g-display-content unique-content-value="duplicate_cert_confirm3"></c-g-display-content>
+                            </div>
+                        <template if:true={showPageReload}>
+                            <div style="text-align:center">
+                                <lightning-button variant="brand" label="Close" title="Close" onclick={cancelButton}
+                                    class="slds-m-left_x-small"></lightning-button>
+                            </div>
+                        </template>
+                        <template if:false={showPageReload}>
+                            <div style="text-align:center">
+                                <lightning-button variant="brand" label="Close" title="Close" onclick={cancelButton}
+                                    class="slds-m-left_x-small"></lightning-button>
+                            </div>
+                        </template>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </template>
+</template>

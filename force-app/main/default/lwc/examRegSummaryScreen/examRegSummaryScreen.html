@@ -1,0 +1,206 @@
+<template>
+    <lightning-accordion allow-multiple-sections-open={showMultiple} active-section-name={activeSections}>
+        <div class="padding">
+            <h2 class="stepHeader">USMLE Application: Summary</h2>
+            <p>Below is a summary of the information you provided as part of this application for USMLE. Please review the summary carefully to ensure that all the information you provided is accurate. If necessary, you can change your response by clicking the button in the appropriate section.</p>
+        </div>
+        <div class="formMargin">
+            <div class="slds-grid slds-wrap">
+                <!-- Physician License Information -->
+                <lightning-accordion-section name="physicianLicense" class="slds-col slds-size--1-of-1 gridColPadding"
+                    title="Physician License in the United States" label="Physician License in the United States">
+                    <div class="slds-float_right">
+                        <lightning-button variant="brand" label="Change Physician License Information"
+                            title="Change Physician License Information" onclick={navigateToLicensePage}>
+                        </lightning-button>
+                    </div>
+                    <div class="gridItemPadding">
+                        <lightning-layout multiple-rows="true">
+                            <lightning-layout-item>
+                                </br>
+                                <lightning-formatted-rich-text value={optionVal}></lightning-formatted-rich-text>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                    </div>
+                </lightning-accordion-section>
+                <!-- Exam Registration Information -->
+                <lightning-accordion-section name="examInfo" class="slds-col slds-size--1-of-1 gridColPadding"
+                    title="Exam Details" label="Exam Details">
+                    <div class="slds-float_right">
+                        <lightning-button variant="brand" label="Change Exam Details"
+                            title="Change Exam Details" onclick={navigateToLandingPage}>
+                        </lightning-button>
+                    </div>
+                    <div class="gridItemPadding">
+                        <lightning-layout multiple-rows="true">
+                            <template if:true={showExamRegList}>
+                                <div class="slds-p-top--large">
+                                    <div class="exam-details-header">
+                                        <h2>{label.examRegTableHeader}</h2>
+                                    </div>
+                                    <div>
+                                        <table
+                                            class="slds-border_top slds-table slds-no-cell-focus slds-table_bordered slds-table_edit slds-table_fixed-layout slds-table_resizable-cols"
+                                            role="grid">
+                                            <thead>
+                                                <tr class="slds-line-height_reset">
+                                                    <th aria-label="Exam Type" aria-sort="none"
+                                                        class="slds-is-resizable slds-is-sortable slds-text-align_center"
+                                                        scope="col">
+                                                        <span class="slds-truncate" title="Exam Type">Exam Type</span>
+                                                    </th>
+                                                    <th aria-label="Eligibility Period" aria-sort="none"
+                                                        class="slds-is-resizable slds-is-sortable slds-text-align_center"
+                                                        scope="col">
+                                                        <span class="slds-truncate"
+                                                            title="Eligibility Period">Eligibility Period</span>
+                                                    </th>
+                                                    <th aria-label="Testing Region" aria-sort="none"
+                                                        class="slds-is-resizable slds-is-sortable slds-text-align_center"
+                                                        scope="col">
+                                                        <span class="slds-truncate" title="Testing Region">
+                                                            Testing Region
+                                                        </span>
+                                                    </th>
+                                                    <th aria-label="Test Accommodations" aria-sort="none"
+                                                        class="slds-is-resizable slds-is-sortable slds-text-align_center"
+                                                        scope="col">
+                                                        <span class="slds-truncate" title="Test Accommodations">Test
+                                                            Accommodations</span>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <template for:each={examRegistrationsList} for:item="examReg"
+                                                    for:index="examRegIndex">
+
+                                                    <tr key={examReg.recordIdVal} data-record-id={examReg.recordIdVal}
+                                                        class="exam-reg-id">
+                                                        <td class="slds-text-align_center">
+                                                            {examReg.examType}
+                                                        </td>
+                                                        <td class="slds-text-align_center" style="white-space: normal;">
+                                                            {examReg.eligibilityPeriod}
+                                                        </td>
+                                                        <td class="slds-text-align_center" style="white-space: normal;">
+                                                            {examReg.testingRegion}
+                                                        </td>
+                                                        <td class="slds-text-align_center">
+                                                            {examReg.testAccomodations}
+                                                        </td>
+                                                    </tr>
+                                                </template>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </template>
+                        </lightning-layout>
+                    </div>
+                </lightning-accordion-section>
+                <!--Ethnicity and Other Questions Information -->
+                <lightning-accordion-section name="ethnicityAndQns" class="slds-col slds-size--1-of-1 gridColPadding"
+                    title="Additional Information" label="Additional Information">
+                    <div class="slds-float_right">
+                        <lightning-button variant="brand" label="Change Additional Information"
+                            title="Change Additional Information" onclick={navigateToEnthnicityPage}>
+                        </lightning-button>
+                    </div>
+                    <div class="gridItemPadding">
+                        <lightning-layout multiple-rows="true">
+                            <lightning-layout-item>
+                                <lightning-formatted-rich-text value=""></lightning-formatted-rich-text>
+                            </lightning-layout-item>
+                            <lightning-layout-item padding="around-small" size="6">
+                                <div class="">Ethnicity</div>
+                            </lightning-layout-item>
+                            <lightning-layout-item padding="around-small" size="6">
+                                <template for:each={ethnicity} for:item='ethn'>
+                                    <content key={ethn}>
+                                        <lightning-formatted-rich-text value={ethn} key={ethn}>
+                                        </lightning-formatted-rich-text>
+                                        </br>
+                                    </content>
+                                </template>
+                            </lightning-layout-item>
+                            <lightning-layout-item padding="around-small" size="6">
+                                <div class="">Native Language</div>
+                            </lightning-layout-item>
+                            <lightning-layout-item padding="around-small" size="6">
+                                <lightning-formatted-rich-text value={nativeLanguage}></lightning-formatted-rich-text>
+                            </lightning-layout-item>
+                            <template if:true={hasOtherNativeLanguage}>
+                                <lightning-layout-item padding="around-small" size="6">
+                                    <div class="">Other Native Language</div>
+                                </lightning-layout-item>
+                                <lightning-layout-item padding="around-small" size="6">
+                                    <lightning-formatted-rich-text value={otherNativeLanguage}></lightning-formatted-rich-text>
+                                </lightning-layout-item>
+                            </template>
+                            <lightning-layout-item padding="around-small" size="6">
+                                <div class="">Other Languages Spoken</div>
+                            </lightning-layout-item>
+                            <lightning-layout-item padding="around-small" size="6">
+                                <lightning-formatted-rich-text value={otherLanguagesSpoken}></lightning-formatted-rich-text>
+                            </lightning-layout-item>
+                            <template if:true={hasOtherLanguageSpoken}>
+                                <lightning-layout-item padding="around-small" size="6">
+                                    <div class="">Additional Languages Spoken</div>
+                                </lightning-layout-item>
+                                <lightning-layout-item padding="around-small" size="6">
+                                    <lightning-formatted-rich-text value={additionalLanguagesSpoken}></lightning-formatted-rich-text>
+                                </lightning-layout-item>
+                            </template>
+                            <lightning-layout-item padding="around-small" size="6">
+                                <div class="">U.S. Social Security #</div>
+                            </lightning-layout-item>
+                            <lightning-layout-item padding="around-small" size="6">
+                                <lightning-formatted-rich-text value={socialSecurityNumber}>
+                                </lightning-formatted-rich-text>
+                            </lightning-layout-item>
+                            <lightning-layout-item padding="around-small" size="6">
+                                <div class="">National Identification #</div>
+                            </lightning-layout-item>
+                            <lightning-layout-item padding="around-small" size="6">
+                                <lightning-formatted-rich-text value={nationalIdentification}>
+                                </lightning-formatted-rich-text>
+                            </lightning-layout-item>
+                            <lightning-layout-item padding="around-small" size="6">
+                                <div class="">National ID Country</div>
+                            </lightning-layout-item>
+                            <lightning-layout-item padding="around-small" size="6">
+                                <lightning-formatted-rich-text value={nationalIDCountry}>
+                                </lightning-formatted-rich-text>
+                            </lightning-layout-item>
+                            <template if:true={isStudent}>
+                                <lightning-layout-item padding="around-small" size="6">
+                                    <div class="">Are you currently a student officially enrolled in medical school and will be (or will have graduated) on your test day?</div>
+                                </lightning-layout-item>
+                                <lightning-layout-item padding="around-small" size="6">
+                                    <lightning-formatted-rich-text value={officiallyEnrolled}>
+                                    </lightning-formatted-rich-text>
+                                </lightning-layout-item>
+                                <lightning-layout-item padding="around-small" size="6">
+                                    <div class="">Will you have completed the basic medical sciences requirement by the beginning of your eligibility period?
+                                    </div>
+                                </lightning-layout-item>
+                                <lightning-layout-item padding="around-small" size="6">
+                                    <lightning-formatted-rich-text value={basicSciencesRequirement}>
+                                    </lightning-formatted-rich-text>
+                                </lightning-layout-item>
+                            </template>
+                        </lightning-layout>
+                    </div>
+                </lightning-accordion-section>
+            </div>
+        </div>
+    </lightning-accordion>
+    <div class="buttonAlignment">
+        <lightning-button variant="brand" label="Previous" title="Previous" onclick={prevButton}
+            class="slds-m-left_x-small"></lightning-button>
+        <lightning-button variant="brand" label="Next" title="Next" onclick={nextButton} type="submit"
+            class="slds-m-left_x-small"></lightning-button>
+        <lightning-button variant="brand" label="Cancel" title="Cancel" onclick={cancelButton}
+            class="slds-m-left_x-small"></lightning-button>
+    </div>
+</template>

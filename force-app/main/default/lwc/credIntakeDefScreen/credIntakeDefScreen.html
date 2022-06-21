@@ -1,0 +1,184 @@
+<template>
+    <div class="formMargin">
+        <template if:true={spinner}>
+            <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+        </template>
+        <lightning-layout-item padding="horizontal-small" size="12">
+                <div class="slds-form-element slds-form-element_horizontal">
+                    <c-cred-intake-def-lang-screen case-id={caseId}></c-cred-intake-def-lang-screen>
+                </div>
+        </lightning-layout-item>
+        <br/>
+        <div class="slds-grid slds-wrap gridMargin">
+            <template if:true={showProceedSection}>
+                <lightning-layout-item padding="horizontal-small" size="12">
+                    <div class="slds-form-element slds-form-element_horizontal">
+                        <label class="slds-form-element__label" for="procCredVer">
+                            <span class="required">*</span>
+                            <span class="credLabel">Proceed with Credential Verification</span>
+                        </label>
+                        <div class="slds-form-element__control">
+                            <lightning-combobox class="proceedCredVer" id="procCredVer" name="Proceed" variant="label-hidden" label="Proceed with credential verification" 
+                             value={selectedValue} placeholder="Select an option" options={picklistOptions} onchange={handlePicklistChange} onkeydown={preventBackslash}>
+                            </lightning-combobox>
+                            <template if:true={isErrProceed}>
+                                <span class="errormsg">Please select an option to proceed</span>
+                            </template>
+                        </div>
+                    </div>
+                </lightning-layout-item>                
+            </template>                
+        </div>
+        <br/><br/>
+        <div class="slds-grid slds-wrap gridMargin">
+            <template if:true={showUploadSection}>
+                <lightning-layout-item padding="around-small" size="4">
+                    <span class="required">*</span>
+                    <span>Upload Credential</span>
+                </lightning-layout-item>
+                <lightning-layout-item padding="around-small" size="8">
+                    <template if:true={showCredUploadButton}>
+                        <c-cloud-document-upload-wrapper label="Upload Credential" pay-load={payloadCredential}
+                            max-allowed-file-size=10 accepted-file-formats=".jpeg,.jpg,.pdf,.tiff"
+                            enable-annotation="false" enable-redaction="false" azure-doc-url={credUrl}
+                            ongeneratedurl={handleOnCredentialUpload}>
+                        </c-cloud-document-upload-wrapper>
+                    </template>
+                </lightning-layout-item>
+                <template if:true={isErrCredUpload}>
+                    <lightning-layout-item padding="horizontal-small" size="4">
+                        <span></span>
+                    </lightning-layout-item>
+                    <lightning-layout-item padding="horizontal-small" size="8">
+                        <span class="errormsg">Please upload the credential to proceed</span>
+                    </lightning-layout-item>
+                </template>
+            </template>
+            <template if:true={showNameSection}>
+                <div class="slds-col slds-size_1-of-1 slds-border_bottom slds-var-p-top_large">
+                    <h5 class="gridHeader ">Name Documentation</h5>
+                </div>
+                <lightning-layout-item padding="around-small" size="4">
+                    <span>Name on System</span>
+                </lightning-layout-item>
+                <lightning-layout-item padding="around-small" size="8">
+                    <input value={contactName} class="slds-input " type="text" disabled />
+                </lightning-layout-item>
+                <lightning-layout-item padding="around-small" size="4">
+                    <span><span class="required">*</span>Name on Document</span>
+                </lightning-layout-item>
+                <lightning-layout-item padding="around-small" size="8">
+                    <lightning-input type="text" class="nameOnDoc" label="Name on Document" name="nameonDocument"
+                        value={nameOnDoc} variant="label-hidden" onchange={handleChangeForInputFields}>
+                    </lightning-input>
+                </lightning-layout-item>
+                <template if:true={nameOnDocErr}>
+                    <lightning-layout-item padding="horizontal-small" size="4">
+                        <span></span>
+                    </lightning-layout-item>
+                    <lightning-layout-item padding="horizontal-small" size="8">
+                        <span class="errormsg">Name on Document is required</span>
+                    </lightning-layout-item>
+                </template>
+                <lightning-layout-item padding="around-small" size="4">
+                    Is Name on the Document different?
+                </lightning-layout-item>
+                <lightning-layout-item padding="around-small" size="8">
+                    <template if:false={nameIsDifferent}>
+                        <lightning-input type="checkbox" name="nameUplBox" onchange={handleUploadNameCheckbox}>
+                        </lightning-input>
+                    </template>
+                    <template if:true={nameIsDifferent}>
+                        <lightning-input type="checkbox" name="nameUplBox" checked
+                            onchange={handleUploadNameCheckbox}></lightning-input>
+                    </template>
+                </lightning-layout-item>
+            </template>
+            <template if:true={showNameUploadButton}>
+                <lightning-layout-item padding="around-small" size="4">
+                    <span>Upload Name Documentation</span>
+                </lightning-layout-item>
+                <lightning-layout-item padding="around-small" size="8">
+                    <div>
+                        <c-cloud-document-upload-wrapper label="Upload Name Documentation"
+                            pay-load={payloadCredName} max-allowed-file-size=10
+                            accepted-file-formats=".jpeg,.jpg,.pdf,.tiff" enable-annotation="false"
+                            enable-redaction="false" azure-doc-url={nameUrl} ongeneratedurl={handleOnCredNameUpload}
+                            show-delete-button="true" onafterdelete={deleteNameAsset}>
+                        </c-cloud-document-upload-wrapper>
+                    </div>
+                </lightning-layout-item>
+            </template>
+            <template if:true={showTranslationSection}>
+                <div class="slds-col slds-size_1-of-1 slds-border_bottom slds-var-p-top_large">
+                    <h5 class="gridHeader ">Credential Translation </h5>
+                </div>
+                <lightning-layout-item padding="around-small" size="4">
+                    Is your credential document in a language other than English?
+                </lightning-layout-item>
+                <lightning-layout-item padding="around-small" size="8">
+                    <template if:false={translationRequired}>
+                        <lightning-input type="checkbox" name="transUplBox" onchange={handleUploadTransOrNot}>
+                        </lightning-input>
+                    </template>
+                    <template if:true={translationRequired}>
+                        <lightning-input type="checkbox" name="transUplBox" checked
+                            onchange={handleUploadTransOrNot}></lightning-input>
+                    </template>
+                </lightning-layout-item>
+            </template>
+            <template if:true={showTransUploadButton}>
+                <template if:false={transDeficiency}>
+                    <lightning-layout-item padding="around-small" size="4">
+                        <span class="required">*</span>
+                        <span>Upload Credential Translation (if not in English)</span>
+                    </lightning-layout-item>
+                    <lightning-layout-item padding="around-small" size="8">
+                        <div>
+                            <c-cloud-document-upload-wrapper label="Upload Credential Translation"
+                                pay-load={payloadCredTrans} max-allowed-file-size=10
+                                accepted-file-formats=".jpeg,.jpg,.pdf,.tiff" enable-annotation="false"
+                                enable-redaction="false" azure-doc-url={transUrl}
+                                ongeneratedurl={handleOnCredTransUpload}>
+                            </c-cloud-document-upload-wrapper>
+                        </div>
+                    </lightning-layout-item>
+                </template>
+                <template if:true={transDeficiency}>
+                    <lightning-layout-item padding="around-small" size="4">
+                        <span class="required">*</span>
+                        <span>Upload Credential Translation</span>
+                    </lightning-layout-item>
+                    <lightning-layout-item padding="around-small" size="8">
+                        <div>
+                            <c-cloud-document-upload-wrapper label="Upload Translation"
+                                pay-load={payloadCredTrans} max-allowed-file-size=10
+                                accepted-file-formats=".jpeg,.jpg,.pdf,.tiff" enable-annotation="false"
+                                enable-redaction="false" azure-doc-url={transUrl}
+                                ongeneratedurl={handleOnCredTransUpload}>
+                            </c-cloud-document-upload-wrapper>
+                        </div>
+                    </lightning-layout-item>
+                </template>
+                
+                <template if:true={isErrTransUpload}>
+                    <lightning-layout-item padding="horizontal-small" size="4">
+                        <span></span>
+                    </lightning-layout-item>
+                    <lightning-layout-item padding="horizontal-small" size="8">
+                        <span class="errormsg">Please upload the translation document to proceed</span>
+                    </lightning-layout-item>
+                </template>
+            </template>
+        </div> 
+    </div> 
+    <div class="centerAlign">
+        <br/>
+        <template if:true={showBtn}>
+            <lightning-button variant="brand" label="Submit" title="Save" onclick={saveButton} class="slds-var-m-left_x-small">
+            </lightning-button>
+            <lightning-button variant="brand" label="Cancel" title="cancel" onclick={cancelButton} class="slds-var-m-left_x-small">
+            </lightning-button>
+        </template>    
+    </div>
+</template>

@@ -1,0 +1,32 @@
+<template>
+    <div class="slds-grid slds-wrap gridMargin"> 
+        <div class="slds-col slds-var-p-around_medium slds-size_1-of-2" style = "font-size: 14px;">                 
+            <span>Reason for regeneration :</span>
+        </div>
+        <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">
+            <lightning-combobox
+            class= "reasonForReg"
+            label=""
+            variant="label-hidden" 
+            placeholder="-Select-"
+            options={reasonOptions}
+            onchange={handleChangeReasonValue}
+            value={reasonForRegen}>
+            </lightning-combobox> 
+        </div>
+        <div class="slds-col slds-var-p-around_medium slds-size_1-of-2" style = "font-size: 14px;padding-top: 25px;">                 
+            <span>Comments(Reason for regeneration) :</span>
+        </div>
+        <div class="slds-col slds-var-p-around_medium slds-size_1-of-2">                 
+            <lightning-textarea max-length="255" message-when-too-long="Your entry must be less than 255 characters." value={comments} name="comments" onchange={handleChangeForInputValue}></lightning-textarea>
+        </div>
+    </div>
+    <div class="buttonAlignment"><br/>
+        <template if:true={enableSubmitutton}> 
+            <lightning-button variant="brand" label="Submit" title="Next" onclick={submitButton} class="slds-m-left_x-small"></lightning-button>
+        </template>
+        <template if:false={enableSubmitutton}> 
+            <lightning-button variant="brand" label="Submit" title="Next" disabled onclick={submitButton} class="slds-m-left_x-small"></lightning-button>
+        </template>
+    </div>
+</template>

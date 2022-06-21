@@ -1,0 +1,208 @@
+<template>
+    <lightning-record-edit-form object-api-name="Case" onsubmit={handleSubmit}>
+        <template if:true={spinner}>
+            <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+        </template>
+        <c-modal-component class="warningModal" show-primary-button="true" primary-button-text="Confirm"
+            onprimarybuttonclick={handleConfirmClick} show-secondary-button="true" secondary-button-text="Cancel"
+            onsecondarybuttonclick={handleCancelClick} onclosedialog={handleCancelClick} title message>
+        </c-modal-component>
+        <div class="formMargin">
+            <div class="slds-grid slds-wrap gridMargin">  
+                <template if:true={showIncomplete}>
+                    <div class="slds-col slds-var-p-around_medium slds-size_1-of-1"> 
+                        <span class="incompleteLanguage">{incompleteLanguage}</span>
+                    </div>
+                </template> 
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-1"> 
+                    <span class="headerText">Case Details</span>
+                </div>
+                <!-- Name of Entity-->
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"> 
+                    <span>Name of Entity</span>
+                </div>             
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    <lightning-input type="text" name="entityName" variant="label-hidden" disabled value={entityName}></lightning-input>        
+                </div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>             
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+                <!-- Last Name-->
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"> 
+                    <span>Last Name/Surname</span>
+                </div>             
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    <lightning-input type="text" name="entityLastName" variant="label-hidden" disabled value={entityLastName}></lightning-input>        
+                </div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>             
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+                <!-- Rest of Name -->
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"> 
+                    <span>Rest of Name</span>
+                </div>             
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    <lightning-input type="text" name="entityFirstName" variant="label-hidden" disabled value={entityFirstName}></lightning-input>        
+                </div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>             
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+                <!-- My legal name consists of one name only  -->
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4 showLabelText">
+                    <template if:true={showCheckedLegalName}>
+                        <lightning-input type="checkbox" variant="label-hidden" name="entityLegalNameConsistsVal"
+                            label="My legal name consists of one name only" value="" disabled checked>
+                        </lightning-input> 
+                    </template>
+                    <template if:false={showCheckedLegalName}>
+                        <lightning-input type="checkbox" variant="label-hidden" name="entityLegalNameConsistsVal"
+                            label="My legal name consists of one name only" value="" disabled>
+                        </lightning-input>
+                    </template>
+                </div>             
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>             
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+                <!-- Generational Suffix -->
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"> 
+                    <span>Generational Suffix</span>
+                </div>             
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    <lightning-input type="text" name="entityGenerationalSuffix" variant="label-hidden" disabled value={entityGenerationalSuffix}></lightning-input>        
+                </div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>             
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+                <!-- Email Address -->
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"> 
+                    <span>Email Address</span>
+                </div>             
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    <lightning-input type="text" name="entityEmail" variant="label-hidden" disabled value={entityEmail}></lightning-input>        
+                </div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>             
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+                <!-- Phone Number -->
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"> 
+                    <span>Phone Number</span>
+                </div>             
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    <lightning-input type="text" name="entityPhone" variant="label-hidden" disabled value={entityPhone}></lightning-input>        
+                </div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>             
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+                <!-- Department -->
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"> 
+                    <span>Department</span>
+                </div>             
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    <lightning-input type="text" name="entityDepartment" variant="label-hidden" disabled value={entityDepartment}></lightning-input>        
+                </div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>             
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+                <!-- Job Title -->
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"> 
+                    <span>Job Title</span>
+                </div>             
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    <lightning-input type="text" name="entityJobTitle" variant="label-hidden" disabled value={entityJobTitle}></lightning-input>        
+                </div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>             
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+                <!-- Service of Interest -->
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"> 
+                    <span>Service of Interest</span>
+                </div>             
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">
+                    <lightning-input type="text" name="entityServiceRequest" variant="label-hidden" disabled value={entityServiceRequest}></lightning-input>        
+                </div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>             
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+                <!-- Do you approve this person to have access to this service? -->
+                <div class="slds-col slds-var-p-around_medium slds-size_4-of-4"> 
+                    <span class="required">*</span> <span>Do you approve this person to have access to this service?</span>
+                </div>
+                <!-- Yes / No -->
+                <template if:true={enableElement}>
+                    <div class="slds-col slds-var-p-around_medium slds-size_1-of-4 entityCheckboxField"> 
+                        <lightning-radio-group name="entityContactServiceRequest" class="entityCheckbox" label="" variant="label-hidden" options={options} type="radio"
+                    onchange={handleSelect}></lightning-radio-group> 
+                    </div>     
+                    <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+                    <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>             
+                    <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+                </template>
+                <template if:true={disableElement}>    
+                    <div class="slds-col slds-var-p-around_medium slds-size_1-of-4 entityCheckboxField"> 
+                        <lightning-radio-group name="entityContactServiceRequest" class="entityCheckbox" value={caseRadioButtonSelected} variant="label-hidden" options={options} type="radio"
+                    disabled></lightning-radio-group> 
+                    </div>     
+                    <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+                    <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>             
+                    <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+                </template>
+                <template if:true={showIncomplete}>
+                    <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"> 
+                        <span class="bText">Previously Submitted Signature File</span>
+                    </div>
+                    <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"> 
+                        <c-cloud-document-upload-wrapper
+                                        pay-load={signFormIncomPayload} max-allowed-file-size={maxsize}
+                                        accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" enable-annotation="false"
+                                        enable-redaction="false" hide-upload="true" azure-doc-url={signOldUrl}
+                                        ongeneratedurl={handleOnAssetInserted}>
+                        </c-cloud-document-upload-wrapper>
+                    </div>
+                    <div class="slds-col slds-var-p-around_medium slds-size_4-of-4"> 
+                        <span class="bText">List of Deficiencies in the above file:</span><br /><br />
+                        
+                        <lightning-formatted-rich-text value={entityDeficiencyReason}>
+                        </lightning-formatted-rich-text> 
+                    </div>                    
+                </template>                
+                <!-- Upload Signtaure -->
+                <template if:true={showSignatureSection}>                    
+                    <template if:true={signatureUploadSection}>
+                        <div class="slds-col slds-var-p-around_medium slds-size_3-of-4">{singnatureLanguage1}<br />{singnatureLanguage2} <a href="#">{singnatureLinkText}</a></div>          
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>  
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"> <span class="required">*</span> Upload Signature</div>
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4" style = "width: 30%;">
+                            <template if:true={showUpload}>
+                                <c-cloud-document-upload-wrapper
+                                            pay-load={signFormPayload} max-allowed-file-size={maxsize}
+                                            accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" enable-annotation="false"
+                                            enable-redaction="false" hide-upload={hideUpload} azure-doc-url={signUrl}
+                                            ongeneratedurl={handleOnAssetInserted}>
+                                </c-cloud-document-upload-wrapper>
+                            </template>
+                            <template if:true={incomplete}>
+                                <c-cloud-document-upload-wrapper
+                                            pay-load={signFormNewPayload} max-allowed-file-size={maxsize}
+                                            accepted-file-formats=".jpeg,.jpg,.tiff,.pdf" enable-annotation="false"
+                                            enable-redaction="false" azure-doc-url={signUrl}
+                                            ongeneratedurl={handleAssetOnUpload}>
+                                </c-cloud-document-upload-wrapper>
+                            </template>
+                        </div>
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>             
+                        <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>  
+                    </template> 
+                    <div class="slds-col slds-var-p-around_medium slds-size_2-of-4"> 
+                        <div class="fileUploadSection"></div>
+                    </div>
+                    <div class="slds-col slds-var-p-around_medium slds-size_2-of-4"></div> 
+                </template>            
+                <div> 
+                    <div class="buttonAlignment" ><br/>                        
+                        <lightning-button variant="brand" label="Back" title="Back" onclick={prevButton} 
+                        class="slds-m-left_x-small"></lightning-button>
+                        <template if:true={showSubmitButton}>
+                            <lightning-button variant="brand" label="Submit" title="Next" type="submit" 
+                            class="slds-m-left_x-small"></lightning-button>
+                        </template>
+                        <template if:false={showSubmitButton}>
+                            <lightning-button variant="brand" label="Submit" title="Next" type="submit" 
+                            class="slds-m-left_x-small" disabled></lightning-button>
+                        </template>  
+                    </div> 
+                </div>                        
+            </div>
+        </div>    
+    </lightning-record-edit-form>    
+</template>

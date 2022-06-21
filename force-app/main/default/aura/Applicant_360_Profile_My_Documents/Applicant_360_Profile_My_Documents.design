@@ -1,0 +1,4 @@
+<design:component>
+    <design:attribute name="Status" default=""/>
+    <design:attribute name="ProductFamily" default=""/>
+</design:component>

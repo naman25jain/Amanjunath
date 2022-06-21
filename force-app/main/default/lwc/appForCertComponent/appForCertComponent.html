@@ -1,0 +1,99 @@
+<template>
+    <template if:true={showHeader}>
+        <div></br></div>
+        <div style = 'background-color: #d8d8da;font-weight: bold; padding-right: 5px;padding-left: 5px;padding-top: 5px;padding-bottom: 5px;'>
+            <p style="text-align:left;">
+                Application for ECFMG Certification
+                <span style="float:right;">
+                    Application Status : {appStatus}
+                </span>
+            </p>
+        </div>
+        <div>
+            <div class="padding">
+                <c-g-display-content unique-content-value="app_for_cert_home_page"></c-g-display-content>
+            </div>
+        </div>
+        <div></br></div>
+        <div class="padding">
+            <template if:true={showErrorUpdateButton}>
+                <lightning-formatted-rich-text class='errormsg' value={appForCertError}></lightning-formatted-rich-text>
+            </template>
+            <template if:true={showUpdateMyAppButton}>
+                <lightning-button variant="Success" label="Update My Application" title="Update" onclick={showAppForCertScreen1}></lightning-button>
+            </template>
+        </div>
+        <div class="padding">
+            <template if:true={showError}>
+                <lightning-formatted-rich-text class='errormsg' value={appForCertError}></lightning-formatted-rich-text>
+            </template>
+            <template if:true={showButton}>
+                <lightning-button variant="Success" label="Begin Application" title="Next" onclick={validateApplink}></lightning-button>
+            </template>      
+        </div>   
+    </template>
+    <template if:true={showContact}>
+        <c-app-for-cert-profile-review get-id-from-parent={contactId} get-link-source={linkSource}></c-app-for-cert-profile-review>
+        <div class="buttonAlignment">
+            <lightning-button variant="brand" label="Next" title="Next" onclick={showDegMedSchoolDetails} class="slds-m-left_x-small"></lightning-button>
+            <lightning-button variant="brand" label="Cancel" title="Cancel" onclick={cancelAppForCert} class="slds-m-left_x-small cancelButton"></lightning-button>
+        </div>
+    </template>
+    <template if:true={showMedicalDetails}>
+        <c-app-for-cert-school-review-component object-id={objectId} object-type={objectType}
+            show-exam-reg-action-button={showButtonsBasedOnExamReg} re-submit-from-app-for-cert={reSubmitFromAppForCert} onpreviousevent={showProfileReivew}
+            onnextevent={showOtherMedSchoolDetails} oncancelevent={cancelAppForCert} ondiscardevent={discardAppForCert}>
+        </c-app-for-cert-school-review-component>
+    </template>
+    <template if:true={showOtherMedSchool}>
+        <c-other-med-school show-exam-reg-action-button={showButtonsBasedOnExamReg}
+            onpreviousevent={showDegMedSchoolDetails} onnextevent={showOtherInst} oncancelevent={cancelAppForCert}
+            ondiscardevent={discardAppForCert}></c-other-med-school>
+    </template>
+    <template if:true={showOtherInstitutions}>
+        <c-app-for-cert-other-institutions show-exam-reg-action-button={showButtonsBasedOnExamReg}
+            onpreviousevent={showOtherMedSchoolDetails} onnextrepevent={showRepQuestion}
+            onnextgradevent={showGradOnlyScreen} oncancelevent={cancelAppForCert} ondiscardevent={discardAppForCert}
+            onsummaryevent={showSummary} case-record-id={caseRecordId}></c-app-for-cert-other-institutions>
+    </template>
+    <template if:true={showGraduateOnly}>
+        <c-app-for-cert-graduate-only show-exam-reg-action-button={showButtonsBasedOnExamReg}
+            onpreviousevent={showOtherInst} onnextevent={showRepQuestion} oncancelevent={cancelAppForCert}
+            ondiscardevent={discardAppForCert} onsummaryevent={showSummary}  re-submit-from-app-for-cert={reSubmitFromAppForCert} show-already-diploma-uploaded={showAlreadyDiplomaUploaded}></c-app-for-cert-graduate-only>
+    </template>
+    <template if:true={showReporterQuestion}>
+        <c-app-for-cert-reporter-ques-screen show-exam-reg-action-button={showButtonsBasedOnExamReg}
+            get-id-from-parent={contactId} onpreviousgradevent={showGradOnlyScreen} onpreviousinstevent={showOtherInst}
+            onnextevent={showSummary} oncancelevent={cancelAppForCert} ondiscardevent={discardAppForCert}>
+        </c-app-for-cert-reporter-ques-screen>
+    </template>
+    <template if:true={showSummaryPage}>
+        <c-app-for-cert-summary show-exam-reg-action-button={showButtonsBasedOnExamReg} get-id-from-parent={contactId} object-id={objectId} object-type={objectType}
+            onprofilereviewredirect={showProfileReivew} ondegmedschoolredirect={showDegMedSchoolDetails}
+            onothermedschoolredirect={showOtherMedSchoolDetails} onotherinstredirect={showOtherInst}
+            ongradonlyredirect={showGradOnlyScreen} onrepquestionredirect={showRepQuestion}
+            onpreviousevent={showRepQuestion} onnextevent={showLegalLang} oncancelevent={cancelAppForCert} ondiscardevent={discardAppForCert}
+            onpreviousgradevent={showGradOnlyScreen} onpreviousinstevent={showOtherInst} re-submit-from-app-for-cert={reSubmitFromAppForCert} directly-to-next={directlyToNext}
+            show-already-diploma-uploaded={showAlreadyDiplomaUploaded} show-newly-dean-uploaded={showNewlyDeanUploaded} case-record-id={caseRecordId}>
+        </c-app-for-cert-summary>
+    </template>
+    <template if:true={showLegalLanguage}>
+        <c-app-for-cert-legal-language-screen show-exam-reg-action-button={showButtonsBasedOnExamReg} onpreviousevent={showSummary} oncancelevent={cancelAppForCert}
+            onnextevent={showPayment} onacceptevent={showPayment} ondiscardevent={discardAppForCert} directly-to-next={directlyToNext} case-record-id={caseRecordId}></c-app-for-cert-legal-language-screen>
+    </template>
+    <template if:true={showPaymentPage}>
+        <!-- <c-app-for-cert-payment show-exam-reg-action-button={showButtonsBasedOnExamReg} onnextevent={showConfirmation} onpreviousevent={showLegalLang} case-record-id={caseRecordId}></c-app-for-cert-payment> -->
+        <c-shopping-cart onpreviousevent={showLegalLang} case-record-id={caseRecordId}></c-shopping-cart>
+    </template>
+    <template if:true={showConfirmationPage}>
+        <c-app-for-cert-confirmation cases-list-conf-screen={casesListConfScreen} transcript-case-numbers={transcriptCaseNumbers} link-source={linkSource} show-exam-reg-action-button={showButtonsBasedOnExamReg} oncancelevent={cancelAppForCert}>
+        </c-app-for-cert-confirmation>
+    </template>
+    <template if:true={examRegDiscard}>
+        <c-exam-registration-component object-id={objectId} object-type={objectType}
+        show-buttons-based-on-exam-reg={showButtonsBasedOnExamReg}></c-exam-registration-component>
+    </template>
+    <c-modal-component class="exceptionModal" title={modalTitle} message={modalContent} show-primary-button="true" primary-button-text="OK"
+    onprimarybuttonclick={handleYesClick} show-secondary-button="true" secondary-button-text="Cancel" >
+    </c-modal-component>
+</template>

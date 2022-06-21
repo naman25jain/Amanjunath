@@ -1,0 +1,4 @@
+:host .fontNormal{
+    --lwc-fontWeightBold: 400;
+    --lwc-fontSize3: 0.8125rem;
+}

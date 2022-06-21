@@ -1,0 +1,6 @@
+<aura:component implements="flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickActionWithoutHeader" access="global">
+    <aura:attribute name="recordId" type="String"/>
+    <div class="lwcWrapper">
+        <c:regenerateEcfmgCert assetRecordId= "{!v.recordId}" oncloseqaevent="{!c.handleCloseQuickAction}"/>
+    </div>
+</aura:component>

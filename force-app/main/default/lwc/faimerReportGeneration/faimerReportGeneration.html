@@ -1,0 +1,63 @@
+<template> 
+    <div class="buttonAlignmentGenerate" >
+        <template if:false={showReportSelection}>
+            <lightning-button variant="brand" label="Generate Performance Data Report" title="Generate Report" onclick={generateReport} class="slds-m-left_x-small"></lightning-button>
+        </template>
+    </div>
+    <template if:true={showReportSelection}>
+        <div class="formMargin">
+            <template if:true={spinner}>
+                <lightning-spinner variant="brand" size="medium" alternative-text="Loading..."></lightning-spinner>
+            </template>
+            <div class="slds-grid slds-wrap gridMargin"> 
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">    
+                    <span>Report Type</span>
+                </div>             
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4" style="padding-top: 0px;">
+                    <lightning-combobox
+                        name="progress"
+                        value={value}
+                        placeholder="Select Report Type"
+                        options={options}
+                        onchange={handleChangeType} ></lightning-combobox>
+                </div>
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>             
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4"></div>
+    
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4">    
+                    <span>Report Year</span>
+                </div> 
+                <div class="slds-col slds-var-p-around_medium slds-size_1-of-4" style="padding-top: 0px;">
+                    <template if:true={showSecondary}>
+                        <lightning-combobox
+                            name="reportYear"
+                            label=""
+                            value={reportYearValue}
+                            placeholder="Select Report Year"
+                            options={optionsYear}
+                            onchange={handleChangeYear} ></lightning-combobox>
+                    </template>
+                    <template if:false={showSecondary}>
+                        <lightning-combobox
+                            name="reportYear"
+                            label=""
+                            value=""
+                            placeholder="Select Report Year"
+                            options={optionsYear}
+                            disabled
+                            onchange={handleChangeYear} ></lightning-combobox>
+                    </template>
+                </div>
+            </div>
+        </div>
+        <div class="buttonAlignment" ><br/>
+            <lightning-button variant="brand" label="Cancel" title="Cancel" onclick={cancelButton} class="slds-m-left_x-small"></lightning-button>
+            <template if:true={showSubmitButton}> 
+                <lightning-button variant="brand" label="Submit" title="Next" onclick={nextButton} class="slds-m-left_x-small"></lightning-button>
+            </template>
+            <template if:false={showSubmitButton}> 
+                <lightning-button variant="brand" label="Submit" disabled title="Next" onclick={nextButton} class="slds-m-left_x-small"></lightning-button>
+            </template>
+        </div>
+    </template>
+</template>

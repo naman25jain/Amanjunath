@@ -1,0 +1,621 @@
+<aura:component
+        controller="CommunityIdentityVerificationController"
+        extends="c:CommunityBase"
+        implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,forceCommunity:availableForAllPageTypes"
+        access="global">
+
+    <aura:attribute name="showEthnicities" type="Boolean" default="true" access="private" />
+    <aura:attribute name="service" type="String" />
+    <aura:attribute name="clerkCountry" type="String" />
+    <aura:attribute name="employerCountry" type="String" />
+    <aura:attribute name="contact" type="Object" default="{}" />
+    <aura:attribute name="clerkships" type="Object[]" />
+    <aura:attribute name="employer" type="Object" default="{}" />
+    <aura:attribute name="isOpen" type="Boolean" default="false" />
+    <aura:attribute name="readOnlyMode" type="Boolean" default="false" />
+    <aura:attribute name="myProfileMode" type="Boolean" default="false" />
+    <aura:attribute name="showDicipline" type="Boolean" default="false" />
+    <aura:attribute name="employed" type="Boolean" default="false" />
+    <aura:attribute name="ethnicityDualSelected" type="List" default="[]"/>
+    <aura:attribute name="languageDualSelected" type="List" default="[]"/>
+    <aura:attribute name="permanentResident" type="Boolean" default="false"/>
+    <aura:attribute name="yearIssuedOptions" type="String" />
+    <aura:attribute name="PR_Year_Issued__c" type="String" />
+    <!--<aura:attribute name="yearIssued" type="List" default="[{'label': '2020', 'value': '2020'},{'label': '2019', 'value': '2019'},{'label': '2018', 'value': '2018'},{'label': '2017', 'value': '2017'},{'label': '2016', 'value': '2016'},{'label': '2015', 'value': '2015'},{'label': '2014', 'value': '2014'},{'label': '2013', 'value': '2013'},{'label': '2012', 'value': '2012'},{'label': '2011', 'value': '2011'},{'label': '2010', 'value': '2010'},{'label': '2009', 'value': '2009'},{'label': '2008', 'value': '2008'},{'label': '2007', 'value': '2007'},{'label': '2006', 'value': '2006'},{'label': '2005', 'value': '2005'},{'label': '2004', 'value': '2004'},{'label': '2003', 'value': '2003'},{'label': '2002', 'value': '2002'},{'label': '2001', 'value': '2001'},{'label': '2000', 'value': '2000'},{'label': '1999', 'value': '1999'},{'label': '1998', 'value': '1998'},{'label': '1997', 'value': '1997'},{'label': '1996', 'value': '1996'},{'label': '1995', 'value': '1995'},{'label': '1994', 'value': '1994'},{'label': '1993', 'value': '1993'},{'label': '1992', 'value': '1992'},{'label': '1991', 'value': '1991'},{'label': '1990', 'value': '1990'},{'label': '1989', 'value': '1989'},{'label': '1988', 'value': '1988'},{'label': '1987', 'value': '1987'},{'label': '1986', 'value': '1986'},{'label': '1985', 'value': '1985'},{'label': '1984', 'value': '1984'},{'label': '1983', 'value': '1983'},{'label': '1982', 'value': '1982'},{'label': '1981', 'value': '1981'},{'label': '1980', 'value': '1980'},{'label': '1979', 'value': '1979'},{'label': '1978', 'value': '1978'},{'label': '1977', 'value': '1977'},{'label': '1976', 'value': '1976'},{'label': '1975', 'value': '1975'},{'label': '1974', 'value': '1974'},{'label': '1973', 'value': '1973'},{'label': '1972', 'value': '1972'},{'label': '1971', 'value': '1971'},{'label': '1970', 'value': '1970'},{'label': '1969', 'value': '1969'},{'label': '1968', 'value': '1968'},{'label': '1967', 'value': '1967'},{'label': '1966', 'value': '1966'},{'label': '1965', 'value': '1965'},{'label': '1964', 'value': '1964'},{'label': '1963', 'value': '1963'},{'label': '1962', 'value': '1962'},{'label': '1961', 'value': '1961'},{'label': '1960', 'value': '1960'},{'label': '1959', 'value': '1959'},{'label': '1958', 'value': '1958'},{'label': '1957', 'value': '1957'},{'label': '1956', 'value': '1956'},{'label': '1955', 'value': '1955'},{'label': '1954', 'value': '1954'},{'label': '1953', 'value': '1953'},{'label': '1952', 'value': '1952'},{'label': '1951', 'value': '1951'},{'label': '1950', 'value': '1950'}]"/-->
+    <aura:attribute name="residentOptions" type="List" default="[{'label': 'Do not wish to respond', 'value': 'Do not wish to respond'},{'label': 'Yes', 'value': 'Yes'},{'label': 'No', 'value': 'No'},]"/>
+    <aura:attribute name="nativeLanguageOptions" type="List" default="[{'label': 'Do not wish to respond', 'value': 'Do not wish to respond'},{'label': 'English', 'value': 'English'},{'label': 'Other', 'value': 'Other'}]"/>
+    <aura:attribute name="currentlyEmployeedOptions" type="List" default="[{'label': 'Do not wish to respond', 'value': 'Do not wish to respond'},{'label': 'Yes, I am currently employed', 'value': 'Yes, I am currently employed'},{'label': 'No, I am not employed', 'value': 'No, I am not employed'},]"/>
+    <aura:attribute name="ethnicityOptions" type="List" default="[{label : 'Do not wish to respond', value : 'Do not wish to respond'},{label : 'American Indian/Alaska Native', value : 'American Indian/Alaska Native'},{label : 'Asian', value : 'Asian'},{label : 'Native Hawaiian or Other Pacific Islander', value : 'Native Hawaiian or Other Pacific Islander'},{label : 'Hispanic or Latino', value : 'Hispanic or Latino'},{label : 'Black or African American', value : 'Black or African American'},{label : 'White', value : 'White'},{label : 'Other', value : 'Other'}]"/>
+    <aura:attribute name="languageOptions" type="List" default="[{label : 'Arabic', value : 'Arabic'},{label : 'Chinese', value : 'Chinese'},{label : 'French', value : 'French'},{label : 'Italian', value : 'Italian'},{label : 'Korean', value : 'Korean'},{label : 'Russian', value : 'Russian'},{label : 'Spanish', value : 'Spanish'},{label: 'Tagalog', value: 'Tagalog'},{label : 'Vietnamese', value : 'Vietnamese'},{label : 'Other', value : 'Other'}]"/>
+    <aura:attribute name="clinicalDisciplineOption" type="String[]" default=",Anatomy,Anesthesiology,Biochemistry,Dermatology,Family Medicine,Internal Medicine,Neurology,Ophthalmology,Pathology,Pediatrics,Radiology,Surgery"/>
+    <aura:attribute name="clinicalDisciplineOptionCB" type="List" default="[{'label': 'Anatomy', 'value': 'Anatomy'},{'label': 'Anesthesiology', 'value': 'Anesthesiology'},{'label': 'Biochemistry', 'value': 'Biochemistry'},{'label': 'Dermatology', 'value': 'Dermatology'},{'label': 'Family Medicine', 'value': 'Family Medicine'},{'label': 'Internal Medicine', 'value': 'Internal Medicine'},{'label': 'Neurology', 'value': 'Neurology'},{'label': 'Ophthalmology', 'value': 'Ophthalmology'},{'label': 'Pathology', 'value': 'Pathology'},{'label': 'Pediatrics', 'value': 'Pediatrics'},{'label': 'Radiology', 'value': 'Radiology'},{'label': 'Surgery', 'value': 'Surgery'},]"/>
+    <aura:attribute name="positionOptions" type="String[]" default=",Resident/Fellow/House Officer,Physician,Health Professional (other than physician),University Professor,Research,Other"/>
+    <aura:attribute name="positionOptionsCB"  type="List" default="[{'label': 'Resident/Fellow/House Officer', 'value': 'Resident/Fellow/House Officer'},{'label': 'Physician', 'value': 'Physician'},{'label': 'Health Professional (other than physician)', 'value': 'Health Professional (other than physician)'},{'label': 'University Professor', 'value': 'University Professor'},{'label': 'Research', 'value': 'Research'},{'label': 'Other', 'value': 'Other'},]"/>
+    <aura:attribute name="stateOptions" type="String[]" default=",Alabama, Alaska, Arizona, Arkansas, California, Colorado, Connecticut, Delaware, District of Columbia, Florida, Georgia, Hawaii, Idaho, Illinois, Indiana, Iowa, Kansas, Kentucky, Louisiana, Maine, Maryland, Massachusetts, Michigan, Minnesota, Mississippi, Missouri, Montana, Nebraska, Nevada, New Hampshire, New Jersey, New Mexico, New York, North Carolina,  North Dakota, Ohio, Oklahoma, Oregon, Pennsylvania, Rhode Island, South Carolina, South Dakota, Tennessee, Texas, Utah, Vermont, Virginia, Washington, West Virginia, Wisconsin, Wyoming"/>
+    <aura:attribute name="provinceOptions" type="String[]" default=",Alberta, British Columbia, Manitoba, New Brunswick, Newfoundland and Labrador, Nova Scotia, Ontario, Prince Edward Island, Quebec, Saskatchewan, Northwest Territories, Nunavut, Yukon"/>
+    <aura:attribute name="countryOptions" type="String[]" default=",Afghanistan,Aland Islands,Albania,Algeria,Andorra,Angola,Anguilla,Antarctica,Antigua and Barbuda,Argentina,Armenia,Aruba,Australia,Austria,Azerbaijan,Bahamas,Bahrain,Bangladesh,Barbados,Belarus,Belgium,Belize,Benin,Bermuda,Bhutan,Bolivia, Plurinational State of,Bonaire, Sint Eustatius and Saba,Bosnia and Herzegovina,Botswana,Bouvet Island,Brazil,British Indian Ocean Territory,Brunei Darussalam,Bulgaria,Burkina Faso,Burundi,Cambodia,Cameroon,Canada,Cape Verde,Cayman Islands,Central African Republic,Chad,Chile,China,Christmas Island,Cocos (Keeling) Islands,Colombia,Comoros,Congo,Congo, the Democratic Republic of the,Cook Islands,Costa Rica,Cote d\'Ivoire,Croatia,Cuba,Curaçao,Cyprus,Czech Republic,Denmark,Djibouti,Dominica,Dominican Republic,Ecuador,Egypt,El Salvador,Equatorial Guinea,Eritrea,Estonia,Ethiopia,Falkland Islands (Malvinas),Faroe Islands,Fiji,Finland,France,French Guiana,French Polynesia,French Southern Territories,Gabon,Gambia,Georgia,Germany,Ghana,Gibraltar,Greece,Greenland,Grenada,Guadeloupe,Guatemala,Guernsey,Guinea,Guinea-Bissau,Guyana,Haiti,Heard Island and McDonald Islands,Holy See (Vatican City State),Honduras,Hungary,Iceland,India,Indonesia,Iran, Islamic Republic of,Iraq,Ireland,Isle of Man,Israel,Italy,Jamaica,Japan,Jersey,Jordan,Kazakhstan,Kenya,Kiribati,Korea, Republic of,Kuwait,Kyrgyzstan,Lao,Latvia,Lebanon,Lesotho,Liberia,Libya,Liechtenstein,Lithuania,Luxembourg,Macao,Macedonia, the former Yugoslav Republic of,Madagascar,Malawi,Malaysia,Maldives,Mali,Malta,Martinique,Mauritania,Mauritius,Mayotte,Mexico,Moldova, Republic of,Monaco,Mongolia,Montenegro,Montserrat,Morocco,Mozambique,Myanmar,Namibia,Nauru,Nepal,Netherlands,New Caledonia,New Zealand,Nicaragua,Niger,Nigeria,Niue,Norfolk Island,North Korea,Norway,Oman,Pakistan,Palestine,Panama,Papua New Guinea,Paraguay,Peru,Philippines,Pitcairn,Poland,Portugal,Qatar,Reunion,Romania,Russian Federation,Rwanda,Saint Barthélemy,Saint Helena, Ascension and Tristan da Cunha,Saint Kitts and Nevis,Saint Lucia,Saint Martin (French part),Saint Pierre and Miquelon,Saint Vincent and the Grenadines,Samoa,San Marino,Sao Tome and Principe,Saudi Arabia,Senegal,Serbia,Seychelles,Sierra Leone,Singapore,Sint Maarten (Dutch part),Slovakia,Slovenia,Solomon Islands,Somalia,South Africa,South Georgia and the South Sandwich Islands,South Sudan,Spain,Sri Lanka,Sudan,Suriname,Svalbard and Jan Mayen,Swaziland,Sweden,Switzerland,Syrian Arab Republic,Taiwan,Tajikistan,Tanzania, United Republic of,Thailand,Timor-Leste,Togo,Tokelau,Tonga,Trinidad and Tobago,Tunisia,Turkey,Turkmenistan,Turks and Caicos Islands,Tuvalu,Uganda,Ukraine,United Arab Emirates,United Kingdom,United States,Uruguay,Uzbekistan,Vanuatu,Venezuela, Bolivarian Republic of,Vietnam,Virgin Islands, British,Wallis and Futuna,Western Sahara,Yemen,Zambia,Zimbabwe"/>
+    <aura:attribute name="Name" type="String" />
+    <aura:attribute name="Street__c" type="String" />
+    <aura:attribute name="City__c" type="String" />
+    <aura:attribute name="State_Code__c" type="String" />
+    <aura:attribute name="Postal_Code__c" type="String" />
+    <aura:attribute name="Country_Code__c" type="String" />
+    <aura:attribute name="Dicipline__c" type="String" />
+    <aura:attribute name="Title__c" type="String" />
+    <aura:attribute name="Type__c" type="String" />
+	<aura:attribute name="Supervising_Physician__c" type="String" />
+
+	<aura:attribute name="Start_Month__c" type="String" />
+	<aura:attribute name="Start_Year__c" type="String" />
+	<aura:attribute name="End_Month__c" type="String" />
+	<aura:attribute name="End_Year__c" type="String" />
+
+    <aura:attribute name="Date_From__c" type="Date" />
+	<aura:attribute name="Date_To__c" type="Date" />
+	
+	<aura:attribute name="monthOptions" type="List" default="[]"/>
+
+    <aura:attribute name="mode" type="String" description="Valid values are Summary or empty." access="private" />
+    <aura:attribute name="showBackToSummary" type="Boolean" default="false" />
+    <aura:attribute name="disableButtons" type="Boolean" default="false" access="private" />
+	<aura:attribute name="validationError" type="Boolean" default="false" />
+	<aura:attribute name="ethNoAnswer" type="Boolean" default="false" />
+	<aura:attribute name="layout" type="String" default="Stacked" />
+    <aura:attribute name="showOtherNativeLanguage" type="Boolean" default="false" access="private" />
+    <aura:attribute name="showOtherLanguagesSpoken" type="Boolean" default="false" access="private" />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    		
+	<aura:if isTrue="{!and(v.validationError, v.readOnlyMode)}">
+		<div style="color: red"><center><b>All required information has not been provided. Please complete and/or correct your additional information.</b></center></div><br/>
+	</aura:if>
+
+	<aura:if isTrue="{!v.layout == 'Stacked'}">
+		<div class="slds-col slds-wrap">
+			<div class="slds-col slds-size_12-of-12">
+				<c:gDisplayContent uniqueContentValue="vol_info_notice">
+				            </c:gDisplayContent>
+			</div>
+		</div>
+	    <div class="slds-grid slds-gutters">
+	        <div class="slds-col slds-size_1-of-7"></div>
+	        
+	        <div class="slds-col slds-size_3-of-7">
+	
+	           <h2>U.S. Resident Status</h2>
+                <br/>I am/have been a U.S. Permanent Resident (Green Card Holder).<br/>
+                
+	            <lightning:combobox 
+                        aura:id="residentCombobox" 
+                        name="residentCombobox" 
+                        value="{!v.contact.Permanent_US_Resident__c}" 
+                        placeholder="Select" 
+                        options="{! v.residentOptions }" 
+                        disabled="{!v.readOnlyMode}"
+                        onchange="{!c.handlepermResidentChecked}"/>
+				<br/>
+                
+                <aura:if isTrue="{!v.permanentResident}">
+                    <lightning:input
+                            aura:id="prIssuedDate"
+                            name = "PRIssued" 
+                            label = "Year Issued"
+                            maxlength="4"
+                            type="text"                                     
+                            placeholder="Please enter Year Issued..."
+                            pattern="[1-9][0-9]{3}"
+                            messageWhenPatternMismatch="Please enter valid year as 1234"
+                            disabled="{!v.readOnlyMode}"
+                            value="{!v.contact.PR_Year_Issued__c}"
+                            onchange="{!c.validatePermYearIssued}"                            
+                            />
+                </aura:if>
+                <br/><br/>
+                
+				<h2>Ethnicity</h2>
+	            <lightning:input aura:id="ethnicityNoAnswer" type="checkbox" name="ethnicityNoAnswer" checked="{!v.ethNoAnswer}" disabled="{!v.readOnlyMode}" onchange="{!c.handleEthnicityNoAnswerOnChange}" label="I do not wish to respond" />
+	            <aura:if isTrue="{!v.showEthnicities == true}">
+	                <lightning:dualListbox
+	                        aura:id="ethnicitySelect"
+	                        name="ethnicity"
+	                        label="Select Your Ethnicity"
+	                        sourceLabel="Available Ethnicities"
+	                        selectedLabel="Selected Ethnicities"
+							fieldLevelHelp="Select all that apply."
+	                        options="{!v.ethnicityOptions}"
+	                        value="{!v.ethnicityDualSelected}"
+	                        disabled="{!v.readOnlyMode}"
+	                        onchange="{!c.handleEthnicityChange}"/>
+	            </aura:if>
+	
+	            <h2>Language Fluency</h2>
+	            <lightning:combobox aura:id="nativeLanguageCombobox" name="nativeLanguageCombobox" label="Select Your Native Language" value="{!v.contact.Native_Language__c}" placeholder="Select" options="{! v.nativeLanguageOptions }" disabled="{!v.readOnlyMode}" onchange="{!c.handleNativeLanguageChange}" /><br/>
+	            <aura:if isTrue="{!v.showOtherNativeLanguage == true}">
+					<lightning:input name="otherNativeLanguage" label="Other Native Language" value="{!v.contact.Other_Native_Language__c}" required="true" disabled="{!v.readOnlyMode}" /><br/>
+                </aura:if>
+                
+                <lightning:dualListbox
+	                    aura:id="languageSelect"
+	                    name="language"
+	                    label="Select Other Languages Spoken"
+	                    sourceLabel="Available Languages"
+	                    selectedLabel="Selected Languages"
+						fieldLevelHelp="Select all that apply."
+	                    options="{!v.languageOptions}"
+	                    value="{!v.languageDualSelected}"
+	                    disabled="{!v.readOnlyMode}"
+	                    onchange="{!c.handleLanguageChange}"/>
+                    
+                <aura:if isTrue="{!v.showOtherLanguagesSpoken == true}">
+                    <lightning:input name="otherLanguagesSpoken" label="Additional Languages Spoken" value="{!v.contact.Additional_Languages_Spoken__c}" disabled="{!v.readOnlyMode}"/><br/>
+                </aura:if>
+	            <br/><br/>
+	        </div>
+	        
+	        <div class="slds-col slds-size_2-of-7">
+	        
+	            <br/><h2>Clinical Clerkships</h2>
+	            <aura:iteration items="{!v.clerkships}" var="clerk">
+	                <div class="slds-box">
+	                    <div class="slds-grid slds-gutters slds-wrap">
+	                        <div class="slds-col slds-size_1-of-2">
+	                            Name of Hospital/Clinic:
+	                        </div>
+	                        <div class="slds-col slds-size_1-of-2">
+	                            {!clerk.Name}
+	                            <aura:if isTrue="{!v.readOnlyMode == false}">
+	                                <div style="float: right;">
+	                                    <lightning:buttonIcon iconName="utility:delete" variant="bare" name="{!clerk.Id}" onclick="{!c.handleDeleteClerkship}" alternativeText="Remove" />
+	                                </div>
+	                            </aura:if>
+	                        </div>
+	
+	                        <div class="slds-col slds-size_1-of-2">
+	                            Address:
+	                        </div>
+	                        <div class="slds-col slds-size_1-of-2">
+	                            <lightning:formattedAddress
+	                                    street="{!clerk.Street__c}"
+	                                    city="{!clerk.City__c}"
+	                                    province="{!clerk.State_Code__c}"
+	                                    country="{!clerk.Country_Code__c}"
+	                                    postalCode="{!clerk.Postal_Code__c}"
+	                                    disabled="true"
+	                            />
+	                        </div>
+	                        <div class="slds-col slds-size_1-of-2">
+	                            Clinical Discipline:
+	                        </div>
+	                        <div class="slds-col slds-size_1-of-2">
+	                            {!clerk.Dicipline__c}
+	                        </div>
+	                        <div class="slds-col slds-size_1-of-2">
+	                            Supervising Physician:
+	                        </div>
+	                        <div class="slds-col slds-size_1-of-2">
+	                            {!clerk.Supervising_Physician__c}
+	                        </div>
+	                        <!--<div class="slds-col slds-size_1-of-2">
+	                            Date From:
+	                        </div>
+	                        <div class="slds-col slds-size_1-of-2">
+	                            {!clerk.Date_From__c}
+							</div> -->
+							<div class="slds-col slds-size_1-of-2">
+	                            Start Month:
+	                        </div>
+	                        <div class="slds-col slds-size_1-of-2">
+	                            {!clerk.Start_Month__c}
+							</div>
+							<div class="slds-col slds-size_1-of-2">
+	                            Start Year:
+	                        </div>
+	                        <div class="slds-col slds-size_1-of-2">
+	                            {!clerk.Start_Year__c}
+							</div>
+	                        <!--<div class="slds-col slds-size_1-of-2">
+	                            Date To:
+	                        </div>
+	                        <div class="slds-col slds-size_1-of-2">
+	                            {!clerk.Date_To__c}
+							</div> -->
+							<div class="slds-col slds-size_1-of-2">
+	                            End Month:
+	                        </div>
+	                        <div class="slds-col slds-size_1-of-2">
+	                            {!clerk.End_Month__c}
+							</div>
+							<div class="slds-col slds-size_1-of-2">
+	                            End Year:
+	                        </div>
+	                        <div class="slds-col slds-size_1-of-2">
+	                            {!clerk.End_Year__c}
+							</div>
+	                    </div>
+	                </div>
+	                <br/>
+	            </aura:iteration>
+	
+	            <aura:if isTrue="{!v.readOnlyMode == false}">
+	                <lightning:button variant="brand" name="next" label="Add Clerkship" onclick="{!c.showModal}" /><br/><br/>
+	            </aura:if>
+	
+	            <h2>Current Employment</h2>
+				
+	            <p>If you are currently employed, select <strong>Yes, I am currently employed</strong>, and provide any additional information.</p>
+	            <lightning:combobox
+	                    aura:id="currentlyEmployeedCombobox"
+	                    name="currentlyEmployeedCombobox"
+	                    label="Present Employment"
+	                    value="{!v.contact.Currently_Employed__c}"
+	                    placeholder="Select"
+	                    options="{! v.currentlyEmployeedOptions }"
+	                    disabled="{!v.readOnlyMode}"
+	                    onchange="{!c.handleCurrentlyEmployeedChanged}" />
+	            <br/>
+	            
+	            <aura:if isTrue="{!v.employed}" >
+	                <lightning:input fieldName="company" value="{!v.employer.Name}" label="Institution/Company" aura:id="fieldToValidate" required="true" disabled="{!v.readOnlyMode}" />
+	                <c:DynamicAddress
+	                        aura:id="employmentAddress"
+	                        street="{!v.employer.Street__c}"
+	                        city="{!v.employer.City__c}"
+	                        state="{!v.employer.State_Code__c}"
+	                        postalCode="{!v.employer.Postal_Code__c}"
+	                        country="{!v.employer.Country_Code__c}"
+	                        readOnly="{!v.readOnlyMode}"
+	                />
+	                <lightning:select name="typePosition" label="Type of Position"  value="{!v.employer.Type__c}" aura:id="fieldToValidate" required="true" disabled="{!v.readOnlyMode}" >
+	                    <aura:iteration items="{!v.positionOptions}" var="po">
+	                        <option text="{!po}"></option>
+	                    </aura:iteration>
+	                </lightning:select>
+	                <aura:if isTrue="{!or(v.employer.Type__c == 'Resident/Fellow/House Officer', v.employer.Type__c == 'Physician')}">
+	                    <lightning:select name="clinicalDiscipline" label="Clinical Discipline/Specialty"  value="{!v.employer.Dicipline__c}" aura:id="fieldToValidate" required="true" disabled="{!v.readOnlyMode}">
+	                        <aura:iteration items="{!v.clinicalDisciplineOption}" var="do">
+	                            <option text="{!do}"></option>
+	                        </aura:iteration>
+	                    </lightning:select>
+	                </aura:if>
+	                <lightning:input name="title" value="{!v.employer.Title__c}" placeholder="" label="Job Title" aura:id="fieldToValidate" required="true"  disabled="{!v.readOnlyMode}"/>
+					<!--<lightning:input name="startDate" type="date" value="{!v.employer.Date_From__c}" placeholder="" label="Employment Start Date" aura:id="fieldToValidate" required="true"  disabled="{!v.readOnlyMode}"/>-->
+					<div class="slds-grid slds-gutters">
+						<div class="slds-col slds-size_1-of-2">
+							<lightning:combobox aura:id="fieldToValidate" name="startMonth" label="Start Month" placeholder="Select" value="{!v.employer.Start_Month__c}" required="true" options="{!v.monthOptions}" onchange="{!c.handleChangeStartMonth}" disabled="{!v.readOnlyMode}" />
+						</div>
+						<div class="slds-col slds-size_1-of-2">
+							<lightning:input aura:id="fieldToValidate" name="startYear" pattern="[1-9][0-9]{3}" messageWhenPatternMismatch="Please enter valid year as 1234" maxlength="4" label="Start Year" value="{!v.employer.Start_Year__c}" required="true" onchange="{!c.handleInputOnBlur}" disabled="{!v.readOnlyMode}" />
+						</div>
+					</div>
+	            </aura:if>
+	        </div>
+	        
+	        <div class="slds-col slds-size_1-of-7"></div>
+	    </div><br/><br/>
+	</aura:if>
+	
+	<aura:if isTrue="{!v.layout == 'Horizontal'}">
+		<div>
+	        <form class="slds-form">
+	        	<c:CommunitySummarySectionHeader hideEditButton="true" title="U.S. Resident Status" />
+	            <div class="slds-form-element slds-form-element_horizontal">
+	            	<lightning:combobox 
+                                        aura:id="residentCombobox" 
+                                        name="residentCombobox" 
+                                        label="I am/have been a U.S. Permanent Resident (Green Card Holder)."
+                                        value="{!v.contact.Permanent_US_Resident__c}" 
+                                        placeholder="Select" 
+                                        options="{! v.residentOptions }" 
+                                        disabled="{!v.readOnlyMode}"
+                                        onchange="{!c.handlepermResidentChecked}" />
+                    <br/>
+                    
+                    <aura:if isTrue="{!v.permanentResident}">
+                    <lightning:input
+                            aura:id="prIssuedDate"
+                            name = "PRIssued" 
+                            label = "Year Issued"
+                            maxlength="4"
+                            type="text"                                     
+                            placeholder="Please enter Year Issued..."
+                            pattern="[1-9][0-9]{3}"
+                            messageWhenPatternMismatch="Please enter valid year as 1234"
+                            disabled="{!v.readOnlyMode}"
+                            value="{!v.contact.PR_Year_Issued__c}"
+                            onchange="{!c.validatePermYearIssued}"                            
+                            />
+                </aura:if>
+                <br/><br/>
+	            </div>
+	            <c:CommunitySummarySectionHeader hideEditButton="true" title="Ethnicity" />
+				<div class="slds-form-element slds-form-element_horizontal actions">
+				    <label class="slds-form-element__label" for="form-element-01">I do not wish to respond</label>
+				    <div class="slds-form-element__control"><lightning:input aura:id="ethnicityNoAnswer" type="checkbox" name="ethnicityNoAnswer" checked="{!v.ethNoAnswer}" disabled="{!v.readOnlyMode}" onchange="{!c.handleEthnicityNoAnswerOnChange}" label="" /></div>
+				</div>
+	             <aura:if isTrue="{!v.showEthnicities == true}">
+		             <div class="slds-form-element slds-form-element_horizontal">
+	                <lightning:dualListbox
+	                        aura:id="ethnicitySelect"
+	                        name="ethnicity"
+	                        label="Select Your Ethnicity"
+	                        sourceLabel="Available Ethnicities"
+	                        selectedLabel="Selected Ethnicities"
+							fieldLevelHelp="Select all that apply."
+	                        options="{!v.ethnicityOptions}"
+	                        value="{!v.ethnicityDualSelected}"
+	                        disabled="{!v.readOnlyMode}"
+	                        onchange="{!c.handleEthnicityChange}"/>
+		            </div>           
+	            </aura:if>            
+	
+	            <c:CommunitySummarySectionHeader hideEditButton="true" title="Language Fluency" />
+	            <div class="slds-form-element slds-form-element_horizontal">
+	            	<lightning:combobox aura:id="nativeLanguageCombobox" name="nativeLanguageCombobox" label="Select Your Native Language" value="{!v.contact.Native_Language__c}" placeholder="Select" options="{! v.nativeLanguageOptions }" disabled="{!v.readOnlyMode}" onchange="{!c.handleNativeLanguageChange}" /><br/>
+                    <aura:if isTrue="{!v.showOtherNativeLanguage == true}">
+                        <lightning:input name="otherNativeLanguage" label="Other Native Language" value="{!v.contact.Other_Native_Language__c}" required="true" disabled="{!v.readOnlyMode}" /><br/>
+                    </aura:if>
+	            </div>
+	            <div class="slds-form-element slds-form-element_horizontal">
+		            <lightning:dualListbox
+		                    aura:id="languageSelect"
+		                    name="language"
+		                    label="Select Other Languages Spoken"
+		                    sourceLabel="Available Languages"
+		                    selectedLabel="Selected Languages"
+							fieldLevelHelp="Select all that apply."
+		                    options="{!v.languageOptions}"
+		                    value="{!v.languageDualSelected}"
+		                    disabled="{!v.readOnlyMode}"
+                            onchange="{!c.handleLanguageChange}"/><br/>
+                    
+                    <aura:if isTrue="{!v.showOtherLanguagesSpoken == true}">
+                        <lightning:input name="otherLanguagesSpoken" label="Additional Languages Spoken" value="{!v.contact.Additional_Languages_Spoken__c}" disabled="{!v.readOnlyMode}" /><br/>
+                    </aura:if>
+	            </div>
+	            
+	            <c:CommunitySummarySectionHeader hideEditButton="true" title="Clinical Clerkships" />
+	            <aura:iteration items="{!v.clerkships}" var="clerk">
+	                <div class="slds-box">
+	                    <div class="slds-grid slds-gutters slds-wrap">
+	                        <div class="slds-col slds-size_1-of-2">
+	                            Name of Hospital/Clinic:
+	                        </div>
+	                        <div class="slds-col slds-size_1-of-2">
+	                            {!clerk.Name}
+	                            <aura:if isTrue="{!v.readOnlyMode == false}">
+	                                <div style="float: right;">
+	                                    <lightning:buttonIcon iconName="utility:delete" variant="bare" name="{!clerk.Id}" onclick="{!c.handleDeleteClerkship}" alternativeText="Remove" />
+	                                </div>
+	                            </aura:if>
+	                        </div>
+	
+	                        <div class="slds-col slds-size_1-of-2">
+	                            Address:
+	                        </div>
+	                        <div class="slds-col slds-size_1-of-2">
+	                            <lightning:formattedAddress
+	                                    street="{!clerk.Street__c}"
+	                                    city="{!clerk.City__c}"
+	                                    province="{!clerk.State_Code__c}"
+	                                    country="{!clerk.Country_Code__c}"
+	                                    postalCode="{!clerk.Postal_Code__c}"
+	                                    disabled="true"
+	                            />
+	                        </div>
+	                        <div class="slds-col slds-size_1-of-2">
+	                            Clinical Discipline:
+	                        </div>
+	                        <div class="slds-col slds-size_1-of-2">
+	                            {!clerk.Dicipline__c}
+	                        </div>
+	                        <div class="slds-col slds-size_1-of-2">
+	                            Supervising Physician:
+	                        </div>
+	                        <div class="slds-col slds-size_1-of-2">
+	                            {!clerk.Supervising_Physician__c}
+	                        </div>
+	                        <!--<div class="slds-col slds-size_1-of-2">
+	                            Date From:
+	                        </div>
+	                        <div class="slds-col slds-size_1-of-2">
+	                            {!clerk.Date_From__c}
+							</div> -->
+							<div class="slds-col slds-size_1-of-2">
+	                            Start Month:
+	                        </div>
+	                        <div class="slds-col slds-size_1-of-2">
+	                            {!clerk.Start_Month__c}
+							</div>
+							<div class="slds-col slds-size_1-of-2">
+	                            Start Year:
+	                        </div>
+	                        <div class="slds-col slds-size_1-of-2">
+	                            {!clerk.Start_Year__c}
+							</div>
+	                        <!--<div class="slds-col slds-size_1-of-2">
+	                            Date To:
+	                        </div>
+	                        <div class="slds-col slds-size_1-of-2">
+	                            {!clerk.Date_To__c}
+							</div> -->
+							<div class="slds-col slds-size_1-of-2">
+	                            End Month:
+	                        </div>
+	                        <div class="slds-col slds-size_1-of-2">
+	                            {!clerk.End_Month__c}
+							</div>
+							<div class="slds-col slds-size_1-of-2">
+	                            End Year:
+	                        </div>
+	                        <div class="slds-col slds-size_1-of-2">
+	                            {!clerk.End_Year__c}
+							</div>
+	                    </div>
+	                </div><br/>
+	            </aura:iteration>
+	
+	            <aura:if isTrue="{!v.readOnlyMode == false}">
+	                <lightning:button variant="brand" name="next" label="Add Clerkship" onclick="{!c.showModal}" /><br/><br/>
+	            </aura:if>
+	
+				<c:CommunitySummarySectionHeader hideEditButton="true" title="Current Employment" />If you are currently employed, select <strong>Yes, I am currently employed</strong>, and provide any additional information.<br/>
+			
+	            <div class="slds-form-element slds-form-element_horizontal">
+		            <lightning:combobox
+		                    aura:id="currentlyEmployeedCombobox"
+		                    name="currentlyEmployeedCombobox"
+		                    label="Present Employment"
+		                    value="{!v.contact.Currently_Employed__c}"
+		                    placeholder="Select"
+		                    options="{! v.currentlyEmployeedOptions }"
+		                    disabled="{!v.readOnlyMode}"
+		                    onchange="{!c.handleCurrentlyEmployeedChanged}" />
+	            </div>
+	           
+	            <aura:if isTrue="{!v.employed}" >
+	                <div class="slds-form-element slds-form-element_horizontal actions">
+					    <lightning:input fieldName="company" value="{!v.employer.Name}" label="Institution/Company" aura:id="fieldToValidate" required="true" disabled="{!v.readOnlyMode}" />
+					</div>
+	
+	                <c:DynamicAddress
+	                        aura:id="employmentAddress"
+	                        street="{!v.employer.Street__c}"
+	                        city="{!v.employer.City__c}"
+	                        state="{!v.employer.State_Code__c}"
+	                        postalCode="{!v.employer.Postal_Code__c}"
+	                        country="{!v.employer.Country_Code__c}"
+	                        readOnly="{!v.readOnlyMode}"
+	                        layout="Horizontal"
+	                />
+	                
+		            <div class="slds-form-element slds-form-element_horizontal">
+			            <lightning:combobox
+			                    aura:id="fieldToValidate"
+			                    name="typePosition"
+			                    label="Type of Position"
+			                    value="{!v.employer.Type__c}"
+			                    placeholder="Select"
+			                    required="true"
+			                    options="{!v.positionOptionsCB}"
+			                    disabled="{!v.readOnlyMode}"
+			                    onchange="{!c.handlePositionTypeChange}" />
+		            </div>
+	                
+	
+	                <aura:if isTrue="{!v.showDicipline}">
+			            <div class="slds-form-element slds-form-element_horizontal">
+				            <lightning:combobox
+				                    aura:id="fieldToValidate"
+				                    name="clinicalDiscipline"
+				                    label="Clinical Discipline/Specialty"
+				                    value="{!v.employer.Dicipline__c}"
+				                    placeholder="Select"
+				                    required="true"
+				                    options="{!v.clinicalDisciplineOptionCB}"
+				                    disabled="{!v.readOnlyMode}" />
+			            </div>
+	                </aura:if>
+	                
+	                <div class="slds-form-element slds-form-element_horizontal actions">
+					    <lightning:input name="title" value="{!v.employer.Title__c}" placeholder="" label="Job Title"  aura:id="fieldToValidate" required="true"  disabled="{!v.readOnlyMode}" />
+					</div>
+					<!-- Code added below by Shailaja-->
+					<div class="slds-form-element slds-form-element_horizontal actions">
+						<lightning:combobox aura:id="fieldToValidate" name="startMonth" label="Start Month" placeholder="Select" value="{!v.employer.Start_Month__c}" required="true" disabled="{!v.readOnlyMode}" options="{!v.monthOptions}" onchange="{!c.handleChangeEmpStartMonth}" />
+					</div>
+					<div class="slds-form-element slds-form-element_horizontal actions">
+						<lightning:input aura:id="fieldToValidate" name="startYear" pattern="[1-9][0-9]{3}" messageWhenPatternMismatch="Please enter valid year as 1234" maxlength="4" label="Start Year" value="{!v.employer.Start_Year__c}" required="true" disabled="{!v.readOnlyMode}" onchange="{!c.handleInputOnBlur}" />
+					</div>
+	                <!--<div class="slds-form-element slds-form-element_horizontal actions"> -->
+						<!--<lightning:input name="startDate" type="date" value="{!v.employer.Date_From__c}" placeholder="" label="Employment Start Date" aura:id="fieldToValidate" required="true"  disabled="{!v.readOnlyMode}"/>-->
+						<!--<div class="slds-grid slds-gutters">
+							<div class="slds-col slds-size_1-of-2">
+								<lightning:combobox aura:id="fieldToValidate" name="startMonth" label="Start Month" placeholder="Select" value="{!v.employer.Start_Month__c}" required="true" options="{!v.monthOptions}" onchange="{!c.handleChangeEmpStartMonth}" />
+							</div>
+							<div class="slds-col slds-size_1-of-2">
+								<lightning:input aura:id="fieldToValidate" name="startYear" pattern="[1-9][0-9]{3}" messageWhenPatternMismatch="Please enter valid year as 1234" maxlength="4" label="Start Year" value="{!v.employer.Start_Year__c}" required="true" onblur="{!c.handleInputOnBlur}" />
+							</div>
+						</div>
+				</div> -->
+
+	            </aura:if>
+	        </form>
+		</div>
+	</aura:if>
+
+
+    <aura:if isTrue="{!v.isOpen}">
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header"><h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Add Clerkship</h2></header>
+				<div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1" >
+                    <div class="slds-grid slds-gutters">
+                        <div class="slds-col slds-size_1-of-2">
+                            <lightning:select name="clinicalDiscipline" label="Clinical Discipline/Specialty"  value="{!v.Dicipline__c}" aura:id="clerkshipValidate" required="true" disabled="{!v.readOnlyMode}">
+                                <aura:iteration items="{!v.clinicalDisciplineOption}" var="do">
+                                    <option text="{!do}"></option>
+                                </aura:iteration>
+                            </lightning:select>
+
+                            <lightning:input fieldName="hospital" value="{!v.Name}" label="Name of Hospital/Clinic" aura:id="clerkshipValidate" required="true" disabled="{!v.readOnlyMode}" />
+                            <lightning:input fieldName="supervisingPHysician" value="{!v.Supervising_Physician__c}" label="Supervising Physician" aura:id="clerkshipValidate" required="true" disabled="{!v.readOnlyMode}" />
+							<!--<lightning:input name="startDate" type="date" value="{!v.Date_From__c}" placeholder="" label="Date From" aura:id="clerkshipValidate" required="true"  disabled="{!v.readOnlyMode}"/>-->
+							<div class="slds-grid slds-gutters">
+								<div class="slds-col slds-size_1-of-2">
+									<lightning:combobox aura:id="clerkshipValidate" name="startMonth" label="Start Month" placeholder="Select" value="{!v.Start_Month__c}" required="true" disabled="{!v.readOnlyMode}" options="{!v.monthOptions}" onchange="{!c.handleChangeStartMonth}" />
+								</div>
+								<div class="slds-col slds-size_1-of-2">
+									<lightning:input aura:id="clerkshipValidate" name="startYear" pattern="[1-9][0-9]{3}" messageWhenPatternMismatch="Please enter valid year as 1234" maxlength="4" label="Start Year" value="{!v.Start_Year__c}" required="true" disabled="{!v.readOnlyMode}" onblur="{!c.handleInputOnBlur}" />
+								</div>
+							</div>
+							<!--<lightning:input name="endDate" type="date" value="{!v.Date_To__c}" placeholder="" label="Date To" aura:id="clerkshipValidate" required="true"  disabled="{!v.readOnlyMode}"/> -->
+							<div class="slds-grid slds-gutters">
+								<div class="slds-col slds-size_1-of-2">
+									<lightning:combobox aura:id="clerkshipValidate" name="endMonth" label="End Month" placeholder="Select" value="{!v.End_Month__c}" required="true" disabled="{!v.readOnlyMode}" options="{!v.monthOptions}" onchange="{!c.handleChangeEndMonth}" />
+								</div>
+								<div class="slds-col slds-size_1-of-2">
+									<lightning:input aura:id="clerkshipValidate" name="endYear" pattern="[1-9][0-9]{3}" messageWhenPatternMismatch="Please enter valid year as 1234" maxlength="4" label="End Year" value="{!v.End_Year__c}" required="true" disabled="{!v.readOnlyMode}" onblur="{!c.handleInputOnBlur}" />
+								</div>
+							</div>
+                        </div>
+                        <div class="slds-col slds-size_1-of-2">
+                            <c:DynamicAddress
+                                    aura:id="clerkshipAddress"
+                                    street="{!v.Street__c}"
+                                    city="{!v.City__c}"
+                                    state="{!v.State_Code__c}"
+                                    postalCode="{!v.Postal_Code__c}"
+                                    country="{!v.Country_Code__c}"
+                                    readOnly="{!v.readOnlyMode}"
+                                    disabled="{!v.readOnlyMode}"
+                            />
+                        </div>
+                    </div>
+                </div>
+                <footer class="slds-modal__footer">
+                    <lightning:button aura:id="saveClerkshipButton" variant="brand" label="Save" title="Save" onclick="{!c.saveClerkship}" />
+                    <lightning:button variant="brand" label="Cancel" title="Cancel" onclick="{!c.closeModal}" />
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </aura:if>
+
+    <aura:if isTrue="{!!v.readOnlyMode}">
+        <center>
+        	<aura:if isTrue="{!v.myProfileMode}">
+        		<lightning:button aura:id="saveChangesButtonMyProfile" variant="brand" name="cancel" label="Cancel" onclick="{!c.handleCancel}" />&nbsp;&nbsp;&nbsp;&nbsp;
+        		<lightning:button aura:id="saveChangesButtonMyProfile" variant="brand" name="save" label="Save" onclick="{!c.handleSaveMyProfile}" disabled="{!v.disableButtons}" />&nbsp;&nbsp;&nbsp;&nbsp;
+        	</aura:if>
+            <aura:if isTrue="{!and(v.showBackToSummary == true, !v.myProfileMode)}">
+                <lightning:button aura:id="saveChangesButton" disabled="{!v.readOnlyMode || v.disableButtons}" variant="brand" name="save" label="Save and Return" onclick="{!c.handleSaveAndReturn}" />&nbsp;&nbsp;&nbsp;&nbsp;
+                <lightning:button aura:id="backToSummaryButton" variant="brand" name="summary" label="Cancel" onclick="{!c.handleCancelAndReturn}" disabled="{!v.disableButtons}" />
+            </aura:if>
+            <aura:if isTrue="{!and(v.showBackToSummary == false, !v.myProfileMode)}">
+                <lightning:button variant="brand" name="previous" label="Previous" onclick="{!c.handlePrevious}" disabled="{!v.disableButtons}" />&nbsp;&nbsp;&nbsp;&nbsp;
+                <lightning:button aura:id="saveChangesButton" disabled="{!v.readOnlyMode || v.disableButtons}" variant="brand" name="save" label="Save Changes" onclick="{!c.handleSave}" />&nbsp;&nbsp;&nbsp;&nbsp;
+                <lightning:button variant="brand" name="next" label="Next" onclick="{!c.handleNext}" disabled="{!v.disableButtons}" />
+            </aura:if>
+        </center>
+    </aura:if>
+
+</aura:component>

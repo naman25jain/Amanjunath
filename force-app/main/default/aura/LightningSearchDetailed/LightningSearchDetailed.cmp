@@ -1,0 +1,47 @@
+<aura:component controller="LightningSearchController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global">
+
+	<aura:attribute name="selectedRecord" type="sObject" default="{}" />
+    <aura:attribute name="primaryDisplayField" type="String" default="" />
+    <aura:attribute name="SOQL_Filter" type="String" default="" />
+    <aura:attribute name="SOQL_Limit" type="String" default="5" />
+    <aura:attribute name="targetFields" type="String" default=""/>
+    <aura:attribute name="targetFieldsDetail" type="String" default=""/>
+    <aura:attribute name="searchResults" type="List" />
+    <aura:attribute name="tableList" type="List" />
+    <aura:attribute name="fieldList" type="List" />
+    <aura:attribute name="searchInput" type="String"/>
+    <aura:attribute name="targetObject" type="String" default=""/>
+    <aura:attribute name="IconName" type="String" default=""/>
+    <aura:attribute name="label" type="String" default=""/>
+	<aura:attribute name="passthroughData" type="Object" default="" description="Use this as a data passthrough to be published via the app event."/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+
+	<!--<aura:registerEvent name="lightningSearchResultsSelectCE" type="c:LightningSearchSelectCE"/>-->
+	<aura:registerEvent name="lightningSearchSelectCE" type="c:LightningSearchSelectCE"/>
+
+	<aura:registerEvent name="lightningSearchResultsSelectAE" type="c:LightningSearchSelectAE"/>
+
+	<table class="slds-table slds-table_cell-buffer slds-table_bordered  slds-table_striped slds-table--header-fixed">
+		<thead>
+			<tr class="slds-text-title_caps slds-line-height_reset">
+				<!--<th class="slds-text-title_caps" scope="col"><div class="slds-truncate slds-cell-fixed">Id</div></th>-->
+				<aura:iteration items="{!v.fieldList}" var="field">
+					<th scope="col"><div class="slds-truncate slds-cell-fixed">{!field}</div></th>
+				</aura:iteration>
+			</tr>
+		</thead>
+		<tbody>
+			<aura:iteration items="{!v.tableList}" var="row">
+				<tr name="{!row.Id}" onclick="{!c.selectRecord}" data-row-index="{!row.Id}" class="slds-line-height_reset">
+					<!--<td>{!row.Id}</td>-->
+				    <aura:iteration items="{!row.fields}" var="col">
+				    	<td><div>{!col.value}</div></td>
+				    </aura:iteration>
+				</tr>
+			</aura:iteration>
+		  <aura:if isTrue="{!v.tableList.length == 0}"><tr><td colspan="{!v.fieldList.length + 1}">{!$Label.c.No_Records_Available}</td></tr></aura:if>
+		</tbody>
+	</table>
+    
+</aura:component>

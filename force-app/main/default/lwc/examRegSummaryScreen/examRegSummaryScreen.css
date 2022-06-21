@@ -1,0 +1,84 @@
+.buttonAlignment{
+    padding-left: 35%;
+    padding-top: 2%;
+    position: relative;
+    top: 57px;
+    left: 43px;
+    margin-bottom: 10px;
+  }
+
+   .padding {
+      padding-top:20px;
+      margin-left: 25%;
+      margin-right: 25%;
+    }
+    .stepHeader{
+      font-size: 20px
+    }
+    .header {
+      line-height: 2;
+    }
+
+    .gridSize{
+      width: 50%;
+      border: 0;
+    }
+
+    .gridHeader{
+      font-size: large;
+  }
+
+  .gridColPadding{
+    padding-bottom: 20px;
+  }
+
+  .formMargin{
+      margin-left: 25%;
+      margin-right: 25%;
+      padding-top:20px;
+  }
+
+  .collapsible {
+   background-color: #777;
+   color: white;
+   cursor: pointer;
+   padding: 18px;
+   border: none;
+   text-align: left;
+   outline: none;
+   font-size: 15px;
+  }
+
+  .fullwidth {
+    width: 100%;
+  }
+
+  .gridItemPadding{
+    padding-top: 35px;
+  }
+
+  .separatorborderbottom{
+    padding-top: 15px;
+    border-bottom:1px solid #d4d4d4;
+    border-bottom-style: dotted;
+    width:100%;
+  }
+
+  .summary-graduationmonth, .summary-graduationyear {
+    float:left;
+  }
+  .summary-graduationyear {
+    padding-left: 5px;
+  }
+
+  .ethnicitybutton{
+    width : 10px;
+  }
+  .exams-header {
+    color: #000;
+    line-height: 2em;
+}
+.exam-details-header{
+    background-color: #cccccc;
+    line-height: 30px;
+}
